@@ -10,16 +10,16 @@
 <li><a href="http://wiki.ros.org/ja/navigation/Tutorials/SendingSimpleGoals">SendingSimpleGoals</a></li>
 </ul>
 <p><strong>ソース</strong></p>
-<code> 
+<pre> 
 // 本プログラムは
 // http://wiki.ros.org/ja/navigation/Tutorials/SendingSimpleGoals
 // を改変しています。
-#include &lt;ros/ros.h&gt;
-#include &lt;geometry_msgs/PoseWithCovarianceStamped.h&gt;
-#include &lt;move_base_msgs/MoveBaseAction.h&gt;
-#include &lt;actionlib/client/simple_action_client.h&gt;
+#include <ros/ros.h&gt;
+#include <geometry_msgs/PoseWithCovarianceStamp.h>
+#include <move_base_msgs/MoveBaseAction.h>
+#include <actionlib/client/simple_action_client.h>
 
-typedef actionlib::SimpleActionClient&lt;move_base_msgs::MoveBaseAction&gt; MoveBaseClient;
+typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction>MoveBaseClient;
 
 struct MyPose {
   double x;

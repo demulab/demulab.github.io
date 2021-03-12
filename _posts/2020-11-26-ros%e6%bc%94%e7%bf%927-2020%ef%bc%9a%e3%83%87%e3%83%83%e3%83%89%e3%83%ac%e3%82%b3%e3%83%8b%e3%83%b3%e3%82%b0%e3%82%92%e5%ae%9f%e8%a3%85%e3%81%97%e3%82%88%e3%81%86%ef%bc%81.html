@@ -1,0 +1,251 @@
+---
+layout: post
+title: ROS演習7-2020：デッドレコニングを実装しよう！
+date: 2020-11-26 06:53:27.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16384'
+  views: '157'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19673.html"
+---
+<p>デッドレコニングをRoombaに実装しましょう。</p>
+<ul>
+<li>ROSの座標系
+<ul>
+<li>ROSではロボットの進行方向がx軸、左方向がy軸、上方向がz軸の正方向です。回転方向は反時計周りが正(0~π[rad])、時計回りが負(0~-π[rad])となります。</li>
+</ul>
+</li>
+<li>テンプレートファイル</li>
+</ul>
+<pre class="brush:cpp;">// ファイル名　my_odom.cpp
+#include &lt;ros/ros.h&gt;  // rosで必要はヘッダーファイル
+#include &lt;geometry_msgs/Twist.h&gt; // ロボットを動かすために必要
+#include &lt;nav_msgs/Odometry.h&gt;
+#include &lt;tf/transform_broadcaster.h&gt;
+#include &lt;tf/transform_datatypes.h&gt;
+#include &lt;gazebo_msgs/ModelStates.h&gt; 
+#include &lt;sensor_msgs/JointState.h&gt;
+#include 
+
+using namespace std;
+
+// コールバック関数。並進、回転速度の表示。
+void cbVel(const geometry_msgs::Twist::ConstPtr&amp; vel) {
+  cout &lt;&lt; "Linear :" &lt;&lt; vel-&gt;linear.x &lt;&lt; endl;
+  cout &lt;&lt; "Angular:" &lt;&lt; vel-&gt;angular.z &lt;&lt; endl; } 
+
+// /odomトピックから位置posと姿勢poseを表示 
+void cbOdom(const nav_msgs::Odometry::ConstPtr&amp; msg) { 
+  ROS_INFO("Seq: %d", msg-&gt;header.seq);
+  ROS_INFO("/create1/odom Pos (x:%f, y:%f, z:%f)", msg-&gt;pose.pose.position.x,msg-&gt;pose.pose.position.y, msg-&gt;pose.pose.position.z);
+
+  tf::Quaternion q(msg-&gt;pose.pose.orientation.x, msg-&gt;pose.pose.orientation.y, msg-&gt;pose.pose.orientation.z, msg-&gt;pose.pose.orientation.w);  
+  // tf::Quaternion q(quat.x, quat.y, quat.z, quat.w);
+  tf::Matrix3x3 m(q);
+  double roll, pitch, yaw;
+  m.getRPY(roll, pitch, yaw);
+
+  ROS_INFO("/create1/odom Pose (roll:%f, pitch:%f, yaw:%f) ", roll, pitch, yaw);
+  ROS_INFO("Vel (Linear:%f, Angular:%f)", msg-&gt;twist.twist.linear.x,msg-&gt;twist.twist.angular.z);
+												  
+}
+
+// /gazebo/model_statesトピックから真の位置Pos(x,y,z)と姿勢Pose(roll, pitch ,yaw)を表示
+void cbModelStates(const gazebo_msgs::ModelStates::ConstPtr&amp; msg)
+{
+  ROS_INFO("Real Pos (x:%f, y:%f, z:%f)", msg-&gt;pose[2].position.x,msg-&gt;pose[2].position.y, msg-&gt;pose[2].position.z);
+
+  tf::Quaternion q(msg-&gt;pose[2].orientation.x, msg-&gt;pose[2].orientation.y, msg-&gt;pose[2].orientation.z, msg-&gt;pose[2].orientation.w);  
+  // tf::Quaternion q(quat.x, quat.y, quat.z, quat.w);
+  tf::Matrix3x3 m(q);
+  double roll, pitch, yaw;
+  m.getRPY(roll, pitch, yaw);
+
+  ROS_INFO("Real Pose (roll:%f, pitch:%f, yaw:%f) ", roll, pitch, yaw);
+												  
+}
+
+// cbMyOdom：この関数に自分のオドメトリを実装しよう！
+// /joint_statesトピックから左右のjoint(車輪回転軸)の位置（回転角度)[rad]を表示
+// 参考：Roombaの車輪直径0.078 [m]
+void cbMyOdom(const sensor_msgs::JointState::ConstPtr&amp; jointstate)
+{
+  double wheel_right_joint_pos = jointstate-&gt;position[0]; // 右車軸の位置[rad]
+  double wheel_left_joint_pos  = jointstate-&gt;position[1]; // 左車軸の位置[rad]
+
+  // 車軸の位置は積算される
+  ROS_INFO("Whell Pos (r:%f, l:%f)", wheel_right_joint_pos,wheel_left_joint_pos);
+}
+
+
+
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "my_odom");
+  ros::NodeHandle nh;
+
+  //subscriberの作成。トピック/cmd_velを購読する。
+  ros::Subscriber sub  = nh.subscribe("/create1/cmd_vel", 10, cbVel);
+  ros::Subscriber sub2 = nh.subscribe("/create1/odom", 100, cbOdom);
+  ros::Subscriber sub3 = nh.subscribe("/gazebo/model_states", 100, cbModelStates);
+  ros::Subscriber sub4 = nh.subscribe("/create1/joint_states", 100, cbMyOdom);
+  
+  
+  // コールバック関数を繰り返し呼び出す。
+  ros::Rate rate(100);
+
+  while (ros::ok()) {
+
+    
+    ros::spinOnce();
+    rate.sleep();
+  }
+  return 0;
+}
+</pre>
+<ul>
+<li>ファイルのダウンロード
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li><span style="font-size: 13.2px;">srcディレクトリへ移動する。</span>
+<ul>
+<li><span style="background-color: #f7f7f9; color: #dd1144; font-family: Monaco, Menlo, Consolas, 'Courier New', monospace; font-size: 12px; white-space: nowrap;">$ mkdir ~/src</span></li>
+<li><span style="background-color: #f7f7f9; color: #dd1144; font-family: Monaco, Menlo, Consolas, 'Courier New', monospace; font-size: 12px; white-space: nowrap;">$ cd ~/src</span></li>
+</ul>
+</li>
+<li>ダウンロードする。
+<ul>
+<li>学内
+<ul>
+<li><span style="background-color: #f7f7f9; color: #dd1144; font-family: Monaco, Menlo, Consolas, 'Courier New', monospace; font-size: 12px; white-space: nowrap;">$ git clone https://github.com/demulab/robot_programming2.git</span></li>
+</ul>
+</li>
+<li>学外
+<ul>
+<li><span style="background-color: #f7f7f9; color: #dd1144; font-family: Monaco, Menlo, Consolas, 'Courier New', monospace; font-size: 12px; white-space: nowrap;">$ git clone https://github.com/demulab/robot_programming2.git -c http.proxy=""</span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>~/catkin_ws/srcの下にコピーする。
+<ul>
+<li><span style="background-color: #f7f7f9; color: #dd1144; font-family: Monaco, Menlo, Consolas, 'Courier New', monospace; font-size: 12px; white-space: nowrap;">$ cp -r ~/src/robot_programming2/my_odom ~/catkin_ws/src/.</span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</li>
+<li>ビルドする
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build my_odom</code></li>
+</ul>
+</li>
+<li>gazeboでの実行</li>
+<li>
+<ul>
+<li>端末を３つ開き、各端末で以下のコマンドを実行する。</li>
+<li><code>$ roslaunch ca_gazebo create_empty_world.launch</code></li>
+<li><code>$ roslaunch ca_tools keyboard_teleop.launch</code></li>
+<li><code>$ rosrun my_odom  my_odom</code></li>
+<li>もう、一つ端末を開き、以下のコマンドでノードとトピックの関係を見てみましょう。
+<ul>
+<li><code>$ rqt_graph</code></li>
+</ul>
+</li>
+<li>以下のように表示されれば成功です。<br />
+<img role="presentation" src="{{ site.baseurl }}/assets/images/2020/11/SnapCrab_rqt_graph__RosGraph%20-%20rqt_2020-11-18_16-53-34_No-00.png" alt="" width="1080" /></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>演  習</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>準　備
+<ul>
+<li>ホームディレクトリの名前が日本語の場合はコマンド操作がやりづらいので以下のコマンドで英語に変更する。以下のウインドウが開くので[UpdateNames]をクリックすると英語名に変わる。
+<ul>
+<li><code>$ LANG=C xdg-user-dirs-gtk-update </code></li>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/SnapCrab_NoName_2019-11-19_14-26-6_No-00.png"><img class="aligncenter size-full wp-image-16384" src="{{ site.baseurl }}/assets/images/2020/11/SnapCrab_NoName_2019-11-19_14-26-6_No-00.png" alt="" width="648" height="517" /></a></li>
+</ul>
+</li>
+<li><code>$ cd ~/src/robot_programming2/fmt_world</code></li>
+<li><code>$ cp create_fmt_world.launch  ~/catkin_ws/src/create_autonomy/ca_gazebo/launch</code></li>
+<li><code>$ cp  fmt.world  ~/catkin_ws/src/create_autonomy/ca_gazebo/worlds</code></li>
+<li><code>$ cp -r fmt ~/.gazebo/models</code></li>
+<li><code>$ roslaunch ca_gazebo create_fmt_world.launch</code></li>
+<li>下のような建物とロボットが表示されたら終わり。右奥のボールがゴール。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/06/building.jpg"><img class="aligncenter size-large wp-image-14644" src="{{ site.baseurl }}/assets/images/2020/11/building-1024x617.jpg" alt="" width="800" height="482" /></a></li>
+</ul>
+</li>
+<li><strong>演　習（レポート２）</strong>
+<ul>
+<li>準備
+<ul>
+<li>以下のROS C++スタイルガイドを参考にRobotクラスを作ろう。
+<ul>
+<li><a href="http://wiki.ros.org/ja/CppStyleGuide">ROS C++ スタイルガイド - ROS Wiki - ROS.org</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> ウェイポイントナビゲーション</li>
+<li>
+<ul>
+<li>スタート地点からゴールまで進むプログラムを作ろう。ロボットが通過するウェイポイントとその地点での姿勢を配列として実装しなさい。ロボットはウェイポイントで停止してもしなくても良いが、指定された姿勢を取ること。</li>
+</ul>
+</li>
+<li>デッドレコニング
+<ul>
+<li>デッドレコニングをcbMyOdom関数に実装しよう。rvizの場合は/odomトピックと値を比較し、gazeboが動く場合はシミュレータ上の真の位置Real Posと比較しよう。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

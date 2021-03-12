@@ -1,0 +1,129 @@
+---
+layout: post
+title: e-gadgetやTJ3で地磁気センサHMC5883Lを使う方法１/3（セルフテスト）
+date: 2013-01-15 01:29:57.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup
+tags: []
+meta:
+  _edit_last: '2'
+  views: '6603'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/robocup/10156.html"
+---
+<p>ロボカップジュニアで良く使われているダイセン電子工業のe-gadgetやTJ3でハネウエルの地磁気センサモジュールHMC5883Lを使えるようにしましたので紹介します。PICを始めて使ったので間違い等があるかもしれません。ご指摘頂ければありがたいです。なお、ご使用される場合は自己責任でお願いします。試合に負けたり、損害や被害があった場合など、私は一切保証できません。<br />
+<!--more--></p>
+<p>なお、ストロベリーリナックスで販売しているHMC5883Lモジュールは電圧が3.3Vなのでe-gadgetやTJ3ではそのまま使えません。私は5Vで使える中国製のモジュールGY-271を使いました。現在、日本では販売していませんが（昨年末、アマゾンで購入）、検索すると中国の通販で見つかりますので、日本から購入できると思います。</p>
+<p>次の３ステップが必要です。<br />
+１． セルフテスト<br />
+２. キャリブレーション<br />
+３． 実際に使用する</p>
+<p>まず、ここではHMC5883Lに問題ないかセルフテストの方法を説明します。以下の関数をc:\Daisen\C-Style for e-Gadget\Build\Build_V120911\D_I2C.cのUINT get_dir(BYTE dno)と置き換えて保存してください。もとのget_dir関数は消さないでget_dir_org()などと名前を変えると良いでしょう。</p>
+<p>後は、C-styleを使いビルドし、ロボットへダウンロードして、STARTボタンを動かすとセルフテストが始まり、成功するとSUCCCEEDEDと表示されます。</p>
+<p>なお、セルフテストは毎回実施する必要はありません。購入時と方位の値がおかしいときにためせば良いと思います。</p>
+<p>次はキャリプレーションの方法を説明します。</p>
+<pre class="brush:cpp">// HMC5883L用のセルフテスト  by でむ
+// 地磁気センサx, y軸の値が243以上、575以下なら合格
+// 詳細はHMC5883Lのデータシートを参照
+UINT get_dir_self_test(BYTE dno) // セルフテスト　
+{
+	int init_dir, diff; // 初期角度, 差
+	int dir, i, data_no;
+	int x_min = 1000, x_max = -1000, y_min = 1000, y_max = -1000;
+	U_UINT dx,dy,dz;
+	BYTE adrs_write  = 0x3C; // I2C address 8bit write
+	BYTE adrs_read = 0x3D;   // I2C address 8bit read
+	float ave_x, ave_y;
+	static float counter = 0;
+
+	if ((dno == 1) || (dno == 2)) return 999;
+
+	lcd_putX(1, (ROMC *)  "SELF TEST BEGIN "); 
+	// 初期化
+	if (counter++ &#60; 5) {
+		gI2C_Buf&#91;0&#93; = 0x00; // Write CRA(00)
+		gI2C_Buf&#91;1&#93; = 0x71; // Positive Self test measurement 
+		if (i2c_send(adrs_write, 2) == false) return 999;
+
+		gI2C_Buf&#91;0&#93; = 0x01; // Write CRB(01)
+		gI2C_Buf&#91;1&#93; = 0xA0; // Gain 5 
+		if (i2c_send(adrs_write, 2) == false) return 999;
+
+		gI2C_Buf&#91;0&#93; = 0x02; // Write Mode (02)
+		gI2C_Buf&#91;1&#93; = 0x00; // Continuous 
+		if (i2c_send(adrs_write, 2) == false) return 999;
+
+		Delay1KTCYx(536);
+		return 999;
+	}
+
+	dx.W = 999; dy.W = 999;
+	set_Led(2,1);
+
+    for (i = 0; i &#60; 100; i++)
+	{
+		if (i2c_recv(adrs_read, 6) == false) return 999;
+
+		dx.H = gI2C_Buf&#91;0&#93;; // BYTE型、実はunsigned char. D_main.hで定義
+		dx.L = gI2C_Buf&#91;1&#93;;
+		dz.H = gI2C_Buf&#91;2&#93;;
+		dz.L = gI2C_Buf&#91;3&#93;;
+		dy.H = gI2C_Buf&#91;4&#93;;
+		dy.L = gI2C_Buf&#91;5&#93;;
+
+		if (dx.W == 999) continue;
+		if (dy.W == 999) continue;
+		if ((int) dx.W &#60; x_min) x_min = (int) dx.W;
+		if ((int) dx.W &#62; x_max) x_max = (int) dx.W;
+		if ((int) dy.W &#60; y_min) y_min = (int) dy.W;
+		if ((int) dy.W &#62; y_max) y_max = (int) dy.W;
+
+		myprintLCD2(2, dx.W, dy.W);
+
+		// ログを取る場合はコメントを外す。デバッグ用。
+		// log_serial((int) dx.W, (int) dy.W);
+
+		gI2C_Buf&#91;0&#93; = 0x03; // 最初のデータが格納されているデータレジスタ03へ指す
+		if (i2c_send(adrs_write, 1) == false) return 999; // 999はエラー
+
+		//Delay1KTCYx(536); //　67ms待つ。HMC5883Lは標準で毎秒15回データ取得
+		wait_ms(100); // 100ms待つ
+	}
+
+	lcd_putX(1, (ROMC *)  " SELF TEST END "); 
+	if (((243 &#60; x_min) &amp;&amp; (x_max &#60; 575)) &amp;&amp; ((243 &#60; y_min) &amp;&amp; (y_max &#60; 575)))
+		lcd_putX(2, (ROMC *) "*** SUCCEEDED ***");
+ 	else            
+		lcd_putX(2, (ROMC *) "***   FAILED  ***");
+
+	// myprintLCD2(1, x_min, x_max);
+	// myprintLCD2(2, y_min, y_max);
+	wait_ms(10000);
+	lcd_putX(1, (ROMC *)  "*** POWER OFF ***"); 
+	wait_ms(30000); // 30秒待つ
+
+	return (UINT) dir;
+}
+
+// ログを取るためにシリアルにデータを送付する関数。
+// コンピュータとロボットの接続し、C-styleを閉じ、tera termなど
+// を起動するとtera termにデータが表示される。そのログをtera term
+// で取得するとデータを記録できる。ボーレートは115200。
+void log_serial(int x, int y)
+{
+   char str&#91;16+1&#93;;
+   sprintf(str, (ROMC *)"%d, %d\n", x,y);
+   tx_puts(str);
+}
+
+</pre>

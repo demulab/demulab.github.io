@@ -1,0 +1,137 @@
+---
+layout: page
+title: 13. 簡単な制御
+date: 2008-10-10 11:14:29.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '13268'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode13"
+---
+<p>[caption id="" align="alignnone" width="320"]<img src="{{ site.baseurl }}/assets/images/2008/10/armMini.jpg" alt="３関節ロボットアーム（ソースコードはたった100行）" title="Robot Arm powered by Open Dynamics Engine" width="320" height="270" /> ３関節マニピュレータのシミュレータ　（ソースコードはたった100行)[/caption]</p>
+<p>ODE (Open Dynamics Engine) 初級講座の第１３回目です。</p>
+<p>今回は今までの知識を整理するために、簡単な３関節マニピュレータのプチシミュレータを作ってみましょう。これはODEを使うと<span style="color: #ff0000;"><strong>「たった１００行程度でこのようなシミュレータができるんです．」</strong></span>というプログラムなので衝突計算部分は省略しています．このロボットはキーボードで操作可能です． ロボットの第１関節はj（増加）又はf（減少）キーで，第２関節はd又はkキーで，第３関節はs又はlキーで動かすことができます。</p>
+<p><strong>速度＆比例制御</strong></p>
+<p>関節を制御する方法を説明します。ODEの関節にはモータが内蔵されています．このモータのトルクをコントロールする<span style="color: #0000ff;"><strong>トルク制御</strong></span>も可能ですが，シミュレータの安定性を考えるとモータの回転速度をコントロールする<span style="color: #0000ff;"><strong>速度制御</strong></span>がお勧めです．ここでは速度制御の実現法について説明します．</p>
+<p>速度制御の中でも色々ありますが，ここでは最も簡単な<span style="color: #0000ff;"><strong>P制御（比例制御）</strong></span>を説明します．これは目標値と現在値の差に比例して関節の角速度を変更する方法です。関節角度の現在値が目標値と離れている場合は大きな角速度を与え、目標値と同じ場合は角速度が０となり関節が停止します。また、現在値が目標値をとおり越した場合は、符号がマイナスになるため回転が反転し、現在値が目標値に近くなります。</p>
+<p>これを実現している関数がcontrolです。関節のパラメータdParamVelは目標角速度で、dParamFMaxはその角速度を実現するためにジョイントが発揮できる最大 トルクです。dParamFMaxを０に設定すると目標角速度を設定してもトルクが０なので関節は動いてくれません。</p>
+<p>では，ソースコードを次に紹介しましょう．</p>
+<p>過去のODE初級講座を理解されている方には簡単なので説明がほとんどいらないと思います．わからない箇所があればコメントに書き込んでください．補足説明をします。</p>
+<pre class="brush:cpp">//  sample13.cpp  3 DOF manipulator by   Kosei Demura  2006-2008
+#include "ode/ode.h"     // ODE
+#include "drawstuff/drawsutt.h"  // ODEの描画ライブラリ
+#define NUM 4         // リンク数(土台含む)
+
+dWorldID    world;       // 動力学計算世界
+dBodyID     link&#91;NUM&#93;;    // リンク　link&#91;0&#93;は土台
+dJointID      joint&#91;NUM&#93;;  // 関節    joint&#91;0&#93;は土台と地面を固定
+static double THETA&#91;NUM&#93; = { 0.0, 0.0, 0.0, 0.0}; // 関節目標角&#91;rad&#93;
+static double l&#91;NUM&#93;  = { 0.10, 0.90, 1.00, 1.00};  // リンク長&#91;m&#93;
+static double r&#91;NUM&#93;  = { 0.20, 0.04, 0.04, 0.04};  // リンク半径&#91;m&#93;
+
+void control() {  /***  P制御  ****/
+  static int step = 0;     // シミュレーションのステップ数
+  double k1 =  10.0,  fMax  = 100.0; // k1:比例ゲイン,  fMax：最大トルク&#91;Nm&#93;
+  printf("\r%6d:",step++);
+  for (int j = 1; j &#60; NUM; j++) {
+    double tmpAngle = dJointGetHingeAngle(joint&#91;j&#93;);  // 現在の関節角&#91;rad&#93;
+    double z = THETA&#91;j&#93; - tmpAngle;  // z: 残差=目標関節角－現在関節角
+    dJointSetHingeParam(joint&#91;j&#93;, dParamVel, k1*z); // 角速度の設定
+    dJointSetHingeParam(joint&#91;j&#93;, dParamFMax, fMax); // 最大トルクの設定
+  }
+}
+
+void start() { /*** 描画APIの初期化 ***/
+  float xyz&#91;3&#93; = {  3.04, 1.28, 0.76};   // 視点x, y, z　&#91;m&#93;
+  float hpr&#91;3&#93; = { -160.0, 4.50, 0.00};  // 視線(heading, pitch, roll)　&#91;°&#93;
+  dsSetViewpoint(xyz,hpr);               // 視点と視線の設定
+}
+
+void command(int cmd)  { /***  キー操作関数 ***/
+  switch (cmd) {
+    case ‘j‘:  THETA&#91;1&#93; += 0.05; break;  // jキーが押されるとTHETA&#91;1&#93;の角度が0.05&#91;rad&#93;増加する
+    case ‘f’:  THETA&#91;1&#93; -= 0.05; break;
+    case ‘j’:  THETA&#91;2&#93; += 0.05; break;
+    case ‘d’:  THETA&#91;2&#93; -= 0.05; break;
+    case ‘l’:  THETA&#91;3&#93; += 0.05; break;
+    case ’s’:  THETA&#91;3&#93; -= 0.05; break;
+  }
+
+  // 目標角度が関節可動域を越えないように制限する
+  if (THETA&#91;1&#93; &#60;   - M_PI)   THETA&#91;1&#93; =  - M_PI; // M_PI：円周率
+  if (THETA&#91;1&#93; &#62;     M_PI)    THETA&#91;1&#93; =    M_PI;
+  if (THETA&#91;2&#93; &#60;  -2*M_PI/3)  THETA&#91;2&#93; =  - 2*M_PI/3;
+  if (THETA&#91;2&#93; &#62;   2*M_PI/3)  THETA&#91;2&#93; =   2*M_PI/3;
+  if (THETA&#91;3&#93; &#60;  -2*M_PI/3)  THETA&#91;3&#93; =  - 2*M_PI/3;
+  if (THETA&#91;3&#93; &#62;   2*M_PI/3)  THETA&#91;3&#93; =   2*M_PI/3;
+}
+
+// シミュレーションループ。簡単にするため衝突検出に関するコードは省略。
+void simLoop(int pause) {
+  control();
+  dWorldStep(world, 0.02);
+  // ロボットの描画
+  dsSetColor(1.0,1.0,1.0); // 色の設定(r, g, b) 各値は0～1、ここでは白に設定
+  for (int i = 0; i &#60; NUM; i++ )　//　ロボットのリンクをカプセルで描画
+    dsDrawCapsuleD(dBodyGetPosition(link&#91;i&#93;), dBodyGetRotation(link&#91;i&#93;), l&#91;i&#93;, r&#91;i&#93;);
+}
+
+int main(int argc, char *argv&#91;&#93;) {
+  dsFunctions fn; // 描画関数
+  dMass mass;  // 質量パラメータ
+  double x&#91;NUM&#93; = {0.00}, y&#91;NUM&#93; = {0.00};  // 重心位置
+  double z&#91;NUM&#93;         = { 0.05, 0.50, 1.50, 2.55};
+  double m&#91;NUM&#93; = {10.00, 2.00, 2.00, 2.00};           // 質量
+  double anchor_x&#91;NUM&#93;  = {0.00}, anchor_y&#91;NUM&#93; = {0.00};
+  double anchor_z&#91;NUM&#93; = { 0.00, 0.10, 1.00, 2.00};//回転中心
+  double axis_x&#91;NUM&#93;  = { 0.00, 0.00, 0.00, 0.00};  //回転軸
+  double axis_y&#91;NUM&#93;  = { 0.00, 0.00, 1.00, 1.00};
+  double axis_z&#91;NUM&#93;  = { 1.00, 1.00, 0.00, 0.00};
+
+  fn.version = DS_VERSION;  fn.start   = &amp;start;
+  fn.step   = &amp;simLoop;      fn.command = &amp;command;
+  fn.path_to_textures = "../../drawstuff/textures";
+
+  dInitODE();  // ODEの初期化
+  world = dWorldCreate();  // 動力学計算世界の生成
+  dWorldSetGravity(world, 0, 0, -9.8);     // 重力設定
+
+  for (int i = 0; i &#60; NUM; i++) {       // リンクの生成と設定
+    link&#91;i&#93; = dBodyCreate(world);     // リンクの生成
+    dBodySetPosition(link&#91;i&#93;, x&#91;i&#93;, y&#91;i&#93;, z&#91;i&#93;); // 位置の設定
+    dMassSetZero(&amp;mass);      // 質量パラメータの初期化
+    dMassSetCappedCylinderTotal(&amp;mass,m&#91;i&#93;,3,r&#91;i&#93;,l&#91;i&#93;);  // リンクの質量計算
+   dBodySetMass(link&#91;i&#93;, &amp;mass);  // 質量の設定
+  }
+
+  joint&#91;0&#93; = dJointCreateFixed(world, 0); // 固定関節（土台と地面の固定）
+  dJointAttach(joint&#91;0&#93;, link&#91;0&#93;, 0);     // 固定関節の取付け
+  dJointSetFixed(joint&#91;0&#93;);               // 固定関節の設定
+  for (int j = 1; j &#60; NUM; j++) {
+    joint&#91;j&#93; = dJointCreateHinge(world, 0); // ヒンジ関節生成
+    dJointAttach(joint&#91;j&#93;, link&#91;j-1&#93;, link&#91;j&#93;); // 関節の取付け
+    dJointSetHingeAnchor(joint&#91;j&#93;, anchor_x&#91;j&#93;, anchor_y&#91;j&#93;,anchor_z&#91;j&#93;); //関節中心の設定
+    dJointSetHingeAxis(joint&#91;j&#93;, axis_x&#91;j&#93;, axis_y&#91;j&#93;, axis_z&#91;j&#93;); // 関節回転軸の設定
+  }
+  dsSimulationLoop(argc, argv, 640, 570, &amp;fn);　//　シミュレーションループ
+  dCloseODE();
+  return 0;
+}</pre>
+<p>なお、ソースコードは次からダウンロードできます。</p>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/sample13-120904.zip">サンプルプログラム１３</a></li>
+</ul>
+<p>おしまい．</p>

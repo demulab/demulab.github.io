@@ -1,0 +1,62 @@
+---
+layout: post
+title: ロボット自身の音声を認識しない方法
+date: 2019-08-12 14:51:23.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  views: '92'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_toc_novisible: '0'
+  update_level: high
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_read_time_novisible: '0'
+  the_review_enable: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/15996.html"
+---
+<p>クラウドなどの音声認識サーバーが常に機能している場合、ロボット自身の発話も音声認識されてしまい人との会話がうまくいかない場合があります。それを回避するためには、自身が発話しているときにはロボットのマイクをOFFにし、話し終わったらマイクをONにします。pythonのプログラム例を次のとおり。</p>
+<p>環境</p>
+<ul>
+<li>Ubuntu16.04</li>
+<li>Python 2.7</li>
+</ul>
+<p>コード</p>
+<pre class="brush:python;">
+def speak(self, sentence, sleep_time=3):
+import subprocess
+
+# 自分の声を音声認識しないように認識機能をstopする
+cmd = "/usr/bin/amixer set Capture toggle"
+subprocess.call(cmd.strip().split(" "))
+
+# 下のような発話するコードを書く
+self.tts_pub.publish(sentence)
+
+# 音声認識機能を再開する
+subprocess.call(cmd.strip().split(" "))
+</pre>

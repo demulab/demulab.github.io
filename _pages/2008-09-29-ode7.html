@@ -1,0 +1,161 @@
+---
+layout: page
+title: 7. ジョイント（関節）
+date: 2008-09-29 11:44:01.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '15083'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode7"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2008/09/sample3.jpg" alt=" " width="240" height="231" /></p>
+<p>ODE(Open Dynamics Engine)初級講座の７回目です。今回は，ボディ(剛体，body)を他のボディとくっつけるジョイント（関節）について説明します。</p>
+<p>ジョイントは我々の周りでは、折畳み携帯のヒンジやドアの蝶番に相当します。小難しくいうと、２つのボディの位置や姿勢をある一定の関係に保つ拘束がジョイントとなのです。ＯＤＥではジョイントと拘束を同じ意味で使っています。ジョイントをうまく使うと物体の運動を直線上に拘束させたり、円軌道に拘束させたりすることもできます。</p>
+<ul>
+<li><strong>ジョイントの使い方</strong></li>
+</ul>
+<ol>
+<li><span style="color: #cc0000;"><strong>***ジョイントの生成　　　　　　dJointCreate***()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントとボディの結合　 dJointAttach()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントの中心点を設定　dJointSet***Anchor()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントの回転軸を設定　dJointSet***Axis()</strong></span></li>
+</ol>
+<p>上で***にはジョイントのタイプが入ります。タイプにはHinge(ヒンジ）、Ball(ボール)、Slider(スライダー)、Universal(ユニバーサル)等があります。詳しい使い方は<a href="http://opende.sourceforge.net/mediawiki-1.6.10/index.php/Manual_(Introduction)">Manual</a>（英語）や<a href="http://demura.net/robotsimu">ODE本</a>を参照してください。</p>
+<ul>
+<li><strong>ジョイントのパラメータ設定</strong></li>
+</ul>
+<ol>
+<li><strong>可動域の設定</strong><br />
+<strong><span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamLoStop, 可動域の下限）;</span></strong><br />
+<strong><span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamHiStop, 可動域の上限）;</span></strong></li>
+<li><strong>目標角速度とそれを実現するための最大トルクの設定<br />
+<span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamVel, 目標角速度）;</span></strong><strong><br />
+<span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamFMax, 最大トルク）;</span></strong></li>
+</ol>
+<p>パラメータとしては、関節可動域の下限を示すdParamLoStop、上限を示すdParamHiStop、角速度（ヒンジジョイント）または速度(直動式関節）を示すdParamVel、最大トルクを示すdParaFMaxなどがあります。なお、ODEでは関節にモータが標準で組み込まれているので、dParamVelやdParaFMaxを指定すると関節が動きます。</p>
+<ul>
+<li><strong>サンプルプログラム</strong></li>
+</ul>
+<p>さっそく上図に示している玉と円柱をヒンジジョイントで結合しているオブジェクトがバウンドするソースコードを以下に示します。なお、前回までと同じ関数や宣言は省略しています。</p>
+<p><strong><!--more--></strong></p>
+<pre class="brush:cpp">// sample7.cpp  by でむ 2006-2008
+#ifdef  dDOUBLE
+#define dsDrawSphere dsDrawSphereD   // 単精度と倍精度の描画関数に対応するおまじない #define dsDrawCapsule  dsDrawCapsuleD
+#endif
+typedef struct {
+  dBodyID body;   // 　ボディ（剛体）
+  dGeomID geom;　//   ジオメトリ（形状）
+  dReal   radius,　length,　mass;　// 半径&#91;m&#93;、　長さ&#91;m&#93;、　質量&#91;kg&#93;
+ } myLink;
+myLink ball, pole;
+
+ // simLoopはこのソースではわからないがwhileループに入っていて、シミュレーションの各ステップで実行される。
+static void simLoop (int pause)
+{
+  const dReal *pos1,*R1,*pos2,*R2;　// 配列へのポインタが代入される
+  dSpaceCollide(space,0,&amp;nearCallback); 　// 衝突検出計算
+  dWorldStep(world,0.01);　// 動力学計算を１ステップ(ここでは0.01秒）進める
+  dJointGroupEmpty(contactgroup);       // 　接触点グループの後始末
+  dsSetColor(1.0,0.0,0.0);　       // 赤色の設定
+  pos1 = dBodyGetPosition(ball.body);　// pos1（位置）は配列のポインター
+  R1   = dBodyGetRotation(ball.body);　//  回転行列の取得
+  dsDrawSphere(pos1,R1,ball.radius);　// 球の描画    // 円柱の描画
+  pos2 = dBodyGetPosition(pole.body);　// 位置の取得
+  R2   = dBodyGetRotation(pole.body);　// 姿勢の取得
+  dsDrawCapsule(pos2,R2,pole.length,pole.radius);　// カプセルの描画
+ }
+
+// オブジェクトの作成
+void createBallPole() {
+  dMass m1;
+  dReal x0 = 0.0, y0 = 0.0, z0 = 2.5;    //玉
+  ball.radius = 0.2;
+  ball.mass   = 1.0;
+  ball.body = dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetSphereTotal(&amp;m1,ball.mass,ball.radius);
+  dBodySetMass(ball.body,&amp;m1);
+  dBodySetPosition(ball.body, x0, y0, z0);
+  ball.geom = dCreateSphere(space,ball.radius);
+  dGeomSetBody(ball.geom,ball.body);
+
+  // 　カプセル
+  pole.radius = 0.025;
+  pole.length = 1.0;
+  pole.mass   = 1.0;
+  pole.body =  dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetCapsuleTotal(&amp;m1,pole.mass,3,pole.radius,pole.length);
+  dBodySetMass(pole.body,&amp;m1);
+  dBodySetPosition(pole.body, x0, y0, z0 - 0.5 * pole.length);
+  pole.geom =  dCreateCapsule(space,pole.radius,pole.length);
+  dGeomSetBody(pole.geom,pole.body);
+
+   // ヒンジジョイント
+  joint = dJointCreateHinge(world, 0);　　　　// ヒンジジョイントの生成
+  dJointAttach(joint, ball.body,pole.body);　// 玉と円柱のボディをジョイントで結合
+  dJointSetHingeAnchor(joint, x0, y0, z0 - ball.radius);　// ヒンジのアンカー(中心点）を設定
+  dJointSetHingeAxis(joint, 1, 0, 0);　　// ヒンジの回転軸ベクトルを設定(1,0,0)
+ }
+
+ int main (int argc, char **argv)
+ {
+   setDrawStuff();　　// 描画関数の設定
+   dInitODE();       // ODEの初期化
+   world = dWorldCreate();　// 動力学ワールドの生成
+   space = dHashSpaceCreate(0);　// 衝突計算スペースの生成
+   contactgroup = dJointGroupCreate(0);　// 接触点グループの生成
+   dWorldSetGravity(world,0,0,-9.8);       // 重力加速度の設定
+   ground = dCreatePlane(space,0,0,1,0);   // 地面用平面ジオメトリの生成
+   createBallPole();　// 玉とカプセルの生成
+   dsSimulationLoop (argc,argv,352,288,&amp;fn);  // シミュレーションループ
+   dWorldDestroy (world);　// ワールドの破壊
+　 dCloseODE();  // ODEの終了
+   return 0;
+ }</pre>
+<p>この例では玉と円柱のボディをヒンジジョイントで結びつけています。</p>
+<p>ではソースコードを読みましょう。createBallandPall関数ではまず玉を作り、その後、円柱を作り、それからヒンジジョイントを dJointCreateHinge()で 生成し、dJointAttach()で２つのボディをヒンジジョイントで結合します。その後のdSetHingeAnchor()はジョイントの回転中 心点の位置を設定し、dJointSetHingeAxis()で回転軸ベクトル を設定します。この例では回転軸ベクトルは(1,0,0)なのでｘ軸方向となります。詳しくはマニュアルを参照。</p>
+<p>これでジョイントの生成は終わりです。sample7は簡単のためにジョイントのパラメータを設定しませんでしたが、可動域や最大トルク、最大角速度の設定なども可能です。次からサンプルプログラムをダウンロードして遊んでください。</p>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2008/09/sample7-120904.zip">サンプルプログラム７</a></li>
+</ul>
+<p>なお、説明でわかりずらい箇所や質問があればコメントを投稿してください。</p>
+<p><strong><strong>今回登場したAPI</strong></strong></p>
+<ul>
+<ul>
+<li><strong> <strong>void dJointAttach(dJointID joint, dBodyID body1, dBodyID dBody2</strong>)<br />
+剛体body1とbody2にジョイントjointを取り付ける</strong></li>
+</ul>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<ul>
+<li><strong><strong>dJointID dJointCreateHinge(dWorldID world, dJointGroupID)</strong><br />
+worldにヒンジジョイントを生成し、そのＩＤ番号を返す。dJointGroupIDには0を入れる。</strong></li>
+</ul>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<ul>
+<li><strong><strong>void dJointSetHingeAnchor(dJointID joint, dReal x, dReal y, dReal z)</strong><br />
+ヒンジジョイントの回転軸の中心点(x,y,z)を設定する。</strong></li>
+</ul>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<li><strong><strong> void dJointSetHingeAxis(dJointID joint, dReal x, dReal y, dReal z)</strong><br />
+ヒンジジョイントの回転軸ベクトル(x,y,z)を設定する。</strong></li>
+</ul>

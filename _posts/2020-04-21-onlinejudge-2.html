@@ -1,0 +1,102 @@
+---
+layout: post
+title: OnlineJudge ：プログラミング問題をオンラインで採点するオンラインジャッジのインストールと実行
+date: 2020-04-21 18:13:10.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  sns_image_url: ''
+  the_page_memo: ''
+  _custom_js: ''
+  _custom_css: ''
+  the_page_no_amp: '0'
+  redirect_url: ''
+  the_review_rate: '5'
+  the_review_enable: '0'
+  update_level: high
+  the_page_toc_novisible: '0'
+  the_page_read_time_novisible: '0'
+  page_type: default
+  the_page_ads_novisible: '0'
+  the_page_canonical_url: ''
+  the_page_nofollow: '0'
+  the_page_noindex: '0'
+  the_page_meta_keywords: ''
+  the_page_meta_description: ''
+  the_page_seo_title: ''
+  views: '481'
+  _thumbnail_id: '15736'
+  _edit_last: '2'
+  the_review_name: ''
+  the_review_type: Product
+  the_page_main_category: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/17826.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/04/DOJ-Home-Google-Chrome_2019-4-18_15-25-41_No-00.png"><img class="aligncenter size-full wp-image-15736" src="{{ site.baseurl }}/assets/images/2020/04/DOJ-Home-Google-Chrome_2019-4-18_15-25-41_No-00.png" alt="" width="1133" height="521" /></a></p>
+<p>オンラインジャッジとはプログラミングの問題をオンラインで採点するシステム。競技プログラミングや教育にも使われています。日本では<a href="http://judge.u-aizu.ac.jp/onlinejudge/index.jsp?lang=ja">Aizu Online Judge</a>が有名ですね。</p>
+<p>２年前からOnline Judgeサーバーを立ててプログラミングの授業で運用しているので、本記事はそのメモ的な記事です。２年前にオンラインジャッジのオープンソース版をいろいろ探していましたが、その当時はなかなか良いものがなく、最終的に中国の青島大学が開発しているオープンソース<a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge2.0</a>を行きつきました。ライセンスはMIT。Dockerを使っているのでインストールはとても簡単です。</p>
+<p>なお、オープンソースとはいえ、私自身がソースコードを全て読んだわけではないので、セキュリティを保証するものではありません。このソフトを使い生じたあらゆる損害等を補償できません。あくまで、自己責任でお使いください。私はファイアウォール内で授業期間だけ運用しています。</p>
+<ul>
+<li><strong>参考サイト</strong>
+<ul>
+<li>Github: <a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge 2.0</a></li>
+<li>ドキュメント：<a href="https://docs.onlinejudge.me/">https://docs.onlinejudge.me/</a></li>
+</ul>
+</li>
+<li><strong> 準備</strong>
+<ul>
+<li>サーバー用のLinux PC (ubuntu 18.04)を準備</li>
+<li>学内用の固定IPをもらう</li>
+</ul>
+</li>
+<li><strong><a href="https://github.com/QingdaoU/OnlineJudgeDeploy/tree/2.0">インストール(Linux)</a></strong>
+<ul>
+<li><span style="color: #ff0000;"><strong>以下の作業は学内のファイアウォール内だと何故か失敗するので、インストール作業は学外ネットワークで実施すること。</strong></span></li>
+<li> 依存関係のインストール
+<ul>
+<li><code>$ sudo apt-get update &amp;&amp; sudo apt-get install -y vim python3-pip curl git</code></li>
+<li><code>$ pip3 install --upgrade</code></li>
+<li><code>$ pip install docker-compose</code></li>
+</ul>
+</li>
+<li>Dockerのインストール
+<ul>
+<li><code>$ sudo curl -sSL get.docker.com | sh</code></li>
+</ul>
+</li>
+<li>OnlineJudgeのインストール
+<ul>
+<li><code>$ cd</code></li>
+<li><code>$ mkdir src</code></li>
+<li><code>$ cd src</code></li>
+<li><code>$ git clone -b 2.0 https://github.com/QingdaoU/OnlineJudgeDeploy.git &amp;&amp; cd OnlineJudgeDeploy</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サービス開始</strong>
+<ul>
+<li>次のコマンドを実行するだけ。各種ファイルのダウンロードに少し時間がかかる。私の環境で10分程度かかった。
+<ul>
+<li><code>$ docker-compose up -d</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p style="text-align: right;">終わり</p>

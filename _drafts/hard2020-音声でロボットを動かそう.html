@@ -1,0 +1,109 @@
+---
+layout: post
+title: HARD2020：音声でロボットを動かそう
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  views: '9'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>この記事はHARD2020（Home AI Robot Development)ワークショップ用です。 本記事では音声を使いロボットを動かすプログラムを作ります。</p>
+<p><strong>ソースコード</strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>実　行</strong></p>
+<ul>
+<li>シミュレータの起動
+<ul>
+<li>端末を開き、以下のコマンドを実行してシミュレータGazeboを起動する。
+<ul>
+<li><code>$ roslaunch ca_gazebo create_empty_world.launch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> 音声認識ノードの起動
+<ul>
+<li>Ubuntu端末を開き、以下のコマンドを実行してrwt_speech_recognitionノードを起動する
+<ul>
+<li><code>$ roslaunch rwt_speech_recognition rwt_speech_recognition.launch</code></li>
+</ul>
+</li>
+<li>WindowsのChromeブラウザの起動して、以下のURLにアクセスする。
+<ul>
+<li> <a href="http://localhost:8000/rwt_speech_recognition/">http://localhost:8000/rwt_speech_recognition/</a></li>
+<li>[English]を選択し、[Continuous]モードにして、[Start]を押して音声認識をスタートする。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>音声合成ノードの起動
+<ul>
+<li>Windowsのエクスプローラーで以下のファイルをダブルクリックしてPulseAudioサーバーを起動する。ネイティブUbuntuはこの作業は必要ない。
+<ul>
+<li>C:\WSL\pulseaudio-1.1\bin\pulseaudio.exe</li>
+</ul>
+</li>
+<li> Ubuntu端末を開き、次のコマンドを実行して音声合成ノードpicottsを起動する。
+<ul>
+<li><code>$ rosrun picotts picotts.exe</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>音声命令ノードvoice_cmdの起動
+<ul>
+<li>Ubuntu端末を開き、次のコマンドを実行して音声命令ノードを起動する。
+<ul>
+<li><code>$ rosrun voice_cmd voice_cmd.py</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>ハンズオン</strong></p>
+<ul>
+<li></li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

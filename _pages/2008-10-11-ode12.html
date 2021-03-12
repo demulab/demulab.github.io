@@ -1,0 +1,67 @@
+---
+layout: page
+title: 12. Friction
+date: 2008-10-11 15:03:25.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1924'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode12"
+---
+<p>&nbsp;</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/sample12.jpg"><img src="{{ site.baseurl }}/assets/images/2008/10/sample12.jpg" alt="" title="sample12" width="400" height="320" class="alignnone size-full wp-image-2175" /></a></p>
+<p>This is the 12th ODE (Open Dynamics Engine) tutorial.</p>
+<p style="margin: 0px 0px 15px;">This tutorial explains a friction. Many people have already learned the friction in high school. The friction model is the following equation.</p>
+<p style="margin: 0px 0px 15px;">| fT | &lt;= μ | fN |</p>
+<p style="margin: 0px 0px 15px;">Where, fN is the normal direction,  fT is a tangential force vector, and  μ is the coefficient of friction. The equation express the friction cone,  fN vector is an axis of the cone and the vertex is the contact point.  If the composed vector of fT and fN is inside the friction cone, there is no slip at the contact point.  Slip is occered if the composed vector is outside of the friction cone.</p>
+<p style="margin: 0px 0px 15px;">ODE adopts approximaitons of the coulomb friction model. ODE has two models, such as the constant force limit model and the friction pyramid approximation model. The default model is the constant force limit model. Please select the friction pyramid approximation model, if collisions between an object and the ground are very important for the simulation.</p>
+<p style="margin: 0px 0px 15px;"><strong>1. Constant force limit</strong><br />
+The  coefficient of friction  μ　is modeled as of the maximum friction model. This is not accurate physics model, it is, however, computational cost is the lowest.</p>
+<p style="margin: 0px 0px 15px;"><strong>2. Friction pyramid approximation</strong><br />
+The friction cone is modeled as the friction pyramid. This model is more accurate compared than the constant force limit. If you want to use this model, you must set the dContactApprox1 flag.</p>
+<p style="margin: 0px 0px 15px;">The following program shows how to set the friction model. In line 17, if a geometry is box[0].geom,  the dContactApprox1 flag is set.  Otherwise, the constant force limit modes is adopted.</p>
+<p style="margin: 0px 0px 15px;">In the sample program, gradually increasing the angle of the slope, the two boxes begin to slip at the different angle. Coefficient of friction is set to 1, so, theoretically the box begins to slide at 45 degree. The friction pyramid approximate model (the red box on the left) begins to slip at about 45 degrees, and the contact force limit model begins to slip more low angle.</p>
+<p style="margin: 0px 0px 15px;"><a style="color: #990000; text-decoration: none;" href="http://demura.net/downloads/odesample/sample12-110105.zip">You can download the sample program, sample12.cpp (sample12-110105.zip), from here.</a> Please try to enjoy it.</p>
+<pre class="brush:cpp">static void nearCallback(void *data, dGeomID o1, dGeomID o2)
+{
+  const int N = 10;
+  dContact contact&#91;N&#93;;
+  if (((o1 == ground) &amp;&amp; (o2 == slope )) ||  ((o1 == slope)  &amp;&amp; (o2 == ground))) return;
+
+  int isGround = ((ground == o1 || slope == o1)  || (ground == o2 || slope == o2));
+  int n =  dCollide(o1, o2, N, &amp;contact&#91;0&#93;.geom, sizeof(dContact));
+
+  if (isGround)  {
+    for (int i = 0; i &#60; n; i++) {
+      if ((o1 == box&#91;0&#93;.geom) || (o2 == box&#91;0&#93;.geom)) {
+         // friciton: friction pyramid model
+         contact&#91;i&#93;.surface.mode = dContactApprox1|dContactSoftERP|dContactSoftCFM;
+      }
+      else {
+         // friction: constant force limit model　
+         contact&#91;i&#93;.surface.mode = dContactSoftERP|dContactSoftCFM;
+      }
+
+      contact&#91;i&#93;.surface.mu   = 1.0; // dInfinity;
+      contact&#91;i&#93;.surface.soft_erp = 1.0; //1.0;
+      contact&#91;i&#93;.surface.soft_cfm = 1e-10;
+      dJointID c = dJointCreateContact(world, contactgroup, &amp;contact&#91;i&#93;);
+      dJointAttach(c,dGeomGetBody(contact&#91;i&#93;.geom.g1), dGeomGetBody(contact&#91;i&#93;.geom.g2));
+    }
+  }
+}</pre>
+<p>That's all. See you !</p>
+<p>demu</p>

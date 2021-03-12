@@ -1,0 +1,359 @@
+---
+layout: post
+title: 'Raspberry Pi4: ROS2 DashingでRoombaを動かそう！'
+date: 2020-05-09 21:27:58.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '716'
+  _thumbnail_id: '18072'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/18004.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/roomba.jpg"><img class="aligncenter size-full wp-image-18072" src="{{ site.baseurl }}/assets/images/2020/05/roomba.jpg" alt="" width="960" height="739" /></a><br />
+ROS2でRoombaを動かす情報がほとんどないので、本記事は近藤豊さんの以下の書籍、並びにYudai Sadakuniの記事とgithubを参考にした。近藤さんの書籍ではROS2 Crystalを対象としていたためか、ROS2 Dashingでは記事のとおり作業を行ってもできなかった。Sadakuniさんの記事はDashingに対応しているのでそのまま実行できた。ROS2は情報が少ないので先人の偉業に感謝。</p>
+<p><strong>参考資料</strong></p>
+<ul>
+<li><a href="https://gihyo.jp/book/2019/978-4-297-10742-0">ROS2ではじめよう次世代ロボットプログラミング、近藤豊著</a></li>
+<li><a href="https://qiita.com/YudaiSadakuni/items/c30b46e6d4684fec7ed7">ROS2でルンバを動かすまで、Yudai Sadakuni</a></li>
+<li><a href="https://github.com/Sadaku1993/create_autonomy">ROS 2.0 driver for iRobot Create 1 and 2</a></li>
+<li><a href="https://index.ros.org/doc/ros2/">ROS2 Documentation, ROS Index, Open Robotics</a></li>
+</ul>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Raspberry Pi4 タイプB 4GB</li>
+<li>Ubuntu18.04</li>
+<li>ROS2 Dashing Diademata</li>
+<li>Roomba 600シリーズ
+<ul>
+<li>本記事では3万円弱で購入できる606で実行した。本記事で使用するCreate_autonomyパッケージは800シリーズまで対応しているので、そのシリーズまで大丈夫だと思うが未検証。なお、900シリーズ以上はRoombaからシリアルポートがなくなり、Create_autonomyパッケージも対応していないので使えない。</li>
+</ul>
+</li>
+<li>Roomba通信ケーブル
+<ul>
+<li>Pi4とRoombaを接続するケーブル。以下を参考に自作するか、ここから購入する。本記事では2011年に購入したルンバ研究開発キットに付属していた通信ケーブルを使っている。
+<ul>
+<li>自作：<a href="https://cvl-robot.hateblo.jp/entry/2017/08/28/173943">ルンバの制御用USBシリアルケーブルを綺麗に作りたいときのメモ、cvl-robogt's diary</a></li>
+<li>購入：<a href="https://www.amazon.co.jp/EZSync-USB-to-DIN%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%ABfor-Roomba%E3%80%81%E4%BD%9C%E6%88%902/dp/B06XDPMY4Z">USB to DINシリアルケーブルfor Roomba、作成2　(5431円)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>モバイルバッテリ
+<ul>
+<li>10000mAhだとPi4の負荷により変わるが数時間は持つ。今、Pi4でこのブログを書いているが電流は0.8Aほど。</li>
+</ul>
+</li>
+<li>SONY DualShock4 (DS4)コントローラ</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>準備
+<ul>
+<li>colconビルドシステムのインストール</li>
+<li>$ sudo apt install python3-colcon-common-extensions</li>
+</ul>
+</li>
+<li> ワークスペースの生成。ROS2ではcatkinからcolconにビルドシステムが変わっている。
+<ul>
+<li>$ <code>cd</code></li>
+<li>$ <code>mkdir -p ros2/src</code></li>
+</ul>
+</li>
+<li>libcreate
+<ul>
+<li>インストール
+<ul>
+<li>Create_autnomyはlibcreateを使うのでまずこれをインストールする。
+<ul>
+<li>$ <code>cd  ~/ros2/src</code></li>
+<li>$ <code>git clone https://github.com/AutonomyLab/libcreate</code></li>
+</ul>
+</li>
+<li>colconでビルドするためにワークスペースのルート(この場合ros2）へ以下のコマンドで移動する。なお、ros2の前の「~」(チルダ)はホームディレクトリの意味。
+<ul>
+<li>$ <code>cd ~/ros2</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ <code>colcon build</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> create_autonomy
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>インストール
+<ul>
+<li>$ <code>cd ~/ros2/src</code></li>
+<li>$ <code>git clone https://github.com/Sadaku1993/create_autonomy.git</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ <code> cd ~/ros2</code></li>
+<li>$ <code>colcon build</code></li>
+<li>colconのビルドが成功したら、出力 (実行可能ファイルやライブラリ)はinstallディレクトリに保存される。それを使うためにはpathに追加する必要があり、以下のシェルスクリプトを実行しなければならない。sourceコマンドは引数のファイルを読み込んで現在のシェル環境で実行する。sourceコマンドの代わりに". "(ピリオド )でも良い。参考文献の公式ドキュメントでは"."を使っているのがあまりお目にかからないのでここではsourceに変更した。
+<ul>
+<li>$ <code> source install/setup.bash</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>設　定</strong></p>
+<ul>
+<li>udev
+<ul>
+<li>Linuxはデバイスをファイルとして扱い、Pi4とRoombaを通信するときは/dev/ttyUSB0。USB-Serial変換ICでttyUSBではなくttyACMの場合もあるり、ttyUSBの後の番号は他の接続機器により0ではない場合もある。一般ユーザはデバイスファイルを扱えないのでパーミッションを変更する必要があるがUSBを接続する度に変更するのは面倒なのでudevを設定する。</li>
+<li>まず、Pi4とroombaを通信ケーブルで接続する。</li>
+<li>次に、以下のコマンドでデバイスを確認する。本記事で使用しているUSB-Serial変換用ICはFuture Technology Devices Internatinal社のFT232だとわかる。Future Technologyの左の数字0403はベンダーID、6001はプロダクトIDなのでメモしておく。
+<ul>
+<li>$ lsusb</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/udev1.png"><img class="aligncenter size-full wp-image-18041" src="{{ site.baseurl }}/assets/images/2020/05/udev1.png" alt="" width="579" height="188" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>/etc/udev/rules.d/77-roomba.rulesというファイルをつくり、以下を保存する。ここで、ベンダーIDは上でメモったベンダーID、プロダクトIDも同様な数字を入れる。この例では、ベンダーIDは0403、プロダクトIDは6001になる。
+<ul>
+<li><code>KERNEL=="ttyUSB*", ATTRS{idVendor}=="ベンダーID", ATTRS{idProduct}=="プロダクトID", GROUP="dialout", MODE="0666"</code></li>
+</ul>
+</li>
+<li>Room通信ケーブルを抜き差しするとudevの設定が反映される。確認はls -l デバイスファイル名でパーミッション設定を確認する。この例だと、上がケーブルを抜き差しする前で、下が後。すべてのユーザに対してrw（読み書き）可能となっていることがわかる。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/udev2.png"><img class="aligncenter size-full wp-image-18045" src="{{ site.baseurl }}/assets/images/2020/05/udev2.png" alt="" width="495" height="128" /></a></p>
+<p>&nbsp;</p>
+<p><strong>Roombaを動かそう！</strong></p>
+<ul>
+<li>Roombaを動かすために次のlaunchファイルを起動する。
+<ul>
+<li>$  ros2 launch roomba_600_driver roomba_600_driver.launch.py</li>
+<li>以下のエラーがでるが気にしないで次に進む。作者が今後修正の予定
+<ul>
+<li>[ca_driver-1] [ERROR] [ca_driver]: [CREATE] Unknown mode detected</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>前進
+<ul>
+<li>ROSではトピック/cmd_velに速度指令値を設定して、配信(pub)するだけでロボットは動く。ここで、geometry_msgs/Twistは速度指令値の型、'{linear: {x: 0.2}, angular: {z: 0.0}}'が指令値で、linearは並進速度(x軸方向に0.2m/s)、angularは角速度(z軸まわりに0 rad/s)、オプション-rは配信する周期[Hz]デフォルトは1Hzなので動きがガタつくのでここでは100Hz、10ms周期にしている。
+<ul>
+<li>$ <code>ros2 topic pub /cmd_vel geometry_msgs/Twist '{linear: {x: 0.2}, angular: {z: 0.0}}' -r 100</code></li>
+</ul>
+</li>
+<li>以下のコマンドで調べることができる。
+<ul>
+<li>$ <code>ros2 topic  pub -h</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/ros2-help.png"><img class="aligncenter size-full wp-image-18047" src="{{ site.baseurl }}/assets/images/2020/05/ros2-help.png" alt="" width="628" height="608" /></a></p>
+<ul>
+<li>teleoopで動かそう
+<ul>
+<li>いちいちコマンドを打っていてはRoombaをうまく制御できないので、キーボードを使って動かしてみる。</li>
+<li>teleop_toolsをgithubからクローンする。
+<ul>
+<li>$ git clone https://github.com/ros-teleop/teleop_tools.git -b dashing-devel</li>
+</ul>
+</li>
+<li>ソースコードの改変
+<ul>
+<li>Create_Autonomyとトピック名が違いそのままでは動かないので、ここではソースコードを改変する。速度もRoombaに合わせて遅くする。</li>
+<li>/ros2/src/teleop_tools/key_teleop/key_teleop/key_teleop.pyの257〜260行目を以下のように変える。トピック名の'key_vel'を'cmd_vel'、周期や速度を変更している。<br />
+<code>self._pub_cmd = self.create_publisher(Twist, 'cmd_vel')<br />
+self._hz = self.declare_parameter('hz', 100).value<br />
+self._forward_rate = self.declare_parameter('forward_rate', 0.1).value<br />
+self._backward_rate = self.declare_parameter('backward_rate', 0.1).value<br />
+self._rotation_rate = self.declare_parameter('rotation_rate', 0.25).value</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ cd ~/ros2</li>
+<li>$ colcon build</li>
+<li>$ source install/setup.bash</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>次のコマンドを実行する
+<ul>
+<li>$ <code>ros2 run key_teleop key_teleop</code></li>
+<li>キーボードの矢印キーで操作できる。止めるときは'q'キーを押す。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Bluetoothの設定</strong></p>
+<ul>
+<li>Pi4のUbuntu18.04の場合はそのままではBluetoothが使えないので必要なパッケージをインストールする。なお、Futaka TatsuyaさんのQiitaを参考にした。
+<ul>
+<li><a href="https://qiita.com/fudekun/items/96ef164098c3c4e39b72">ARMのUbuntu Server 18.04でBluetoothを使う(for Raspberry Pi), Futaka Tatsuya</a></li>
+</ul>
+</li>
+<li>パッケージのインストール
+<ul>
+<li>$ sudo apt install pi-bluetooth bluetooth bluez</li>
+<li>$ sudo systemctl enable bluetooth</li>
+<li>$ sudo reboot</li>
+<li>再起動後に以下のコマンドを実行してコントローラが認識されていれば成功。
+<ul>
+<li>$ sudo  bluetoothctl</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/bluetooth.png"><img class="aligncenter size-full wp-image-18059" src="{{ site.baseurl }}/assets/images/2020/05/bluetooth.png" alt="" width="572" height="113" /></a></p>
+<p><strong>SONY DualShock4 (DS4)コントローラの設定( Bluetooth)</strong></p>
+<ul>
+<li>以下のサイトを参照した。
+<ul>
+<li><a href="https://github.com/chrippa/ds4drv">ds4drv</a></li>
+</ul>
+</li>
+<li>ds4drvドライバのインストール。ds4drvはLinuxのSONY DualShock 4 用ドライバ。
+<ul>
+<li>python2のパッケージ管理システムpipをインストールする。
+<ul>
+<li>sudo apt install python-pip</li>
+</ul>
+</li>
+<li>DS4のドライバをインストールする。
+<ul>
+<li>sudo pip install ds4drv</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DS4とPi4のペアリング
+<ul>
+<li> DS4をPi4の近くに置く。</li>
+<li> ds4drvの起動
+<ul>
+<li>$ sudo ds4drv</li>
+<li>以下のように表示される。<br />
+[info][controller 1] Created devices /dev/input/js0 (joystick) /dev/input/event8 (evdev)<br />
+[info][bluetooth] Scanning for devices</li>
+</ul>
+</li>
+<li>ペアリング
+<ul>
+<li>DS4左上のSHAREボタンとDSボタンを同時に5秒程度長押しする。LEDが白く点滅したらボタンから手を話す。</li>
+<li>LEDが青くなりds4drvを起動した端末で以下のように表示されたら成功。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/bluetooth2.png"><img class="aligncenter size-full wp-image-18060" src="{{ site.baseurl }}/assets/images/2020/05/bluetooth2.png" alt="" width="572" height="203" /></a></p>
+<p><strong>DS4コントローラでRoombaを動かそう！</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>これで準備ができたので始めからDS4コントローラを使いロボットを動かすまでの一連の手順を説明する。</li>
+<li>Pi4をディスプレイなしで起動するので自動ログインの設定にする。
+<ul>
+<li>以下の内容の/etc/lightdm/lightdm.conf.d/1-autologin.confを作成してシャットダウンする。ユーザ名に自動ログインしたいユーザ名を入れる。
+<ul>
+<li>[SeatDefaults]<br />
+autologin-user=ユーザ名<br />
+autologin-user-timeout=0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Pi4とRoombaを通信ケーブルで接続する。</li>
+<li>Roombaの電源を入れる。</li>
+<li>Pi4とモバイルバッテリを接続する。Pi4が起動する。</li>
+<li>ノートパソコンを起動して端末を３つ開き、各端末からPi4にssh接続する。上から順番に実行する。
+<ul>
+<li>１番目の端末
+<ul>
+<li> 以下のコマンドを実行する。
+<ul>
+<li>$ sudo ds4drv</li>
+</ul>
+</li>
+<li>DS4コントローラのShareとPSキーを長押しペアリングする。</li>
+</ul>
+</li>
+<li>２番目の端末
+<ul>
+<li> Roombaの制御パッケージを起動する。
+<ul>
+<li>$ ros2 launch roomba_600_driver roomba_600_driver.launch.py</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>３番目の端末
+<ul>
+<li>遠隔操作パッケージを起動する。</li>
+<li>$ ros2 launch roomba_600_driver teleop.launch.py</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DS4コントローラの左側のジョイステックを動かすとルンバが動作する。今回は長かったですね。お疲れ様！</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

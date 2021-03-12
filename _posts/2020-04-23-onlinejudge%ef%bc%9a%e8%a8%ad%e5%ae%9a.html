@@ -1,0 +1,189 @@
+---
+layout: post
+title: OnlineJudge：オンラインジャッジの設定
+date: 2020-04-23 11:24:44.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- lecture
+tags: []
+meta:
+  the_review_enable: '0'
+  update_level: high
+  the_page_toc_novisible: '0'
+  the_page_read_time_novisible: '0'
+  page_type: default
+  the_page_ads_novisible: '0'
+  the_page_canonical_url: ''
+  the_page_nofollow: '0'
+  the_page_noindex: '0'
+  the_page_meta_keywords: ''
+  the_page_meta_description: ''
+  the_page_seo_title: ''
+  sns_image_url: ''
+  the_page_memo: ''
+  _custom_js: ''
+  _custom_css: ''
+  the_page_no_amp: '0'
+  redirect_url: ''
+  the_review_rate: '5'
+  _edit_last: '2'
+  the_review_name: ''
+  the_review_type: Product
+  _thumbnail_id: '17838'
+  views: '231'
+  the_page_main_category: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/17832.html"
+---
+<p>オープンソースのオンラインジャッジOnlineJudge2.0の設定方法です。オンラインジャッジとはプログラミングの問題をオンラインで採点するシステムのことで、これは中国の青島大学が開発しています。</p>
+<p>ライセンスは<a href="https://ja.osdn.net/projects/opensource/wiki/licenses%2FMIT_license">MIT</a>。作成者はこのソフトウェアに関して何ら責任を負いません。同様にこの説明にしたがって設定したことにより生じる一切の請求、損害、その他の義務について、demura.netは何らの責任も負いません。この記事だけでなくdemura.net内の全記事にも責任は負いません。自己責任でお願いします。</p>
+<p><strong>ドキュメント</strong></p>
+<ul>
+<li>残念ながら以下の中国版しかない。ブラウザの翻訳機能で概ね意味はわかる。
+<ul>
+<li><a href="https://docs.onlinejudge.me/#/onlinejudge/guide/deploy">Online Judge 2.0 Document</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>ログイン</strong></p>
+<ul>
+<li>ブラウザを起動してURLを入力する窓に"localhost"と入力する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj1-1.png"><img class="aligncenter size-full wp-image-17838" src="{{ site.baseurl }}/assets/images/2020/04/oj1-1.png" alt="" width="1026" height="475" /></a></li>
+<li>設定するために管理者としてログインする。画面右上のLoginをクリックするとユーザ名、パスワードを入力するウインドウが開くので、ユーザ名root、パスワードrootrootを入力する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/o2-1.png"><img class="aligncenter size-full wp-image-17840" src="{{ site.baseurl }}/assets/images/2020/04/o2-1.png" alt="" width="1026" height="475" /></a></p>
+<p><strong>設　定</strong></p>
+<ul>
+<li>rootパスワード変更：<span style="color: #ff0000;"><strong>ログインできたらセキュリティのためにすぐパスワードを変更する。これ大切。</strong></span>
+<ul>
+<li>画面右上がLoginからrootに変わる。rootをクリックしてmanagementをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj3-2.png"><img class="aligncenter size-full wp-image-17845" src="{{ site.baseurl }}/assets/images/2020/04/oj3-2.png" alt="" width="1213" height="486" /></a></li>
+<li>以下の画面になるのでGeneral→Userをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj4.png"><img class="aligncenter size-full wp-image-17846" src="{{ site.baseurl }}/assets/images/2020/04/oj4.png" alt="" width="1213" height="849" /></a></li>
+<li>以下の画面になるので赤丸(edit)部分をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj5.png"><img class="aligncenter size-full wp-image-17847" src="{{ site.baseurl }}/assets/images/2020/04/oj5.png" alt="" width="1213" height="849" /></a></li>
+<li>ユーザ情報を変更する。Email、Real Nameは必須なので入力して、New Passwordにrootroot以外の新しいパスワードを必ず設定して「Save」をクリックする。よりセキュリティを高めるためにはrootのアカウントを無効(Is Disable）にして、別のユーザをUser Type: Super Adminにする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj6.png"><img class="aligncenter size-full wp-image-17848" src="{{ site.baseurl }}/assets/images/2020/04/oj6.png" alt="" width="1213" height="849" /></a></li>
+<li>パスワードを変更すると以下の画面になるので先程入力したパスワードを入力して「GO」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj7.png"><img class="aligncenter size-full wp-image-17849" src="{{ site.baseurl }}/assets/images/2020/04/oj7.png" alt="" width="1213" height="849" /></a></li>
+</ul>
+</li>
+<li>システム設定
+<ul>
+<li>General -&gt; System Configを選択
+<ul>
+<li>Web Config
+<ul>
+<li>Base Url: デフォルトのままでOK</li>
+<li>Name: 好きな名前に変更</li>
+<li>ShortCut: 好きなショートカット名</li>
+<li>Footer：好きな名前に変更</li>
+<li>Allow Register：授業等で使用する場合は勝手に登録されると困るので不可（赤表示）に変更する。</li>
+</ul>
+</li>
+<li>SMTP Config
+<ul>
+<li>必要があれば設定する。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 40px;"><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj1-2.png"><img class="aligncenter size-full wp-image-17891" src="{{ site.baseurl }}/assets/images/2020/04/oj1-2.png" alt="" width="1035" height="937" /></a></p>
+<ul>
+<li>ユーザ登録
+<ul>
+<li>General -&gt;  User -&gt; Import User</li>
+<li>上の設定で登録を許可しない場合は管理者がユーザを登録する必要がある。授業等で人数が多い場合は次のフォーマットのCSVファイルで読み込める。エクセル等で名簿ファイルを作りCSVフォーマットで保存する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj2.png"><img class="aligncenter size-full wp-image-17892" src="{{ site.baseurl }}/assets/images/2020/04/oj2.png" alt="" width="475" height="115" /></a></li>
+<li>Choose Fileを選択して名簿ファイルを選択する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj3-3.png"><img class="aligncenter size-full wp-image-17893" src="{{ site.baseurl }}/assets/images/2020/04/oj3-3.png" alt="" width="602" height="480" /></a></li>
+<li>インポートされると次のように表示される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj4-1.png"><img class="aligncenter size-full wp-image-17895" src="{{ site.baseurl }}/assets/images/2020/04/oj4-1.png" alt="" width="800" height="295" /></a></li>
+</ul>
+</li>
+<li><strong>問題作成</strong>
+<ul>
+<li>Problem → Create Problemで問題作成画面になる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj6-1.png"><img class="aligncenter size-full wp-image-17897" src="{{ site.baseurl }}/assets/images/2020/04/oj6-1.png" alt="" width="1035" height="937" /></a></li>
+<li>各項目について記入していく。参考までに私の例を次に示す。なお、この記載に関しては次の教科書が参考になる。
+<ul>
+<li><a href="https://www.amazon.co.jp/gp/product/4839951101/ref=as_li_tl?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=4839951101&amp;linkCode=as2&amp;tag=demuranet-22&amp;linkId=2c1ccd4b567132c8830e852f22474a6e" target="_blank">オンラインジャッジではじめるC/C++プログラミング入門</a><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/oj5-2-1.png"><img class="aligncenter size-full wp-image-19665" src="{{ site.baseurl }}/assets/images/2020/04/oj5-2-1.png" alt="" width="1073" height="2160" /></a></li>
+</ul>
+</li>
+<li><strong>数式</strong>：MathJaxが使用可能。
+<ul>
+<li>行に埋め込み
+<ul>
+<li><code>$  BMI = {w \over h^2}   $</code></li>
+</ul>
+</li>
+<li>1行表示
+<ul>
+<li><code>\[ BMI = {w \over h^2} \]</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Visible</strong>: このスライドスイッチを右にしてONにする。これをONにしないと管理者以外は見えないので注意。</li>
+<li><strong>Type</strong>: ACMとOIがあるが、OIにチェックを入れる。OIにチェックを入れないと、コンテストで問題を使えない。</li>
+<li><strong>TestCase:</strong> 上の項目の中で難しいのが、一番下のすぐ上にあるTestCase。TestCaseは提出された回答が正解かどうか判断する正解例である。入力inと出力outで構成される。<br />
+入力に対する出力が同じだったら正解になる。例えば、printf文で適当にある値を出力して、たまたま用意したTestCaseと同じなら正解になってしまう。そのようなことにならない問題作成と複数のテストケースを作成する必要がある。部分点を与えたいので最低５ケースは作ること。問題作成のときにテストケースを考えてつくると良い。</p>
+<ul>
+<li>作成方法
+<ul>
+<li>ディレクトリを作成する。そのなかに、プログラムへの入力ファイル1.inとそれに対する正解の出力ファイル1.outを作成する。Linuxなら以下のコマンド
+<ul>
+<li>$ mkdir -p  ~/onlinejudge/testcase/example1-</li>
+<li>$ cd ~/onlinejudge/testcase/example1</li>
+<li>エディタを使い1.inと1.outを作成する。テストケースが複数ある場合は2.in, 2.out, 3.in, 3.out, ...と連番でファイルを作成する。</li>
+</ul>
+</li>
+<li>zipで圧縮する場合はディレクトリを含めてはいけないので注意。Linuxなら以下のコマンドを使う。
+<ul>
+<li>$ cd ~/onlinejudge/testcase/example1</li>
+<li>$ zip testcase.zip ./{*.in,*.out}</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>アップロード
+<ul>
+<li>TestCaseのChoose Fileをクリックして圧縮したファイルをアップロードする。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>問題のインポートとエクスポート</strong>
+<ul>
+<li>同じOnlineJudge2.0を使っていると作成した問題をエクスポートして提供したり、インポートして自分のシステムに簡単に取り入れることができます。</li>
+<li>Problem →　Export or Import Problem
+<ul>
+<li>Exportの場合：問題IDのチェックボックスをチェックしエクスポートする問題を選択して「Export」をクリックするとzip形式で問題が出力される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/export1.png"><img class="aligncenter size-full wp-image-17907" src="{{ site.baseurl }}/assets/images/2020/04/export1.png" alt="" width="1054" height="686" /></a></li>
+<li>Importの場合：上のExportの場合は形式はQDUOJ 問題なので、「Import QDUOJ Problems (beta)」の「Choose File」を選択してから、「Upload」をクリックして問題をシステムに取り込む。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

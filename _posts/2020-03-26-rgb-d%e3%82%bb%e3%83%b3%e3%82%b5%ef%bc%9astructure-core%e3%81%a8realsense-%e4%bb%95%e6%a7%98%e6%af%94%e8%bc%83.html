@@ -1,0 +1,148 @@
+---
+layout: post
+title: RGB-Dセンサ：Structure CoreとRealSense 仕様比較
+date: 2020-03-26 18:25:06.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: RGB-Dセンサ：Structure CoreとRealSense 仕様比較
+  the_page_meta_description: ''
+  the_page_meta_keywords: RGB-Dセンサ, Structure Core, RealSense
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '17378'
+  views: '530'
+  _wp_old_slug: rgb-d%e3%82%bb%e3%83%b3%e3%82%b5%ef%bc%9astructure-core%e9%96%8b%e5%b0%81
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/17369.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/core1.jpg"><img class="size-full wp-image-17372 aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/core1.jpg" alt="" width="960" height="337" /></a></p>
+<p>Occipital社のRGB-DセンサStructure Core (color)を入手したので、RealSenseと比較してみた。この記事ではパッケージと仕様を比較する。Structure Coreカラー（SCS-Color）とモノクロ（SCS-Mono）の２タイプある。カラーとモノクロの違いは可視カメラだけで、深度画像には関係ない。可視画像でカラーが必要か、広い視野が必要かで選択する。以下のリンクはアルゴの商品説明ページ。</p>
+<ul>
+<li><a href="https://www.argocorp.com/cam/special/Occipital/SCS.html">小型・軽量３DデプスカメラSCS、株式会社アルゴ</a></li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/structure_core-1.jpg"><img class="size-full wp-image-17370 aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/structure_core-1.jpg" alt="" width="960" height="596" /></a></p>
+<p>Structure Coreのパッケージ(一番上図）はRealSenseより一回り小さい。中には次のものが入っている。</p>
+<ul>
+<li>Structure Core　センサ本体</li>
+<li>USB3.0ケーブル（TypeC - A）</li>
+<li>USB変換アダプタ（TypeC オス- Aメス）</li>
+<li>ドライバー＆ネジ（ハウジング脱着用）：ただし、ハウジングを外して動作させるとアルゴ社の保証を受けれなくなるので注意。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/core2.jpg"><img class="alignleft size-full wp-image-17373" src="{{ site.baseurl }}/assets/images/2020/03/core2.jpg" alt="" width="960" height="272" /></a></p>
+<p>Structure Coreは上写真の左側、RealSenseは右側。Structure Coreのサイズは109mm × 18mm × 24mm（RealSense D435i:90 mm x 20 mm x 23 mm) 、重量は 52.5g（RealSense: 約74g実測）でRealSenseとより少し横長だが、ほぼ同じなので多くのロボットに搭載可能。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/core3.jpg"><img class="alignleft size-full wp-image-17374" src="{{ site.baseurl }}/assets/images/2020/03/core3.jpg" alt="" width="960" height="386" /></a></p>
+<p>上図はStructure Coreの裏面。3個のネジを外すとハウジングの脱着ができるようだが、保証対象外になるのでまだ外していない。RealSense D435はハウジングの下に三脚用のネジ穴がついているが、Structure Coreは穴がないので固定方法を別途考える必要がある。D435との主な使用を表として以下に示す。</p>
+<p>センシング方式はどちらも赤外線パターンを投影して２つの赤外線カメラでDepthを計算するもの。仕様で大きくことなる点は、FOV（視野）では D435iの方が25度も横方向に広く、RGB画像はRealSenseがFull HDなのに対して、Structure CoreはVGAと圧倒的に負けている。RealSense D435iの精度に関してはデータシートでは、Structure Coreと条件が違うが2%以下となっており1mで最大2cmもずれてしまう。ただ、注１のIntel Forumによると物体から1m離れた地点では2.5~5mmなのでStructure Coreとさほど変わらないことになっている。果たしてどうだろうか。</p>
+<p>次回は実測して両者を比較してみよう。</p>
+<table style="border-collapse: collapse; width: 100%; height: 473px;">
+<tbody>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;"></td>
+<td style="width: 38.7261%; height: 30px;"><a href="https://structure.io/structure-core/specs">Structure Core Color</a></td>
+<td style="width: 43.3687%; height: 30px;"><a href="https://ark.intel.com/content/www/jp/ja/ark/products/128255/intel-realsense-depth-camera-d435.html">RealSense D435i</a>    <a href="https://dev.intelrealsense.com/docs/datasheets">データシート</a></td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">サイズ</td>
+<td style="width: 38.7261%; height: 30px;">109mm × 18mm × 24mm</td>
+<td style="width: 43.3687%; height: 30px;">90 mm x 20 mm x 23 mm</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">重量</td>
+<td style="width: 38.7261%; height: 30px;">52.5g</td>
+<td style="width: 43.3687%; height: 30px;">72g</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">センシング方式</td>
+<td style="width: 82.0948%; height: 30px; text-align: center;" colspan="2">パターン投影/ステレオカメラ</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">Depth解像度</td>
+<td style="width: 38.7261%; height: 30px;">1280 x 960 @ 54 fps</td>
+<td style="width: 43.3687%; height: 30px;">最大1280 x 720 @ 90fps</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">Depth FOV</td>
+<td style="width: 38.7261%; height: 30px;">59° x 46° x 70° (H x V x D)</td>
+<td style="width: 43.3687%; height: 30px;">H:87±3 / V:58±1 /D:95±3</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">最小深度距離</td>
+<td style="width: 38.7261%; height: 30px;">0.3m</td>
+<td style="width: 43.3687%; height: 30px;">0.31m (  640 x 480)<br />
+0.45m (1280 x 720)</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">最大深度距離</td>
+<td style="width: 38.7261%; height: 30px;">10m</td>
+<td style="width: 43.3687%; height: 30px;">10m</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">精度</td>
+<td style="width: 38.7261%; height: 30px;">± 0.29%(1mでの平面に対するRMS値)</td>
+<td style="width: 43.3687%; height: 30px;">2%以下 (最大2m, 80%FOVでの平面に対するRMS値)　注１</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">RGB</td>
+<td style="width: 38.7261%; height: 30px;">解像度 640x480@100fps</td>
+<td style="width: 43.3687%; height: 30px;">解像度 1920x1080@30fps</td>
+</tr>
+<tr style="height: 53px;">
+<td style="width: 17.9051%; height: 53px;">IMU</td>
+<td style="width: 82.0948%; height: 53px; text-align: center;" colspan="2">Bosch BMI055　6軸　(ジャイロ ＆ 加速度センサ)</td>
+</tr>
+<tr>
+<td style="width: 17.9051%;">レーザークラス</td>
+<td style="width: 82.0948%; text-align: center;" colspan="2">クラス1</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">消費電力</td>
+<td style="width: 38.7261%; height: 30px;">2.0W (平均）3.1W（最大）</td>
+<td style="width: 43.3687%; height: 30px;">3.5W (最大<a href="https://forums.intel.com/s/question/0D50P0000490VvS/d400-series-power-consumption?language=en_US">Intel Forum: 注2</a>)</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">インタフェース</td>
+<td style="width: 82.0948%; height: 30px; text-align: center;" colspan="2">USB Type C</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">ソフトウェア</td>
+<td style="width: 82.0948%; height: 30px; text-align: center;" colspan="2">ROS, Linux, Windows, macOS, Android</td>
+</tr>
+<tr style="height: 30px;">
+<td style="width: 17.9051%; height: 30px;">価格</td>
+<td style="width: 38.7261%; height: 30px;"><a href="https://www.argocorp.com/cam/special/Occipital/SCS.html">\59,800(税別、アルゴ）</a></td>
+<td style="width: 43.3687%; height: 30px;"><a href="https://www.switch-science.com/catalog/5235/">\30,112(税込み、 スイッチサイエンス）</a></td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://github.com/IntelRealSense/librealsense/issues/2723">注１：この資料によると理論値RMS 3mm@1m</a><br />
+注２：データシートによるとVision Processor D4ボードへの正電源電圧Vcc: 5V、消費電流Iccが最大700mA。これにより最大3.5Wとしている。平均は記述なし。</p>
+<p>終わり</p>

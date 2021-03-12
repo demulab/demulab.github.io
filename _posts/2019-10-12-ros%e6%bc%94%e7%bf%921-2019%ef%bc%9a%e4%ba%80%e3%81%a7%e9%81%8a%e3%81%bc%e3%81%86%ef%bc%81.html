@@ -1,0 +1,98 @@
+---
+layout: post
+title: ROS演習1-2019：亀で遊ぼう！
+date: 2019-10-12 14:08:28.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16129'
+  views: '1587'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/16271.html"
+---
+<p>この記事は私が金沢工業大学ロボティクス学科で担当している2019年度後学期開講講義ロボットプログラミングⅡ用です。Windows Subsystem for Linux(WSL)にROSをインストールしたので、動作確認を兼ねてタートル（亀）で遊んでみましょう。この記事は以下の記事を参考にしています。</p>
+<ul>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingTopics">ROSトピックの理解</a></li>
+</ul>
+<p>---------------------------------------------------------------</p>
+<p>(1) 端末を開き、</p>
+<ul>
+<li>$ <code>roscore</code></li>
+</ul>
+<p>と入力しEnterキーを押し、マスターを起動する。これはノード間で通信するために必要である。ノードはROSの実行プログラムのこと。<br />
+注：roscoreはマスターの他にパラメータサーバー、ログ用のノードも起動します。なお、roslaunchを使うと、roscoreがすでに立ち上がっていない場合は、自動的にroscoreを立ち上げます。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/10/No-0107.png"><img class="aligncenter size-full wp-image-15230" src="{{ site.baseurl }}/assets/images/2019/10/No-0107.png" alt="" width="658" height="324" /></a></p>
+<p>(3) 新しく別の端末を開き、次のコマンドを入力しEnterキーを押すと</p>
+<ul>
+<li>$ <code>rosrun turtlesim turtlesim_node</code></li>
+</ul>
+<p>タートルのいる水色のウインドウが開く。rosrunコマンドの使い方は、rosrun  [パッケージ名] [ノード名]で、パッケージのノードを起動する。パッケージはある機能を実現するためのプログラムの集まり。この例では、turtlesimというパッケージの中のturtlesim_nodeノードを起動している。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/10/No-0108.png"><img class="aligncenter size-full wp-image-15231" src="{{ site.baseurl }}/assets/images/2019/10/No-0108.png" alt="" width="658" height="374" /></a></p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/10/No-0109.png"><img class="aligncenter size-full wp-image-15232" src="{{ site.baseurl }}/assets/images/2019/10/No-0109.png" alt="" width="502" height="532" /></a></p>
+<p>(4) キーボードでタートルを操作。新しい端末を開き次のコマンドを入力する。</p>
+<ul>
+<li>$ <code>rosrun turtlesim turtle_teleop_key</code></li>
+</ul>
+<p>キーボードの矢印キーで亀を動かすことができる。動かない場合は、ここで入力した端末をクリックして選択する。タートルのいるTurtleSimウインドウや他の端末をクリックして選択した場合は動かないので注意。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/10/No-0110.png"><img class="aligncenter size-full wp-image-15233" src="{{ site.baseurl }}/assets/images/2019/10/No-0110.png" alt="" width="658" height="325" /></a></p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/10/No-0111.png"><img class="aligncenter size-full wp-image-15234" src="{{ site.baseurl }}/assets/images/2019/10/No-0111.png" alt="" width="502" height="532" /></a></p>
+<p>２．解説</p>
+<p>動作を確認するためにタートルと遊んだので少しお勉強。タートルが矢印キーで動く仕組みは、turtlesimノードがturtle_teleop_keyノードから送られた(publish、出版)キーのデータを受け取り(subscribe、購読)、タートルを動かしている。このデータのことをROSではトピック(topic)とよぶ。これはPublish/Subscribe (<a href="https://ja.wikipedia.org/wiki/%E5%87%BA%E7%89%88-%E8%B3%BC%E8%AA%AD%E5%9E%8B%E3%83%A2%E3%83%87%E3%83%AB">出版/購読型モデル</a>）モデルに基づいている。ROSではトピックを使った通信の他にクライアント/サーバーモデルのサービスもある。</p>
+<p>新しい端末を開き、以下のコマンドを実行しよう。</p>
+<ul>
+<li>$ rqt_graph</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/rqt_graph.png"><img class="aligncenter size-full wp-image-16346" src="{{ site.baseurl }}/assets/images/2019/10/rqt_graph.png" alt="" width="605" height="486" /></a></p>
+<p>rqt_graphはノード、トピックの視覚化ツールで、楕円がノード名、矢印がトピック名となる。この例では、teleop_turtleノードからturtlesismノードへ速度指令値となる/turtle1/cmd_velトピックが送られていることがわかる。</p>
+<p>３．演習</p>
+<p>以下のROSチュートリアルの1.2 ROSトピックから最後まで説明に従って、自分のノートパソコンで動作を確認しよう！</p>
+<ul>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingTopics">ROSトピックの理解</a></li>
+</ul>
+<p>４．ホームワーク</p>
+<ul>
+<li><a href="https://www.lpi.or.jp/linuxtext/download.php">Linux標準教科書</a>：必要事項を記入しダウンロードし、１章を読み、３章を実習しよう！</li>
+<li>次のROSチュートリアル（初級）をやろう！
+<ul>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/NavigatingTheFilesystem">ROSのファイルシステムを学ぶ</a></li>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingNodes">ROSのノードを理解する</a></li>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingTopics">ROSトピックの理解</a></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

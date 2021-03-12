@@ -1,0 +1,95 @@
+---
+layout: post
+title: 物理エンジンで学ぶC言語 [Step3：switch文]
+date: 2010-12-17 07:25:34.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '780'
+  _wp_old_slug: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/8296.html"
+---
+<p>[caption id="attachment_7432" align="aligncenter" width="450" caption="step3サンプルプログラムの実行画面"]<a href="http://demura.net/wordpress/wp-content/uploads/2010/07/step3a.jpg"><img src="{{ site.baseurl }}/assets/images/2010/12/step3a.jpg" alt="step3サンプルプログラムの実行画面" title="step3a" width="450" height="384" class="size-full wp-image-7432" /></a>[/caption]</p>
+<p>Step2でfor文を使った繰り返しを練習しました。ここではswitch文を使ったキー処理の方法を学びます．キーボード入力の処理にswitch文はうってつけです。  ゲームではキーボード入力によりレーザービームを発射したり，車を操縦しますね．switch文を使って，キーボードからのキー入力を処理する方法を学びます．  <!--more--></p>
+<ul>
+<li><strong>switch文とキー処理</strong></li>
+</ul>
+<p><strong> </strong> 新しく登場したのが11行目のcommand関数です．これは，キーボードからのキー入力を引数cmdとして受け取ります．このサンプルプログラムではswitch文を使いキー入力の値に応じて分岐させ違う処理をさせています．zが入力されると初期位置のz成分を0.1m増加させます．つまり，zキーを押すたびに直方体全体が上空へ上がっていきます．その下のbreak文は忘れないでください．忘れるとdefaultに対応する21行目の文を実行し常にInput z keyと表示されてしまいます．</p>
+<p>その他のキーを入力するとdefaultにある"Input z key"という文字列がコンソール画面に表示されます．  なお、switch文の変わりにif文でもできますが、キー入力が増え分岐が多くなるとswitch文の方がすっきりした読みやすいプログラムを書けます。</p>
+<ul>
+<li><strong>乱　数</strong></li>
+</ul>
+<p><strong> </strong> ODEとは関係ありませんがゲームやシミュレータでは乱数も活躍します．乱数を使う場合は"stdlib.h"をインクルードします．ここではtime()関数も使っているので"time.h"もインクルードしています．</p>
+<p>乱数を使用する場合は、まず，main関数の42行目にあるように乱数を初期化します．そのために<strong>void srand(unsigned seed）</strong>関数を使います。引数seedは乱数を発生させる種を入れます．それが同じ値の場合は，常に同じ乱数系列が発生します．srand(time(NULL))は実行時に乱数の種を変更する一般的な方法です．  ちなみに、time(NULL)は万国標準時１９７０年１月１日からの経過秒数です。大きな数値になるのでパット見意味がわからりづらいですね．</p>
+<p>実際に乱数を発生させているのがsimLoop関数の30行目のrand関数です．rand関数のプロトタイプ宣言は<strong>int rand(void)</strong>なので引数は取らず，int型の値を返します．RAND_MAXは乱数の最大値なので，30行目は0以上1以下の乱数を発生させ，それを赤成分の値に代入します．なお，rand()とRAND_MAXの割り算をするとint型になり小数点以下が切り捨てられるのでfloat型にキャスト（型変換）することを忘れないようにしましょう．これによって，表示されている直方体（以下ボックスと表記）の赤成分の色だけが変わることになります．</p>
+<p>今回は２つのことを学びました．特に乱数はゲームで使うと非常に面白いゲームになるのでしっかり覚えておきましょう．</p>
+<p style="text-align: right;">でむ</p>
+<pre class="brush:cpp">/* step3 キー入力　switch文　*/
+#include "dm3.h"
+#include &#60;time.h&#62;
+#include &#60;stdlib.h&#62;
+
+// Rは回転行列の各要素が格納される配列. 4, 8, 12番目の要素は高速化のために常に０
+double R&#91;12&#93; ={1,0,0,0, 0,1,0,0, 0,0,1,0};
+double p&#91;3&#93; = {0.0, 0.0, 0.05};   //　重心の位置
+double p&#91;3&#93; = {0.0, 0.0, 0.05};   // 位置(x,y,z)&#91;m&#93;
+double sides&#91;3&#93; = {0.1, 0.1, 0.1}; // 直方体のサイズ(x, y, z)&#91;m&#93;
+double start_x = 0.0, start_y = 0.0, start_z = 0.0; // 初期位置
+
+void command(int cmd)
+{
+    float xyz&#91;3&#93;, hpr&#91;3&#93;;
+    switch (cmd) {
+        case 'z':
+            start_z += 0.1;
+            break;
+        default:
+            printf("Input z key \n");
+    }
+}
+
+void simLoop(int pause)        /***  シミュレーションループ　***/
+{
+  int i, j, num = 11;          // 直方体の数
+  static float red = 0.0, green = 0.0, blue = 0.0; // 赤，緑，青成分
+
+  for (i = 0; i &#60; num; i++) {
+      for (j = 0; j &#60; num; j++) {
+        red = (float) rand()/RAND_MAX;   // 赤成分を乱数で決定
+        dsSetColor(red, green, blue);    // 色の設定
+        p&#91;0&#93; = start_x;                  // 位置のx成分
+        p&#91;1&#93; = i * 0.2 - 1.0  + start_y; // 位置のy成分
+        p&#91;2&#93; = j * 0.2 + 0.05 + start_z; // 位置のz成分
+        dsDrawBox(p,R,sides); // 直方体の表示
+      }
+  }
+}
+
+int main()         /*** main関数 ***/
+{
+  srand(time(NULL)); // 乱数の初期化
+  dmLoop(800, 600, simLoop, command);  // ウインドウの横，縦，シミュレーション関数，コマンド関数
+　return 0;
+}</pre>
+<p><strong>ホームワーク３</strong></p>
+<ol>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2010/12/step3-101217.zip">step3-101217.zip</a>をダウンロードして実行しよう．</li>
+<li>jキーを押すと右，fキーを押すと左にボックス全体が移動するようにしよう．</li>
+<li>３行（ｊの値が２）、４列（iの値が３）目のボックスだけをキー操作でx, y, z軸の正負方向へ移動できるようにしよう．つまり，６個のキーを割り当てる必要があります．simLoop関数の中でif文を使う必要があります．</li>
+<li>まず、ボックスを全て白色に変更し，乱数を使い１つのボックスだけ赤色に描画するプログラムを書こう．</li>
+<li>まず、ボックスを全て白にし、数字０を赤いブロックを複数使い表示するプログラムを書こう．</li>
+<li>[発展問題」　まず、ボックスを全て白にし、９から０までの数字を赤いブロックを複数使いカウントダウン表示する電光掲示板を作りましょう。０から９までの数字を表示する部分はそれぞれ関数にすること。</li>
+</ol>

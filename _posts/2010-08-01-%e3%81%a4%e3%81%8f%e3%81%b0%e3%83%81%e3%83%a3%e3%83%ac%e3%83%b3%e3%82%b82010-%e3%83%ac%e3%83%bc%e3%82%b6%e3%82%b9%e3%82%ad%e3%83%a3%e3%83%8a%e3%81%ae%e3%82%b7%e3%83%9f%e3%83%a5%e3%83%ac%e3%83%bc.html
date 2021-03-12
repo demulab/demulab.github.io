@@ -1,0 +1,294 @@
+---
+layout: post
+title: 'つくばチャレンジ2010: レーザスキャナのシミュレーション'
+date: 2010-08-01 00:21:26.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1081'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/7604.html"
+---
+<p>[caption id="attachment_7605" align="aligncenter" width="610" caption="レーザスキャナのシミュレーション"]<a href="http://demura.net/wordpress/wp-content/uploads/2010/08/laser.jpg"><img src="{{ site.baseurl }}/assets/images/2010/08/laser.jpg" alt="レーザスキャナのシミュレーション" title="laser" width="610" height="426" class="size-full wp-image-7605" /></a>[/caption]</p>
+<p>北陽電機のスキャナ式レンジセンサUTM-30LXのシミュレータを作りました．URGのAPIを実装していないので不完全です．　ODEでのRAYジオメトリの使い方は参考になると思います．</p>
+<p>ここからソースコードを取得できます．ほとんどテストしていないので間違いがあるかもしれません．無保証です．自由に使ってください．<a href="http://demura.net/wordpress/wp-content/uploads/2010/08/localization100731.zip">ここからソースコードlocalization100731.zip</a>をダウンロードできます．Windows用Codeblocksのプロジェクトファイルしかありません．</p>
+<p>以下，関係のある部分のソースコードを紹介します．<br />
+<!--more--></p>
+<pre class="brush:cpp">
+/*** レーザスキャナの作成 ***/
+static void makeLaserScanner()
+{
+    dMass mass;
+
+    // レーザスキャナ　
+    laser.body  = dBodyCreate(world);
+    dMassSetZero(&mass);
+    dMassSetCylinderTotal(&mass,LASER_M,3,LASER_R, LASER_L);
+    dBodySetMass(laser.body,&mass);
+    dBodySetPosition(laser.body,START_X, START_Y, START_Z+NECK_L+SENSOR_L+LASER_L/2);
+
+    // レーザビーム．Rayジオメトリで実装．ボディはない．
+    for (int i=0; i &#60; BEAM_NUM; i++)
+    {
+        beam&#91;i&#93; =  dCreateRay(space, 0);
+        dGeomRaySetLength(beam&#91;i&#93;, BEAM_LENGTH);
+    }
+}
+
+/*** レーザー光の発射　***/
+static void emitLaser()
+{
+    dMatrix3 R1, R2, R3, R4, R5;
+
+    const dReal *p = (const dReal *) dBodyGetPosition(laser.body);
+    dReal heading_angle = -heading();
+    dReal pitch  = dJointGetHingeAngle(laser_joint);
+
+    dRFromAxisAndAngle(R1,1,0,0, -M_PI/2);
+    dRFromAxisAndAngle(R4,1,0,0, pitch);
+
+    for (int i=urg.first_index; i &#60; urg.last_index; i+=urg.skip_lines)
+    {
+        for (int j=0; j &#60; 3; j++)
+        {
+            contact_pos&#91;i&#93;&#91;j&#93; = -1;
+        }
+
+        dRFromAxisAndAngle(R2,0,0,1,
+                           heading_angle +(double) (i - (BEAM_NUM/2))/(BEAM_NUM/2) * LASER_LO_LIMIT * (M_PI/180));
+        dMultiply0(R3,R2,R1,3,3,3);
+        dMultiply0(R5,R4,R3,3,3,3);
+        dGeomSetPosition(beam&#91;i&#93;, p&#91;0&#93;, p&#91;1&#93;, p&#91;2&#93;);
+        dGeomSetRotation(beam&#91;i&#93;,R5);
+    }
+}
+
+/*** レーザの描画　***/
+void drawLaser()
+{
+    const dReal *pos;
+    dsSetColorAlpha(1.0, 0.0, 0.0, 0.5);
+    static int skip = 6; // 描画を高速にするための間引き数
+
+    pos = dBodyGetPosition(laser.body);
+    for (int i = 0; i &#60; BEAM_NUM; i++)
+    {
+        if (!((contact_pos&#91;i&#93;&#91;0&#93; == -1) && (contact_pos&#91;i&#93;&#91;1&#93; == -1) &&
+                (contact_pos&#91;i&#93;&#91;2&#93; == -1)))
+        {
+            // 描画を高速にするために間引く
+            if ((i % skip) == 0)dsDrawLine(pos,(const double *) contact_pos&#91;i&#93;);
+        }
+    }
+}
+
+/*** コールバック関数 ***/
+static void nearCallback (void *data, dGeomID o1, dGeomID o2)
+{
+    int i,n;
+    dBodyID b1 = dGeomGetBody(o1);
+    dBodyID b2 = dGeomGetBody(o2);
+
+    if (b1 && b2 && dAreConnectedExcluding(b1,b2,dJointTypeContact)) return;
+
+    static const int N = 10;
+    dContact contact&#91;N&#93;;
+    n = dCollide(o1,o2,N,&contact&#91;0&#93;.geom,sizeof(dContact));
+    if (n &#62; 0)
+    {
+        for (i=0; i&#60;n; i++)
+        {
+            if ((o1 == wheel&#91;FRONT&#93;.geom) || (o2 == wheel&#91;FRONT&#93;.geom) ||
+                    (o1 == wheel&#91;REAR&#93;.geom)  || (o2 == wheel&#91;REAR&#93;.geom))
+            {
+                contact&#91;i&#93;.surface.mode = dContactSoftERP | dContactSoftCFM | dContactApprox1;
+                //contact&#91;i&#93;.surface.mode = dContactSoftERP | dContactSoftCFM ;
+                contact&#91;i&#93;.surface.mu = 0.0; // dInfinity; // 摩擦係数0
+                contact&#91;i&#93;.surface.soft_erp = 1.0;       // 地面のERP
+                contact&#91;i&#93;.surface.soft_cfm = 1e-5;      // 地面のCFM
+            }
+            else
+            {
+                // レーザビームの衝突判定
+                if (dGeomGetClass(o1) == dRayClass || dGeomGetClass(o2) == dRayClass)
+                {
+                    for (int k=0; k &#60; BEAM_NUM; k++)
+                    {
+                        if (o1 == beam&#91;k&#93; || o2 == beam&#91;k&#93;)
+                        {
+                            // 物体をつきなけないために
+                            if ((contact_pos&#91;k&#93;&#91;0&#93; == -1) && (contact_pos&#91;k&#93;&#91;1&#93; == -1)
+                                    && (contact_pos&#91;k&#93;&#91;2&#93;==-1))
+                            {
+                                for (int j=0; j &#60; 3; j++)
+                                    contact_pos&#91;k&#93;&#91;j&#93; = contact&#91;i&#93;.geom.pos&#91;j&#93;;
+                            }
+                            else
+                            {
+                                return;　
+                            }
+                        }
+                    }
+                    return;　// 接触点を見つけるだけなので戻る
+                }
+
+                contact&#91;i&#93;.surface.mode = // dContactSlip1 | dContactSlip2 |
+                    dContactSoftERP | dContactSoftCFM | dContactApprox1 | dContactMu2;
+                contact&#91;i&#93;.surface.mu  = 1.0; // dInfinity; // 摩擦係数無限大
+                contact&#91;i&#93;.surface.slip1    = 0.001;      // 第１摩擦方向の滑り
+                contact&#91;i&#93;.surface.slip2    = 0.001;      // 第２摩擦方向の滑り
+                contact&#91;i&#93;.surface.soft_erp = 1.0;       // 地面のERP
+                contact&#91;i&#93;.surface.soft_cfm = 1e-5;      // 地面のCFM
+            }
+            dJointID c = dJointCreateContact(world,contactgroup,&contact&#91;i&#93;); //接触ジョイントの生成
+            dJointAttach(c,b1,b2);                   // ジョイントの結合
+        }
+    }
+}
+
+/*** レーザのデータ取得　***/
+void laser_receiveData(laser_t *urg, long data&#91;&#93;, int data_max)
+{
+    const dReal *pos;
+
+    pos = dBodyGetPosition(laser.body);
+    for (int i = 0; i &#60; BEAM_NUM; i++)
+    {
+        if (!((contact_pos&#91;i&#93;&#91;0&#93; == -1) && (contact_pos&#91;i&#93;&#91;1&#93; == -1) &&
+                (contact_pos&#91;i&#93;&#91;2&#93; == -1)))
+        {
+            // 描画を高速にするために間引く
+            dReal d2 = 0;
+            for (int j = 0; j &#60; 3; j++)
+            {
+                d2 += (pos&#91;j&#93;-contact_pos&#91;i&#93;&#91;j&#93;) * (pos&#91;j&#93; - contact_pos&#91;i&#93;&#91;j&#93;);
+            }
+            data&#91;i&#93; = (long) (1000 * sqrt(d2));
+            // printf("Laser dist&#91;%d&#93;=%.2f \n",i,laser_dist&#91;i&#93;);
+        }
+        else
+        {
+            data&#91;i&#93; = -1;
+        }
+    }
+}
+
+void laser_setSkipLines(laser_t *urg, int skip_lines)
+{
+    urg-&#62;skip_lines = skip_lines;
+}
+
+void laser_requestData(laser_t *urg, laser_request_type request_type, int first_index, int last_index)
+{
+    if ((first_index &#60; 0)||(first_index &#62; BEAM_NUM)|| (first_index &#62; last_index))
+    {
+        printf("first index error \n");
+    }
+    else
+    {
+        urg-&#62;first_index = first_index;
+    }
+
+    if ((last_index &#60; 0) || (last_index &#62; BEAM_NUM) || (last_index &#60; first_index))
+    {
+        printf("last index error \n");
+    }
+    else
+    {
+        urg-&#62;last_index  = last_index;
+    }
+}
+
+
+/*** シミュレーションループ ***/
+static void simLoop(int pause)
+{
+    double vel = 10.0;
+    static double laser_angle = 0;
+    static double diff = 1;
+
+    emitLaser(); // レーザー光発射
+    if (!pause)
+    {
+        controlWheel(v_r, v_l);
+
+        if ((laser_angle &#62;= M_PI/4) || (laser_angle &#60;= - M_PI/4))
+        {
+            diff *= -1;
+        }
+        swingLaser(laser_angle += 5.0 * diff * M_PI/180.0);
+
+        deadReckoning();
+        //navigation(vel);
+
+        dSpaceCollide(space,0,&nearCallback);
+        dWorldQuickStep(world, STEP_SIZE);
+        dJointGroupEmpty(contactgroup);
+    }
+
+    laser_receiveData(&urg, laser_data,laser_data_max);
+    //for (int i=0; i &#60; laser_data_max;i++) {
+    //    printf("Laser dist&#91;%d&#93;=%d \n",i,laser_data&#91;i&#93;);
+    //}
+
+    //drawParticles();
+    drawRobot();
+    if (show) drawLaser();
+    drawWall();
+    steps++;
+}
+
+/*** レーザスキャナの初期化 ***/
+void initLaser()
+{
+    laser_data = (long*)malloc(sizeof(long) * laser_data_max);
+    if (laser_data == NULL)
+    {
+        perror("malloc");
+        exit(1);
+    }
+    laser_setSkipLines(&urg,2);
+    laser_requestData(&urg, URG_MD, URG_FIRST, URG_LAST);
+}
+
+
+/*** メイン関数 ***/
+int main(int argc, char *argv&#91;&#93;)
+{
+    setDrawStuff(); // 描画関数の設定
+    srand(time(NULL));
+    dInitODE();
+    world        = dWorldCreate();              // ワールドの生成
+    space        = dHashSpaceCreate(0);         // スペースの生成
+    contactgroup = dJointGroupCreate(0);        // 接触点グループの生成
+    ground       = dCreatePlane(space,0,0,1,0); // 地面の生成
+
+    dWorldSetGravity(world, 0, 0, -9.8); // 重力加速度の設定
+    //dWorldSetCFM(world,1e-5); // CFMの設定
+    dWorldSetERP(world,1.0);  // ERPの設定 0.8
+
+    makeRobot(); // ロボットの生成
+    makeWall(); // 壁の生成
+    initLaser(); // レーザスキャナの初期化
+
+    dsSimulationLoop(argc,argv,800,480,&fn); // シミュレーションループ
+
+    dJointGroupDestroy(contactgroup);  // 接触点グループの破壊
+    dSpaceDestroy(space);              // スペースの破壊
+    dWorldDestroy(world);              // ワールドの破壊
+    dCloseODE();
+    return 0;
+}
+</pre>

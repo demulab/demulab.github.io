@@ -1,0 +1,74 @@
+---
+layout: post
+title: GTX 1080Ti搭載パソコンの環境構築メモ
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>Deep Learning用に購入したNVIDIA GTX 1080Ii搭載パソコンの環境構築メモ。</p>
+<p>環境</p>
+<ul>
+<li>パソコン
+<ul>
+<li>CPU: Core i7-7700</li>
+<li>Motherboard: Asus PRIME H270-PLUS</li>
+<li>Memory: 8GB</li>
+<li>Video card: Asus TURBO-GTX1080Ti-11G</li>
+<li>Case: SST-T J04B-E</li>
+<li>Power supply: SST-ST75F-P 750W</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<li>xubunut 16.04.2</li>
+<li>Kernel 4.8.0-36-generic</li>
+<li>gcc/g++ 5.4.0</li>
+</ul>
+<p>作業</p>
+<ul>
+<li> nvidiaドライバインストール
+<ul>
+<li>sudo add-apt-repository ppa:graphics-drivers/ppa</li>
+<li>sudo apt-get update</li>
+<li>sudo apt-get install nvidia-381</li>
+</ul>
+</li>
+<li> <a href="https://developer.nvidia.com/cuda-75-downloads-archive">NVIDIAのウェブサイト</a>からCuda8.0のインストール
+<ul>
+<li>cuda_repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64.debをダウンロード</li>
+<li>sudo ./cuda_7.5.18_linux.run</li>
+<li>いろいろ聞かれるが、NVIDIAドライバはすでにインストールしているので入れない。OpenGLを入れるとXが立ち上がらなくなるといった記事があったので入れない。後はデフォルトのまま。</li>
+<li>.bahrcに以下を追加したCUDAのパスを通す
+<ul>
+<li>export CUDA_HOME=/usr/local/cuda</li>
+<li>export　LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://developer.nvidia.com/cudnn">NVIDIAのウェブ</a>からcuDNNのインストール
+<ul>
+<li>tar xvzf cudnn-7.5-linux-x64-v5.1.tgz</li>
+<li>cd cuda</li>
+<li>sudo cp -a lib64/lib*   /usr/local/cuda/lib64/</li>
+<li>sudo cp include/cudnn.h  /usr/local/cuda/include/</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

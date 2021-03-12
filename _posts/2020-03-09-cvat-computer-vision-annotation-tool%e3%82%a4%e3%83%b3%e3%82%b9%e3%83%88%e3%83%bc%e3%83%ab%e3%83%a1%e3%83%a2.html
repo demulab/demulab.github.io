@@ -1,0 +1,142 @@
+---
+layout: post
+title: 'CVAT: Computer Vision Annotation Toolインストールメモ'
+date: 2020-03-09 23:58:49.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '2178'
+  _thumbnail_id: '16935'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16931.html"
+---
+<p>OpenCVが開発しているCVAT(Computer Vision Annotation Tool)のインストールメモ。Dockerを使うのでインストールはとても簡単。ライセンスはMIT Licenseなので使いやすい。次の公式サイトのInstallation Guideの説明に従ってインストールした。特に問題がなかったので、この記事はInstallation Guideを意訳したものになっているので、公式サイトのInstallation Guideに従ってインストールするのが良い。英語が苦手は方は参考になるかもしれない。</p>
+<p><strong>公式サイト</strong></p>
+<ul>
+<li><a href="https://github.com/opencv/cvat">Powerful and efficient Computer Vision Annotation Tool (CVAT)</a></li>
+<li><a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/documentation/installation.md">Installation Guide</a></li>
+</ul>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Razer  Blade 15 (2018)</li>
+<li>Ubuntu 18.04</li>
+<li>Kernel 5.3.0-40-generic</li>
+<li>Python 3.6.9</li>
+<li>Google Chrome：ウェブブラウザはChromeしか対応していない。</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ol>
+<li>端末を開き、次のコマンドを実行してdockerをインストールする。
+<ul>
+<li>$ sudo apt update</li>
+<li>$ sudo apt install -y apt-transport-https  ca-certificates curl gnupg-agent software-properties-common</li>
+<li>$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</li>
+<li>$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"</li>
+<li>$ sudo apt update</li>
+<li>$ sudo apt install -y docker-ce docker-ce-cli containerd.io</li>
+</ul>
+</li>
+<li>ルート権限がなくてもdockerを実行できるように設定する。
+<ul>
+<li>$ sudo groupadd docker</li>
+<li>$ sudo usermod -aG docker $USER</li>
+<li>ログアウト、再ログインしてdockerがグループに追加されたか次のコマンドで確認する。dockerが表示されればOK。
+<ul>
+<li>$ groups</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>docker-compose (1.19.0以上)をインストールする。docker-composeは複数のコンテナを定義したり実行したりするためのdockerのツール。
+<ul>
+<li>$ sudo apt install -y python3-pip</li>
+<li>$ sudo python3 -m pip install docker-compose</li>
+</ul>
+</li>
+<li>CVATのソースコードをGitHubのレポジトリからクローンする。
+<ul>
+<li>$ cd  ~/src</li>
+<li>$ git clone https://github.com/opencv/cvat</li>
+<li>$ cd cvat</li>
+</ul>
+</li>
+<li>次のコマンドでdockerのイメージをビルドする。Ubuntu16.04のdockerイメージとCVATサーバーを実行するために必要な全てのファイルをダウンロードする。
+<ul>
+<li>$ docker-compose build</li>
+</ul>
+</li>
+<li>dockerコンテナの実行
+<ul>
+<li>$ docker-compose up -d</li>
+</ul>
+</li>
+<li> 管理者(superuser)の生成
+<ul>
+<li><code>$ docker exec -it cvat bash -ic 'python3 ~/manage.py createsuperuser'</code></li>
+<li>管理者アカウントのパスワードを決める。詳細は<a href="https://docs.djangoproject.com/en/2.2/ref/django-admin/#createsuperuser">Djangoドキュメント</a>を参照。なお、DjangoはWEBアプリケーションを開発するためのフレームワークで、CVATに使われている。</li>
+</ul>
+</li>
+<li>Google Chromeのインストール。CVATはChromeしか対応していないので、インストールしていない以下のコマンドでインストールをする。
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>$ curl https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -</li>
+<li>$ sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" &gt;&gt; /etc/apt/sources.list.d/google-chrome.list'</li>
+<li>$ sudo apt-get update</li>
+<li>$ sudo apt-get install -y google-chrome-stable</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>実　行</strong></p>
+<ul>
+<li>CVATをdockerでインストールしたので、次のコマンドでCVATのdockerコンテナを起動する。-dのオプションをつけるとバックグラウンドで実行するので、実行した端末で作業を続けることができる。
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose up -d</li>
+</ul>
+</li>
+<li>CVATはサーバーアプリケーションなので、CVATを起動したらChromeを起動して、localhost:8080にアクセスする。</li>
+<li>管理者としてログインしてパスワードを入力する。これでアノテーション作業が可能となる。詳細は以下のリンクを参照。CVATのドキュメントはとても詳しい。
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/documentation/user_guide.md">CVAT User Guide</a></li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat.png"><img class="alignleft size-large wp-image-16935" src="{{ site.baseurl }}/assets/images/2020/03/cvat-1024x913.png" alt="" width="1024" height="913" /></a></p>
+<p>終わり</p>

@@ -1,0 +1,78 @@
+---
+layout: post
+title: pybulletインストールメモ
+date: 2019-03-19 18:56:19.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1613'
+  _thumbnail_id: '15616'
+  _quads_config_visibility: a:0:{}
+  _wpas_skip_8121973: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/15615.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2019/03/kuka.png"><img class="aligncenter size-full wp-image-15616" src="{{ site.baseurl }}/assets/images/2019/03/kuka.png" alt="" width="1015" height="675" /></a></p>
+<p>pybulletをインストールしたときのメモ</p>
+<ul>
+<li>bullet3のインストール
+<ul>
+<li>$ mkdir src</li>
+<li>$ cd src</li>
+<li>$ git clone https://github.com/bulletphysics/bullet3.git</li>
+<li>$ cd bullet3</li>
+<li>$ ./build_cmake_pybullet_double.sh</li>
+<li>buildに成功すると以下のディレクトリにBulletのサンプルプログラムを実行できるExample BrowserのバイナリApp_ExampleBrowserができる。
+<ul>
+<li>~/src/bullet3/build_cmake/examples/ExampleBrowser</li>
+</ul>
+</li>
+<li>そのディレクトリへ移動して実行する。
+<ul>
+<li>$ cd ~/src/bullet3/build_cmake/examples/ExampleBrowser</li>
+<li>$ ./App_ExampleBrowser</li>
+</ul>
+</li>
+<li>上図のようなExample Browserが立ち上がる。図はExperiments-&gt;Kuka IKを選択した。</li>
+</ul>
+</li>
+<li>pybulletの実行
+<ul>
+<li>.bashrcに以下を追加する
+<ul>
+<li>export PYTHONPATH=/home/user_name/src/bullet3/build_cmake/examples/pybullet</li>
+</ul>
+</li>
+<li>以下のコマンドで設定を反映させる。
+<ul>
+<li>$ source ~/.bashrc</li>
+</ul>
+</li>
+<li>サンプルプログラムがあるディレクトリへ移動する。
+<ul>
+<li>$ cd ~/src/bullet3/examples/pybullet/examples</li>
+</ul>
+</li>
+<li>いろいろなファイルがあるがここでは、createVisualShape.pyを試す。
+<ul>
+<li>$ python3 createVisualShape.py</li>
+</ul>
+</li>
+<li>下図のようなウインドウが開けば成功。</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2019/03/duck.png"><img class="aligncenter size-full wp-image-15617" src="{{ site.baseurl }}/assets/images/2019/03/duck.png" alt="" width="1026" height="793" /></a></p>
+<p style="text-align: right;">終わり</p>

@@ -1,0 +1,238 @@
+---
+layout: post
+title: OpenVINO:モデルのダウンロード、中間表現への変換、そして推論
+date: 2020-03-08 18:04:13.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16908'
+  views: '1944'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16892.html"
+---
+<p>OpenVINOはDNNの推論に特化したツールキット。学習済みのいろいろモデルをダウンロードしてから、OpenVINOで使える中間表現(IR)フォーマットに変換してから、推論までの作業メモ。以下のサイトに基づいている。</p>
+<p style="padding-left: 40px;"><a href="https://github.com/opencv/open_model_zoo/blob/master/tools/downloader/README.md">open_model_zoo: Model Downloader and other automation tools</a></p>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Razer  Blade 15 (2018)</li>
+<li>Ubuntu 18.04</li>
+<li>Kernel 5.3.0-40-generic</li>
+<li>Python 3.6.9</li>
+<li>OpenVINO：2019.3.376 (2019R3.1) :DockerでインストールしたCVATで使っているOpenVinoと普通にインストールするOpenVINOのバージョンを合わせる必要がある。2020年3月8日時点だと不具合があったのでOpenVINOのバージョンを2019R3.1にしている。</li>
+</ul>
+<p><strong>モデルのダウンロード</strong></p>
+<ul>
+<li><a href="https://github.com/opencv/open_model_zoo">Open Model Zoo repository</a>からモデルをダウンロードする。
+<ul>
+<li>$ cd  ~/src</li>
+<li>$ git clone  https://github.com/opencv/open_model_zoo.git</li>
+<li>OpenVINO 2019R3.1のバージョンに合わせるため2019ブランチでチェックアウトする。これをしないとデモアプリのビルドで失敗する。
+<ul>
+<li>$ cd ~/src/open_model_zoo</li>
+<li>$ git checkout 2019</li>
+</ul>
+</li>
+<li>デモアプリのビルド
+<ul>
+<li>$ cd ~/src/open_model_zoo/demos</li>
+<li>$ ./build_demos.sh</li>
+<li>ビルドが成功すると~/omz_demos_build/intel64/Releaseにバイナリが保存される。</li>
+</ul>
+</li>
+<li>準備
+<ul>
+<li>OpenVINO 2019R3.1はインストールしておく。<a href="https://demura.net/misc/16879.html">インストールしていない場合はここを参照。</a></li>
+<li>$  cd /opt/intel/openvino_2019.3.376/deployment_tools/tools/model_downloader</li>
+<li>必要なツールのインストール
+<ul>
+<li>$ python3 -mpip install --user -r ./requirements.in</li>
+<li>$ python3 -mpip install --user -r ./requirements-pytorch.in</li>
+<li>$ python3 -mpip install --user -r ./requirements-caffe2.in</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>モデルのダウンロード
+<ul>
+<li>ダウンロードできるモデルを知るには次のコマンドを実行する。
+<ul>
+<li>$  cd /opt/intel/openvino_2019.3.376/deployment_tools/tools/model_downloader</li>
+<li><code>$ ./downloader.py --print_all</code></li>
+</ul>
+</li>
+<li> モデルをダウンロードする。全部ダウンロードすると約15GBになり、中間表現フォーマットに変換するとさらに約12GB、合計約27GBが必要になる。
+<ul>
+<li>全部ダウンロード：ディスク容量に余裕がある場合は、次のコマンドで全てダウンロードする。
+<ul>
+<li>$ mkdir -p ~/openvino_models</li>
+<li><code>$ ./downloader.py --all --output_dir ~/openvino_models</code></li>
+</ul>
+</li>
+<li>一部のモデルだけダウンロード：次のコマンドを一部のモデルだけを実行する。ここでは、この記事で推論のテストを行う7個のモデルだけをインストールする。
+<ul>
+<li><code>$ ./downloader.py --name mask_rcnn_inception_resnet_v2_atrous_coco --output_dir ~/openvino_models</code></li>
+<li>あと6個のモデルを一つずつダウンロードしてもよいがファイルに書くとまとめてダウンロードできるので、次のファイルをmodels.lstという名前で作成する。各行に１個のモデルを書いて改行する。
+<pre class="brush:cpp;">
+human-pose-estimation-0001
+face-detection-adas-0001
+age-gender-recognition-retail-0013
+head-pose-estimation-adas-0001
+emotions-recognition-retail-0003
+facial-landmarks-35-adas-0002
+</pre>
+<ul>
+<li><code>$ ./downloader.py --list models.lst --output_dir ~/openvino_models</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>中間表現への変換
+<ul>
+<li>全部ダウンロードした場合：全モデルを以下のコマンドで推論エンジン用IRフォーマットに変換する。
+<ul>
+<li>$  cd /opt/intel/openvino_2019.3.376/deployment_tools/tools/model_downloader</li>
+<li><code>$ ./converter.py --all --download_dir ~/openvino_models</code></li>
+</ul>
+</li>
+<li>一部だけダウンロードした場合：次のコマンドを一部のモデルだけ変換する。
+<ul>
+<li>$  cd /opt/intel/openvino_2019.3.376/deployment_tools/tools/model_downloader</li>
+<li><code>$ ./converter.py --name mask_rcnn_inception_resnet_v2_atrous_coco --download_dir ~/openvino_models</code></li>
+<li>あと6個のモデルを一つずつ変換してもよいがダウンロードと同様にファイルを指定するとまとめてできる。
+<ul>
+<li><code>$ ./converter.py --list models.lst --download_dir ~/openvino_models</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>推　論</strong></p>
+<ul>
+<li>では、ダウンロードしたモデルのいくつかを使って推論してみよう。</li>
+<li>Mask R-CNN Demo
+<ul>
+<li>$ cd ~/omz_demos_build/intel64/Release</li>
+<li>$ ./mask_rcnn_demo -i ~/Desktop/images/ike2.jpg -m ~/openvino_models/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP32/mask_rcnn_inception_resnet_v2_atrous_coco.xml
+<ul>
+<li>ここで、必ず必要となるオプションは-iと-m。-i：入力画像、-m：IRフォーマットの学習済みモデル。なお、-dのオプションでCPU、GPU、FPGA等を選択できるが私の環境ではGPUにすると処理時間が遅くなった。</li>
+</ul>
+</li>
+<li>上記コマンドの実行結果。出力はout0.png。処理に約6秒かかったことがわかる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/maskrcnn-result-1.png"><img class="alignleft size-large wp-image-16903" src="{{ site.baseurl }}/assets/images/2020/03/maskrcnn-result-1-1024x906.png" alt="" width="1024" height="906" /></a></li>
+<li>入力画像：ike2.jpg<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/ike2.jpg"><img class="alignleft size-full wp-image-16904" src="{{ site.baseurl }}/assets/images/2020/03/ike2.jpg" alt="" width="960" height="720" /></a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>出力画像：out0.png<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/out0.jpg"><img class="alignleft size-full wp-image-16905" src="{{ site.baseurl }}/assets/images/2020/03/out0.jpg" alt="" width="960" height="720" /></a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Human Pose Estimation Demo
+<ul>
+<li>$ cd ~/omz_demos_build/intel64/Release</li>
+<li>画像
+<ul>
+<li>$ ./multi-channel-human-pose-estimation-demo -i ~/Desktop/images/ike2.jpg -m ~/openvino_models/intel/human-pose-estimation-0001/FP32/human-pose-estimation-0001.xml</li>
+<li>出力として以下のようなウインドウが開く。CPUで12.53 fpsなのでまずまずの速さ。GPUの場合は15.4fpsと若干速くなった。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/ike2_pose.png"><img class="alignleft size-large wp-image-16906" src="{{ site.baseurl }}/assets/images/2020/03/ike2_pose-1024x589.png" alt="" width="1024" height="589" /></a></li>
+</ul>
+</li>
+<li>Webカメラ
+<ul>
+<li>$ ./multi-channel-human-pose-estimation-demo -i  /dev/video0  -m ~/openvino_models/intel/human-pose-estimation-0001/FP32/human-pose-estimation-0001.xml
+<ul>
+<li>Webカメラを使用するときは-iの後にカメラのデバイスファイル名を入れる。多くの場合はノートパソコン内臓のカメラのファイル名は/dev/video0。</li>
+</ul>
+</li>
+<li>出力として以下のようなウインドウが開く。GPUの場合は約15fps、CPUの場合は1fpsぐらい遅くなるがほとんど変わらない。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/fashion.png"><img class="alignleft size-large wp-image-16907" src="{{ site.baseurl }}/assets/images/2020/03/fashion-1024x589.png" alt="" width="1024" height="589" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Interactive Face Detection Demo
+<ul>
+<li>このデモは、顔検出、年齢・性別識別、頭の姿勢推定、感情識別、顔の特徴点が表示される。フレームレートもCPUで23fpsとかなり高速である。</li>
+<li>$ cd ~/omz_demos_build/intel64/Release</li>
+<li>Webカメラ
+<ul>
+<li>./interactive_face_detection_demo -i cam -m ~/openvino_models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001.xml -m_ag ~/openvino_models/intel/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml -m_hp ~/openvino_models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml -m_em ~/openvino_models/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml -m_lm ~/openvino_models/intel/facial-landmarks-35-adas-0002/FP32/facial-landmarks-35-adas-0002.xml</li>
+<li>出力として以下のようなウインドウが開く。
+<ul>
+<li>例として風船を持つ少女の画像を試すと感情Happyは当たっているように思えるが年齢が23歳と推定された。<br />
+<img class="alignleft size-full wp-image-16908" src="{{ site.baseurl }}/assets/images/2020/03/girl2.png" alt="" width="640" height="504" /></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>自分を試すと。27歳男性、驚き。年齢が倍ぐらい違う。感情も違う。この学習済み重みでは、年齢と感情はかなり違うが、それ以外は結構使えるかもしれない。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/face1.png"><img class="alignleft size-full wp-image-16909" src="{{ site.baseurl }}/assets/images/2020/03/face1.png" alt="" width="640" height="504" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>多くの学習済みモデルをCPUで推論しても、ロボットのアプリケーションで使えるレベルだと思う。次は、オリジナルデータで学習したモデルをOpenVINOで推論してみたい。</p>
+<p>終わり</p>

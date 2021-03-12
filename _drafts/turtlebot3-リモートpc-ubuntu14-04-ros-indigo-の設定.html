@@ -1,0 +1,31 @@
+---
+layout: post
+title: 'TurtleBot3: リモートPC (Ubuntu14.04 + ROS Indigo)の設定'
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>TurtleBot3 Offcial Wikiでは、Ubuntu 16.04とROS Kinetic KameでのリモートPCの設定について書いてあるが、手持ちのノートPCはUbuntu14.04 + ROS Indigoなので設定してみる。</p>
+<p>依存パッケージのインストール</p>
+<ul>
+<li>cd ~/catkin_ws/src/</li>
+<li>git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git</li>
+<li>git clone https://github.com/ROBOTIS-GIT/turtlebot3.git</li>
+<li>cd ~/catkin_ws &amp;&amp; catkin_make</li>
+</ul>
+<p>package 'openni-dev' not foundと出てcatkin_makeが失敗する。</p>

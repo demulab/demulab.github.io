@@ -1,0 +1,158 @@
+---
+layout: post
+title: RoboCup2015用Ubunt14.04の環境構築
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- robocup
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p style="text-align: justify;">Ubuntu14.04にROS Indigoを入れてTurtlebot2を動かすまでの簡単な作業メモ。</p>
+<ul>
+<ul>
+<li style="text-align: justify;">Cudaインストール
+<ul>
+<li style="text-align: justify;"><a href="https://developer.nvidia.com/cuda-downloads">Cuda Downloads</a>から以下をダウンロードする
+<ul>
+<li style="text-align: justify;"><a href="http://developer.download.nvidia.com/compute/cuda/7_0/Prod/local_installers/rpmdeb/cuda-repo-ubuntu1404-7-0-local_7.0-28_amd64.deb">Ubuntu 14.04  Local package installer</a></li>
+</ul>
+</li>
+<li style="text-align: justify;">sudo dpkg -i cuda-repo-ubuntu1404-7-0-local_7.0-28_amd64.deb</li>
+<li style="text-align: justify;">sudo apt-get update</li>
+<li style="text-align: justify;">sudo apt-get install cuda</li>
+<li style="text-align: justify;">以下を/etc/environmentに追加する
+<ul>
+<li style="text-align: justify;">export PATH=/usr/local/cuda-7.0/bin:$PATH</li>
+<li style="text-align: justify;">export LD_LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LD_LIBRARY_PATH</li>
+</ul>
+</li>
+<li style="text-align: justify;">source ~/.bashrc</li>
+<li style="text-align: justify;">mkdir src</li>
+<li style="text-align: justify;">cd src</li>
+<li style="text-align: justify;">cuda-install-samples-7.0.sh   .</li>
+<li style="text-align: justify;">cd NVIDIA_CUDA-7.0_samples</li>
+</ul>
+</li>
+<li style="text-align: justify;">ROSインストール：<a href="http://wiki.ros.org/indigo/Installation/Ubuntu">http://wiki.ros.org/in-digo/Installation/Ubuntu</a>のとおり、Desktop-Fullをインストールする。</li>
+<li style="text-align: justify;">Turtlebotパッケージのインストール：<a href="http://wiki.ros.org/turtlebot/Tutorials/indigo/Installation">http://wiki.ros.org/turtlebot/Tutorials/indigo/Installation</a>ではホームディレクトリにrocon、kobuki、turtlebotの３つのディレクトリを作るが、ホームディレクトリの構成をシンプルにしたいので~/turtlebotの下にインストールする。それ以外は同じ。バイナリがないのでソースからインストールする必要あり。
+<ul>
+<li style="text-align: justify;">4.1 Preparation （準備）
+<ul>
+<li style="text-align: justify;"><code>$ sudo apt-get install python-rosdep python-wstool ros-indigo-ros</code></li>
+<li style="text-align: justify;"><code>$ sudo rosdep init</code></li>
+<li style="text-align: justify;"><code>$ rosdep update</code></li>
+</ul>
+</li>
+<li style="text-align: justify;">4.2 Workspaces (ワークスペース）：~/turtlebotの下に３つのディレクトリを作成
+<ul>
+<li style="text-align: justify;"><code>$ mkdir -p ~/turtlebot/rocon</code></li>
+<li style="text-align: justify;"><code>$ cd ~/turtlebot/rocon</code></li>
+<li style="text-align: justify;"><code>$ wstool init -j5 src https://raw.github.com/robotics-in-concert/rocon/indigo/rocon.rosinstall</code></li>
+<li style="text-align: justify;"><code>$ source /opt/ros/indigo/setup.bash</code></li>
+<li style="text-align: justify;"><code>$ rosdep install --from-paths src -i -y</code></li>
+<li style="text-align: justify;"><code>$ catkin_make</code></li>
+<li style="text-align: justify;"><code>$ mkdir -p ~/turtlebot/kobuki</code></li>
+<li style="text-align: justify;"><code>$ cd ~/turtlebot/kobuki</code></li>
+<li style="text-align: justify;"><code>$ wstool init src -j5 https://raw.github.com/yujinrobot/yujin_tools/master/rosinstalls/indigo/kobuki.rosinstall</code></li>
+<li style="text-align: justify;"><code>$ source ~/turtlebot/rocon/devel/setup.bash</code></li>
+<li style="text-align: justify;"><code>$ rosdep install --from-paths src -i -y</code></li>
+<li style="text-align: justify;"><code>$ catkin_make</code></li>
+<li style="text-align: justify;"><code>$ mkdir -p ~/turtlebot/turtlebot</code></li>
+<li style="text-align: justify;"><code>$ cd ~/turtlebot/turtlebot</code></li>
+<li style="text-align: justify;"><code>$ wstool init src -j5 https://raw.github.com/yujinrobot/yujin_tools/master/rosinstalls/indigo/turtlebot.rosinstall</code></li>
+<li style="text-align: justify;"><code>$ source ~/turtlebot/kobuki/devel/setup.bash</code></li>
+<li style="text-align: justify;"><code>$ rosdep install --from-paths src -i -y</code></li>
+<li style="text-align: justify;"><code>$ catkin_make</code></li>
+<li style="text-align: justify;"><code>$ source ~/turtlebot/turtlebot/devel/setup.bash</code></li>
+<li style="text-align: justify;"><code>$ rosrun kobuki_ftdi create_udev_rules</code></li>
+</ul>
+</li>
+<li style="text-align: justify;">4.3 Convinience (利便性)
+<ul>
+<li style="text-align: justify;"><code>echo "source ~/turtlebot/turtlebot/devel/setup.bash" &gt;&gt; ~/.bashrc</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li style="text-align: justify;">Hokuyo Lidar設定:<br />
+TurtlebotパッケージではHokuyo Lidar (UTM-30LX)の設定がないので追加する。<br />
+~/turtlebot/turtlebot/src/turtlebot/turtlebot_description/urdf/turtlebot_library.urdf.xacroに以下のコードを一番下の&lt;/robot&gt;の上に追加する。</p>
+<pre class="brush:cpp;">&#60;!-- Urg Lidar --&#62;
+  &#60;joint name="laser" type="fixed"&#62;
+    &#60;origin xyz="0.13 0.00 0.1" rpy="0 0 0" /&#62;
+    &#60;parent link="base_link" /&#62;
+    &#60;child link="base_laser_link" /&#62;
+  &#60;/joint&#62;
+
+  &#60;link name="base_laser_link"&#62;
+    &#60;visual&#62;
+      &#60;geometry&#62;
+        &#60;box size="0.06 0.06 0.07" /&#62;
+      &#60;/geometry&#62;
+      &#60;material name="Black" /&#62;
+    &#60;/visual&#62;
+    &#60;inertial&#62;
+      &#60;mass value="0.000001" /&#62;
+      &#60;origin xyz="0 0 0" /&#62;
+      &#60;inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+        iyy="0.0001" iyz="0.0"
+        izz="0.0001" /&#62;
+    &#60;/inertial&#62;
+  &#60;/link&#62;</pre>
+</li>
+<li style="text-align: justify;"> ~/turtlebot/turtlebot/src/turtlebot/turtlebot_bringup/launch/3dsensor.launchの次の部分を変更する。<br />
+変更前：</p>
+<pre class="brush:cpp;"> &#60;arg name="scan_topic" default="scan"/&#62;</pre>
+<p>変更後:</p>
+<pre class="brush:cpp;"> &#60;arg name="scan_topic" default="kinect_scan"/&#62;
+ &#60;node name="laser_driver" pkg="urg_node" type="urg_node"&#62; &#60;param name="frame_id" value="base_laser_link" /&#62;&#60;/node&#62;
+</pre>
+</li>
+</ul>
+<li>urg nodeをインストールする。
+<ul>
+<li>sudo apt-get install ros-indigo-urg-node</li>
+</ul>
+</li>
+<li>OpenCV2.4.9のインストール: 以下のサイトの手順に従ったが、Ubuntuのバージョンが上がるとまずいのでsudo apt-get upgradeはしなかった。
+<ul>
+<li><a href="http://www.samontab.com/web/2014/06/installing-opencv-2-4-9-in-ubuntu-14-04-lts/">Installing OpenCV 2.4.9 in Ubuntu 14.04 LTS</a></li>
+</ul>
+</li>
+<li>doxygenのインストール
+<ul>
+<li>$ sudo apt-get install doxygen  doxygen-gui</li>
+</ul>
+</li>
+<li><a href="http://www.rt-shop.jp/blog/archives/3372">RTのlibkobuki1.0.3をここからダウンロード</a>しインストール。
+<ul>
+<li>$ unzip libkobuki-1.0.3.zip</li>
+<li>$ cd libkobuki-1.0.3</li>
+<li>$ unzip libkobuki-1.0.3src.zip</li>
+<li>$ ./BuildAll.sh
+<ul>
+<li>私の環境では改行コードの関係でエラーがでたので以下のコマンドでLinux用に修正する。</li>
+<li>$ sed -i 's/\r//'  BuildAll.sh</li>
+<li>$ ./BuildAll.sh</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Julius4.3.1を<a href="http://julius.sourceforge.jp/index.php?q=documents.html#install">ここからダウンロード</a>しThe juliusbook第２章に従いソースからインストール。</li>
+<li>Hydroで動いていたプログラムがIndigoでも動いたので終わり。</li>
+</ul>
+<p><!--more--></p>
+<p>&nbsp;</p>

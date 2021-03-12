@@ -1,0 +1,63 @@
+---
+layout: post
+title: 'Ubuntu18.04: Proxy環境下でaptできないときの設定'
+date: 2020-01-09 09:31:10.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '7606'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/16564.html"
+---
+<p>大学等のProxy環境下でaptできないときの設定。</p>
+<ul>
+<li>.bashrcの最後に好きなエディタを使い以下の３行を追加する。<br />
+<code>export ftp_proxy="ftp://プロキシサーバー名:ポート番号/"</code><br />
+<code>export http_proxy="http://プロキシサーバー名:ポート番号/"</code><br />
+<code>export https_proxy="https://プロキシサーバー名:ポート番号/"</code></li>
+<li>aptの設定を行う。
+<ul>
+<li>$ cd /etc/apt/apt.conf.d</li>
+<li>好きなエディタを使い上のディレクトリ下でapt.confを作成する。ファイルの中身は次のとおり。<br />
+<code>Acquire::http::proxy "http://プロキシサーバー名:ポート番号/";</code><br />
+<code>Acquire::https::proxy "https://プロキシサーバー名:ポート番号/";</code><br />
+<code>Acquire::ftp::proxy "ftp://プロキシサーバー名:ポート番号/";</code></li>
+</ul>
+</li>
+</ul>
+<p>以上</p>
+<p>&nbsp;</p>

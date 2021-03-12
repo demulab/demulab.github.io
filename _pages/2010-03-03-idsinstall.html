@@ -1,0 +1,67 @@
+---
+layout: page
+title: irrDrawStuffのインストール法 (VC++2008EE)
+date: 2010-03-03 11:47:07.000000000 +09:00
+type: page
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1523'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/idsinstall"
+---
+<p>irrDrawstuffインストール法を説明します．今回は一番ユーザが多いと思われるWindows VistaとVisual C++ 2008 Expression Editionを使った場合です．ODEが既にインストールされている方はBからスタートしてください．</p>
+<p>A. ODEのインストール</p>
+<p>B. irrlichtのダウンロードとインストール</p>
+<p>C. Visual C++ 2008 Expression Editionの設定</p>
+<p>D. irrDrawstuffのダウンロードとインストール</p>
+<hr /><strong>A. ODE</strong><strong>のインストール</strong></p>
+<p><span style="text-decoration: underline;"><a href="http://demura.net/9ode/3864.html">このページの指示に従ってダウンロード・インストールする．</a></span></p>
+<p><strong>B. irrlicht</strong><strong>のインストール</strong></p>
+<p><a href="http://demura.net/ids/6268.html">このページの指示に従ってダウンロード・インストールする．</a></p>
+<p><strong>C. Visual C++ 2008 Expression Edition</strong><strong>の設定</strong><a href="http://demura.net/misc/558.html"></a></p>
+<p>１．まず，Visual C++を起動します．ツール(T)→オプション(O)を選択し，VC++ディレクトリのインクルードファイルを以下のように追加する．<strong><span style="color: #ff0000;">なお，irrlichtのバージョン番号はお使いのirrlichtのバージョンに変更してください．<span style="color: #0000ff;">つまり，irrlicht-1.7.1をお使いの場合は下図のirrlicht-1.6をirrlicht-1.7.1に変更する必要があります．</span></span></strong></p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2010/01/vsc_option_include.bmp"><img class="aligncenter size-full wp-image-5833" title="vsc_option_include" src="{{ site.baseurl }}/assets/images/2010/03/vsc_option_include.bmp" alt="vsc_option_include" /></a></p>
+<p>・c:¥ode-バージョン番号¥include</p>
+<p>・c:¥irrlicht-バージョン番号¥include</p>
+<p>２．VC++ディレクトリのライブラリファイルを以下のように追加する．</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2010/01/vsc_option_lib.bmp"><img class="aligncenter size-full wp-image-5834" title="vsc_option_lib" src="{{ site.baseurl }}/assets/images/2010/03/vsc_option_lib.bmp" alt="vsc_option_lib" /></a></p>
+<p>・ c:\irrlicht-バージョン番号\lib\Win32-visualstudio</p>
+<p><strong>D. irrDrawstuff</strong><strong>のダウンロードとインストール</strong></p>
+<p>１．<a href="http://demura.net/dl">このページ</a>からダウンロードし，デスクトップへ保存する．</p>
+<p>２．解凍ソフトの準備（持っていない方のみ）</p>
+<p style="padding-left: 30px;">irrDrawstuffバージョン.zipはzipフォーマットで圧縮されていますのでzipを解凍できるソフトウェアをインストールしてください．ここでは，私が愛用しているLhaplusという圧縮・解凍ソフトを使います．<a href="http://www.google.co.jp/" target="_self">Google</a>でLhaplusを検索するとダウンロード先を簡単に見つけることができます．</p>
+<p>３．解凍と移動</p>
+<ul>
+<li>デスクトップにあるirrDrawstuffバージョン.zipをダブルクリックすると，irrDrawstuffバージョンというフォルダがデスクトップに生成されます．</li>
+<li>irrDrawstuffバージョンフォルダをCドライブのすぐ下に移動する．</li>
+<li>マウスをirrDrawstuffバージョンフォルダに当て，右マウスボタンをクリック，「切り取り(T)」を選択．</li>
+<li>スタート→(マイ)コンピュータ→ローカルディスク(c)をダブルクリック．</li>
+<li>マウスの右ボタンをクリックし，「貼り付け（P)」を選択．</li>
+</ul>
+<p>４. ビルド</p>
+<ul>
+<li>Visual C++ 2008 Express Editionを起動</li>
+<li>メニューバーから「ファイル(F)」→「開く（O)」→「プロジェクト/ソリューション(P)」を選択</li>
+<li>c:\irrDrawstuff-バージョン番号\build\vs2008\irrdrawstuff.slnを選択</li>
+<li>ビルドターゲットがDebugLibであることを確認する．</li>
+<li>「ビルド(B)」→「ソリューションのビルド(B)」を選択</li>
+<li>デモプログラムの実行ファイルは次のフォルダに生成される．
+<ul>
+<li>c:\irrDrawstuff-バージョン番号\lib\DebugLib</li>
+</ul>
+</li>
+<li>c:\irrlicht-バージョン番号\bin\Win32-VisualStudioの中のIrrlicht.dllをc:\irrDrawstuff-バージョン番号\lib\DebugLibにコピーする．</li>
+<li>試しに，amotor.exeをダブルクリックして起動すればirrDrawstuffのビルド成功．</li>
+</ul>
+<p>これで，irrDrawstuffのインストールは終わりです．</p>

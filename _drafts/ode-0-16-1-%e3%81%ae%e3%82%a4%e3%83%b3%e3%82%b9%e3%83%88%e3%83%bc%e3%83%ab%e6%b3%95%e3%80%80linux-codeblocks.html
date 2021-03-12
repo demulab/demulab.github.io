@@ -1,0 +1,142 @@
+---
+layout: post
+title: ODE 0.16.1 のインストール法　(Linux + Code::Blocks)
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- education
+- ode
+- ODE本
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '18265'
+  views: '14'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _wp_old_date: '2020-06-20'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/18262.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2009/06/odelogo3.jpg"><img class="alignnone size-full wp-image-3908" title="odelogo3" src="{{ site.baseurl }}/assets/images/odelogo3.jpg" alt="odelogo3" width="200" height="62" /></a></p>
+<p>2020年2月19日にリリースされたODE0.16.1のインストール法を説明します．ここでは日本であまりメジャーではありませんが，海外ではユーザが多く私の講義でも利用しているマルチプラットフォームの開発環境Code::Blocks20.03用の記事です．</p>
+<p>OSはLinuxのUbuntu18.04を使います。Ubuntuを使うとWindowsと同様な操作でプログラムのビルドが可能です。</p>
+<ul>
+<li><strong>ODE 0.16.1のインストール</strong>
+<ul>
+<li>次のダウンロードサイトから<a href="https://bitbucket.org/odedevs/ode/downloads/ode-0.16.1.tar.gz">ode-0.16.1.tar.gz</a>を保存する。<a href="https://bitbucket.org/odedevs/ode/downloads/ode-0.16.1.tar.gz">ここをクリックすると直接ダウンロードする。</a>
+<ul>
+<li><a href="https://bitbucket.org/odedevs/ode/downloads/">ODE ダウンロード</a></li>
+</ul>
+</li>
+<li>端末を開き、以下のコマンドを実行して、保存したファイルを移動、展開する。
+<ul>
+<li>ホームディレクトリに移動
+<ul>
+<li>$ cd</li>
+</ul>
+</li>
+<li>srcディレクトリの作成
+<ul>
+<li>$ mkdir  src</li>
+</ul>
+</li>
+<li>ファイルをsrcディレクリへ移動する。~(チルダと読む)はホームディレクトに意味。つまり、/home/ユーザ名。
+<ul>
+<li>$ cp ~/Downloads/ode-0.16.1.tar.gz  ~/src</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> 次のコマンドでダウンロードしたファイルを展開する。
+<ul>
+<li>srcディレクトリへ移動
+<ul>
+<li>$ cd ~/src</li>
+</ul>
+</li>
+<li>圧縮されたファイルを展開
+<ul>
+<li>$ tar xvzf ode-0.16.1.tar.gz</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルドをするためのワークスペースを作ります。以下のようにコマンドを打ち込む．カットアンドペースト の場合は以下の文字列を使用し，自分で打ち込む場合は２個の-(マイナス)文字がつながって見えるので，下画像を参照して注意深く打ち込んでください．
+<ul>
+<li>$ cd ode-0.16.1/build<br />
+注：cdコマンドはディレクトリの移動</li>
+<li>$ sudo apt install premake4</li>
+<li><code>premake4 --with-demos --only-double --only-static --os=linux codeblocks </code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>成功するとcodeblocksフォルダができる．フォルダリ構成は以下となる．
+<ul>
+<li>/home/ユーザ名/src/ode-0.16.1/build/codeblocks</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ODEのビルド </strong>
+<ul>
+<li>codeblocksを起動
+<ul>
+<li>$ codeblocks &amp;</li>
+</ul>
+</li>
+<li>codeblocksのメニューバーから「設定」→「コンパイラ」を設定すると以下の「グローバルなコンパイラ設定」になるので、「リンカ」のタブを選び、「追加」をクリックして、以下のように"pthread"と"X11"を追加する。「OK」をクリックしてウインドウを閉じる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_コンパイラ設定_2020-6-21_23-58-42_No-00.png"><img class="aligncenter size-full wp-image-18263" src="{{ site.baseurl }}/assets/images/SnapCrab_&#12467;&#12531;&#12497;&#12452;&#12521;&#35373;&#23450;_2020-6-21_23-58-42_No-00.png" alt="" width="858" height="832" /></a></li>
+<li> codeblocksのメニューバーから「ファイル(F)」→「開く（O)」を選択
+<ul>
+<li>/home/ユーザ名/src/ode-0.16.1/build/codeblocks/ode.workspaceを選択</li>
+</ul>
+</li>
+<li>「ビルド(B)」→「ワークスペースをビルド(W)」を選択する。
+<ul>
+<li>デモプログラムの実行ファイルは/home/ユーザ名/src/ode-0.16.1/lib/Debugに生成される．</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>デモプログラムの実行</strong>
+<ul>
+<li>codeblocksの左欄にプロジェクト一覧が表示されるので実行したデモプログラムをダブルクリックして太字にする。ここでは、demo_buggyを選んだ。メニューバーの下の「実行」アイコンをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_-demo_buggy-CodeBlocks-1601_2020-6-22_0-3-20_No-00.png"><img class="aligncenter size-large wp-image-18264" src="{{ site.baseurl }}/assets/images/SnapCrab_-demo_buggy-CodeBlocks-1601_2020-6-22_0-3-20_No-00-1024x635.png" alt="" width="1024" height="635" /></a></li>
+<li>以下のバギーが現れたら成功。ごくろうさま！マウス操作で視点等を変えることができる。’a’キーを押すと前進、’z’キーで後進、’,’キーで左折、’.’キーで 右折する。なお、このバキーは３輪なのですぐ転倒してしまいますね。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_Simulation_2020-6-22_0-6-2_No-00.png"><img class="aligncenter size-full wp-image-18265" src="{{ site.baseurl }}/assets/images/SnapCrab_Simulation_2020-6-22_0-6-2_No-00.png" alt="" width="394" height="360" /></a></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

@@ -1,0 +1,147 @@
+---
+layout: post
+title: ROS演習8-2020：地図作成・自己位置推定 (gmapping, amcl)
+date: 2020-12-03 07:14:56.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '15451'
+  views: '128'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19676.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/11/Screenshot-from-2018-12-06-00-13-23.png"><img class="aligncenter size-full wp-image-15451" src="{{ site.baseurl }}/assets/images/2020/12/Screenshot-from-2018-12-06-00-13-23.png" alt="" width="1279" height="700" /></a><br />
+&nbsp;
+<p>この記事は私が金沢工業大学ロボティクス学科で担当している2020年度後学期開講の講義ロボットプログラミングⅡ用です。今回は地図作成にgmappingパッケージと自己位置推定にamclパッケージを使いロボットにナビゲーションをさせましょう！　本記事を以下の記事を参考にしています。</p>
+<p>なお、gmappingは占有格子地図をベースとしたFastSLAMのパッケージで、amclはモンテカルロ位置同定の一種であるAdaptive Monte Carlo Localizationのパッケージとなっています。</p>
+<ul>
+<li><a href="https://turtlebot3.readthedocs.io/en/latest/slam.html">10 SLAM</a></li>
+<li><a href="https://turtlebot3.readthedocs.io/en/latest/navigation.html">11 Navigation</a></li>
+</ul>
+<p><strong>０．準備</strong></p>
+<ul>
+<li>以下を~/.bashrcの追加する。
+<pre> export LASER=rplidar
+ export NUM_ROBOTS=1
+ export RVIZ=true</pre>
+</li>
+</ul>
+<p><strong>１．　地図作成</strong><br />
+<br />&nbsp; &nbsp; &nbsp; 地図を作るために端末を３つ開く。<br />&nbsp;(1)&nbsp; 1番目の端末で次のコマンドを実行すると、gazeboシミュレータとOSのビジュアライゼーションツールrvizが起動する。</p>
+<ul>
+<li><span style="color: #222222; font-family: monospace; background-color: #e9ebec;"><code>$ export LOCALIZATION=slam</code></span></li>
+<li><span style="color: #222222; font-family: monospace; background-color: #e9ebec;"><code>$ export RVIZ_CONFIG=navigation</code></span></li>
+<li><code>$ roslaunch ca_gazebo create_house.launch</code>
+<ul>
+<li>最後の引数にはシミュレーション環境のlaunchファイルを指定する。create_house.launchは下図に示す家のシミュレーション環境である。~/catkin_ws/src/create_autonomy/ca_gazebo/launchにいろいろな環境がある。</li>
+<li><span style="color: #ff0000;">エラー1：Gazeboを起動しても以下のエラーで画面が真っ暗らな場合</span><br />
+<span style="color: #ff0000;">[Err] [REST.cc:205] Error in REST request</span><br />
+<span style="color: #ff0000;">libcurl: (51) SSL: no alternative certificate subject name matches target host name ‘api.ignitionfuel.org’</span></p>
+<ul>
+<li><span style="color: #ff0000;">~/.ignition/fuel/config.yamlを次のように変更してください。</span>
+<ul>
+<li><span style="color: #ff0000;">変更前：<code>url: https://api.ignitionfuel.org</code></span></li>
+<li><span style="color: #ff0000;">変更後：<code>url: https://api.ignitionrobotics.org</code></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span style="color: #ff0000;">エラー2：rvizがOpenGL関係のエラーで落ちる場合は、以下の１行を.bashrcの最後に付け加える</span>
+<ul>
+<li><span style="color: #ff0000;">export LIBGL_ALWAYS_SOFTWARE=""</span></li>
+</ul>
+</li>
+<li>エラー３：以下のようにinvalid master URI: http://:11311/と表示される場合。<br /><img src="{{ site.baseurl }}/assets/images/2020/12/SnapCrab_demulab%40EARTH%20~_2020-11-26_9-10-58_No-00%20%281%29.png" alt="" role="presentation" style="font-size: 13.2px;" /></li>
+</ul>
+<ul>
+<li>次のコマンドを実行し、使っているノートパソコンのIPアドレスを調べ、IPアドレスの先頭の番号をメモする。下図の例ではeth0→inetの192になる。<br /><img src="{{ site.baseurl }}/assets/images/2020/12/ifconfig.png" alt="" width="848" height="466" role="presentation" class="img-responsive atto_image_button_text-bottom" /></li>
+<li>~/.bashrcに次の１行を挿入して、ROSマスターの場所(URI: Universal Resource Identifier)を指定する。この例ではIPアドレスの先頭番号が192である。自分のIPアドレスが違う番号の場合は下の192をその番号に変更する。それ以外は変更しない。</li>
+</ul>
+<ul>
+<li>export ROS_MASTER_URI=http://$(ifconfig | grep 'inet 192' | awk '{print $2}'):11311/</li>
+</ul>
+</li>
+</ul>
+<li>エラー４：以下のエラーメッセージが出て、gazeboが真っ暗な状態が続きとき。 source ~/proxy.shコマンドを実行する。</li>
+<ul>
+<li></li>
+<li>[Err] [REST.cc:205] Error in REST request</li>
+<li>libcurl: (7) Failed to connect to api.ignitionrobotics.org port 443: 接続がタイムアウトしました</li>
+</ul>
+<p>(2)２番目の端末でロボットを動かすとrviz上で地図が生成されるのがわかる。注意点としてはロボットを壁などに衝突させないこと。衝突するとロボットの位置がずれて、地図も不正確な地図になってしまう。</p>
+<ul>
+<li><code>$ roslaunch ca_tools keyboard_teleop.launch</code></li>
+</ul>
+<p>(3)&nbsp; ３番目の端末を開き、以下のコマンドで地図を保存する。mymapは保存する地図名なので適宜変更する。画像ファイルのmymap.pgmと設定ファイルのmymap.yamlの２つのファイルが作られる。以下のコマンドを実行したディレクトリで、lsコマンドにより２つのファイルがあるか確認する。ない場合は失敗したので(3)の作業をやり直す。それでもない場合は、端末を全部落として(1)から作業をやり直す。
+<ul>
+<li><code></code><code>$ rosrun map_server map_saver -f mymap</code></li>
+</ul>
+<p>&nbsp;&nbsp;
+<p>&nbsp;<br />
+<strong>２．　ナビゲーション<br /></strong>&nbsp; &nbsp; &nbsp; &nbsp; 一度開いている端末を全部閉じ、ノードを落とす。新たに端末を２つ開く。<br />&nbsp;(1)1番目の端末で 以下のコマンドを実行してGazeboシミュレータとRvizを起動する。</p>
+<ul>
+<li><code>$ export LOCALIZATION=amcl</code></li>
+<li>最後の引数にはナビゲーションした環境のlaunchファイルを指定する。実行すると以下のGazeboとRvizが起動する。
+<ul>
+<li><code>$ roslaunch ca_gazebo create_house.launch&nbsp;<span style="background-color: rgb(247, 247, 249);"><br /></span></code><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Gazebo_2020-8-21_13-5-58_No-00.png" style="font-size: 13.2px;"><img class="aligncenter size-large wp-image-18862" src="{{ site.baseurl }}/assets/images/2020/12/SnapCrab_Gazebo_2020-8-21_13-5-58_No-00-1024x556.png" alt="" width="1024" height="556" /></a><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_configrviz-RViz_2020-8-21_13-6-10_No-00.png" style="font-size: 13.2px;"><img class="aligncenter size-large wp-image-18863" src="{{ site.baseurl }}/assets/images/2020/12/SnapCrab_configrviz-RViz_2020-8-21_13-6-10_No-00-1024x629.png" alt="" width="1024" height="629" /></a></li>
+</ul>
+</li>
+</ul>
+<p>(2) ナビゲーションの実行</p>
+<ul>
+<li>２番目の端末で以下のコマンドを実行する。
+<ul>
+<li><code>$ roslaunch ca_move_base send_goal.launch</code></li>
+</ul>
+</li>
+<li>次にロボット初期位置の設定を確認する。<br />
+GazeboとRviz上でのロボットの位置が同じか確認する。ずれている場合は、起動したRvizメニューバー（下図）の緑枠で囲んだ"2D Pose Estimation"をクリックして選択し、ロボットの姿勢と位置が合うようにロボットの位置と向きを設定する。ロボットの位置にマウスのカーソールを持って行き、ロボットの向きにドラッグすると設定終わり。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/rviz_menu.png"><img class="aligncenter size-full wp-image-18866" src="{{ site.baseurl }}/assets/images/2020/12/rviz_menu.png" alt="" width="867" height="89" /></a></li>
+<li>ゴールの設定<br />
+次に上図の赤枠で囲んだ"2D Nav Goal"をクリックして、初期位置を設定したのと同様に、ゴールの位置と向きを設定する。設定するとロボットが自動でゴールまで動き出し、設定した位置と向きを向いて止まる。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Gazebo_2020-8-21_0-24-58_No-00.png"><img class="aligncenter size-large wp-image-18841" src="{{ site.baseurl }}/assets/images/2020/12/SnapCrab_Gazebo_2020-8-21_0-24-58_No-00-1024x571.png" alt="" width="1024" height="571" /></a></p>
+<p><strong><br />３．演　習</strong>
+<ul>
+<li>create_house.launchのシミュレーション環境を使って、地図生成とナビゲーションをやってみよう！</li>
+<li><a href="https://demura.net/education/lecture/19673.html">ROS演習７-2020</a>のcreate_fmt_world.launchシミュレーション環境（下図）を使って、スタート地点からゴールまでロボットをナビゲーションさせてみよう。スタート地点は上図で上空に伸びている青い線、初期位置(0, 0)、ゴールは上図の右上にあるポールです。なお、地図上の格子は一辺が1[m]です。</li>
+</ul>
+<p>&nbsp;<a href="https://demura.net/wordpress/wp-content/uploads/2019/11/building.jpg"><img class="aligncenter size-large wp-image-16407" src="{{ site.baseurl }}/assets/images/2020/12/building-1024x617.jpg" alt="" width="1024" height="617" /></a><br />
+<strong><br /></strong><br />
+終わり</p></p>

@@ -1,0 +1,215 @@
+---
+layout: post
+title: 深層学習オンラインハッカソン2021
+date: 2021-01-09 09:45:38.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-01-11 10:25:49'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19742'
+  views: '532'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/19735.html"
+---
+<p>[caption id="attachment_19742" align="aligncenter" width="320"]<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/SnapCrab_NoName_2021-1-9_9-45-7_No-00.png"><img class="wp-image-19742 size-full" src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_NoName_2021-1-9_9-45-7_No-00.png" alt="YOLACTでの推論結果" width="320" height="450" /></a> YOLACT++での推論結果[/caption]</p>
+<p>専門ゼミ（プレゼミ）で実施する深層学習ハッカソンの実施要領。コロナ禍のためオンラインで実施する。</p>
+<p><strong>目　的</strong></p>
+<ul>
+<li>現実のテーマを深層学習を使って解決することにより、深層学習の使い方を体験し理解を深める。</li>
+<li>オンラインでの共同開発を体験する。</li>
+<li>専門ゼミ生の交流を深める。</li>
+</ul>
+<p><strong>スケジュール</strong></p>
+<ul>
+<li>1/9(土)
+<ul>
+<li>10:00  オープニング (Zoom会場)</li>
+<li>10:01～12:00 インプット (Zoom会場)</li>
+<li>12:00～13:00  昼休み</li>
+<li>13:00～14:00  チーム分け (Zoom会場)</li>
+<li>14:00～　　　　開発 (各チームで環境用意。17時まではZoom利用可能)</li>
+</ul>
+</li>
+<li>1/10(日)
+<ul>
+<li>        ～13:00  開発 (各チームで環境用意)</li>
+<li>13:00 　　　　進捗報告（Zoom会場)</li>
+<li>進捗状況により以下の予定は変更の可能性あり</li>
+<li>13:00～18:00 開発・発表準備 (各チームで環境用意)</li>
+</ul>
+</li>
+<li>1/11(月)
+<ul>
+<li>　　　～18:00 開発・発表準備 (各チームで環境用意)</li>
+<li>18:00～19:00 コンテスト（Zoom会場)</li>
+<li>19:00 　　　　クロージング（Zoom会場)</li>
+</ul>
+</li>
+</ul>
+<p><strong>インプット</strong></p>
+<ul>
+<li>Google Colaboratory　(Colab)
+<ul>
+<li><a href="https://colab.research.google.com/notebooks/intro.ipynb#recent=true">Colaboratory へようこそ (by google)</a></li>
+<li><a href="https://obgynai.com/google-colaboratory/">Google Colaboratoryの使い方【完全マニュアル】(by Tommy blog)</a></li>
+</ul>
+</li>
+<li>学習済みウェイトを使った推論
+<ul>
+<li>Clabで実施する。</li>
+<li><a href="https://colab.research.google.com/drive/1zbYS8VT-R8N5sG-60YgRzTzKnMIl4J5G?usp=sharing">リアルタイムインスタンスセグメンテーション：YOLACT</a></li>
+<li><a href="https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5">Detectron2 Beginner's Tutorial (by Facebook AI Research)</a></li>
+</ul>
+</li>
+<li>カスタムデータの作成
+<ul>
+<li>ローカルPCで実施する。</li>
+<li> アノテーション
+<ul>
+<li><a href="https://demura.net/deeplearning/16868.html">セマンティック・セグメンテーション用アノテーションツール</a>
+<ul>
+<li>VIAかCVATがお勧め</li>
+</ul>
+</li>
+<li><a href="https://demura.net/education/19769.html">VGG Image Annotator (VIA)：お手軽アノテーションツール</a></li>
+<li><a href="https://demura.net/deeplearning/17122.html">深層学習：アノテーションツールCVATまとめ</a></li>
+<li><a href="https://medium.com/analytics-vidhya/a-simple-guide-to-maskrcnn-custom-dataset-implementation-27f7eab381f2">A simple guide to Mask R-CNN implementation on a custom dataset.</a></li>
+<li><a href="https://www.immersivelimit.com/tutorials/create-coco-annotations-from-scratch">Create COCO Annotations From Scratch </a>(by Immersivelimit.com)</li>
+</ul>
+</li>
+<li>データ拡張</li>
+<li>データフォーマット
+<ul>
+<li><a href="https://cocodataset.org/">COCO</a> <a href="https://cocodataset.org/#format-data">Data Format</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>カスタムデータの学習と推論
+<ul>
+<li>Colabで実施する。</li>
+<li><a href="https://www.immersivelimit.com/tutorials/train-yolact-with-a-custom-coco-dataset">Train YOLACT with a Custom COCO Dataset</a> (by Immersivelimit.com)</li>
+<li><a href="https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5">Detectron2 Beginner's Tutorial (by Facebook AI Research)</a></li>
+<li><a href="https://demura.net/deeplearning/16807.html">Detectron2 カスタムデータの学習1/2 (学習)</a></li>
+<li><a href="https://demura.net/deeplearning/16834.html">Detectron2 カスタムデータの学習2/2 (推論）</a></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>ハンズオン</strong></p>
+<ul>
+<li>チーム分け
+<ul>
+<li>３チーム。各チーム３～４名。</li>
+<li>全員が深層学習を適用したいテーマについて３分間のライトニングトークを実施する。３分経過したら強制終了して、次の発表者に入れ替わる。</li>
+<li>自分がやりたいテーマに投票して上位３テーマを選択する。</li>
+<li>上位３テーマについて再度投票してチーム分けを行う。各チームは最大３～４名になるように調整をする。</li>
+</ul>
+</li>
+<li>チーム活動（1月9日17時までにSlack→専門ゼミに以下の内容をチーム毎アップする）
+<ul>
+<li>リーダーの決定</li>
+<li>チーム名の決定</li>
+<li>テーマ名とその具体的な内容を相談して決める</li>
+<li>オンラインで作業するツール（Zoom, Teams, Google Meetsなど）を決める</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;"></li>
+</ul>
+</li>
+</ul>
+<p><strong>ルール</strong></p>
+<ul>
+<li>新しいことにチャレンジしよう！</li>
+<li>チームで協力し楽しく実施しよう！</li>
+<li>学習・推論はGoogle Colabを使うこと</li>
+<li>カスタムデータはチームで作成すること
+<ul>
+<li>既存のデータセットだけの使用禁止。既存のデータセットを使う場合は、カスタムデータは違うクラスにすること。</li>
+</ul>
+</li>
+</ul>
+<p><strong>コンテスト</strong></p>
+<ul>
+<li>各チームの発表時間（デモ含む）は10分。自分たちの手法をPPTを用いてプレゼンする。
+<ul>
+<li>テーマ内容の説明
+<ul>
+<li>目的</li>
+<li>手法
+<ul>
+<li>データの取得方法</li>
+<li>学習用データセットの作成方法（アノテーションツール、自動作成した場合はその方法、データ拡張等）</li>
+</ul>
+</li>
+<li>実験・評価
+<ul>
+<li>学習データ数</li>
+<li>学習のハイパーパラメータ</li>
+<li>学習結果（Epochs数）。交差検証結果。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>デモンストレーション
+<ul>
+<li>ストーリー性があると高評価</li>
+<li>推論時は学習したデータを使わないこと。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>参　考</strong></p>
+<ul>
+<li>YOLACT論文
+<ul>
+<li><a href="https://arxiv.org/abs/1904.02689" target="_blank" rel="nofollow noopener">YOLACT: Real-time Instance Segmentation</a></li>
+<li><a href="https://arxiv.org/abs/1912.06218" target="_blank" rel="nofollow noopener">YOLACT++: Better Real-time Instance Segmentation</a></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>以上</p>
+<p>&nbsp;</p>

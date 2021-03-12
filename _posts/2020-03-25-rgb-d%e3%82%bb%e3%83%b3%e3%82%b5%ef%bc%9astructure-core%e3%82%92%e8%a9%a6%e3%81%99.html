@@ -1,0 +1,138 @@
+---
+layout: post
+title: RGB-Dセンサ：Structure Coreを試す
+date: 2020-03-25 21:39:51.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_ads_novisible: '0'
+  the_page_canonical_url: ''
+  the_page_nofollow: '0'
+  the_page_noindex: '0'
+  the_page_meta_keywords: ''
+  the_page_meta_description: ''
+  the_page_seo_title: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '432'
+  _thumbnail_id: '17346'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/17336.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/core5-1.png"><img class="alignleft size-full wp-image-17351" src="{{ site.baseurl }}/assets/images/2020/03/core5-1.png" alt="" width="849" height="752" /></a></p>
+<p><a href="https://occipital.com/">Occipita</a>l社のRGB-Dセンサ<a href="https://occipital.com/#product_module_b">Structure Core (color)</a>を昨年12月の国際ロボット展で知った。商社の話によるとRealSenseの元開発者がその問題点を解決したのがこの製品らしい。これは買うしかないと思い2月初めに入手できた。コロナ騒動で暇になったのでインストールして試してみた。この記事はそのメモ。ネット上でほとんど情報がないので少し試行錯誤した。なお、この手順は以下の参考資料に基づいた。</p>
+<ul>
+<li>参考資料
+<ul>
+<li>~/src/StructureSDK-CrossPlatform-0.7.3-ROS/Documentation/index.html</li>
+</ul>
+</li>
+<li>環境
+<ul>
+<li>Xubuntu18.04 (Vayager 18.04)</li>
+<li>ROS melodic</li>
+<li>gcc 7.5.0</li>
+<li>pcl  1.8.1+dfsg1-2ubuntu2.18.04.1</li>
+</ul>
+</li>
+<li>SDKの入手：以下からDeveloper Programに加入する。氏名、メールアドレスを入力すると、ダウンロード先のリンクがはられたメールが送られてくるので~/Downloadsにダウンロードする。
+<ul>
+<li><a href="https://developer.structure.io/sdk">Join The Developer Program</a></li>
+</ul>
+</li>
+<li>展開
+<ul>
+<li>$  cp ~/Downloads/StructureSDK-CrossPlatform-0.7.3-ROS.zip   ~/src</li>
+<li>$ cd ~/src</li>
+<li>$ unzip StructureSDK-CrossPlatform-0.7.3-ROS.zip</li>
+</ul>
+</li>
+<li>USBデバイスへのアクセス許可：udevのルールを設定する。
+<ul>
+<li>$ sudo ./DriverAndFirmware/Linux/Install-CoreDriver-Udev-Linux.sh</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ ./Scripts/build.sh</li>
+</ul>
+</li>
+<li>ROSドライバ
+<ul>
+<li>インストール
+<ul>
+<li>$ cd ~/catkin_ws/src</li>
+<li>$ cp -r  ~/src/StructureSDK-CrossPlatform-0.7.3-ROS   .</li>
+<li>$ cd  StructureSDK-CrossPlatform-0.7.3-ROS/ROS</li>
+<li>$ chmod 755 to_ros1.sh</li>
+<li>$ source to_ros1.sh      source to_ros1.sh BUILD_EXAMPLES
+<ul>
+<li>備考：exampleコードもビルドするためには以下のコマンドを実施する。ただ、私の環境ではエラーが出た。
+<ul>
+<li>$ source to_ros1.sh BUILD_EXAMPLES</li>
+</ul>
+</li>
+<li><a href="file:///home/demulab/src/StructureSDK-CrossPlatform-0.7.3-ROS/ROS/Documentation/html/ros_start.html#integration">他のパッケージ(depth_image_proc、OpenCV、PCL、Cartographer）と一緒に使うときはここを参照。</a></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ cd ~/catkin_ws</li>
+<li>$ catkin build        (もしくは、catkin_make)</li>
+</ul>
+</li>
+<li>ROS環境の初期化
+<ul>
+<li>$ source  ./devel/setup.bash</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>ドライバのみ
+<ul>
+<li><code>$ roslaunch structure_core_ros_driver sc.launch</code></li>
+<li>実行すると次のトピックがpublishされる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/rostopic.png"><img class="alignleft size-full wp-image-17343" src="{{ site.baseurl }}/assets/images/2020/03/rostopic.png" alt="" width="802" height="615" /></a></li>
+</ul>
+</li>
+<li>ドライバとRviz
+<ul>
+<li><code>$ roslaunch structure_core_ros_driver sc_rviz.launch</code></li>
+<li>実行するとRvizが立ち上がり次のようなウインドウが開く。depthイメージの美しさはどうでしょうか。設定のパラメータもいろいろあるのでより美しくなるかもしれない次はRealSenseと比較してみよう。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/core4.png"><img class="alignleft size-large wp-image-17345" src="{{ site.baseurl }}/assets/images/2020/03/core4-1024x698.png" alt="" width="1024" height="698" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>終わり</p>

@@ -1,0 +1,313 @@
+---
+layout: post
+title: 'Raspberry Pi4 (8GB RAM): Xubuntu18.04 のインストールと設定'
+date: 2020-08-04 11:39:41.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '17960'
+  views: '800'
+  last_modified: '2021-03-12 20:32:59'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/18564.html"
+---
+<p>Raspberry Pi4にXubuntu 18.04をインストールしたときのメモ。このメモはPi4のメモリ8GB用です。<a href="https://demura.net/education/17957.html">4GBはこのリンクに従ってインストールしてください。</a></p>
+<p><strong>準備</strong></p>
+<ul>
+<li>Windows10 PC</li>
+<li>Raspberry Pi4 (メモリ8GB版)</li>
+<li>SDカード： 64GB以上が望ましい (UbuntuはexFATに対応しているのでFAT32にフォーマットする必要はない）</li>
+<li>ディスプレイ(HDMI接続できるもの）、マウス、キーボード</li>
+<li>LANケーブルと無線LAN</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>現時点(2020-8-4)ではオフィシャルなUbuntu18.04.4 LTSのRaspberry Pi3 (64-bit ARM)プリインストールサーバーイメージではブートできないので、James Chamber氏の非公式版Xubuntu desktopのイメージをダウンロードする。
+<ul>
+<li><a class="d-flex flex-items-center min-width-0" href="https://github.com/TheRemote/Ubuntu-Server-raspi4-unofficial/releases/download/v28/xubuntu-18.04.4-preinstalled-desktop-arm64+raspi4.img.xz" rel="nofollow"><span class="pl-2 flex-auto min-width-0 text-bold">xubuntu-18.04.4-preinstalled-desktop-arm64+raspi4.img.xz</span></a></li>
+</ul>
+</li>
+<li>まず、以下のWindows用のツールRaspberry Pi Imagerをダウンロード・インストールする。ダウンロードしたimager.exeファイルをダブルクリックするとインストーラが起動してインストールできます。
+<ul>
+<li><a href="https://downloads.raspberrypi.org/imager/imager.exe">Raspberry Pi Imager for Windows</a></li>
+</ul>
+</li>
+<li>Raspberry Pi Imagerを起動して、Operating SystemにUse customを選択して、ダウンロードしたファイルxubuntu-18.04.4-preinstalled-desktop-arm64+raspi4.img.xzを選択する。Ubuntuを書き込むSD Cardを選択する。次に、SD Cardの右にある「WRITE」をクリックしてイメージをSD Cardに書き込む。終了したらSDカードを取り外しRaspberry Pi4（以下Pi4と記載)に挿入する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/SnapCrab_Raspberry-Pi-Imager-v12_2020-5-3_8-36-30_No-00.png"><img class="aligncenter size-full wp-image-17960" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_Raspberry-Pi-Imager-v12_2020-5-3_8-36-30_No-00.png" alt="" width="722" height="492" /></a></p>
+<p><strong>Xubuntu起動</strong></p>
+<ul>
+<li>Pi4にディスプレイ(Type C側のマイクロHDMIコネクタ)、キーボード、マウス、有線LAN、電源を接続する。</li>
+<li>起動するとlogin画面になる。ユーザがubuntuになっていることを確認して、パスワードに ubuntuを入力する。
+<ul>
+<li>"Changing password for ubuntu"を聞かれるので"ubuntu"と入力する。</li>
+<li>"Enter new UNIX password"と聞かれるので新しいパスワードを入力する。</li>
+<li>"Retype new UNIX password"と聞かれるので、上で入力した新しいパスワードをまた入力する。</li>
+</ul>
+</li>
+<li>アップデート
+<ul>
+<li>デスクトップ上で右マウスボタンをクリックして"Open Terminal Here"をクリックしてターミナル（端末）を起動する。もし、右マウスボタンを押しても何も現れないときはctrl、alt、F1キーを同時に押してXウインドウを落として、ubuntuでログインする。ctrl、alt、delキーを同時に押して再起動する。</li>
+<li>端末で以下のコマンドを実行しソフトウェアを最新版にアップデートする。
+<ul>
+<li>$ sudo apt update</li>
+<li>$ sudo apt upgrade</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>設　定</strong></p>
+<ul>
+<li>日本語化
+<ul>
+<li>左上隅のマウスアイコン→Settings→Language Support
+<ul>
+<li>[Install/Remove Languages...]
+<ul>
+<li>Japaneseにチェックを入れて、[Apply]をクリックする。</li>
+</ul>
+</li>
+<li>Language for menu and windowsの[English]が太文字で表示され、[日本語]は薄文字で表示されているので、[English]をドラッグして日本語の下に持っていく。そうすると日本語が優先される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/05/pi1.png"><img class="aligncenter size-full wp-image-17970" src="{{ site.baseurl }}/assets/images/2020/08/pi1.png" alt="" width="391" height="476" /></a></li>
+<li>Keyboard Input method system
+<ul>
+<li> fcitxを選択する。ない場合は再起動すると現れる。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>キーボード
+<ul>
+<li>マウスアイコン→Settings→Keyboard→Layout
+<ul>
+<li>Use system defaultsのチェックを外す。</li>
+<li>Keyboard layout
+<ul>
+<li>Add →Japanese (OADG 109A)</li>
+</ul>
+</li>
+<li>Keyboard model
+<ul>
+<li> Sun Type 7 USB(Japanese)/Japanese 106-key</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>日本語変換 (Mozc）の設定
+<ul>
+<li>再起動する。</li>
+<li>画面上バーの右にあるキーアイコンをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/05/pi2a.png"><img class="aligncenter size-full wp-image-17972" src="{{ site.baseurl }}/assets/images/2020/08/pi2a.png" alt="" width="332" height="24" /></a></li>
+<li>設定をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/05/pi3.png"><img class="aligncenter size-full wp-image-17973" src="{{ site.baseurl }}/assets/images/2020/08/pi3.png" alt="" width="409" height="266" /></a></li>
+<li>入力メソッド→　[+ ] → Mozc → [OK]をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/05/pi4a.png"><img class="aligncenter size-full wp-image-17974" src="{{ site.baseurl }}/assets/images/2020/08/pi4a.png" alt="" width="794" height="457" /></a></li>
+<li>[全体の設定]タブをクリックして、[入力メソッドのオンオフ]の[Ctrl+Space]の右の空白ボタンをクリックして、キーボードの[半角/全角]キーを押すと[Zenkakuhankaku]と表示される。これでWindows10と同様にキーボードの[半角/全角]キーを押すと日本語入力が可能となる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/05/pi5a.png"><img class="aligncenter size-full wp-image-17976" src="{{ site.baseurl }}/assets/images/2020/08/pi5a.png" alt="" width="791" height="459" /></a></li>
+</ul>
+</li>
+<li> タイムゾーン
+<ul>
+<li>マウス→Settings→Time and Data Settings。Unlockをクリックしてパスワードを入力する。
+<ul>
+<li>Time zone: Asia/Tokyo</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ユーザ登録
+<ul>
+<li>マウス→Settings→Users and groups
+<ul>
+<li>Addをクリックして普段ログインする一般ユーザを設定する。再起動する。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>一般ユーザでsudoできるようにする
+<ul>
+<li>Ubuntuなら一般ユーザでsudoできるのだが、なぜか今回できないのでできるようにする。
+<ul>
+<li>$ sudo gpasswd -a  ユーザ名 sudo</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>一般ユーザでデバイスを扱えるように各グループに追加する。
+<ul>
+<li>$ <code> sudo groupadd -f --system gpio</code></li>
+<li>$ <code>sudo groupadd -f --system i2c</code></li>
+<li>$ <code>sudo groupadd -f --system input</code></li>
+<li>$ <code>sudo groupadd -f --system spi</code></li>
+<li>$ <code>sudo groupadd -f --system video</code></li>
+</ul>
+</li>
+<li>SWAPファイル
+<ul>
+<li>Pi4はメモリを8GB搭載しているが、念のためにSWAPファイル8GBを以下のコマンドで作成して使えるようにする。SDカードの容量に応じて8GBを変更する。
+<ul>
+<li>$ <code>sudo fallocate -l 8G /swapfile</code></li>
+<li>$ <code>sudo chmod 600 /swapfile</code></li>
+<li>$ <code>sudo mkswap /swapfile</code></li>
+<li>$ <code>sudo swapon /swapfile</code></li>
+</ul>
+</li>
+<li>Swapが割り当てられているか次のコマンドで確認する。Swapに8.0G割り当てられいたら成功。
+<ul>
+<li>$ <code>free -h</code><br />
+total used free shared buff/cache available<br />
+Mem: 3.7G 1.4G 1.0G 168M 1.3G 2.1G<br />
+Swap: 8.0G 0B 8.0G</li>
+</ul>
+</li>
+<li> 起動時に自動的にswapfileが使えるように/etc/fstabに以下の1行を追加する。
+<ul>
+<li>/swapfile none swap sw 0  0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>CAPS LOCKをCTRLキーに替える
+<ul>
+<li>/etc/default/keyboardのXKBOPTIONS=”ctrl:nocaps”と変更する。</li>
+</ul>
+</li>
+<li>SSH
+<ul>
+<li>Pi4のWifiでネットワークに接続する。</li>
+<li> PCからWifi経由でPi4を使うためにSSHの設定を行う。まず、SSHサーバーをインストールする。すでに入っている場合は必要ない。
+<ul>
+<li>$ <code>sudo apt install openssh-server</code></li>
+</ul>
+</li>
+<li>次のコマンドでPi4のWifiのIPアドレスを調べ、アドレスをメモする。下の例では192.168.1.18。DHCPの場合は起動ごとにアドレスが変更するので固定すると良い。
+<ul>
+<li>$ <code>ifconfig wlan0</code></li>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/ssh1.png"><img class="aligncenter size-full wp-image-18002" src="{{ site.baseurl }}/assets/images/2020/08/ssh1.png" alt="" width="578" height="97" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>固定IPの設定法
+<ul>
+<li>GUIを使って設定する。画面右上の赤で囲んだ無線LANアイコンをクリックする。無線LANのアイコンがない場合は、Pi4を無線LANに接続する。ウインドウが下に開くので「接続を編集する...」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/wlan1.png"><img class="aligncenter size-full wp-image-18588" src="{{ site.baseurl }}/assets/images/2020/08/wlan1.png" alt="" width="377" height="36" /></a><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/wlan1a.png"><img class="aligncenter size-full wp-image-18589" src="{{ site.baseurl }}/assets/images/2020/08/wlan1a.png" alt="" width="282" height="346" /></a></li>
+<li> ネットワーク接続のウインドウが開くので、Pi4が接続しているネットワークをクリックして選択肢、左下の歯車アイコンをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/wlan3a.png"><img class="aligncenter size-full wp-image-18590" src="{{ site.baseurl }}/assets/images/2020/08/wlan3a.png" alt="" width="602" height="425" /></a></li>
+<li>次のように設定する。
+<ul>
+<li>方式：手動</li>
+<li>アドレス：追加をクリックして以下の値を入力する。
+<ul>
+<li>IPアドレス：192.168.1.234</li>
+<li>ネットマスク:255.255.255.0</li>
+<li>ゲートウェイ：192.168.1.1</li>
+<li>ネームサーバ： 192.168.1.1</li>
+</ul>
+</li>
+<li>「この接続を完了するには、IPv4アドレスが必要になります」にチェックを入れる。</li>
+<li>「保存」をクリックして設定を保存する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/wlan4a.png"><img class="aligncenter size-full wp-image-18591" src="{{ site.baseurl }}/assets/images/2020/08/wlan4a.png" alt="" width="514" height="542" /></a><code></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;"></li>
+<li>設定が終わったら、無線LANの接続を切って再接続するか、再起動してIPアドレスを確認する。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Windows PCの場合は<a href="http://nanno.dip.jp/softlib/man/rlogin/">rlogin</a>などのSSHクライアントソフトなどをインストールして、サーバー名に上でメモしたIPアドレスを入れてログインできるか確認する。なお、ここでは簡単のためにセキュリティを高める設定はしていないので、必要に応じて以下のリンクなどを参考にセキュアな設定して欲しい。
+<ul>
+<li><a href="https://www.sejuku.net/blog/82924">Ubuntu18.04 LTSにSSHしてセキュリティ設定をしよう！</a></li>
+</ul>
+</li>
+<li> オーバークロック（非推奨）
+<ul>
+<li>お勧めできません。あくまで自己責任でお願いします。</li>
+<li>現在状況の把握
+<ul>
+<li> まず、現在の周波数を調べるアプリをインストールする。
+<ul>
+ 	<l i>$ <code>sudo apt install cpufrequtils</code></l></ul>
+</li>
+</ul>
+</li>
+<li>次のコマンドを実行して調べる。
+<ul>
+<li>$ <code>cpufreq-info</code><br />
+hardware limits: 600 MHz - 1.50 GHz</li>
+</ul>
+</li>
+<li>現在のCPUが1.5GHzということがわかる。</li>
+</ul>
+</li>
+<li>/boot/firmware/config.txtの最後に以下を追加して再起動。なお、私の環境ではover_voltage=4、arm_freq=2000にするとOSが起動しなかった。<br />
+over_voltage=2<br />
+arm_freq=1750<br />
+gpu_freq=650</li>
+<li>無事に起動したら次のコマンドで再確認。無事に起動しなかったら、SDカードをPi4から外して、Windows PCでconfig.txtの設定をもとに戻す。
+<ul>
+<li>$ <code>cpufreq-info</code><br />
+hardware limits: 600 MHz - 1.75 GHz</li>
+</ul>
+</li>
+<li>無事、1.75GHzまで最高周波数が上がっているのがわかる。</li>
+</ul>
+<ul>
+<li style="list-style-type: none;"></li>
+</ul>
+<p><strong>感　想</strong></p>
+<ul>
+<li>Raspberry Pi3のときはメモリが1GBとUSB2.0しか使えないことがネックになっていた。Pi4の8GBはFull HDでもかなり快適に使える。USB3.0を使えることも大きい。ロボットの搭載コンピュータとしてもかなり活躍するだろう。</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

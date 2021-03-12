@@ -1,0 +1,92 @@
+---
+layout: post
+title: ODE講座５：Hello World ! こんにちはシミュレーションの世界
+date: 2005-10-14 18:12:10.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1998'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/255.html"
+---
+<p>いろいろ忙しくて前回から２週間も経ってしましましたが、今回はODE(Open Dynamics Engine)を使った超簡単なサンプルプログラムを紹介します。プログラミングの教科書では初めの例題はHello Worldが定番です。ここでもそうしましょう。</p>
+<p><img src="{{ site.baseurl }}/assets/images/2005/10/sample1.jpg" alt="ODE" width="320" height="310" /></p>
+<p>上の画像はそのスクリーンショットです。コメント付ソースコードを以下に示します。<br />
+<!--more--></p>
+<blockquote><p>// Hello World　　by でむ</p>
+<p>#include 　　　　　　　　// ODE用ヘッダーファイル<br />
+#include 　// 描画用ヘッダーファイル</p>
+<p>static dWorldID world; 　　　// 動力学計算用<br />
+dBodyID ball; 　　　　　 // 玉<br />
+const dReal radius = 0.2, mass = 1.0;　// 玉の半径(m)、玉の重さ(kg)</p>
+<p>// シミュレーションループ 毎回呼び出され実行されます。<br />
+// 動力学計算はステップサイズだけをここで指定すれば自動的に計算されます。<br />
+// ただし、描画はここで書かないと何も表示されません。<br />
+static void simLoop (int pause)　{<br />
+　const dReal *pos,*R;</p>
+<p>　dWorldStep(world,0.05);　　// シミュレーションのステップサイズを決める<br />
+　<br />
+　dsSetColor(1.0,0.0,0.0);　　　　　　　// 赤色のセット<br />
+　pos = dBodyGetPosition(ball);　　// 玉の位置を取得<br />
+　R = dBodyGetRotation(ball);　　// 玉の姿勢を取得<br />
+　dsDrawSphereD(pos,R,radius);　　　//赤玉を描画<br />
+}</p>
+<p>void start()　{　　//　カメラの設定<br />
+　static float xyz[3] = {0.0,-3.0,1.0}; 　// 視点の位置 (m)<br />
+　static float hpr[3] = {90.0,0.0,0.0};　　　// 視線の方向<br />
+　dsSetViewpoint (xyz,hpr);　　　　　　　　// 視点の設定<br />
+}</p>
+<p>// メイン関数　ここから読んでください。<br />
+int main (int argc, char **argv)　{<br />
+　dReal x0 = 0.0, y0 = 0.0, dReal z0 = 1.0; // ボールの初期位置<br />
+　dMass m1;</p>
+<p>　// 描画API（ドロースタッフ）のおまじない<br />
+　dsFunctions fn;　　　　　　　　//　ドロースタッフ用のクラス<br />
+　fn.version = DS_VERSION;　 // ドロースタッフのバージョン<br />
+　fn.start = &amp;start;　　　　　　// 　シミュレーションの前処理関数<br />
+　fn.step = &amp;simLoop;　　　　// シミュレーションの各ステップで呼ばれる関数<br />
+　fn.command = NULL;　　　　 // 関数がないのでNULLポインタを指定<br />
+　fn.stop 　　 = NULL;　　　　// 関数がないのでNULLポインタを指定<br />
+　fn.path_to_textures = "../../drawstuff/textures";　//　テクスチャへのパス</p>
+<p>　// 動力学計算用世界の創造<br />
+　world = dWorldCreate();　　　　　　<br />
+　dWorldSetGravity(world,0,0,-0.001);　// 重力加速度　-0.001 m/s^2</p>
+<p>　//　玉を作る<br />
+　body = dBodyCreate(world); 　　　　　　 // 玉の製作<br />
+　dMassSetZero(&amp;m1);　　　　　　　　　　　　　// 構造体m1の初期化<br />
+　dMassSetSphereTotal(&amp;m1,mass,radius);　// 構造体m1に玉の量さを設定<br />
+　dBodySetMass(ball,&amp;m1);　　　　　　　　　　// 玉にm1を設定<br />
+　dBodySetPosition(ball, x0, y0, z0);　　　　　// 玉の位置を設定</p>
+<p>　// シミュレーション本体<br />
+　dsSimulationLoop (argc,argv,352,288,&amp;fn);　// ウインドウのサイズ　352 x 288</p>
+<p>　// 世界の破壊<br />
+　dWorldDestroy (world);</p>
+<p>　return 0;<br />
+}</p></blockquote>
+<p>これは赤玉の自由落下のプログラムです。これがなぜHello Worldかというと、上のソースコードでworldは動力学計算をする世界のことです。動力学計算のWorldに初めてお目にかかったのでこのコードもHello Worldと呼ぶことにしましょう。</p>
+<p>また、小文字のdで始まる関数はODEのAPI(application interface)で、dsで始まる関数はdrawstuff(ドロースタッフ）のAPIです。drawstuffはODE付属テストプログラム表示用のライブラリのことです。</p>
+<p>説明はこのぐらいにして<a href="http://demura.net/archives/images/ode/sample1.tgz">このファイル</a>をダウンロードして以下の手順で実行してみましょう！　</p>
+<p><strong>実行方法</strong><br />
+1. sample1.tgzを/home/ユーザ名/src/ode/odeの下にダウンロード<br />
+2. これからはターミナルで以下のコマンドを実行してください。$はプロンプトです。<br />
+　　$ cd /home/ユーザ名/src/ode/ode<br />
+　　$ tar xvzf sample1.tgz<br />
+　　$ cd sample1<br />
+　　$ make<br />
+3. 実行<br />
+　　$ ./sample1</p>
+<p>赤玉がゆっくり落下していきますが、なんと地面を通り抜けて消えてしまいます。<br />
+実は上のプログラムには衝突検出機能が組み込まれていなかったのです。<br />
+次回（１０月２２日目標）はこのプログラムに衝突検出機能を組み込みます。</p>

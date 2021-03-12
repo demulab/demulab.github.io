@@ -1,0 +1,68 @@
+---
+layout: page
+title: 'STEP4: 差動駆動型ロボット'
+date: 2008-07-27 18:00:43.000000000 +09:00
+type: page
+parent_id: '1286'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2732'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robotsimu/step4"
+---
+<p><img title="Robot Simulation with Open Dynamics Engine" src="{{ site.baseurl }}/assets/images/2008/07/step4.jpg" alt="Open Dynamics Engine" width="320" height="240" /></p>
+<p>ODE本　Step4 扉図のカラー画像</p>
+<p>ODE本「<a href="http://www.amazon.co.jp/gp/product/4627846916?ie=UTF8&amp;tag=demuranet-22&amp;linkCode=as2&amp;camp=247&amp;creative=1211&amp;creativeASIN=4627846916">簡単!実践!ロボットシミュレーション - Open Dynamics Engineによるロボットプログラミング</a><br />
+ <img style="border: medium none  ! important; margin: 0px ! important" src="{{ site.baseurl }}/assets/images/2008/07/ir?t=demuranet-22&amp;l=as2&amp;o=9&amp;a=4627846916" alt="" width="1" height="1" /><br />
+ 」のStep4です．</p>
+<p>ここでは，山彦やPioneerなど研究用自立移動ロボットでよく採用されている差動駆動型移動機構を持つ車輪型ロボットの基礎を説明します．具体的には，シミュレータ上のロボットにビジョンセンサを搭載するため，絶対座標系から相対座標系への座標変換，自己位置推定，デッドレコニングなどを学び，ロボットに実装します．詳しくはODE本で．．．</p>
+<p>以下にStep3のシミュレータの動画を掲載します．ソースコードは<a href="../../dl">このページの注意事項を読み，</a>ダウンロード，ビルドやコンパイルし実行してください．</p>
+<hr />
+<p>
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="320" height="260" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/pro401.flv&amp;image=http://demura.net/archives/9ode/robotsimu/pro401.jpg" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed type="application/x-shockwave-flash" width="320" height="260" src="http://demura.net/flvplayer.swf" flashvars="file=http://demura.net/archives/ode/robotsimu/pro401.flv&amp;image=http://demura.net/archives/9ode/robotsimu/pro401.jpg"></embed></object></p>
+<ul>
+<li>プログラム4.1：　差動駆動型ロボット　(P112)
+<ul>
+<li>説明：差動駆動型ロボットのサンプルプログラム．この例では，キーボードの操作によってロボットをボールへ向かわせています．</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="320" height="260" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/pro403.flv&amp;image=http://demura.net/archives/9ode/robotsimu/pro403.jpg" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed type="application/x-shockwave-flash" width="320" height="260" src="http://demura.net/flvplayer.swf" flashvars="file=http://demura.net/archives/ode/robotsimu/pro403.flv&amp;image=http://demura.net/archives/9ode/robotsimu/pro403.jpg"></embed></object><br />
+<br />
+ <br class="spacer_" /></p>
+<ul>
+<li>プログラム4.3：　差動駆動型ロボット，センサ搭載版　(P120)
+<ul>
+<li>説明：上のプログラムにビジョンセンサを組み込み，簡単な制御によりロボットをボールへ向かわせています．センサを実装するために絶対座標系から相対座標系への変換を学びます．</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>プログラム4.4：　差動駆動型ロボット, デッドレコニング　(P128)
+<ul>
+<li>説明：上のプログラムにデッドレコニングを実装しています．y軸成分しか計算していないので，同じ要領でx軸，姿勢角を計算しましょう！車輪型ロボットの運動学と数値積分について学びます．</li>
+<li>補足：P128のコードはsimloop関数の中に入れることを想定していない場合です．でも，ODE上のロボットにデッドレコニングを実装する場合は，simloop関数の中に入れる必要があります．以下のソースコードはODEで動作可能にしているのでP128のコードとは一部異なり，whileループがありません．これはsimloop関数がwhileループに入っているためです．</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>プチプロ4.5： P131
+<ul>
+<li><a href="http://demura.net/archives/images/ode/robotsimu/green.ppm">ピッチの芝のテクスチャ</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>（最終更新日　2008-7-27)</p>

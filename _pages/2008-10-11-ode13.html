@@ -1,0 +1,133 @@
+---
+layout: page
+title: 13.  Making a robot arm
+date: 2008-10-11 15:04:59.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '3245'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode13"
+---
+<p>&nbsp;</p>
+<div class="wp-caption alignnone" style="width: 330px;"><img src="{{ site.baseurl }}/assets/images/2008/10/armMini.jpg" alt="３関節ロボットアーム（ソースコードはたった100行）" title="Robot Arm powered by Open Dynamics Engine" width="320" height="270" /><br />
+A robot arm simulator</div>
+<p style="margin: 0px 0px 15px;">This is the 13th ODE (Open Dynamics Engine) tutorial.</p>
+<p style="margin: 0px 0px 15px;">This time, let's make a simple 3-articulated (DOF: Degree of Freedom) robot arm gathering knowledge so far. Using the ODE,  <span style="color: #ff0000;"><strong>you can make such a simulator only about 100 lines. </strong></span>Collision detentions are omitted to simplify the sample program. The robot can be operated by a keyboard. The first joint can be moved by the ' j'  (increase) or 'f' (decrease) key, 'd' and 'k' keys move the second joint, and 'l' and 's' keys moves the third joints.</p>
+<p style="margin: 0px 0px 15px;">To move the joints, using a simple control, the P control, which controls the joint  proportional to the difference between the current value of the angular velocity and the target velocity. The current value of joint angle values and the target are far apart, if you have a large angular velocity and angular velocity if the goal is the same as the value 0 to stop the next joint. Also, as the target for the current best value, you will be a negative sign for a reversal of rotation, and the current value is close to the target value.</p>
+<p>The control function realizes that. <strong>dParamVel</strong> is the target angular velocity, and  <strong>dParamFMax</strong> is the maximum torque to realize the angular velocity. If <strong>d</strong><strong>ParamFMax</strong> is set to 0, you cannot control the joint, because the torque is not provided to the joint.</p>
+<p style="margin: 0px 0px 15px;">The source code, <a href="http://demura.net/downloads/odesample/sample13-110105.zip">sample13-110105.zip, can be download from here.</a></p>
+<pre class="brush:cpp">//  sample13.cpp  3 DOF manipulator by   Kosei Demura  2006-2009
+#include "ode/ode.h"   // ODE
+#include "drawstuff/drawsutt.h"
+#define NUM 4         // Number of links
+
+dWorldID    world;       // A dynamic world
+dBodyID     link&#91;NUM&#93;;    // Links　link&#91;0&#93; is a base
+dJointID    joint&#91;NUM&#93;;  // Joints    joint&#91;0&#93; is a fixed joint between a base and a ground
+static double THETA&#91;NUM&#93; = { 0.0, 0.0, 0.0, 0.0};  // Target joint angels&#91;rad&#93;
+static double l&#91;NUM&#93;  = { 0.10, 0.90, 1.00, 1.00};  // Length of links&#91;m&#93;
+static double r&#91;NUM&#93;  = { 0.20, 0.04, 0.04, 0.04};  // Radius of links&#91;m&#93;
+
+void control() {  /***  P control  ****/
+  static int step = 0;     // Steps of simulation    
+  double k1 =  10.0,  fMax  = 100.0; // k1: proportional gain,  fMax：Max torque&#91;Nm&#93;
+
+  printf("\r%6d:",step++);
+  for (int j = 1; j &#60; NUM; j++) {
+    double tmpAngle = dJointGetHingeAngle(joint&#91;j&#93;);  // Present angle&#91;rad&#93;
+    double z = THETA&#91;j&#93; - tmpAngle;  // z: residual=target angle - present angle
+    dJointSetHingeParam(joint&#91;j&#93;, dParamVel, k1*z); // Set angular velocity&#91;m/s&#93;
+    dJointSetHingeParam(joint&#91;j&#93;, dParamFMax, fMax); // Set max torque&#91;N/m&#93;
+  }
+}
+
+void start() { /*** Initialize drawing API ***/
+  float xyz&#91;3&#93; = {  3.04, 1.28, 0.76};   // View point x, y, z　&#91;m&#93;
+  float hpr&#91;3&#93; = { -160.0, 4.50, 0.00};  // View direction(heading, pitch, roll)　&#91;°&#93;
+  dsSetViewpoint(xyz,hpr);   // Set view-point and gaze direction
+}
+
+void command(int cmd) { /*** Keyboard function ***/  　
+  switch (cmd) {  　
+    case ‘j'’:  THETA&#91;1&#93; += 0.05; break;  // When j key is pressed, THETA&#91;1&#93; is increases at 0.05&#91;rad&#93;  　
+    case 'f':  THETA&#91;1&#93; -= 0.05; break;  　
+    case 'j':  THETA&#91;2&#93; += 0.05; break;  　
+    case 'd':  THETA&#91;2&#93; -= 0.05; break;  　
+    case 'l':  THETA&#91;3&#93; += 0.05; break;  　
+    case 's':  THETA&#91;3&#93; -= 0.05; break;  　
+    }
+    if (THETA&#91;1&#93; &#60;   - M_PI)    THETA&#91;1&#93; =  - M_PI;
+    if (THETA&#91;1&#93; &#62;     M_PI)    THETA&#91;1&#93; =    M_PI;
+    if (THETA&#91;2&#93; &#60;  -2*M_PI/3)  THETA&#91;2&#93; =  - 2*M_PI/3;
+    if (THETA&#91;2&#93; &#62;   2*M_PI/3)  THETA&#91;2&#93; =    2*M_PI/3;
+    if (THETA&#91;3&#93; &#60;  -2*M_PI/3)  THETA&#91;3&#93; =  - 2*M_PI/3;
+    if (THETA&#91;3&#93; &#62;   2*M_PI/3)  THETA&#91;3&#93; =    2*M_PI/3;
+}
+
+// Simulation loop
+void simLoop(int pause) {
+  control();
+  dWorldStep(world, 0.02);
+
+  // Draw a robot
+  dsSetColor(1.0,1.0,1.0); // Set color (r, g, b), In this case white is set
+  for (int i = 0; i &#60; NUM; i++ )　//　Draw capsules for links
+    dsDrawCapsuleD(dBodyGetPosition(link&#91;i&#93;), dBodyGetRotation(link&#91;i&#93;), l&#91;i&#93;, r&#91;i&#93;);
+}
+
+int main(int argc, char *argv&#91;&#93;) {
+  dsFunctions fn;
+  double x&#91;NUM&#93; = {0.00}, y&#91;NUM&#93; = {0.00};  // Center of gravity
+  double z&#91;NUM&#93;         = { 0.05, 0.50, 1.50, 2.55};
+  double m&#91;NUM&#93; = {10.00, 2.00, 2.00, 2.00};       // mass
+  double anchor_x&#91;NUM&#93;  = {0.00}, anchor_y&#91;NUM&#93; = {0.00};// anchors of joints   
+  double anchor_z&#91;NUM&#93; = { 0.00, 0.10, 1.00, 2.00};
+  double axis_x&#91;NUM&#93;  = { 0.00, 0.00, 0.00, 0.00};  // axises of joints
+  double axis_y&#91;NUM&#93;  = { 0.00, 0.00, 1.00, 1.00};
+  double axis_z&#91;NUM&#93;  = { 1.00, 1.00, 0.00, 0.00};
+  fn.version = DS_VERSION;  fn.start   = &amp;start;   fn.step   = &amp;simLoop;
+  fn.command = &amp;command;
+  fn.path_to_textures = "../../drawstuff/textures";
+
+  dInitODE();  // Initialize ODE
+  world = dWorldCreate();  // Create a world
+  dWorldSetGravity(world, 0, 0, -9.8);
+
+  for (int i = 0; i &#60; NUM; i++) {
+    dMass mass;
+    link&#91;i&#93; = dBodyCreate(world);
+    dBodySetPosition(link&#91;i&#93;, x&#91;i&#93;, y&#91;i&#93;, z&#91;i&#93;); // Set a position
+    dMassSetZero(&amp;mass);      // Set mass parameter to zero
+    dMassSetCapsuleTotal(&amp;mass,m&#91;i&#93;,3,r&#91;i&#93;,l&#91;i&#93;);  // Calculate mass parameter
+    dBodySetMass(link&#91;i&#93;, &amp;mass);  // Set mass
+  }
+
+  joint&#91;0&#93; = dJointCreateFixed(world, 0); // A fixed joint
+  dJointAttach(joint&#91;0&#93;, link&#91;0&#93;, 0);     // Attach the joint between the ground and the base
+  dJointSetFixed(joint&#91;0&#93;);               // Set the fixed joint
+
+  for (int j = 1; j &#60; NUM; j++) {
+    joint&#91;j&#93; = dJointCreateHinge(world, 0); // Create a hinge joint
+    dJointAttach(joint&#91;j&#93;, link&#91;j-1&#93;, link&#91;j&#93;); // Attach the joint
+    dJointSetHingeAnchor(joint&#91;j&#93;, anchor_x&#91;j&#93;, anchor_y&#91;j&#93;,anchor_z&#91;j&#93;);
+    dJointSetHingeAxis(joint&#91;j&#93;, axis_x&#91;j&#93;, axis_y&#91;j&#93;, axis_z&#91;j&#93;);
+  }
+  dsSimulationLoop(argc, argv, 640, 570, &amp;fn);　//　Simulation loop
+  dCloseODE();
+  return 0;
+}</pre>
+<p>That's all.  See you !</p>
+<p>demu</p>

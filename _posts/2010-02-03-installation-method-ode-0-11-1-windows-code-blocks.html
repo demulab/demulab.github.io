@@ -1,0 +1,141 @@
+---
+layout: post
+title: 'How to intall ODE 0.11.1 (Windows + Code:: Blocks)'
+date: 2010-02-03 10:17:46.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '3526'
+  image: http://demura.net/wordpress/wp-content/uploads/swift_default.jpg
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/6077.html"
+---
+<p><span onmouseover="_tipon(this)" onmouseout="_tipoff()">This article explains how to install ODE0.11.1 in Windows Vista and </span><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Code:: Blocks8.02.</span></p>
+<p><span onmouseover="_tipon(this)" onmouseout="_tipoff()"><!--more--></span></p>
+<ol>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()"><strong>Installing ODE 0.11</strong></span>
+<ol type="a">
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Downlaod <a style="text-decoration: none; outline-style: none; outline-width: initial; outline-color: initial; color: #cc0000;" href="http://translate.googleusercontent.com/translate_c?hl=en&amp;sl=ja&amp;tl=en&amp;u=http://sourceforge.net/project/downloading.php%3Fgroup_id%3D24884%26filename%3Dode-0.11.1.zip%26a%3D18825280&amp;rurl=translate.google.com&amp;usg=ALkJrhip_UWkA_OspPxFybUU9YAguo7wHA">ode-0.11.1.zip</a>.</span> <span onmouseover="_tipon(this)" onmouseout="_tipoff()">Save it to desktop and decompress.</span> </li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Copy the ode-0.11.1 folder to the top of the C drive shown as follows.</span>
+<ul>
+<li>
+<pre>c:\ode-0.11.1 </pre>
+</li>
+</ul>
+</li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Start the Command Prompt.</span>
+<ul>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Start → "Programs" → "Accessories" → "Command Prompt"</span></li>
+</ul>
+</li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Input commands as follows. These commands are complicate, so I recommend Cut and paste .</span>
+<ul>
+<li>
+<pre> cd c:\ode-0.11.1\build </pre>
+</li>
+<li>
+<pre> premake4 --with-demos --cc=gcc --os=windows codeblocks </pre>
+<p><span onmouseover="_tipon(this)" onmouseout="_tipoff()"><span style="color: #ff0000;"><strong>Note: in front of the "with-demos" and  "cc=gcc", there are two  - (minus).</strong></span></span> <span onmouseover="_tipon(this)" onmouseout="_tipoff()"><span style="color: #ff0000;"><strong>See the  image below.</strong></span></span><a style="text-decoration: none; outline-style: none; outline-width: initial; outline-color: initial; color: #cc0000;" href="http://demura.net/wordpress/wp-content/uploads/2009/06/premake41.jpg"><span style="color: #ff0000;"><strong><img src="{{ site.baseurl }}/assets/images/2010/02/premake41.jpg" alt="premake41" title="premake41" width="500" height="73" /></strong></span></a></p>
+</li>
+</ul>
+<ul>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">The "codeblocks" folder should be created in the "build" folder, please check it.</span>
+<ul>
+<li>
+<pre>C:\ode-0.11.1\build\codeblocks</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<p><br class="spacer_" /></p>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()"><strong>Building ODE</strong></span>
+<ol type="a">
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Start Code:: Blocks.</span></li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Select the below file  from the menu bar "File (F)" → "Open (O)",  or simply double-click the file.</span>
+<ul>
+<li>
+<pre> c:\ode-0.11.1\build\codeblocks\ode.workspace</pre>
+</li>
+</ul>
+</li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()"><strong><span style="color: #008000;"><span style="color: #ff0000;">Important:</span> <span style="color: #0000ff;">Build target must be </span></span><span style="color: #0000ff;">choosed</span> as <span style="color: #ff0000;">DebugDoubleLib</span></strong> (where the red circle in the picture below)</span>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2010/02/odecb2.jpg"><img src="{{ site.baseurl }}/assets/images/2010/02/odecb2.jpg" alt="odecb2" title="odecb2" width="450" height="280" class="aligncenter size-full wp-image-6085" /></a>This makes debugging, double and a static library. The <span onmouseover="_tipon(this)" onmouseout="_tipoff()">ODE project recommend the static library (LIB) instead of  the dynamics link library (DLL). </span></li>
+</ul>
+</li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Select "Building (B)" → "building the workspace (W)" .</span> Workspace is similar to the solution in <span onmouseover="_tipon(this)" onmouseout="_tipoff()">Visual C + +.</span>
+<ul>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()"> Executable files of demonstration programs are generate in<br />
+</span>
+<pre>C: \ode-0.11.1\lib\DebugDoubleLib</pre>
+<p><br class="spacer_" /></p>
+</li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Double click the demo_buggy.exe,  and enjoy it. </span></li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">That's all.</span></li>
+</ul>
+</li>
+</ol>
+</li>
+<p><span id="more-3850"> </span></p>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()"><strong>How to build my sample programs in the ODE book.</strong></span>
+<ol type="a">
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Down load my sample programs, roboSimu090614.zip,  from <a href="http://demura.net/downloads/robosimu">here</a>. </span></li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Copy the zip file in c: ¥ ode-0.11.1 folder, and extract it. The following folder should be created.</span>
+<ul>
+<li>c:\ode-0.11.1\roboSimu</li>
+</ul>
+</li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Same as the ODE installation, you can use the premake. Run the command prompt and input the following commands. </span>
+<ul>
+<li><span style="font-family: Consolas, Monaco, 'Courier New', Courier, monospace; line-height: 18px; font-size: 12px; white-space: pre;">cd c:\ode-0.11.1\roboSimu</span></li>
+<li><span style="font-family: Consolas, Monaco, 'Courier New', Courier, monospace; line-height: 18px; font-size: 12px; white-space: pre;">premake --target cb-gcc </span></li>
+<li><span style="font-family: Consolas, Monaco, 'Courier New', Courier, monospace; line-height: 18px; font-size: 12px; white-space: pre;"><strong><span style="color: #ff0000;">Note: There are two - (minus) in front of the "target".</span></strong></span></li>
+</ul>
+</li>
+<li>
+<p>Start the Code:: blocks</p>
+</li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Select "File (F)" → "Open (O)" from the menu bar, and the select following file</span>
+<ul>
+<li>
+<pre>c:\ode-0.11.1\roboSimu\src\roboSimu.workspace</pre>
+</li>
+</ul>
+</li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()"><strong><span style="color: #ff0000;">Important: <span style="color: #000000;">Set the build target </span><span style="color: #000000;">as</span> DebugLib</span><span style="color: #0000ff;"><span style="color: #ff0000;">.</span></span></strong></span> <br />
+ <span onmouseover="_tipon(this)" onmouseout="_tipoff()">You built the library as DebugDoubleLib in ODE,  so DebugLib must be selected. </span></li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Select "Building (B)" → "building the workspace (W)".</span> <span onmouseover="_tipon(this)" onmouseout="_tipoff()">If you get an error, rebuild the ODE library.</span></li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Run the sample program in the following folder</span>
+<ul>
+<li>
+<pre> c:\ode-0.11.1\roboSimu\DebugLib</pre>
+</li>
+</ul>
+</li>
+<li><span onmouseover="_tipon(this)" onmouseout="_tipoff()">Double click the following file</span>
+<ul>
+<li> arm1.exe</li>
+</ul>
+</li>
+<li>You can see a robot arm. </li>
+<li>That's all.  Enjoy my sample programs!</li>
+</ol>
+</li>
+</ol>
+<p style="text-align: right;">demu</p>

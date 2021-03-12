@@ -1,0 +1,55 @@
+---
+layout: post
+title: 'Ubuntu16.04: Object Recognition Kitchen'
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>Kinect V2でObject Recognition Kitchenの使用に関するメモ。<a href="https://wg-perception.github.io/object_recognition_core/">Object Recognition Kitchen</a>のサイトを参考に実施。Ubuntu14.04だと問題なくObject Recognition Kitchenはaptでインストールできるが、Ubuntu16.04はtabletopなど一部のパッケージがないのでソースからビルドした。</p>
+<p>インストール</p>
+<ul>
+<li>sudo apt-get update</li>
+<li>sudo apt-get upgrade</li>
+<li>sudo apt-get install ros-kinetic-object-recognition-*</li>
+<li>sudo apt-get install ros-kinetic-moveit-core</li>
+<li><a href="https://projects.coin-or.org/metslib">metslibのインストール</a></li>
+<li>sudo apt-get install couchapp</li>
+<li> tabletopのバイナリがないのでソースからビルド
+<ul>
+<li>cd ~/catkin_ws/src</li>
+<li>git clone https://github.com/wg-perception/tabletop.git</li>
+<li>cd ~/catkin_ws</li>
+<li>catkin_make</li>
+<li>topic名が違うので~/catkin_ws/src/tabletop/confのdetection.object.ros.orkとdetection.table.ros.orkを次のように書き換える。<br />
+<code><br />
+parameters:<br />
+#rgb_frame_id:'/kinect_head_rgb_optical_frame'<br />
+#rgb_image_topic: '/kinect_head/rgb/image_rect_color'<br />
+#rgb_camera_info: '/kinect_head/rgb/camera_info'<br />
+#depth_image_topic: '/kinect_head/depth_registered/image_rect'<br />
+#depth_camera_info: '/kinect_head/depth_registered/camera_info'<br />
+rgb_frame_id: kinect2_rgb_optical_frame<br />
+rgb_image_topic: /kinect2/hd/image_color_rect<br />
+rgb_camera_info: /kinect2/hd/camera_info<br />
+depth_image_topic: /kinect2/hd/image_depth_rect<br />
+depth_camera_info: /kinect2/hd/camera_info<br />
+</code></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>

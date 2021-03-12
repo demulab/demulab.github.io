@@ -1,0 +1,36 @@
+---
+layout: post
+title: ODE0.7 Cygwinでも実行可能？
+date: 2006-09-12 09:47:58.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1040'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/323.html"
+---
+<p>ODEのご本家様のメーリングリストによると</p>
+<p>drawstuff/src/windows.cppの323行目のCYGWINを__CYGWIN__ (アンダーバー前後に２個）に変更してmakeしなおすとcygwinでもテストプログラムの実行が可能だそうです．</p>
+<p>この間違いに私は気づいていましたが，残念ながら"cannot open stdin"のエラーは消えましたが，次のように怒られ実行には失敗しました．残念．"max　texture size too small (0x0)"</p>
+<p>参考までに私の環境を以下に紹介します．</p>
+<p> 環 境</p>
+<ul>
+<li>Windows XP  Professional 2002  Service Pack 2</li>
+<li>cygwin 1.5.18　&amp; cygwin 1.5.21</li>
+<li>gcc 3.4.4</li>
+<li>automake 1.9.6</li>
+<li>autoconf 2.5.9</li>
+</ul>
+<p>皆さんがうまくいったか，いかなかったかご連絡をお待ちしています．</p>

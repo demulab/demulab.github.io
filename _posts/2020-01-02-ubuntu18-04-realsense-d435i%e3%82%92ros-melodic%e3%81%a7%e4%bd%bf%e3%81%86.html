@@ -1,0 +1,167 @@
+---
+layout: post
+title: 'Ubuntu18.04: RealSense D435iをROS Melodicで使う'
+date: 2020-01-02 16:13:58.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  the_page_ads_novisible: '0'
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16531'
+  views: '6907'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/16525.html"
+---
+<p><!-- wp:image {"id":14746} --></p>
+<figure class="wp-block-image"><a href="https://demura.net/wordpress/wp-content/uploads/2020/01/realsense.png"><img class="aligncenter size-large wp-image-16531" src="{{ site.baseurl }}/assets/images/2020/01/realsense-1024x594.png" alt="" width="1024" height="594" /></a></figure>
+<p><!-- /wp:image --></p>
+<p><!-- wp:paragraph --></p>
+<p><a href="https://www.intelrealsense.com/depth-camera-d435i/">RealSense D435i</a>をROS Melodicで使うメモ。D435iはD435にIMUが搭載された新しい機種。D435と同じようにインストールできた。ROSのラッパーもありすぐ使える。このメモはカラー画像の表示まで。なお、ビルドコマンドはcatkin_makeではなくcatkin buildを使用しているので、catkin_makeを使っている方は適宜読み替えてください。また、記事に書いていますが参考したドキュメントどおりcatkin installと不具合が出た学生がいたのでそのコマンドは省略しました。</p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>環 境</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li>Razer Blade 15</li>
+<li>Ubuntu18.04</li>
+<li>ROS Melodic</li>
+<li>RealSense SDK 2.0</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>RealSense SDKのインストール</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><a href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md">このページのとおり実施すればよい。</a>以下の手順はその簡単な日本語訳とささやかな補足。</li>
+<li>サーバーの公開鍵を登録
+<ul>
+<li><code>$ sudo apt-key adv --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE </code></li>
+</ul>
+</li>
+<li>リポジトリにIntelサーバーを追加
+<ul>
+<li><code>$ sudo add-apt-repository "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo bionic main" -u</code></li>
+</ul>
+</li>
+<li> リポジトリのリストと使えるパッケージをリフレッシュする
+<ul>
+<li><code>$ sudo apt update</code></li>
+</ul>
+</li>
+<li>ライブラリのインストール
+<ul>
+<li><code>$ sudo apt install librealsense2-dkms</code></li>
+<li><code>$ sudo apt install librealsense2-utils</code></li>
+</ul>
+</li>
+<li>開発用に追加のパッケージをインストールする
+<ul>
+<li><code>$  sudo apt install librealsense2-dev </code></li>
+<li><code>$ sudo apt install librealsense2-dbg</code></li>
+</ul>
+</li>
+<li>RealSenseのUSBケーブルを抜き差しして以下のコマンドを実行する。ウインドウが開くので、左サイドバーにあるStereo ModuleとRGB Cameraをoffからonにすると、上のような画像が現れる。
+<ul>
+<li><code>$ realsense-viewer</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>パッケージのアップグレード</strong></p>
+<ul>
+<li>以下の手順でアップグレードする。<span style="color: #0000ff;"><strong>ここでは上でインストールしたパッケージだけアップグレードする。アップグレード可能なすべてのパッケージをアップグレードすると稀に動かなくなるパッケージがあるのでこの方法はお勧め。</strong></span>
+<ul>
+<li><code>$ sudo apt update</code></li>
+<li><code>$ sudo apt --only-upgrade install librealsense2-utils librealsense2-dkms librealsense2-dev librealsense2-dbg</code> </li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>ROSラッパーのインストール</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><a href="https://github.com/intel-ros/realsense/releases">https://github.com/intel-ros/realsense/releases</a>　からSource code (realsense-2.0.3.tar.gz)を~/catkin_ws/srcにダウンロードする</li>
+<li>$ cd ~/catkin_ws/src</li>
+<li>$ git clone https://github.com/pal-robotics/ddynamic_reconfigure.git</li>
+<li>$ catkin build</li>
+<li>$ git clone https://github.com/IntelRealSense/realsense-ros.git</li>
+<li>$ catkin build
+<ul>
+<li>参考元の説明を元に次のようにcatkin installすると不具合が出た学生がいたので変更した。
+<ul>
+<li><del>$ catkin build -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release</del></li>
+<li><del>$ catkin install</del></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>実行</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><code>$ roslaunch realsense2_camera rs_camera.launch</code>
+<ul>
+<li>解像度は640x480 pixel。変更したいときはrs_camera.launchの中を書き換える。</li>
+</ul>
+</li>
+<li>カメラ画像を表示するimage_viewノードは、melodicではaptでインストールできないので、rqt版のrqt_image_viewをインストールする。
+<ul>
+<li><code>$ sudo apt install ros-melodic-rqt-image-view</code></li>
+</ul>
+</li>
+<li><code>$ rosrun rqt_image_view rqt_image_view</code>
+<ul>
+<li>左上の選択ボックスからトピック/camera/color/image_rawを選択して、下のように画像が表示されれば成功。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/01/rqt_image_view.png"><img class="aligncenter size-full wp-image-16537" src="{{ site.baseurl }}/assets/images/2020/01/rqt_image_view.png" alt="" width="600" height="474" /></a></p>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>トピック</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p>~/catkin_ws$ rostopic list /camera/color/camera_info /camera/color/image_raw /camera/color/image_raw/compressed /camera/color/image_raw/compressed/parameter_descriptions /camera/color/image_raw/compressed/parameter_updates /camera/color/image_raw/compressedDepth /camera/color/image_raw/compressedDepth/parameter_descriptions /camera/color/image_raw/compressedDepth/parameter_updates /camera/color/image_raw/theora /camera/color/image_raw/theora/parameter_descriptions /camera/color/image_raw/theora/parameter_updates /camera/depth/camera_info /camera/depth/image_rect_raw /camera/depth/image_rect_raw/compressed /camera/depth/image_rect_raw/compressed/parameter_descriptions /camera/depth/image_rect_raw/compressed/parameter_updates /camera/depth/image_rect_raw/compressedDepth /camera/depth/image_rect_raw/compressedDepth/parameter_descriptions /camera/depth/image_rect_raw/compressedDepth/parameter_updates /camera/depth/image_rect_raw/theora /camera/depth/image_rect_raw/theora/parameter_descriptions /camera/depth/image_rect_raw/theora/parameter_updates /camera/extrinsics/depth_to_color /camera/extrinsics/depth_to_infra1 /camera/extrinsics/depth_to_infra2 /camera/infra1/camera_info /camera/infra1/image_rect_raw /camera/infra1/image_rect_raw/compressed /camera/infra1/image_rect_raw/compressed/parameter_descriptions /camera/infra1/image_rect_raw/compressed/parameter_updates /camera/infra1/image_rect_raw/compressedDepth /camera/infra1/image_rect_raw/compressedDepth/parameter_descriptions /camera/infra1/image_rect_raw/compressedDepth/parameter_updates /camera/infra1/image_rect_raw/theora /camera/infra1/image_rect_raw/theora/parameter_descriptions /camera/infra1/image_rect_raw/theora/parameter_updates /camera/infra2/camera_info /camera/infra2/image_rect_raw /camera/infra2/image_rect_raw/compressed /camera/infra2/image_rect_raw/compressed/parameter_descriptions /camera/infra2/image_rect_raw/compressed/parameter_updates /camera/infra2/image_rect_raw/compressedDepth /camera/infra2/image_rect_raw/compressedDepth/parameter_descriptions /camera/infra2/image_rect_raw/compressedDepth/parameter_updates /camera/infra2/image_rect_raw/theora /camera/infra2/image_rect_raw/theora/parameter_descriptions /camera/infra2/image_rect_raw/theora/parameter_updates /camera/realsense_ros_camera_manager/bond /camera/realsense_ros_camera_manager/parameter_descriptions /camera/realsense_ros_camera_manager/parameter_updates /rosout /rosout_agg /tf_static</p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p>以上</p>

@@ -1,0 +1,195 @@
+---
+layout: post
+title: 'ODE Petit Camp 1: Let''s install the open source physics engine'
+date: 2007-03-07 09:06:30.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '864'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/378.html"
+---
+<p>Most of this page was translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.<br />
+Sorry for "<a href="http://en.wikipedia.org/wiki/Chinese_room">the chinese room</a>"  English.</p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/camp1.jpg" alt="" width="481" height="120" /></p>
+<p>The figure above being to be proofreading stage is different from the real thing a little. As for the real thing  color has not been attached, but design is refined.</p>
+<p>Thank you very much for reading my article, ODE petit, on<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fwww.ohmsha.co.jp%2frobocon%2fmagazine%2fnew.htm" target="_self">RoboCon Magazine</a>.  RoboCon magazine is the most popular magazine related a robot in Japan, and about 35000 copies are printed. The readers are from elementary school students to retired engineers.   Because in the information magazine regarding the robot it is  only one, the person who was not until now read RoboCon Magazine first please pass through at the propriety  book store.</p>
+<p>Well, the short-term serialization of all the 4 times  regarding the elementary rudiments of ODE was published  RoboCon Magazine No.47 (the ohmsha Ltd., August 16th  sale) from. Being linked with that, because, with this web sight in regard to circumstances of the space, we would like to keep  answering to explanation and the supplementation of the place where it abbreviates the figure and the question regarding the article, as for  the one which has question most please contribute to the comment field which is under. 2nd time being to keep making the petit  simulator which makes the RoboCup Middle-Sized Robot simulator which is the figure above simple please expect.</p>
+<p>So, with RoboCon Magazine being illustrated from  now on, it explains the installation method of the free (free)  enviroment for software development which cannot be explained in  detail. Furthermore, there is also Cygwin, as the enviroment for software development of of free with Windows you can use to the UNIX  like, but with the up-to-date version 0.7 of ODE it meaning that being less crowded capacity of thing and the hard disk which cannot compile  the sample program is well enough necessary, with the latest  serialization you use MinGW and MSYS.</p>
+<p>Here it explains in detail with the figure and the link  attachment concerning below.<span style="color: #ff0000;"><strong>(Note: It  meaning that ODE0.7 is released on 2006 September 8th, here it  introduces the installation method of ODE0.7.)</strong></span></p>
+<ol>
+<li>The installation<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fwww.mingw.org%2f" target="_self">of MinGW</a>(enviroment for software development)</li>
+<li>The installation<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fwww.mingw.org%2fmsys.shtml" target="_self">of MSYS</a>(the system in order to utilize MinGW)</li>
+<li>The installation<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fode.org%2f" target="_self">of ODE</a>0.7</li>
+</ol>
+<p><!-- ▼追記▼ --></p>
+<h1>1. The installation of MinGW</h1>
+<ul>
+<li> <span style="font-size: 10pt"><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fprdownloads.sourceforge.net%2fmingw%2f">Http:</a></span><span style="font-size: 10pt"><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fprdownloads.sourceforge.net%2fmingw%2fMinGW-5.1.0.exe">MinGW-5.1.0.exe</a>is downloadedfrom<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fprdownloads.sourceforge.net%2fmingw%2f">//prdownloads.sourceforge.net/mingw/</a>. It is good to download from the Japanese JAIST sight, probably will be. In this case, when the logograph of JAIST is clicked by mistake, to the home page of JAIST. Clicking the letter of Download on extreme right, the suitable place (as for my recommendation c: \temp) Please download.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/jaist.jpg" alt=" " width="320" height="328" /></p>
+<ul>
+<li> <span style="font-size: 10pt">When MinGW-5.1.0.exe which is in the desktop double is  clicked the window below appears. Clicking Next, next it  advances.</span><br />
+<img src="{{ site.baseurl }}/assets/images/2007/03/MinGW1.jpg" alt="" /></li>
+</ul>
+<ul>
+<li><span style="font-size: 10pt">You insert check</span><span style="font-size: 10pt">in Download and  Install and clicking Next</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MinGW2.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">It meaning</span><span style="font-size: 10pt">that the picture of License Agreement comes out, if it agrees to the license, clicking I A gree. It is proper, but when it does not agree, it cannot install.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MinGW3.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Which package is chosen, but you hear. Current  (present version) you insert check and clicking Next.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MinGW4.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">The necessary component is selected. It designates installation as Custom, inserts check in MinGW base tools, g++ compiler and MinGW Make, clicking Next.</span><span style="color: #ff0000;"><strong>If these 3 components are not selected, it meaning that compiling is not possible, please verify whether check has entered securely.</strong></span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MinGW5.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">You inquire about the place where it installs. This way being to be necessary, clicking Next. Furthermore, in installation the being less crowded territory of 58.5MB is necessary in the hard disk.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MinGW6.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">You inquire about the selection of the start menu  folder. Clicking Install this way</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MinGW7.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">When download and installation start, installation ends, like the following picture it becomes the indication of Installation Complete. Clicking Next</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MinGW9.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Clicking</span><span style="font-size: 10pt">Finish, it will end installation job. Next will install MSYS.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MinGW10.jpg" alt="" /></p>
+<h1><strong>2. The installation of MSYS </strong></h1>
+<ul>
+<li><span style="font-size: 10pt">MSYS to use MinGW is the minimum system which is necessary in order to make easy with the abbreviation of Minimal System. Same as MinGW<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fprdownloads.sourceforge.net%2fmingw%2f" target="_self">http:</a>Downloading<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fprdownloads.sourceforge.net%2fmingw%2fMSYS-1.0.10.exe" target="_self">MSYS-1.0.10.exe</a>from<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fprdownloads.sourceforge.net%2fmingw%2f" target="_self">//prdownloads.sourceforge.net/mingw/,</a>please put on the desktop. When MSYS-1.0.10.exe double is clicked, the following window opens. "It is and" clicks and advances to the next.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS1.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">It meaning that the picture of Welcome to the "</span><span style="font-size: 10pt">Minimal System" Setup Wizard opens, clicking Next.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS2.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Reading</span><span style="font-size: 10pt">License agreement, if OK  clicking Yes.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS3.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">When</span><span style="font-size: 10pt">Information is read, clicking  Next.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS4.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">It becomes</span><span style="font-size: 10pt">the picture of Setup. Without modifying ahead installing clicking Next. At least the being less crowded territory of 6MB is necessary in installation.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS5.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Being</span><span style="font-size: 10pt">to become the picture of  Select components, at all do, clicking Next.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS6.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">It becomes the picture</span><span style="font-size: 10pt">of Select  START Menu Bar. At all do, clicking Next.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS7.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">It becomes the picture</span><span style="font-size: 10pt">of Ready, to  Install from now on installs to ハードディス. Clicking  Install.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS8.jpg" alt="" /></p>
+<ul>
+<li> Like the picture below when installation becomes 100%, the command prompt window as in the figure under that opens.</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS9.jpg" alt="" /></p>
+<ul>
+<li>
+<p class="MsoNormal" align="left">Like below please answer.</p>
+<p class="MsoNormal" align="left"><span style="font-size: 10pt">Do you wish to continue with the post intsll? [  Yn ] </span><span style="color: #ff0000;"><strong>y</strong></span><br />
+Do you have MinGW installed [ Yn ]<span style="color: #ff0000;"> </span><span style="color: #ff0000;"><strong>y</strong></span><strong><br />
+</strong>Please answer the following in the form of c:  /foo/bar<br />
+Where is your MinGW installation?<span style="color: #ff0000;"><strong>C:</strong></span><span style="color: #ff0000;"><strong>/mingw</strong></span></p>
+<p class="MsoNormal" align="left"><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS10.jpg" alt="" /></p>
+</li>
+<li><span style="font-size: 10pt">Installation is end with this. Finish will be  clicked.</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS11.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">When installation ends normally. The idea contest of MSYS is added on the desktop. When double it clicks that, the MINGW32 terminal below opens. The installation job of MSYS is end with this</span>.</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/MSYS12.jpg" alt="" /></p>
+<h1><strong></strong><strong>3. The installation of ODE0.7</strong></h1>
+<h1><!--[if !supportLists]--><strong><span style="font-size: 10pt">Download</span></strong></h1>
+<p><strong><span style="font-size: 10pt">When</span><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fode.org%2f" target="_self"><span style="font-size: 10pt">the  ODE</span></a><span style="font-size: 10pt"><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fode.org%2f" target="_self">web</a><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fode.org%2f" target="_self">sight</a>(the rough sketch)<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fode.org%2fdownload.html" target="_self">download  which</a>is the left menu  bar is clicked<!--[if gte vml 1]><v :shapetype id="_x0000_t75"  coordsize="21600,21600" o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe"  filled="f" stroked="f"><v :stroke joinstyle="miter" /></v><v :formulas><v :f eqn="if lineDrawn pixelLineWidth 0" /><v :f eqn="sum @0 1 0" /><v :f eqn="sum 0 0 @1" /><v :f eqn="prod @2 1 2" /><v :f eqn="prod @3 21600 pixelWidth" /><v :f eqn="prod @3 21600 pixelHeight" /><v :f eqn="sum @0 0 1" /><v :f eqn="prod @6 1 2" /><v :f eqn="prod @7 21600 pixelWidth" /><v :f eqn="sum @8 21600 0" /><v :f eqn="prod @7 21600 pixelHeight" /><v :f eqn="sum @10 21600 0" /></v><v :path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect" /><o :lock v:ext="edit" aspectratio="t" /><v :shape id="_x0000_i1025" type="#_x0000_t75" style='width:174pt;  height:177.75pt'><v :imagedata xsrc="file:///C:\DOCUME‾1\demura\LOCALS‾1\Temp\msohtml1\01\clip_image001.jpg" mce_src="file:///C:\DOCUME‾1\demura\LOCALS‾1\Temp\msohtml1\01\clip_image001.jpg"   o:title="ode1" /></v>< ![endif]--><!--[if !vml]--><!--[endif]--><br />
+</span></strong></p>
+<p class="MsoNormal" align="center"><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong><br />
+<!--[if gte vml 1]><v :shape id="_x0000_i1027" type="#_x0000_t75" style='width:345.75pt;  height:195.75pt'><v :imagedata xsrc="file:///C:\DOCUME‾1\demura\LOCALS‾1\Temp\msohtml1\01\clip_image003.jpg" mce_src="file:///C:\DOCUME‾1\demura\LOCALS‾1\Temp\msohtml1\01\clip_image003.jpg"   o:title="ode2" /></v>< ![endif]--><!--[if !vml]--><br />
+<img src="{{ site.baseurl }}/assets/images/2007/03/ode1s.jpg" alt="" width="410" height="261" /><br />
+</strong></span></p>
+<p class="MsoNormal" align="left"><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong>It becomes the following picture.</strong></span><strong></strong><strong></strong><strong></strong><strong><br />
+</strong></p>
+<p class="MsoNormal" align="center"><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong><br />
+<img src="{{ site.baseurl }}/assets/images/2007/03/ode2s.jpg" alt="" width="409" height="205" /><br />
+</strong></span><strong></strong><strong></strong><strong></strong><strong><br />
+<span style="font-size: 10pt"> </span></strong></p>
+<ul>
+<li><!--[if !supportLists]--><strong></strong><strong></strong><strong></strong><strong> <!--[endif]--></strong><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fsourceforge.net%2fproject%2fshowfiles.php%3fgroup_id%3d24884" target="_self">Version-numbered source</a></span><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fsourceforge.net%2fproject%2fshowfiles.php%3fgroup_id%3d24884" target="_self"><span style="font-size: 10pt">of Source  Code</span></a><span style="font-size: 10pt"><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fsourceforge.net%2fproject%2fshowfiles.php%3fgroup_id%3d24884" target="_self">release:</a>When it clicks, the page of Open Dynamics of sourceforge.net Engine being to fly, when it clicks ode-src-0.7.zip which is the item of the File Release it becomes this picture which selects ahead downloading.</span></strong></li>
+</ul>
+<p class="MsoNormal" align="center"><span style="font-size: 10pt"><!--[if gte vml 1]><v :shape id="_x0000_i1026" type="#_x0000_t75"  style='width:306.75pt;height:219pt'><v :imagedata xsrc="file:///C:\DOCUME‾1\demura\LOCALS‾1\Temp\msohtml1\01\clip_image005.jpg" mce_src="file:///C:\DOCUME‾1\demura\LOCALS‾1\Temp\msohtml1\01\clip_image005.jpg"   o:title="sourceforge1" /></v>< ![endif]--><!--[if !vml]--><!--[endif]--><strong></strong><strong></strong><strong></strong><strong><br />
+</strong></span><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong><br />
+<img src="{{ site.baseurl }}/assets/images/2007/03/sourceforge1s.jpg" alt="" width="465" height="287" /><br />
+</strong></span><strong></strong><strong></strong><strong></strong><strong><br />
+<!--[if !supportLineBreakNewLine]--><br />
+<!--[endif]--></strong></p>
+<ul>
+<li><!--[if !supportLists]--><strong></strong><strong></strong><strong></strong><strong> <!--[endif]--><span style="font-size: 10pt">It will download from the host of the day book. Here it downloads from JAIST. ahead downloading  Please make under c:\msys\1.0\home\ user name \src. When there is no src folder, with Explorer c: \ [ New compilation (<span style="text-decoration: underline;">W</span>) the folder (<span style="text-decoration: underline;">F</span>) ] please move to→msys\1.0\home\  username, click the right  mouse button, choose and draw up the src folder.</span></strong></li>
+</ul>
+<p><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt">Installation</span></strong></p>
+<ul>
+<li><!--[if !supportLists]--><!--[endif]--><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong>As for</strong></span><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong>ode-src-0.7.zip being to be compressed with zip, please install the software which can thaw zip. Here, the compressed thawing software, Lhaplus is used.WhenLhaplus is searched with<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fwww.google.co.jp%2f" target="_self">Google</a>, it can find ahead downloading  simply.<br />
+</strong></span><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong><br />
+<img src="{{ site.baseurl }}/assets/images/2007/03/download2s.jpg" alt="" /><br />
+</strong></span></li>
+</ul>
+<p class="MsoNormal" align="center"><span style="font-size: 10pt"><!--[if gte vml 1]><v :shape id="_x0000_i1028" type="#_x0000_t75"  style='width:348.75pt;height:279.75pt'><v :imagedata xsrc="file:///C:\DOCUME‾1\demura\LOCALS‾1\Temp\msohtml1\01\clip_image007.jpg" mce_src="file:///C:\DOCUME‾1\demura\LOCALS‾1\Temp\msohtml1\01\clip_image007.jpg"   o:title="download2" /></v>< ![endif]--><!--[if !vml]--><!--[endif]--><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong><br />
+</strong></span></p>
+<ul>
+<li><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong>Job the UNIX command is used future, but, you who do not know sort of example please input.</strong></span></li>
+</ul>
+<p class="MsoNormal" align="left"><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong>1. Double</strong></span><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong>clicking the MSYS  idea contest, you open the MINGW32 terminal. Please execute the command below with this terminal.</strong></span></p>
+<p><strong>It moves  to 2 src folders<br />
+$</strong><strong><span style="color: #ff0000;">cd</span></strong><span style="color: #ff0000;"><strong> src </strong></span></p>
+<p><strong><span style="font-size: 10pt">3. It moves</span><span style="font-size: 10pt">to the  ode-0.7 directory</span></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><br />
+$</span><span style="color: #ff3300;"><strong>cd  ode-0.7</strong></span></strong></p>
+<p><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt">4.  Preparation of compiling<br />
+$<strong><span style="color: #ff3300;">. /configure</span></strong></span><span style="color: #ff3300;"><strong>--enable-double-precision</strong></span></strong></p>
+<p><strong>5. Compiling<br />
+$</strong><strong> <span style="color: #ff3300;">make</span></strong></p>
+<p>When it succeeds in make, like below it is  indicated.<strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong><br />
+<span style="font-size: 10pt"><br />
+<img src="{{ site.baseurl }}/assets/images/2007/03/odeMakes.jpg" alt="" /><br />
+</span><br />
+</strong></p>
+<p class="MsoNormal" align="left"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt">6. Installation<br />
+$<strong><span style="color: #ff3300;">make</span></strong></span><span style="color: #ff3300;"><strong> install </strong></span></strong></p>
+<p class="MsoNormal" align="left"><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong>7.</strong></span><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong>Test<br />
+$</strong><strong> <span style="color: #ff3300;">cd</span></strong><strong><span style="color: #ff3300;"> ode/test</span><br />
+</strong>$ <strong><span style="color: #ff0000;">./test_crash</span> </strong></span></p>
+<p class="MsoNormal" align="left"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong> </strong></p>
+<p><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong>When command above succeeds, when the window of  Simulation</strong></span><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong>test environment v0.02 opens and the picture below is indicated, it is success. Extremely wax! As for method of playing being to be indicated in DrawStuff Message, following to that, please play.</strong></span></p>
+<p><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><br />
+<img src="{{ site.baseurl }}/assets/images/2007/03/test_crashs.jpg" alt="" /></span></strong></p>
+<p><strong></strong><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><br />
+</span></strong></p>
+<p>To be continued.</p></p></p></p>

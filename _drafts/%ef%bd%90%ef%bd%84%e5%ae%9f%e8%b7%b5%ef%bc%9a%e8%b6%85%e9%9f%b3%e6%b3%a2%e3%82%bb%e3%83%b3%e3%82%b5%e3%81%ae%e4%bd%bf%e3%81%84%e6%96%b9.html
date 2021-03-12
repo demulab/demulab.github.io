@@ -1,0 +1,58 @@
+---
+layout: post
+title: ＰＤ実践：超音波センサの使い方
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '15'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14989.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、以下の方法は西川教授の資料を参考にしています。</p>
+<p>本記事は、超音波センサの使い方を学びます。</p>
+<ul>
+<li><strong>API</strong>
+<ul>
+<li>ポート1の超音波センサを初期化
+<ul>
+<li> ev3_sensor_config(EV3_PORT_1, ULTRASONIC_SENSOR);<br />
+ポート1が超音波センサであることを設定</li>
+</ul>
+</li>
+<li> ポート1の超音波センサから距離情報を取得
+<ul>
+<li> int16_t color = distance =<br />
+ev3_ultrasonic_sensor_get_distance(EV3_PORT_1);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サンプルプログラム</strong>
+<ul>
+<li> /sonar/app.c：超音波センサの計測値（距離）をLCDに表示する。</li>
+<li> /sonar_listen/app.c：超音波センサを用いて超音波を検出したかどうかをLCDに表示する。</li>
+</ul>
+</li>
+<li><strong> 演習</strong>
+<ul>
+<li> 超音波センサをEV3（ポート1）に接続した後、サンプルプログラムをEV3にアップロードし、動作を確認してください。</li>
+<li><span style="color: #ff0000;"><strong> [レポート課題1]</strong> </span>計測値を表示するサンプルプログラムを改造し、以下の機能を実現してください。<br />
+「障害物が20cm未満なら"Danger"、20cmから50cm未満なら"Caution"、それ以上なら"Safe"」</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 30px; text-align: right;">終わり</p>

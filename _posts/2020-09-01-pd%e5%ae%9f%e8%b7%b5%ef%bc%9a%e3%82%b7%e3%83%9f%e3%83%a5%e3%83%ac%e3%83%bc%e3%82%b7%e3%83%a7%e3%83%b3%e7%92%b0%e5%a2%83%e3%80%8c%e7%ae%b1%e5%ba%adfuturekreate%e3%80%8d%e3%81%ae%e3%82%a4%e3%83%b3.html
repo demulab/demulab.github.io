@@ -1,0 +1,230 @@
+---
+layout: post
+title: PD実践：LEGO EV3RTシミュレータ「FutureKreate×箱庭」のインストール(作成中)
+date: 2020-09-01 09:59:03.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19046'
+  views: '250'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19036.html"
+---
+<p><span style="color: #ff0000;"><strong><a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_futurekreate-school_2020-9-1_9-58-25_No-00.png"><img class="aligncenter size-large wp-image-19046" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_futurekreate-school_2020-9-1_9-58-25_No-00-1024x576.png" alt="" width="1024" height="576" /></a><br />
+このページは作成中なので作業しないでください。</strong></span></p>
+<p>2020年度後学期KITロボティクス学科のPD実践用のページです。今年度は新型コロナの影響で今まで実施したようなLEGOマインドストームEV3実機を使った密なグループワークはできませんので、シミュレータを使います。</p>
+<p>シミュレータには仮想シミュレーション環境「箱庭」と誰もが簡単に使えることを目指したFutureKreateを使います。正確には、昨年、EV3にインストールしたリアルタイムOSであるEV3RTを箱庭のAthrillでシミュレーションし、EV3実機のシミュレーションを行う箱庭のUnityの部分を全てFutureKreateに置き換えています。さらに、箱庭ではEV3RTのLCDとサウンド機能は実装されていないので、FutureKreateの開発者がAthrill側を拡張しています。</p>
+<p><strong>参考サイト</strong></p>
+<ul>
+<li><a href="https://toppers.github.io/hakoniwa/prototypes/single-robot/">TOPPERS/箱庭 単体ロボット向け</a></li>
+<li><a href="https://qiita.com/kanetugu2018/items/0e521f4779cd680dab18?fbclid=IwAR2mfNajZ8P8P9u5Uy5BRHXjH0m3g_Jeu9O0cDxlnN_cen3y4ota7gyTO-Y#athrill2%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">TOPPERS/箱庭デモ ETロボコンシミュレータ</a></li>
+</ul>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Windows10</li>
+</ul>
+<p><strong>WSLのインストール</strong></p>
+<ul>
+<li><span style="color: #ff0000;"><strong>WSL2ではシミュレータが動かないので、以下のリンクに従ってWSLをインストールして使うこと。</strong></span>Ubuntuはバージョン20.04を選択する。
+<ul>
+<li><a href="https://demura.net/education/pd%e5%ae%9f%e8%b7%b5/19314.html">WSL: Windows for Subsystem for Linux (Ubuntu20.04)のインストールと設定</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>Rubyのインストール</strong></p>
+<ul>
+<li>WSLのUbuntu20.04のターミナル(端末)を起動して以下のコマンドを実行してRubyと必要なライブラリをインストールする。なお、コマンドの先頭にある$はプロンプトなので打ち込まないこと。コピペでもよい。特に長いコマンドの場合はコピペを推奨する。
+<ul>
+<li><code>$ sudo apt install ruby</code></li>
+<li><code>$ sudo gem install shell</code><code></code></li>
+</ul>
+</li>
+</ul>
+<p><strong>作業用フォルダの作成(Windowsでの作業）</strong></p>
+<ul>
+<li>WindowsのCドライブ直下にeduというフォルダを作成する。これからこのフォルダで作業をする。特に断らない限り、WSL Ubuntu20.04の端末にコマンドを打ち込む作業になる。<span style="color: #ff0000;"><strong>なお、以下の説明はCドライブ直下にeduフォルダを作ることを前提にしており、他のドライブでは動かないので注意して欲しい。</strong></span></li>
+</ul>
+<p><strong>athrill2のインストール</strong></p>
+<ul>
+<li>ダウンロード
+<ul>
+<li>Ubuntu20.04の端末を起動して次のコマンドを実行する。
+<ul>
+<li><code>$ cd /mnt/c/edu</code></li>
+<li><code>$ sudo apt update</code></li>
+<li><code>$ sudo apt install -y language-pack-ja</code></li>
+<li><code>$ sudo update-locale LANG=ja_JP.UTF-8</code></li>
+<li><code>$ sudo apt install git</code></li>
+<li><code>$ sudo apt install build-essential</code></li>
+<li><code>$ git clone https://github.com/tmori/athrill.git</code></li>
+<li><code>$ git clone https://github.com/tmori/athrill-target.git</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ cd /mnt/c/edu/athrill-target/v850e2m/build_linux</code></li>
+<li><code>$ make timer32=true clean</code></li>
+<li><code>$ make timer32=true</code></li>
+<li>ファイルの確認
+<ul>
+<li><code>$ ls -l ../../../athrill/bin/linux/athrill2</code></li>
+<li>上のコマンドを実行して、以下のように表示されば成功
+<ul>
+<li>-rwxr-xr-x 1 user group 3889056 7月 1 11:04 ../../../athrill/bin/linux/athrill2*</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>設定
+<ul>
+<li>エディタでファイル~/.bashrcを開く。よくわからない場合は端末で以下のコマンドを実行してnanoを使う。<a href="https://news.mynavi.jp/article/liunx_win-23/">使い方はこのリンクを参考にして欲しい。</a>
+<ul>
+<li><code>$ nano ~/.bashrc</code></li>
+</ul>
+</li>
+<li> ~/.bashrcの最後に以下の行を加えセーブする。セーブの方法はコントロールキーを押しながら'x'キーを押す。Save modified buffer?と表示されるので'Y'キーを押す。保存されるファイルが表示されるので確認してEnterキーを押す。
+<ul>
+<li>export PATH=/mnt/c/edu/athrill/bin/linux:${PATH}</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>linux版64bit gccコンパイラのインストール</strong></p>
+<ul>
+<li>ダウンロード
+<ul>
+<li>端末を開き以下のコマンドを実行する。ファイルサイズが225MBあり少し時間がかかる。私の環境では10分程度かかった。
+<ul>
+<li><code>$ cd /mnt/c/edu</code></li>
+<li><code>$ wget https://github.com/toppers/athrill-gcc-v850e2m/releases/download/v1.1/athrill-gcc-package.tar.gz</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>展開
+<ul>
+<li>端末を開き以下のコマンドを実行する。
+<ul>
+<li><code>$ cd /mnt/c/edu</code></li>
+<li><code>$ tar xvzf athrill-gcc-package.tar.gz</code></li>
+<li><code>$ cd athrill-gcc-package</code></li>
+<li><code>$ tar xvzf athrill-gcc.tar.gz</code></li>
+<li>以下のコマンドを実行して次のように表示されれば成功。
+<ul>
+<li><code>$ ls usr/local/athrill-gcc</code>
+<ul>
+<li>bin include lib libexec share v850-elf</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> 移動
+<ul>
+<li>以下のコマンドを実行してusr/local/athrill-gccを/usr/localに移動する。
+<ul>
+<li><code>$ cd /mnt/c/edu/athrill-gcc-package</code></li>
+<li><code>$ sudo cp -r usr/local/athrill-gcc /usr/local</code></li>
+<li><code>$ rm -fr usr</code></li>
+</ul>
+</li>
+<li>エディタを使って~/.bashrcの一番下の行に以下を追加して保存する。
+<ul>
+<li>export PATH=/usr/local/athrill-gcc/bin/:${PATH}<br />
+export LD_LIBRARY_PATH=/usr/local/athrill-gcc:/usr/local/athrill-gcc/lib:${LD_LIBRARY_PATH}</li>
+</ul>
+</li>
+<li>以下のコマンドを使って追加したパスを有効化する。
+<ul>
+<li><code>$ source  ~/.bashrc</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>箱庭用EV3RT開発環境のインストール</strong></p>
+<ul>
+<li>本授業では、FutureKreateが箱庭用EV3RT開発環境にLCDとサウンドAPIのシミュレーション機能を追加した環境をインストールする。</li>
+<li> ダウンロード
+<ul>
+<li>以下のリンクをc:\eduフォルダーにダウンロードして解凍する。なお、KIT関係者しかダウンロードできません。
+<ul>
+<li><a href="https://kanazawa-it.box.com/s/cu64mz3e1sblraux51bx3b6sp9x8885i">athrill-sample-speakerlcd200915.zip(授業用サンプルを削除済み)</a></li>
+</ul>
+</li>
+<li>解凍すると以下のフォルダができる。
+<ul>
+<li>c:\edu\athrill-sample</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>FutureKreateのインストール</strong></p>
+<ul>
+<li>以下のリンクをc:\eduフォルダーにダウンロードして解凍する。なお、KIT関係者しかダウンロードできません。
+<ul>
+<li><a href="https://kanazawa-it.box.com/s/c8wsebsfwnukc0j5qdsg8b6u8jmuvdvq">futureKreate-edu-sonarhotfix.zip</a></li>
+</ul>
+</li>
+<li>解凍すると以下のフォルダができる。
+<ul>
+<li>c:\edu\futurekreate-edu</li>
+</ul>
+</li>
+<li>FutureKreateの実行ファイルは以下のファイル。ダブルクリックすると起動する。
+<ul>
+<li>c:\edu\futurekreate-edu\futurekreate-Edu.exe</li>
+</ul>
+</li>
+</ul>
+<p>以上で終わり。お疲れ様！</p>
+<p>&nbsp;</p>
+<hr />
+<p><strong>謝　辞</strong></p>
+<p>箱庭の開発者である京都大学 高瀬英希先生、(株)永和システムマネジメント 森崇様、FutureKreateの開発者 出村賢聖さん、金沢工業大学基礎教育部 西川幸延先生には大変お世話になりました。ありがとうございます。</p>
+<hr />

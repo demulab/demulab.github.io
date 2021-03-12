@@ -1,0 +1,121 @@
+---
+layout: page
+title: An ODE Book
+date: 2008-02-07 12:58:49.000000000 +09:00
+type: page
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '22542'
+  _wp_page_template: default
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/simulation"
+---
+<p><span style="font-family: mceinline;">[</span><span style="font-family: mceinline;"><a href="http://demura.net/english">There are some ODE tutorials here. Please visit</a>!</span><span style="font-family: mceinline;">]</span></p>
+<p><object width="320" height="320" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="&amp;displayheight=240&amp;file=http://demura.net/archives/ode/robotsimu/playlist3.xml&amp;height=320&amp;width=320&amp;autoplay=off" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed width="320" height="320" type="application/x-shockwave-flash" src="http://demura.net/flvplayer.swf" flashvars="&amp;displayheight=240&amp;file=http://demura.net/archives/ode/robotsimu/playlist3.xml&amp;height=320&amp;width=320&amp;autoplay=off" /></object></p>
+<hr />
+<p>I introduce my ODE related book , "<a href="http://www.amazon.co.jp/gp/product/4627846916?ie=UTF8&amp;tag=demuranet-22&amp;linkCode=as2&amp;camp=247&amp;creative=1211&amp;creativeASIN=4627846916">Robot Simulation - Robot programming with Open Dynamics Engine , (260 pages, ISBN:978-4627846913, Morikita Publishing Co. Ltd., Tokyo, 2007)</a>" by Kosei Demura, which is written in Japanese (sorry).</p>
+<p>There are a lot of good text books about Robotics, such as, "Robotics - Vector Analysis of Mechanical System- (SHOKABO)" by Prof. Hirose, "Introduction to ROBOTICS - mechanics and control (Addison- Wesley) " by Dr. John J. Craig, and so on.In addition, textbooks related to the C programming language, many books line up into book stores.</p>
+<p>So, I decided to write a textbook combines those two subjects, robotics and programming. Open Dynamics Engine is used in order to realize a virtual world, and experience robot programming in the world. This book aims that learning fundamental theory in Robotics and acquiring the programming skill to control many kinds of robots, such as a wheeled robot, an arm robot, a legged robot, and a humanoid robot. Unique features are as follows.</p>
+<ul>
+<li><span style="color: #000099;"><strong>Foundations of robotics and a practice book which can acquire the programming skill</strong></span>
+<ul>
+<li>Making robot simulators, such as, wheeled robot (differential drive and omnidirectional drive), a robot arm, a 4 legged robot, a humanoid robot simulator as shown in above Videos.</li>
+<li>Writing basic programs to control those robots in the C language</li>
+<li>Multiplatform: Windows XP, Windows Vista, Linux and Mac OS X.</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><span style="color: #000099;"><strong>An ODE tutorial book</strong></span>
+<ul>
+<li>You can program without the ODE English user guide.</li>
+<li>API index, API inverse index are supported.</li>
+<li>About half of this book, i.e., 130 pages are ODE related articles (tutorial &amp; manual function).</li>
+</ul>
+</li>
+<li><span style="color: #000099;"><strong>Donating One US Dollar per book sale</strong></span>
+<ul>
+<li>I sent some mails to Dr. Russell Smith who is the primary author of ODE. He kindly permitted me quoting and reprinting from the Open Dynamics Engine User Guide. If there is no ODE, this book being not to be born. Including the sense of appreciation to Russ, and in order to support the ODE project, I donate One US Dollar per book sale to ODE project. Morikita Publishing Co. Ltd. cooperated on this donation. In order to keep maintaining this kind of open source projects, I think that cooperation of many people is necessary. Man shall not live by bread alone, but man shall not live without bread. <span style="color: #000099;"><strong><br />
+<span style="color: #ff0000;"> I donated US $1642 in 2007 , $1260 in 2008, and $862 in 2009.</span></strong></span>Although, My ODE book was written in Japanese. Sorry. There are some ODE related pages in English. <a href="http://demura.net/category/english">click here ! </a></li>
+</ul>
+<p>&nbsp;</li>
+<li><span style="color: #000099;"><strong>Source codes (for above ODE-0.10.0)</strong></span>
+<ul>
+</ul>
+<ul>
+<li><span style="color: #000099;"><strong>How to compile source codes </strong></span>
+<ul>
+</ul>
+<ul>
+<li><span style="color: #000099;">Download the zip file below, and saving the file at C:\ode-0.10.1 (or replace your ODE version number). Next, expand the zip file, you can get the following directory.</span>
+<ul>
+<li><span style="color: #000099;">C:\ode-0.10.1\roboSimu</span></li>
+</ul>
+</li>
+<li><span style="color: #000099;">Open the command prompt, and type the following command</span>
+<ul>
+<li>cd  C:\ode-0.10.1\roboSimu</li>
+</ul>
+<ul>
+<li><span style="color: #000099;">Code:blocks</span>
+<pre>premake --target  cb-gcc</pre>
+</li>
+<li><span style="color: #000099;">Visual C++ 2008</span>
+<pre>premake --target  vs2008</pre>
+</li>
+<li><span style="color: #000099;">GNU</span>
+<pre>premake  --target  gnu</pre>
+</li>
+</ul>
+</li>
+<li>Build: You can get the following build scripts, then use them to build.</li>
+</ul>
+</li>
+</ul>
+<div>
+<ul>
+<li><span style="color: #000099;">Code:blocks:</span> roboSimu.workspace</li>
+<li><span style="color: #000099;">Visual C++ 2008: </span>roboSimu.sln</li>
+<li><span style="color: #000099;">GNU: </span>Make</li>
+</ul>
+</div>
+</li>
+<li><span style="color: #000099;"><strong>Downloads　(Sample programs are for ODE0.10.1)<br />
+<span style="color: #ff0000;">Please install ODE with double precision.  Single precision causes LCP internal errors in legged.cpp and make the 4 legged robot walk like a snail.</span></strong><br />
+</span></li>
+</ul>
+<table style="text-align: left;" border="1">
+<tbody>
+<tr>
+<td>File Name</td>
+<td>Date</td>
+<td>Number of downloads</td>
+</tr>
+<tr>
+<td><a href="[download(robosimuEnglish)]">robosimu081003.zip</a></td>
+<td>2008-10-03</td>
+<td align="right">[downloadcounter(robosimuEnglish)] (since 2008-09-23)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Change Log
+<ul>
+<li>2008-10-3: Add <span style="color: #ff0000;">English</span> sentences in Readme.txt and Install txt.<br />
+legged.cpp. add dWorldSetCFM(),dWorldSetERP() to prevent LCP internal error. Thanks Jeff.</li>
+</ul>
+</li>
+</ul>
+<p><span style="font-family: mceinline;">Finally, I wrote some <a href="http://demura.net/english">ODE tutorials here. Please visit</a>!</span></p>

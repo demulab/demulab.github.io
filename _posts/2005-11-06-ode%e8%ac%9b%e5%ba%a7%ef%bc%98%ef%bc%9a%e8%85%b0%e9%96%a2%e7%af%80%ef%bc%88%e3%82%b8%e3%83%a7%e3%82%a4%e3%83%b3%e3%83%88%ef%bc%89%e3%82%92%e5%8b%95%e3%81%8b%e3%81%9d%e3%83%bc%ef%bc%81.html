@@ -1,0 +1,139 @@
+---
+layout: post
+title: ODE講座８：腰関節（ジョイント）を動かそー！
+date: 2005-11-06 23:57:23.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1743'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/260.html"
+---
+<p> <img title="サンプルフォー" src="{{ site.baseurl }}/assets/images/2005/11/sample4.jpg" border="0" alt="サンプルフォー" width="224" height="217" align="middle" /></p>
+<p>最 近はレーザーラモンHGさんも小学生に人気があるそうですが、原ゆたか先生の怪傑ゾロリは圧倒的に小学生に人気があります。近くの図書館ではあまりの人気 のため貸し出し禁止になり、館内閲覧だけになってしまいました。私の子供も大好きでオヤジギャグをかましてくれます(例えば「校長先生ぜっこうちょう」文 献 [1]より引用)。</p>
+<p>さて、ODE(Open Dynamics Engine)講座の第８回目です。今回は前回作った腰関節（ヒップジョイント）を動かしましょう。</p>
+<p> ジョイントは以下の手順で動かします。</p>
+<ol>
+<li>ジョイントの可動域を設定する<br />
+dJointSetHingeParam(dJointID, dParamLoStop, 可動域の下限）;<br />
+dJointSetHingeParam(dJointID, dParamHiStop, 可動域の上限）;</li>
+<li>ジョイントの目標角速度とそれを実現するための最大トルクを設定する<br />
+dJointSetHingeParam(dJointID, dParamVel,  目標角速度);<br />
+dJointSetHingeParam(dJointID, dParamFMax, 最大トルク)</li>
+</ol>
+<p>なお，ODEでは関節の目標角度を直接指定するAPIがありませんので，目標角度に関節角をもっていくためには，現在の関節角を dJointGetHingeAngleで取得し，その角度になるまでdJointSetHingeParamを使って角速度を関節に与え，目標角度になったら角速度を０にするという方法を使います．</p>
+<p>では，ソー スコードを以下に示します。前回との違いはオブジェクトを胴体(torso)、上腿、下腿をもつ１本足ロボットMonoBotに変更しています。自由度は 腰関節(hip joint）が１、膝関節(knee joint)が１の計２自由度となっていますが、今回は腰関節だけ動かします。</p>
+<p>参考文献<br />
+1.　原ゆたか著、 ぐんぐん身につくゾロリ式おやじギャグドリル、<a href="http://www.amazon.co.jp/exec/obidos/ASIN/4591087344/249-2084219-3183517" target="_self">かいけつゾロリの大どろぼう</a>の付録、ポプラ者、2005</p>
+<p> </p>
+<p><!--more--></p>
+<p> // サンプル　フォー　by でむ</p>
+<p>myLink torso,leg[2];<br />
+dJointID joint[2];<br />
+ <br />
+enum jointNo {<br />
+  HIP,<br />
+  KNEE<br />
+};</p>
+<p>// ジョイントの制御<br />
+void control()<br />
+{<br />
+  double velCoeff = 1.0;　// 比例定数<br />
+　double p; 現在の関節角度<br />
+  static double angle = 0.5 * M_PI;</p>
+<p>  p =  dJointGetHingeAngle(joint[HIP]);　// 現在の関節角度の取得<br />
+  dReal z = angle  -  p;　　　　　　　　　　　// angleは目標角度<br />
+  if (p &gt; 0.24 * M_PI) angle = - 0.25 * M_PI;<br />
+  else {<br />
+    if (p &lt; - 0.24 * M_PI) angle = 0.25 * M_PI;<br />
+  }<br />
+  dJointSetHingeParam(joint[HIP], dParamVel,  velCoeff*z);　// 目標角速度の設定<br />
+  dJointSetHingeParam(joint[HIP], dParamFMax, 100);　// 最大トルクの設定<br />
+}</p>
+<p>static void simLoop (int pause)<br />
+{<br />
+  const dReal *pos1,*R1,*pos2,*R2;</p>
+<p>  time++;<br />
+  control();  // ジョイントの制御<br />
+  dSpaceCollide(space,0,&amp;nearCallback);<br />
+  dWorldStep(world,0.01);<br />
+  dJointGroupEmpty(contactgroup);<br />
+  dsSetColor(1.0,0.0,0.0);</p>
+<p>  // draw a torso   胴体を描画                                                                     <br />
+  pos1 = dBodyGetPosition(torso.body);<br />
+  R1   = dBodyGetRotation(torso.body);<br />
+  dsDrawSphereD(pos1,R1,torso.radius);</p>
+<p>  // draw legs    脚を描画                                                                       <br />
+  for (int i = 0; i&lt; 2; i++) {<br />
+    pos2 = dBodyGetPosition(leg[i].body);<br />
+    R2   = dBodyGetRotation(leg[i].body);<br />
+    dsDrawCappedCylinderD(pos2,R2,leg[i].length,leg[i].radius);<br />
+  }<br />
+}</p>
+<p>// 　Create a monobot  一本足ロボットの生成                                                                    <br />
+void createMonoBot() {<br />
+  dMass m1;<br />
+  dReal x0 = 0.0, y0 = 0.0, z0 = 2.5;</p>
+<p>  // torso   胴体                                                                         <br />
+  torso.radius = 0.2;　  torso.mass   = 10.0;<br />
+  torso.body = dBodyCreate(world);<br />
+  dMassSetZero(&amp;m1);<br />
+  dMassSetSphereTotal(&amp;m1,torso.mass,torso.radius);<br />
+  dBodySetMass(torso.body,&amp;m1);<br />
+  dBodySetPosition(torso.body, x0, y0, z0);<br />
+  torso.geom = dCreateSphere(space,torso.radius);<br />
+  dGeomSetBody(torso.geom,torso.body);</p>
+<p>  // legs    上腿、下腿                                                                            <br />
+  for (int i = 0; i &lt; 2; i++) {<br />
+    leg[i].radius = 0.025;    leg[i].length = 0.5;　 leg[i].mass   = 1.0;<br />
+    leg[i].body = dBodyCreate(world);<br />
+    dMassSetZero(&amp;m1);<br />
+    dMassSetCylinderTotal(&amp;m1,leg[i].mass,3,leg[i].radius,leg[i].length);<br />
+    dBodySetMass(leg[i].body,&amp;m1);<br />
+    dBodySetPosition(leg[i].body, x0, y0, z0 -torso.radius<br />
+                     - 0.5 * (2 * i + 1) *leg[i].length);<br />
+    leg[i].geom = dCreateCCylinder(space,leg[i].radius,leg[i].length);<br />
+    dGeomSetBody(leg[i].geom,leg[i].body);<br />
+  }</p>
+<p> // hip joint         腰関節                                                                  <br />
+  joint[HIP] = dJointCreateHinge(world, 0);<br />
+  dJointAttach(joint[HIP], torso.body,leg[0].body);<br />
+  dJointSetHingeAnchor(joint[HIP], x0, y0, z0 - torso.radius);<br />
+  dJointSetHingeAxis(joint[HIP], 1, 0, 0);<br />
+  dJointSetHingeParam(joint[HIP], dParamLoStop, -0.25 * M_PI);　// 可動域設定 下限<br />
+  dJointSetHingeParam(joint[HIP], dParamHiStop,  0.25 * M_PI);　// 上限　単位はradian</p>
+<p>  // knee joint    膝関節                                                                      <br />
+  joint[KNEE] = dJointCreateHinge(world, 0);<br />
+  dJointAttach(joint[KNEE],leg[0].body,leg[1].body);<br />
+  dJointSetHingeAnchor(joint[KNEE], x0, y0, z0 - torso.radius - leg[0].length);<br />
+  dJointSetHingeAxis(joint[KNEE], 1, 0, 0);<br />
+  dJointSetHingeParam(joint[KNEE], dParamLoStop, 0.0 * M_PI);　// 可動域　<br />
+  dJointSetHingeParam(joint[KNEE], dParamHiStop, 0.0 * M_PI);　// M_PIは円周率π（パイ）</p>
+<p>}</p>
+<p>int main (int argc, char **argv)<br />
+{<br />
+  setDrawStuff();</p>
+<p>  world = dWorldCreate();<br />
+  space = dHashSpaceCreate(0);<br />
+  contactgroup = dJointGroupCreate(0);</p>
+<p>  dWorldSetGravity(world,0,0,-9.8);                                                                <br />
+  ground = dCreatePlane(space,0,0,1,0);                                                                     <br />
+  createMonoBot();　// 一本足ロボットの生成<br />
+  dsSimulationLoop (argc,argv,352,288,&amp;fn);<br />
+  dWorldDestroy(world);<br />
+  return 0;<br />
+}</p>
+<p>ジョ イントを動かしている関数controlは目標値と現在値の差に比例して制御するＰ制御と なっています。ジョイントのパラメータdParamVelは目標角速度で、dParamFMaxはその角速度を実現するためにジョイントが発揮できる最大 トルクです。この値を０に設定すると目標角速度を設定してもトルクが０なのでジョイントとは動いてくれません。</p>
+<p> ここから<a href="http://demura.net/archives/images/ode/sample4.tgz" target="_self">サンプル４（フォーーー）</a>のソースコードをダウンロードして遊んでください。では、また次回。</p>

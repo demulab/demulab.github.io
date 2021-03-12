@@ -1,0 +1,208 @@
+---
+layout: post
+title: '物理エンジンODEで学ぶC言語[Step4: 構造体]'
+date: 2014-07-10 07:05:26.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1162'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/10933.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2014/07/step4.jpg"><img src="{{ site.baseurl }}/assets/images/2014/07/step4-300x242.jpg" alt="step4" width="300" height="242" class="aligncenter size-medium wp-image-10934" /></a></p>
+<p>ODEで学ぶC言語の4回目です．ODEの物理計算の部分は使わず，drawstuffを使った表示だけにします．今回は前回までの演習を構造体を使い実装しています.</p>
+<p>まず，10行目から18行目で構造体myObjectを定義しています．メンバとしては，位置p[3]，回転行列R[12]，質量m，半径r，サイズside[3]，色*colorなどの変数です．</p>
+<p>Step3との大きな違いは93行目のinitObject関数でゲームに使う物体を初期化しています．前回の演習で各ブロック色を割り当てる問題がありましたが，この関数でそれを解決しています．</p>
+<p>また，前回のもう一つの課題であったCollision関数は136から148行目にかけて定義しています．ここで，block[i].p[j]はブロック(i番目）の位置（j座標）という意味です．nowは現在，着目しているブロックの番号でしたね．</p>
+<p><!--more--><br />
+それ以外は，Step3とあまり違いはありません．構造体の復習を兼ねて，ソースコードを読んで演習をしましょう．</p>
+<pre class="brush:cpp;">/* step4 　2014-07-10 　*/
+#include "dm4.h"
+#include &#60;time.h&#62;
+#include &#60;stdlib.h&#62;
+
+#define NUM      200  // ブロック数
+#define ROW       22  // フィールドの行数
+#define COLUMN 11  // フィールドの列数
+
+typedef struct myObject
+{
+    double p&#91;3&#93;; // x, y, z　&#91;m&#93;
+    double R&#91;12&#93;;   // 回転行列 要素数4x3
+    double m; // 質量 &#91;kg&#93;
+    double r,l; // 半径 &#91;m&#93;, 長さ &#91;m&#93;
+    double side&#91;3&#93;; // サイズ　x,y,z
+    float *color; // 色 r,g,b
+} ;
+
+myObject block&#91;NUM&#93;; // ブロック
+myObject wall;          // 壁
+
+double R&#91;12&#93; = {1,0,0,0, 0,1,0,0, 0,0,1,0}; // 回転行列が格納される配列, 位置(x,y,z)&#91;m&#93;
+double start_wall_p&#91;3&#93; = {5.5, 0.5, 0.0};    // 壁の初期位置
+double start_block_p&#91;3&#93; = {10.5, 20.5, 0.5}; // ブロックの初期位置
+
+double side&#91;3&#93; = {1.0, 1.0, 1.0}; // 直方体のサイズ(x, y, z)&#91;m&#93;
+float black&#91;3&#93; = {0,0,0}, white&#91;3&#93; = {1.5,1.5,1.5}, red&#91;3&#93; = {1.5, 0, 0}; // 黒、白
+int       now = 0; // 現在、操作可能なブロック番号
+
+int field&#91;ROW&#93;&#91;COLUMN&#93; =  // フィールド
+{
+    {1,1,1,1,1,1,1,1,1,1,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,1,1} // 20
+};
+
+void command(int cmd)
+{
+    switch (cmd)
+    {
+    case 'a':
+        if (block&#91;now&#93;.p&#91;0&#93; &#62; 1.5)  block&#91;now&#93;.p&#91;0&#93; -= 1.0;
+        break;
+    case 'd':
+        if (block&#91;now&#93;.p&#91;0&#93; &#60; 18.5) block&#91;now&#93;.p&#91;0&#93; += 1.0;
+        break;
+    default:
+        printf("Key is %c: Input a,d,w,x,r\n",(char)cmd);
+    }
+}
+
+// フィールドのシミュレーション
+void drawField()
+{
+    int i, j;
+    for (i = 0; i &#60; ROW; i++)
+    {
+        for (j = 0; j &#60; COLUMN; j++)
+        {
+            if (field&#91;i&#93;&#91;j&#93; == 1)
+            {
+                wall.p&#91;0&#93; = j  + start_wall_p&#91;0&#93;;       // 位置のx成分
+                wall.p&#91;1&#93; = i  + start_wall_p&#91;1&#93;;       // 位置のx成分
+                wall.p&#91;2&#93; = 0.5;                 // 位置のz成分
+                dsSetColor(wall.color&#91;0&#93;, wall.color&#91;1&#93;, wall.color&#91;2&#93;);
+                dsDrawBox(wall.p, wall.R, wall.side); // 直方体の表示
+            }
+        }
+    }
+}
+
+// 物体の初期化
+void initObject()
+{
+    int i, j, k, c;
+
+    // ブロック
+    for (i =0; i &#60; NUM; i++) {
+        for (j = 0; j &#60; 3; j++)  block&#91;i&#93;.p&#91;j&#93; = start_block_p&#91;j&#93;;
+        for (k = 0; k &#60; 12; k++) block&#91;i&#93;.R&#91;k&#93; = R&#91;k&#93;;
+
+        // 乱数で色を生成
+        c = rand() % 2;
+        if (c == 0)       block&#91;i&#93;.color = black;
+        else               block&#91;i&#93;.color = white;
+    }
+
+    // 壁
+    for (j = 0; j &#60; 3; j++)  wall.side&#91;j&#93; = side&#91;j&#93;;
+    for (k = 0; k &#60; 12; k++) wall.R&#91;k&#93; = R&#91;k&#93;;
+    wall.color = red;
+ }
+
+// ブロックの描画
+void drawBlock()
+{
+    int i;
+
+    if (block&#91;now&#93;.p&#91;1&#93; &#62;1.5)   // 下の壁を突き抜けない
+    {
+        block&#91;now&#93;.p&#91;1&#93; -= 0.1; // ブロックの落下
+    }
+    else
+    {
+        now++;
+    }
+    dsSetColor(1.0, 1.0, 0.0);   // 黄色
+
+    for (i=0; i &#60;= now; i++) {
+        dsSetColor(block&#91;i&#93;.color&#91;0&#93;, block&#91;i&#93;.color&#91;1&#93;, block&#91;i&#93;.color&#91;2&#93;);
+        dsDrawSphere(block&#91;i&#93;.p, R, 0.5);
+    }
+}
+
+// ブロックが他のブロックと衝突したら１を返す，それ以外は０を返す
+int collision()
+{
+    int i,j;
+    double r=0;
+
+    for (i=0; i &#60; now; i++) {
+        for (j=0; j &#60; 3; j++) {
+            r += (block&#91;i&#93;.p&#91;j&#93;-block&#91;now&#93;.p&#91;j&#93;) *(block&#91;i&#93;.p&#91;j&#93;-block&#91;now&#93;.p&#91;j&#93;);
+        }
+        if (r &#60; 1) return 1;
+        else       r = 0;
+     }
+     return 0;
+}
+
+void simLoop(int pause)        /***  シミュレーションループ　***/
+{
+    if (collision()) {
+        now++;
+        //initBlock();
+    }
+    drawBlock();  // ブロックの表示
+    drawField();   // フィールドの表示
+ }
+
+int main()         /*** main関数 ***/
+{
+    initObject();
+    srand(time(NULL)); // 乱数の初期化
+    dmLoop(800, 600); // シミュレーションループ ウインドウの幅，高
+    return 0;
+}
+</pre>
+<p>では，演習をしながら落ち物系パズルゲームを作っていきましょう．</p>
+<p>演習</p>
+<ol>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2014/07/step4-1407101.zip">step4-140710.zip</a>をダウンロードし，実行しよう！</li>
+<li>ブロックが各行一杯になったら，その行のブロックを全て消そう！</li>
+<li>複数の結合したブロックが落ちるように改良しよう！</li>
+<li>同じ色のブロックが上下左右４方向にあると，その色のブロックは消えるようにしよう！</li>
+<li>得点表示をしよう！</li>
+<li>これを改良して最終課題を考えよう！</li>
+</ol>

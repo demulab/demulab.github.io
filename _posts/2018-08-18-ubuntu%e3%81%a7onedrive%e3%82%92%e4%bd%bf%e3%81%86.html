@@ -1,0 +1,115 @@
+---
+layout: post
+title: ubuntuでonedriveを使用
+date: 2018-08-18 17:09:09.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  views: '1523'
+  _oembed_26c3f2e023a23562b4c8f32ee2275759: "{{unknown}}"
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/14753.html"
+---
+<p><!-- wp:paragraph --></p>
+<p>今まで、自分のPCではLinuxとWindowsを両方とも使わなければならないのでデュアルブートをしていた。デュアルブートでは２つのOSを同時に使うことはできないし、ハードディスクの使用も無駄があるので、試験的にubuntuにvmwareを入れて、そのゲストOSとしてWindows10をインストールして使い始めた。</p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p>そこで、問題になるのがOneDriveである。常にオンライン環境ではないので、ローカルPCにもOneDriveの全てのフアイルを保存し、同期して作業をしている。これらのファイルをどこに保存するか考えたところ、仮想マシン上よりubuntu上の方が、LinuxからもWindowsからもアクセスが容易なことからubuntu上に保存することにした。</p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p>OneDriveのLinuxクライアントを調べたところ、<a href="http://linux-user.hatenablog.com/entry/2016/09/07/110610">このウェブサイト</a>に方法が記載されていたので、それに従った。ただ、makeでエラーが出てコンパイルできないので、<a href="https://github.com/abraunegg/onedrive">このサイト</a>のReadme.mdに従ってインストールした。以下はその作業のメモ。</p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>環　境</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li>Ubuntu 16.04.4</li>
+<li>Windows10.1</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>準　備</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><code>sudo apt install build-essential</code></li>
+<li><code>sudo apt install libcurl4-openssl-dev</code></li>
+<li><code>sudo apt install libsqlite3-dev</code></li>
+<li><code>curl -fsS https://dlang.org/install.sh | bash -s dmd</code></li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>コンパイル</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><code>source ~/dlang/dmd-2.081.2/activate</code></li>
+<li><code>cd ~/src</code></li>
+<li><code>git clone https://github.com/abraunegg/onedrive.git</code></li>
+<li><code>cd onedrive</code></li>
+<li><code>make</code></li>
+<li><code>sudo make install</code></li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>クライアントの使用</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><code>onedrive --synchronize</code>
+<ul>
+<li>マイクロソフトのアカウントにログインして、アプリケーションにファイルへのアクセス許可を与える必要がある。与えると空白ページにリダイレクトされるので、そのURLをコピーして、端末に貼り付ける。<a href="https://tobubiyori.blogspot.com/2017/11/ubuntulinuxonedrive.html">この作業は、ここに写真入りで詳しく書かれている。</a></li>
+<li>~/OneDriveにファイルがダウンロードされる。初回は、ファイルの容量とネットワークのスピードによるがこの作業に相当時間がかかる。</li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>サービス化</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li>Ubuntu起動時に自動的に立ち上がるようにする。
+<ul>
+<li><code>systemctl --user enable onedrive</code></li>
+<li><code>systemctl --user start onedrive</code></li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li>ログを見る
+<ul>
+<li><code>journalctl --user-unit onedrive -f</code></li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p> </p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p>詳しい使い方は以下のURLを参照してください。</p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><a href="https://github.com/abraunegg/onedrive">OneDrive Free Client</a></li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph {"align":"right"} --></p>
+<p style="text-align:right">以上</p>
+<p><!-- /wp:paragraph --></p>

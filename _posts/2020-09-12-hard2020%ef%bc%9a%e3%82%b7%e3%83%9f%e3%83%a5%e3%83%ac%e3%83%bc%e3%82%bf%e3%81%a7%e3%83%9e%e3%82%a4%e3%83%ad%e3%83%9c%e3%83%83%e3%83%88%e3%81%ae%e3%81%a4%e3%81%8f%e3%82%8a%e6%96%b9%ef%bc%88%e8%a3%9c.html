@@ -1,0 +1,124 @@
+---
+layout: post
+title: HARD2020：シミュレータでマイロボットのつくり方（補講）
+date: 2020-09-12 00:33:17.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- HARD
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19223'
+  views: '244'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/hard/19221.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_Gazebo_2020-9-11_22-32-12_No-00.png"><img class="aligncenter size-large wp-image-19223" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_Gazebo_2020-9-11_22-32-12_No-00-1024x623.png" alt="" width="1024" height="623" /></a></p>
+<p>HARDサマーワークショップに関するページです。ワークショップは全４回ですが、補講としてシミュレータでのロボットのつくり方は紹介します。これができると、自分達が開発したロボットをシミュレータで動作検証できます。</p>
+<p>本記事では、カナダのSimon Fraser University, Autonomy Lab.のJacob PerronさんのフォークしたiRobot社のRoomba,　Create2用のROSドライバーパッケージcreate_autonomyをベースに、エクステリアとセンサ配置を変更した上図のロボットhappy miniをつくります。</p>
+<p><strong>マイロボットのつくり方</strong></p>
+<ul>
+<li>create_autonomyパッケージの中のファイルを修正してもできるがオリジナルと自分が改変したファイルを混同してしまうので、変更が必要なパッケージだけを別のディレクトリとする。次のダウンロード方法によりファイルを取得する。ダウンロードしたファイルにはhard2020のサンプルパッケージ一式が入っている。マイロボットに関係あるのは次のディレクトリ。
+<ul>
+<li>~/catkin_ws/src/hard2020/hard_gazebo：gazebo関連のパッケージ
+<ul>
+<li>launch：シミュレーション環境として、ロボット以外の物体が存在しない環境並びに人と家のあるハードな環境の２つを用意した。前者はhard_empty_world.launch、後者はhard_world.launchで起動する。</li>
+<li>worlds：launchファイルで使用するworldファイル。この中のorgディレクトリにcreate_autonomyパッケージで使用しているworldファイルがあるので、hard2020.worldと比較して、変更するといろいろなワールドでシミュレーションが可能になる。</li>
+</ul>
+</li>
+<li>~/catkin_ws/src/hard2020/hard_description：ロボット記述ファイル
+<ul>
+<li>meshes：シミュレータ用の3Dファイル。マイロボットhappy miniに必要なメッシュファイルやテクスチャファイルをminiディレクトリの中に作成する。</li>
+<li>urdf：ロボット記述ファイル。実機とシミュレータに関するロボットの構造やシミュレータの動作などを指定するファイルがある。マイロボットに合うように変更する必要がある。なお、urdfはUniversal Robot Description Formatの略で、ロボットの構造を記述するフォーマットである。ROSではURDFファイルを記述することでロボットモデルを作成する。URDFファイルの作り方は以下のサイトが参考になるでしょう。
+<ul>
+<li><a href="https://qiita.com/RyodoTanaka/items/c3014fd6d0f06d12814f">Gazebo + ROS で自分だけのロボットをつくる, Ryodo Tanaka</a></li>
+<li><a href="http://gazebosim.org/tutorials?tut=ros_urdf">Tutorial: Using a URDF in Gazebo, Gazebo official site</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>ダウンロード</strong></p>
+<ul>
+<li>端末を起動して以下のコマンドを実行してダウンロードする。hard2020のサンプルプログラム一式をパッケージとしてまとめている。
+<ul>
+<li><code>$ cd ~/catkin_ws/src</code></li>
+<li><code>$ git clone https://github.com/demulab/hard2020.git</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build</code></li>
+<li>ノード名はユニークでないといけないので、既にHARD2020のハンズオンを実施した場合は名前が衝突しエラーになります。その場合は、衝突したノードのあるディレクトリをhard2020ディレクトリの中のディレクトリと置き換えてから再度catkin buildする。</li>
+</ul>
+</li>
+</ul>
+<p><strong>準備</strong></p>
+<ul>
+<li>create_autonomyパッケージをベースに作成したので、それをインストール、ビルドしていない場合は以下を参考にする。
+<ul>
+<li><a href="https://demura.net/education/lecture/18745.html">HARD2020: シミュレータでルンバを動かそう！</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>実行</strong></p>
+<ul>
+<li>何もないシミュレーション環境
+<ul>
+<li>何もないempty world環境を起動する場合は、次のコマンドを実行してGazeboを起動する。
+<ul>
+<li><code>$ roslaunch hard_gazebo hard_empty_world.launch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>人がいるシミュレーション環境
+<ul>
+<li>上図のような人と家がある環境を起動する場合は、次のコマンドを実行してGazeboを起動する。
+<ul>
+<li><code>$ roslaunch hard_gazebo hard_world.launch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Gazeboを起動したらあとは、今までハンズオンで実行した好きなノードを起動して楽しもう！</li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

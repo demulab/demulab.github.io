@@ -1,0 +1,148 @@
+---
+layout: post
+title: HARD2020：よくある質問
+date: 2020-08-07 23:35:33.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- HARD
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '18619'
+  views: '146'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _wp_old_date: '2020-08-21'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/hard/18767.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_NoName_2020-8-8_8-13-19_No-00.png"><img class="aligncenter size-large wp-image-18619" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_NoName_2020-8-8_8-13-19_No-00-1024x768.png" alt="" width="1024" height="768" /></a></p>
+<p>よくある質問のコーナーです。ここを読んでから質問をお願いします。新たな質問は下のコメント欄に書き込んでください。なお、スパム防止のため、管理者がチェックしてからコメントが表示されます。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>２回目：ロボット制御の作り方</strong></p>
+<ul>
+<li>ルンバのシミュレータに関しての情報が追加されていたので、実行してみました。ビルド時にエラーが出てしまい困っております。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_NoName_2020-8-21_14-35-20_No-00.png"><img class="aligncenter size-full wp-image-18869" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_NoName_2020-8-21_14-35-20_No-00.png" alt="" width="744" height="400" /></a></p>
+<ul>
+<li>結局のところ自分でも原因を究明することが不可であったため、ubuntuをクリーンインストールした後環境を再構築しました。結果、特に問題なくすんなりとルンバのシミュレータをインストールすることができました。</li>
+</ul>
+</li>
+<li>rvizを起動するとsegmentation faultというエラーが出て起動しません。
+<ul>
+<li>~/.bashrcに以下の１行を追加してください。
+<ul>
+<li><code>export GAZEBO_IP=127.0.0.1</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Gazeboを起動するとsegmentation faultというエラーが出て起動しません。
+<ul>
+<li>~/.bashrcに以下の１行を追加してください。
+<ul>
+<li><code>export LIBGL_ALWAYS_INDIRECT=""</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Gazeboを起動すると以下のエラーで画面が真っ暗らなままです。<br />
+<span style="color: #ff0000;">[Err] [REST.cc:205] Error in REST request</span><br />
+libcurl: (51) SSL: no alternative certificate subject name matches target host name 'api.ignitionfuel.org'</p>
+<ul>
+<li>~/.ignition/fuel/config.yamlを次のように変更してください。
+<ul>
+<li>変更前：<code>url: https://api.ignitionfuel.org</code></li>
+<li>変更後：<code>url: https://api.ignitionrobotics.org</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>１回目：説明会と概要</strong></p>
+<ul>
+<li>Windows version2004にアップデートしようとしたところ、ブルースクリーンが表示されアップデートに6回失敗しました。
+<ul>
+<li>ワークショップ標準のWSLを使うのをやめて以下のどちらかでUbuntu18.04をインストールしてください。処理が速いのでデュアルブートがお勧めですが、失敗するとWindowsの中身が全て消えるので必要なファイルのバックアップをとってから実施してください。
+<ul>
+<li>デュアルブート
+<ul>
+<li><a href="https://www.pc-koubou.jp/magazine/35542">Windows 10とUbuntu 18.04 デュアルブートする方法、パソコン工房</a></li>
+</ul>
+</li>
+<li>仮想マシン
+<ul>
+<li><a href="https://demura.net/education/16156.html">VirtualBox6.0+Ubuntu18.04のインストール法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> ワークショップにはノートPCが必ず必要ですか？
+<ul>
+<li>Raspberry Pi4でも可能です。ノートPCかRaspberry Pi4のどちらかが必要です。</li>
+</ul>
+</li>
+<li>Macでもできますか？
+<ul>
+<li>Macを持っていないのでかわりません。</li>
+</ul>
+</li>
+<li>Raspberry Pi4 RAM 2GBでは、このサイトの説明どおり実施してもインストールできません。
+<ul>
+<li>Raspberry Pi4 2GBを持っていないので対応できません。なお、ホームAIロボットのソフトウェア開発ではRAM２GBは厳しいです。新規に購入する場合は8GB版をお勧めします。</li>
+</ul>
+</li>
+<li> WSLのUbuntuではなく、Ubuntu専用マシンでの開発環境のインストールはどうすればよいですか？
+<ul>
+<li>Ubuntu専用マシンが望ましいです。ROS MelodicのインストールはWSLと同じ方法なので以下のリンクに従ってインストールしてください。
+<ul>
+<li><a href="https://demura.net/robot/16518.html">Ubuntu18.04: ROS Melodicのインストール</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>NVIDIAのGPUを搭載したデスクトップPCを持っていますが、UbuntuでGPUを認識してくれません。
+<ul>
+<li>以下のリンクに従って作業を行ってください。Xubuntuがお勧めで、NVIDIAのドライバー、CUDAも必要です。
+<ul>
+<li><a href="https://demura.net/misc/17026.html">CUDA 10.2のインストール</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>

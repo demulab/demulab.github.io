@@ -1,0 +1,104 @@
+---
+layout: post
+title: 'ODE講座28: シミュレーションが回って回って回ーる♪'
+date: 2008-10-21 10:01:24.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '729'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/2512.html"
+---
+<p>[caption id="attachment_2523" align="alignnone" width="400" caption="シミュレーションが回ると青林檎から赤林檎へ"]<a href="http://demura.net/wordpress/wp-content/uploads/2008/10/blueapple.jpg"><img class="size-full wp-image-2523" title="blueapple" src="{{ site.baseurl }}/assets/images/2008/10/blueapple.jpg" alt="シミュレーションが回ると青林檎から赤林檎へ" width="400" height="330" /></a>[/caption]</p>
+<p>今までの連載していたODE講座を体系化して全15回にまとめたODE初級講座が完成したので、約４ヶ月ぶりにODE講座を復活させたいと思います。ある程度まとまったら、整理してODE中級講座や書籍化しようと考えています。書籍化にご興味のある編集者の方はご連絡頂ければありがたいです。</p>
+<p>ODE講座は多くの方のご質問や励ましのお言葉からここまで続けることができました。ありがとうございました。今回は、ポッターさんから頂いたシミュレーションを繰り返して実行する方法への回答を手直しして記事としてまとめました。</p>
+<p>サンプルプログラムとして、落下する林檎（球）が落ちるたびに色が変わり、青林檎からおいしそうな赤林檎に変わるという簡単なものです。</p>
+<p>これを実現しているのが以下のサンプルプログラム３０～４１行目のif文です。simloopが回るつど、simtimeをカウントアップし、1000回になったときに、林檎のつもりのボディappleを破壊し、再び生成し、初期位置等を設定しています。また、このif文に入った回数をepochsという変数であらわしています。つまり、epochsはシミュレーションの実行回数（林檎の落ちる回数）と考えて良いでしょう。</p>
+<p><!--more--></p>
+<p>このサンプルプログラムでは、シミュレーションの実行回数が増加するに従い、26行目で色を設定しているように、林檎の色を青から赤に変更しています。１０回終わるとまた、色が青に戻ります。この例では、色が変わるだけですが、林檎の初期位置を変更させたり、反発係数を変えたりすることも簡単に実現できます。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/example28-081021.zip">ソースコードはこちらからダウンロードしてください。</a> 今回はこれで終わります。</p>
+<p>なお、タイトルの「回って回って回ーる」に感情移入できる方は今度ご一緒にカラオケでもいきましょう。では</p>
+<p style="text-align: right;">でむ</p>
+<pre>[cpp]
+#include ＜ode/ode.h＞
+#include ＜drawstuff/drawstuff.h＞
+
+#ifdef dDOUBLE
+#define dsDrawSphere dsDrawSphereD
+#endif
+
+dWorldID world;
+dBodyID apple;
+dReal r = 0.15, m = 1.0, height = 2.0;
+dsFunctions fn;
+
+void simLoop(int pause)
+{
+    static long simtime = 0;　// simLoopの回る回数．1000回ごとにリセット
+    static long epochs  = 0; // シミュレーション（ボディの破壊と再生）の回数
+    float color;
+
+    dWorldStep(world, 0.01);
+
+    const dReal *pos = dBodyGetPosition(apple);
+    const dReal *R   = dBodyGetRotation(apple);
+
+    color = (float) ((epochs%10)/10.0);
+
+    dsSetColor(color, 0.0, 1.0 - color);　// 色の設定(赤，緑，青）
+    dsDrawSphereD(pos,R,r);
+    printf("%6d apple position z=%f\n",simtime,pos[2]);
+    simtime++;
+    if (simtime > 1000)
+    {
+        simtime = 0;
+        dBodyDestroy(apple);
+        apple = dBodyCreate(world);
+        dMass mass;
+        dMassSetZero(&mass);
+        dMassSetSphereTotal(&mass,m,r);
+        dBodySetMass(apple,&mass);
+        dBodySetPosition(apple, 0, 0, height);
+        epochs++;
+    }
+}
+
+void setDrawStuff()
+{
+    fn.version = DS_VERSION;
+    fn.step = &simLoop;
+    fn.path_to_textures = "../../drawstuff/textures";
+}
+
+int main(int argc, char **argv)
+{
+    setDrawStuff();
+    world = dWorldCreate();
+    dWorldSetGravity(world, 0, 0, -0.1);
+    apple = dBodyCreate(world);
+
+    dMass mass;
+    dMassSetZero(&mass);
+    dMassSetSphereTotal(&mass,m,r);
+    dBodySetMass(apple,&mass);
+    dBodySetPosition(apple, 0, 0, height);
+    dsSetSphereQuality(3); 　　// 球を美しく
+    dsSimulationLoop(argc, argv, 640, 480, &fn);
+
+    dWorldDestroy(world);
+    return 0;
+}
+
+[/cpp]</pre>

@@ -1,0 +1,70 @@
+---
+layout: post
+title: Folding@home：アップグレード (Linux）
+date: 2020-08-11 07:08:38.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '18693'
+  views: '98'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/18691.html"
+---
+<p><strong>アップグレード</strong></p>
+<ul>
+<li>現状では自動的にソフトウェアがアップグレードできない。アップグレードするときも、アンインストールしてから、新しいバージョンをインストールする。<br />
+Folding@homeではワークユニット（Work Unit）単位でシミュレーションを行っている。すべてのワークユニットは異なるので途中でワークユニットを止められると、その実行期限（１週間程度が多い）までプロジェクトが遅れてしまうので、ワークユニットが終わり、実行結果をアップロードしてからアンインストールして頂ければ幸いです。</li>
+<li>下図の「Stop Folding」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f1-1.png"><img class="aligncenter size-full wp-image-17755" src="{{ site.baseurl }}/assets/images/2020/08/f1-1.png" alt="" width="1001" height="803" /></a></li>
+<li>「Stop Folding」ウインドウが開くので「Finish up, then stop」をクリックする。ワークユニットの処理が終わるまで待つ。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f2-1.png"><img class="aligncenter size-full wp-image-17756" src="{{ site.baseurl }}/assets/images/2020/08/f2-1.png" alt="" width="1006" height="810" /></a></li>
+<li>端末を開き、以下のコマンドを実行する。
+<ul>
+<li>$ sudo dpkg -P fahclient</li>
+<li>$ sudo dpkg -P fahcontrol</li>
+<li>$ sudo dpkg -P fahviewer</li>
+</ul>
+</li>
+<li>以下のリンクに従い、アプリをインストールする。
+<ul>
+<li><a href="https://demura.net/misc/17749.html">インストール（Linux）</a></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

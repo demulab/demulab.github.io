@@ -1,0 +1,195 @@
+---
+layout: post
+title: 'ODEで学ぶC言語　[Step5: 構造体]'
+date: 2009-07-16 12:20:12.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags:
+- ODE
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '2756'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/4409.html"
+---
+<p>[caption id="attachment_1767" align="alignnone" width="300" caption="物体の属性：ボディとジオメトリ"]<a href="http://demura.net/wordpress/wp-content/uploads/2008/09/bodygeom.jpg"><img class="size-full wp-image-1767" title="bodygeom" src="{{ site.baseurl }}/assets/images/2009/07/bodygeom.jpg" alt="物体の属性： ボディとジオメトリ" width="300" height="284" /></a>[/caption]</p>
+<p>ODEで学ぶC言語のStep5です．今回は構造体を練習しましょう．構造体の概要については既にわかっているものとし，サンプルコードを示すことにより具体的な使い方を学びます．</p>
+<p>ODEでは衝突検出機能を使用するには衝突検出用の<span style="color: #0000ff;"><strong>スペース</strong></span>(space）と動力学計算用の<span style="color: #0000ff;"><strong>ワールド</strong></span>(world)の２つを生成する必要があります。それに伴い，物体に２つの属性，つまり，動力学計算の対象となる<span style="color: #0000ff;"><strong>ボディ</strong></span>(剛体，body)と衝突検出計算の対象となる<span style="color: #0000ff;"><strong>ジオメトリ</strong></span>(geometry)を持たせています。なお，剛体のことを英語でRigid Bodyといい，Geometryとは幾何学的な形状という意味です。</p>
+<p>ボディとジオメトリが別々に実装され，別々のワールドやスペースに存在するために，両者を関連付ける必要があります．以下，物体の作り方を説明します．</p>
+<p><!--more--></p>
+<p><strong>(1) ボディの作り方</strong></p>
+<p>ボディは以下の順番に従って作ります．</p>
+<ol>
+<li><span style="color: #993300;"><strong>ボディの生成 dBodyID　dBodyCreate(dWorldID world);</strong></span><br />
+ ボディをワールドworld内に生成し，ボディのIDを返します．</li>
+<li><span style="color: #993300;"><strong>質量パラメータの初期化 void　dMassSetZero(dMass *mass);</strong></span><br />
+ 質量，重心位置，慣性モーメントなどが入っている質量パラメータmassを初期化します．</li>
+<li><span style="color: #993300;"><strong>質量パラメータの計算 void　dMassSet***Total(dMass *mass, dReal total_mass, ... );</strong></span><br />
+ ***にはボディの種類(Shpere, Box, Cylinder, Capsuleなど）が入ります．massは質量パラメータ，total_massはボディの全質量．なお，引き数はボディの種類によって違うので省略しています．詳細はAPI集をご覧ください．</li>
+<li><span style="color: #993300;"><strong>ボディに質量パラメータを設定 void　dBodySetMass(dBodyID body, const dMass *mass);</strong></span><br />
+ ボディbodyに質量パラメータmassを設定します．</li>
+<li><span style="color: #993300;"><strong>ボディの位置を設定 void dBodySetPosition(dBodyID body, dReal x, dReal y, dReal z);</strong></span><br />
+ ボディbodyを絶対座標系(x,y,z)に設定します．</li>
+<li><span style="color: #993300;"><strong>ボディの姿勢を設定　void dBodySetRotation(dBodyID, const dMatrix3 R);</strong></span><br />
+ ボディbodyの姿勢を回転行列Rに設定します．</li>
+</ol>
+<p><strong>(2) ジオメトリの作り方</strong></p>
+<p style="padding-left: 30px;">次にジオメトリの作り方を紹介します．ボディと比較すると簡単です．ジオメトリの種類に対応した以下のAPIを呼び出すだけです．</p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreateBox (dSpaceID space, dReal lx, dReal ly, dReal lz);</strong></span></li>
+</ul>
+<p style="padding-left: 30px;">space で指定されたスペースにx,y,z 軸に沿った長さlx,ly,lz の直方体ジオメトリを生成し，そのID 番号を返す．直方体ジオメトリの参照点はその重心である．</p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreateCapsule(dSpaceID space, dReal r, dReal l);</strong></span></li>
+</ul>
+<p style="padding-left: 30px;">space で指定されたスペースに半径r，長さl のカプセルジオメトリを生成し，そのID 番号を返す．カプセルは普通の円柱の両端に半球を被せたようなものである．この特徴は衝突検出の内部コードを拘束かつ正確にすることができる．引数のlength には半球のキャップを入れない．キャップの半径は円柱の半径radius と同じである．</p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreateCylinder(dSpaceID space, dReal r, dReal l);</strong></span></li>
+</ul>
+<p style="padding-left: 30px;">スペースspaceに半径r，長さl の円柱ジオメトリを生成し，そのID 番号を返す． <strong></strong></p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreateSphere(dSpaceID space, dReal r);</strong></span></li>
+</ul>
+<ul>
+</ul>
+<p style="padding-left: 30px;">半径rの球ジオメトリを生成し，そのID 番号を返す．</p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreatePlane(dSpaceID space, dReal a, dReal b, dReal c, dReal d);</strong></span></li>
+</ul>
+<p style="padding-left: 30px;">平面ジオメトリを与えられた引数により生成し，そのID 番号を返す．引数space が0 でなければ，そのspace に平面ジオメトリを挿入する．引数a,b,c,d は平面の方程式　ax+by+cz = d のパラメータである．平面の法線ベクトルは(a,b,c) であり長さは１でなければならない．平面ジオメトリは設置不可能(non-placeable)，つまり位置や姿勢を定義できない特別なジオメトリで常に絶対座標系で定義しなければならない．つまり，平面オブジェクトは常に静的な環境の一部として使われることを仮定している．</p>
+<p><strong>（３）　ボディとジオメトリの対応付け</strong></p>
+<ul>
+<li> <span style="color: #993300;"><strong>void dGeomSetBody(dGeomID geom, dBodyID body);</strong></span>
+<p>ジオメトリgeomをボディbodyに関連付けます．</p>
+</li>
+</ul>
+<p><strong>（4）　衝突検出計算</strong></p>
+<p>衝突検出計算をするためには、スペースspaceをdHashSpaceCreate()で生成し、その中に剛体bodyに対応するジオメトリ を生成しなければなりません。以下のサンプルプログラムでは、53行目で球に対応するジオメトリをdCreateSphere()で生成 しています。54行目で、動力学計算の対象となるボディobj-&gt;bodyと衝突検出計算の対象となるobj-&gt;geomを結びつけています。これで ODEの物体が完成です。</p>
+<p>次に、simLoop関数の中で、dSpaceCollide()を呼び出します。このAPIは衝突しそうな２つのジオメトリが発生したら、それらを nearCallback関数に渡します。ここではnearCallback関数の本体は示しませんが，この関数で、接触点を算出したり、接触点の性質などを設定します。</p>
+<p>また、69行目にあるように接触点の集まりが格納される入れ物をdJointGroupCreate()で生成し、シミュレーションループで毎回そ れを31行目のようにdJointGroupEmpty()を使って空にしなければなりません。</p>
+<ul>
+<li><strong>衝突検出に関するAPI</strong>
+<ul>
+<li><span style="color: #000066;"><strong>dSpaceID dHashSpaceCreate(0)<br />
+ </strong></span>衝突計算用スペースを生成し、そのID（識別子）を返す。</li>
+<li><span style="color: #000066;"><strong>dGeomID dCreatePlane(dSpaceID space ,dReal a, dReal b, dReal c, dReal d)<br />
+ </strong></span>spaceにax+by+cz=dの平面ジオメトリを生成する。</li>
+<li><span style="color: #000066;"><strong>dGeomID dCreateSphere(dSpaceID space, dReal r)<br />
+ </strong></span>spaceに半径rの球ジオメトリを生成する。</li>
+<li><span style="color: #000066;"><strong>void dGeomSetBody(dGeomID geom, dBodyID body)<br />
+ </strong></span>物体の2つの属性であるジオメトリgeomと剛体bodyを関連づける。</li>
+<li><span style="color: #000066;"><strong>dJointGroupID dJointGroupCreate(0)<br />
+ </strong></span>接触点のグループを格納するジョイントグループを生成し、そのIDを返す。</li>
+<li><span style="color: #000066;"><strong>void dJointGroupEmpty(dJointGroupID)<br />
+ </strong></span>接触点が格納されているジョイントグループを空にする。</li>
+</ul>
+</li>
+</ul>
+<p><strong>(5) ソースコード</strong></p>
+<p>では，Step4のソースコードに衝突検出に関するコードを組み込んだソースコードを紹介します．この処理よりボールが地面をつき抜けず，地面ではずむようになります．</p>
+<pre class="brush:cpp">#include "dm5.h"
+
+dWorldID world;  // 動力学の世界
+dSpaceID space;  // 衝突検出用スペース
+dGeomID  ground; // 地面
+dJointGroupID contactgroup; // コンタクトグループ
+
+typedef struct {
+　　dBodyID body; // ボディのID
+　　dGeomID geom; // ジオメトリのID
+　　double *pos; // x, y, z　&#91;m&#93;
+　　double *R;   // 回転行列 要素数4x3
+　　double r, m; // 半径 &#91;r&#93;, 質量 &#91;kg&#93;
+　　float *color; // 色 r,g,b
+} MyObject;
+
+MyObject apple;
+
+void dmDraw(MyObject obj) /*** 物体の描画 ***/
+{
+　dsSetColor(obj.color&#91;0&#93;,obj.color&#91;1&#93;,obj.color&#91;2&#93;);  // 色の設定(r,g,b)
+  const double *pos = dBodyGetPosition(obj.body);  // 位置を取得
+  const double *R   = dBodyGetRotation(obj.body);  // 姿勢を取得
+  dsDrawSphere(pos,R,obj.r);                       // 球の描画
+}
+
+void simLoop(int pause)           /***  シミュレーションループ　***/
+{
+  dSpaceCollide(space,0,&amp;nearCallback); // 衝突検出関数
+  dWorldStep(world,0.01); // シミュレーションを１ステップ進める
+  dJointGroupEmpty(contactgroup); // ジョイントグループを空にする
+
+  dmDraw(apple); //  物体の描画
+}
+
+void dmSphereCreate(MyObject *obj,double p&#91;3&#93;, double R&#91;12&#93;,
+	double m, double r, float *color)
+{
+　obj-&#62;m = m;
+　obj-&#62;r = r;
+　obj-&#62;pos = p;
+　obj-&#62;R   = R;
+　obj-&#62;color = color;
+
+　dRSetIdentity(obj-&#62;R);
+　obj-&#62;body = dBodyCreate(world);           // ボールの生成
+　dMass mass;                               // 構造体massの宣言
+  dMassSetZero(&amp;mass);                      // 構造体massの初期化
+  dMassSetSphereTotal(&amp;mass,obj-&#62;m,obj-&#62;r); // 構造体massに質量を設定
+  dBodySetMass(obj-&#62;body,&amp;mass);            // ボールにmassを設定
+  dBodySetPosition(obj-&#62;body,obj-&#62;pos&#91;0&#93;,obj-&#62;pos&#91;1&#93;,obj-&#62;pos&#91;2&#93;); // ボールの位置(x,y,z)を設定
+
+  obj-&#62;geom = dCreateSphere(space,obj-&#62;r); // 球ジオメトリの生成
+  dGeomSetBody(obj-&#62;geom, obj-&#62;body);      // ボディとジオメトリの関連付け
+}
+
+int main()         /*** main関数 ***/
+{
+  // リンゴの変数
+　double p&#91;3&#93; = {0.0, 0.0, 2.0}; // 位置
+　double R&#91;12&#93;;   // 回転行列
+　double m = 1.0; // 質量
+　double r = 0.2; // 半径
+  float  color&#91;3&#93; = {1.0, 0.0, 0.0}; // 色
+
+  dInitODE(); // ODEの初期化
+  world = dWorldCreate();               // 動力学用世界の創造
+  space        = dHashSpaceCreate(0);   // 衝突用空間の創造
+  contactgroup = dJointGroupCreate(0);  // ジョイントグループの生成
+  ground = dCreatePlane(space,0,0,1,0); // 地面（平面ジオメトリ）の生成
+  dWorldSetGravity(world,0,0,-0.2);     // 重力設定
+
+  dRSetIdentity(R);  //回転行列を単位行列で初期化
+  dmSphereCreate(&amp;apple,p,R,m,r,color); // リンゴの生成
+
+  dmLoop(800, 600);  // シミュレーションループ ウインドウの幅，高
+
+  dSpaceDestroy(space); // 衝突用空間の破壊
+  dWorldDestroy(world); // 動力学用世界の破壊
+  dCloseODE();          // ODEの終了
+  return 0;
+}
+</pre>
+<p><strong>(6)　ホームワーク</strong></p>
+<ol>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2009/07/step5-090714.zip">サンプルコードstep5-090714.zipをここからダウンロードして実行しよう！</a></li>
+<li>step5.cppと同じフォルダにdm5.cppがあります．その中にnearCallback関数があり，反発係数を設定している箇所が47行目にあります．以下のように反発係数が1.0に設定されています．この値をいろいろ変更して挙動を観察してください．1.0より大きくするとどうなりますか？ 負にするとどうなるでしょうか？いずれも，現実にはありえない反発係数です．</li>
+<li>contact[i].surface.bounce = 1.0;</li>
+<li>サンプルプログラムは球を弾ませましたが，こんどは直方体を弾ませてください．</li>
+<li>直方体の初期姿勢を変え，少し斜めにして落下させ挙動を観察しましょう．
+<ul>
+<li>ヒント：姿勢を変えるにはODE本６７ページにあるdRFromAxisAndAngle()で回転軸のまわりを回転させたときの回転行列Rを取得し，それを初期姿勢で設定してください．</li>
+</ul>
+</li>
+</ol>

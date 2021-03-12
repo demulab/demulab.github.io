@@ -1,0 +1,233 @@
+---
+layout: post
+title: PD実践：LEGO Mindstorms EV3 開発環境のインストール
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '954'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14856.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、ノートパソコンのOSはWindowsに限定します。なお、以下の方法は西川教授の資料と以下のサイトを参考にしています。</p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>参考サイト
+<ul>
+<li><a href="http://dev.toppers.jp/trac_user/ev3pf/wiki/DevEnv">Toppers/EV3 RT 開発環境構築のマニュアル</a></li>
+</ul>
+</li>
+<li><a href="http://dev.toppers.jp/trac_user/ev3pf/wiki/DevEnvWin">開発環境（Cygwin)のインストール</a>（以下の補足説明は重要）
+<ul>
+<li><span style="color: #ff0000;"><strong>インストール作業で使用するウェブブラウザはGoogle Chromeを必ず使うこと。インターネットエクスプローラーでは失敗します。</strong></span></li>
+<li>CygwinはWindows上でUNIXのような環境を提供するもので、UNIXのコマンドが使えます。</li>
+<li>手順① Cygwinのインストーラをダウンロードし、ダブルクリックして起動する。
+<ul>
+<li><a href="http://cygwin.com/setup-x86_64.exe">64-bit版Cygwinのインストーラsetup-x86_64.exeをダウンロードする。</a></li>
+<li>ダブルクリックすると「Cygwin Setup」ウインドウが開くので「次へ」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin1.png"><img src="{{ site.baseurl }}/assets/images/cygwin1-300x200.png" alt="" width="300" height="200" class="aligncenter size-medium wp-image-14900" /></a></li>
+</ul>
+</li>
+<li>手順②インストール方法の選択：Install from Internetを選択し、「次へ」をクリックする。</li>
+<li>手順③ インストール先のディレクトリを設定する。
+<ul>
+<li>自由に設定せずにデフォルトを使うこと。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin2-1.png"><img src="{{ site.baseurl }}/assets/images/cygwin2-1-300x200.png" alt="" width="300" height="200" class="aligncenter size-medium wp-image-14903" /></a></li>
+</ul>
+</li>
+<li>手順④ダウンロードしたパッケージを置くディレクトリを設定する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin3-1.png"><img src="{{ site.baseurl }}/assets/images/cygwin3-1-300x200.png" alt="" width="300" height="200" class="aligncenter size-medium wp-image-14904" /></a></li>
+<li> 手順⓹インターネット接続を設定する。
+<ul>
+<li>学内LANではUse HTTP/FTP Proxyにチェックを入れる。Proxy Host、Portは次のとおり。<span style="color: #ff0000;"><strong>なお、Proxyの設定はウェブブラウザでも行うこと。</strong></span>
+<ul>
+<li>Proxy Host: wwwproxy.kanazawa-it.ac.jp</li>
+<li>Port: 8080<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin4a.png"><img src="{{ site.baseurl }}/assets/images/cygwin4a-300x200.png" alt="" width="300" height="200" class="aligncenter size-medium wp-image-14905" /></a></li>
+</ul>
+</li>
+<li>学外の場合は、Direct Connectionを選択する。</li>
+</ul>
+</li>
+<li>手順⓺ パッケージをダウンロードするサイトを選択する。
+<ul>
+<li>ダウンロードサイトは<span style="color: #ff0000;"><strong>http://ftp.jaist.ac.jp</strong></span>を選ぶ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin6.png"><img src="{{ site.baseurl }}/assets/images/cygwin6-300x200.png" alt="" width="300" height="200" class="aligncenter size-medium wp-image-14906" /></a></li>
+</ul>
+</li>
+<li>手順⑦　インストールするパッケージの選択
+<ul>
+<li>EV3RTを使うためには次の４パッケージ(gcc-core, make, diffutils, perl)をインストールしなければならない。Searchにパッケージ名を入れて、CategoryにDevelなどの名前が表示されるので、その左の「<strong>田</strong>」印をクリックするとパッケージがたくさん表示される。インストールするパッケージが見つかったら、Newの欄にある「 Skip」をクリックするとインストールするバージョンが表示される。<br />
+<strong>　<span style="color: #ff0000;">同様にして４つのパッケージを全て選択してから最後に「次へ」をクリックする。</span></strong></p>
+<ul>
+<li>gcc-core（バージョン4.9.0-1以降）<br />
+Category: Devel<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin7-gcc.png"><img src="{{ site.baseurl }}/assets/images/cygwin7-gcc.png" alt="" width="744" height="407" class="aligncenter size-full wp-image-14909" /></a></li>
+<li>make（バージョン4.0-2以降）<br />
+Category:Devel<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin7-make.png"><img src="{{ site.baseurl }}/assets/images/cygwin7-make.png" alt="" width="744" height="407" class="aligncenter size-full wp-image-14910" /></a></li>
+<li>diffutils（バージョン3.3-2以降）<br />
+Category: Utils<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin7-diffutilspng.png"><img src="{{ site.baseurl }}/assets/images/cygwin7-diffutilspng.png" alt="" width="744" height="407" class="aligncenter size-full wp-image-14911" /></a></li>
+<li>perl（バージョン5.22.1以降）<br />
+Category: Perl<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin7-perl.png"><img src="{{ site.baseurl }}/assets/images/cygwin7-perl.png" alt="" width="744" height="407" class="aligncenter size-full wp-image-14912" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>手順⑧　選択したパッケージの確認。手順⑨でパッケージを詳しくチェックするので、以下のようなウインドウになっていれば良いので、「次へ」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin8-1.png"><img src="{{ site.baseurl }}/assets/images/cygwin8-1.png" alt="" width="413" height="307" class="aligncenter size-full wp-image-15035" /></a>(この図だけhttp://dev.toppers.jp/trac_user/ev3pf/attachment/wiki/DevEnvWin/pic8.pngから転載)</li>
+<li>手順⑨　Cygwinのインストールが完了しました
+<ul>
+<li>インストールの完了：以下のウインドウになったら「完了」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin9.png"><img src="{{ site.baseurl }}/assets/images/cygwin9.png" alt="" width="536" height="358" class="aligncenter size-full wp-image-14915" /></a></li>
+<li>インストールが完了したら、デスクトップにあるCygwin64 Terminalアイコンをダブルクリックして起動し、以下のコマンドを実行する。Cygwinのパッケージ情報が出力されるので、手順⑦に書かれているバージョンより新しいこととStatusがOKであることを確認する。違う場合は手順⑦をやり直す。$はプロンプトなので入力しない。
+<ul>
+<li><code>$ cygcheck -c gcc-core make diffutils perl<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin10.png"><img src="{{ site.baseurl }}/assets/images/cygwin10.png" alt="" width="490" height="202" class="aligncenter size-full wp-image-14916" /></a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Cygwinインストール後の作業
+<ul>
+<li>これからの作業で必要になるCygwinで使えるUNIXコマンドを説明します。
+<ul>
+<li>pwd：現在のディレクトリ位置を表示</li>
+<li> cd␣フォルダ名：ディレクトリを移動</li>
+<li> cd: ホームディレクトリに戻る</li>
+<li> ls: ファイルリストを表示</li>
+<li> ls␣-l: ファイルリストの詳細情報を表示</li>
+<li>rm␣ファイル名: ファイルを削除(ディレクトリは削除不可)</li>
+<li> cp␣ファイル名1␣ファイル名2: ファイルのコピー</li>
+<li> mv␣ファイル名1␣ファイル名2: ファイルの移動</li>
+</ul>
+</li>
+<li> Cygwinで以下のコマンドを実行し、作業フォルダーを作成する。
+<ul>
+<li><code>$ mkdir /ev3rt</code></li>
+<li>WindowsではC:¥cygwin64¥ev3rtになる。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>手順⑩ GCC ARM（GNU Tools for ARM Embedded Processors）のインストーラをダウンロードする。
+<ul>
+<li>以下の確認済みバージョンのインストーラをダウンロードする。
+<ul>
+<li><a href="https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update/+download/gcc-arm-none-eabi-4_8-2014q3-20140805-win32.exe">​gcc-arm-none-eabi-4_8-2014q3-20140805-win32.exe</a></li>
+</ul>
+</li>
+<li>ダウンロードしたインストーラをダブルクリックして起動する。Language Selectionウインドウが開くのでEnglishを選択して、「OK」をクリックする。<br />
+<img src="{{ site.baseurl }}/assets/images/gcc1.png" alt="" width="196" height="133" class="aligncenter size-full wp-image-14919" />以下のウインドウが開くので、「Yes」をクリックする。<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc2.png"><img src="{{ site.baseurl }}/assets/images/gcc2.png" alt="" width="552" height="123" class="aligncenter size-full wp-image-14920" /></a>以下のウインドウが開くので、「Next」をクリックしてSetupを続ける。<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc3.png"><img src="{{ site.baseurl }}/assets/images/gcc3.png" alt="" width="502" height="392" class="aligncenter size-full wp-image-14921" /></a></li>
+</ul>
+</li>
+<li>手順⑪　ライセンスの確認
+<ul>
+<li>License Agreementのウインドウになるので、"I accept the terms of the license agreement"にチェックを入れて、「Next」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc4.png"><img src="{{ site.baseurl }}/assets/images/gcc4.png" alt="" width="502" height="392" class="aligncenter size-full wp-image-14923" /></a></li>
+</ul>
+</li>
+<li>手順⑫　インストール先のディレクトリの設定
+<ul>
+<li>Choose Destination Locationのウインドウが開くので、デフォルトのまま、「Next」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc5.png"><img src="{{ site.baseurl }}/assets/images/gcc5.png" alt="" width="502" height="392" class="aligncenter size-full wp-image-14924" /></a></li>
+</ul>
+</li>
+<li>手順⑬　インストール先のディレクトリの確認
+<ul>
+<li>Start Copying Filesウインドウになったら、「Next」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc6.png"><img src="{{ site.baseurl }}/assets/images/gcc6.png" alt="" width="502" height="392" class="aligncenter size-full wp-image-14925" /></a></li>
+</ul>
+</li>
+<li>手順⑭　GCC Armのインストール終了
+<ul>
+<li>以下のInstall wizard Comleteウインドウになったら、<span style="color: #ff0000;"><strong>"Add path to environment variable"だけにチェックを入れて「Finish」をクリックする。他の項目にチェックを入れてはいけない。</strong></span><br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc7.png"><img src="{{ site.baseurl }}/assets/images/gcc7.png" alt="" width="502" height="392" class="aligncenter size-full wp-image-14926" /></a></li>
+<li>インストールの確認。Cygwin Terminalを起動して、以下のコマンドを打ち込みバージョンを確認する。
+<ul>
+<li><code>$ arm-none-eabi-gcc -v</code></li>
+</ul>
+</li>
+<li>この例では、gccのバージョンは4.8.4であることがわかる。<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc8.png"><img src="{{ site.baseurl }}/assets/images/gcc8.png" alt="" width="910" height="412" class="aligncenter size-full wp-image-14928" /></a></li>
+</ul>
+</li>
+<li>手順⑮ U-Bootのmkimageのインストール
+<ul>
+<li>下記のリンクからmkimageのバイナリをダウンロードする。<span style="color: #ff0000;"><strong>ダウンロードにはChromeを使うこと。</strong></span>Internet ExplorerやFireFoxを使うと余分な拡張子がついてこれからの作業がうまくいかないので注意。
+<ul>
+<li><a class="ext-link" href="http://www.trimslice.com/download/tools/Mkimage.tar.gz"><span class="icon">​h</span>ttp://www.trimslice.com/download/tools/Mkimage.tar.gz</a></li>
+</ul>
+</li>
+<li>ダウンロードした“Mkimage.tar.gz” を“作業フォルダー/ev3rt(WindowsではC:¥cygwin64¥ev3rt)” にエクスプローラーなどを使ってコピーする。</li>
+<li>Cygwin を起動し、以下のコマンドを実行して“作業フォルダー(ev3rt)” に移動する。
+<ul>
+<li><code>$ cd  /ev3rt</code></li>
+</ul>
+</li>
+<li>下記のコマンドで、Mkimage.tar.gzを展開する。
+<ul>
+<li><code>$ tar xvzf  Mkimage.tar.gz</code></li>
+</ul>
+</li>
+<li>バイナリをコピーする。
+<ul>
+<li><code>$ cp mkimage.exe  /usr/local/bin</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="http://dev.toppers.jp/trac_user/ev3pf/wiki/DevEnv">開発プラットフォームEV3RTのダウンロード＆インストール</a>（以下の補足説明は重要）
+<ul>
+<li>次のパッケージバージョンβ7-2をダウンロードする。
+<ul>
+<li><a href="http://www.toppers.jp/download.cgi/ev3rt-beta7-2-release.zip">ev3rt-beta7-2-release.zip</a></li>
+</ul>
+</li>
+<li>手順①
+<ul>
+<li>ダウンロードしたEV3RTのパッケージ(ev3rt-beta7-release.zip) を解凍し、hrp2.tar.xzだけを“作業フォルダー(ev3rt)"。WindowsではC:¥cygwin64¥ev3rtの中にコピーする。</li>
+</ul>
+</li>
+<li>手順②
+<ul>
+<li>Cygwinを起動して以下のコマンドで作業フォルダー(ev3rt)に移動する。
+<ul>
+<li><code>$  cd  /ev3rt</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>手順③
+<ul>
+<li>以下のコマンドを実行してhrp2.tar.xzを解凍する。
+<ul>
+<li><code>$ tar  xvf  hrp2.tar.xz</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>以上で開発環境のインストールは終わりです。<a href="http://demura.net/lecture/15046.html">ここをクリックして「アプリケーションプログラムのビルド・ロード・実行」の作業に進もう！</a></li>
+</ul>
+</li>
+</ul>
+<p style="text-align: right;">終わり</p>

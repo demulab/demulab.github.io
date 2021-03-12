@@ -1,0 +1,251 @@
+---
+layout: post
+title: HARD2021：ルンバをPythonプログラムでナビゲーションさせよう！
+date: 2021-03-12 10:50:47.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- HARD
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-03-12 10:52:23'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '20125'
+  views: '10'
+  _oembed_c47814a3993b59e881575b8c23aa5f80: "{{unknown}}"
+  _oembed_e2cba0c5900c799df5eb6e4885187a84: "{{unknown}}"
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/hard/20114.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/navigation.png"><img class="aligncenter size-large wp-image-20125" src="{{ site.baseurl }}/assets/images/2021/03/navigation-1024x615.png" alt="" width="1024" height="615" /></a></p>
+<p>この記事は<span style="color: #0000ff;"><strong>HARD2021</strong></span>(Home AI Robot Development)スプリングワークショップ用です。今回はナビゲーション用のPythonプログラムを作りましょう。このナビゲーションはロボットが通過する地点（ウェイポイント)を人間が設定し、それを順番にたどるウェイポイントナビゲーションとよばれているもっとも基本的なものです。ROSのナビゲーションの機能も使っているので途中で障害物があれば、ロボットがそれを避けてウェイポイントまで行ってくれる優れものです。</p>
+<p>ナビゲーションのPythonプログラムを簡単にするためにROSの<span style="color: #0000ff;"><strong>Actionlib</strong></span>を使います。ROSには非同期で片方向通信の<span style="color: #0000ff;"><strong>トピック通信</strong></span>、同期で双方向通信の<span style="color: #0000ff;"><strong>サービス通信</strong></span>があります。あるノード(クライアント)が別のノード(サーバー)にロボットのあるタスクを依頼する場合、メッセージをやり取りする必要があるので双方向通信のService通信の方が都合が良いわけですが一つ問題があります。それはサーバーの処理が遅い場合、クライアントがその処理が終わるまでブロック(待機)させられてしまいます。さらに、クライアントが途中でそのタスクをキャンセルしたい場合や途中結果などを聞きたい場合がありますが、Service通信では対応していません。それに対応するためにROSには、<span style="color: #0000ff;"><strong>アクション通信</strong></span>があります。</p>
+<p><strong><span style="color: #0000ff;">アクション通信</span>は</strong> サービス通信と同様にタスクを依頼する<span style="color: #0000ff;"><strong>アクションクライアント</strong></span>(ActionClient)と処理をする<span style="color: #0000ff;"><strong>アクションサーバー</strong></span>(ActionServer)があり、サービス通信と異なる点は<span style="color: #0000ff;"><strong>非同期通信</strong></span>ということです。<span style="color: #0000ff;"><strong>actionlib</strong></span>パッケージはアクション通信のためのツールを提供しています。</p>
+<p>まずは、次のROS Wiki、ROSチュートリアルを読んでActionLibの詳細を理解しましょう。</p>
+<ul>
+<li><a href="http://wiki.ros.org/ja/actionlib">actionlib(日本語)</a></li>
+<li><a href="http://wiki.ros.org/actionlib/Tutorials">ActionLib Tutorial (英語)</a></li>
+</ul>
+<p>次のソースコードは<a href="http://demura.net/lecture/12415.html">このC++プログラムのPython版</a>です。プログラム的にはクラス、例外処理なども入ってきて高度になってきています。クラスを使うとグローバル変数なども使う必要がなくシンプルにコーディングできます。</p>
+<p><strong>ソース</strong></p>
+<pre class="brush:python;">#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import rospy
+import tf
+import actionlib
+from actionlib_msgs.msg import *
+from geometry_msgs.msg import Pose, PoseWithCovarianceStamped, Point, Quaternion\
+, Twist
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from math import pi
+
+
+# クラス
+class WpNavi():
+    def __init__(self):  # コンストラクタ
+        rospy.init_node('wp_navi')  # ノードの初期化
+        rospy.on_shutdown(self.shutdown)  # シャットダウン時の処理
+
+        # アクションクライアントの生成
+        self.ac = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+
+        # アクションサーバーが起動するまで待つ。引数はタイムアウトの時間(秒）
+        while not self.ac.wait_for_server(rospy.Duration(5)):
+            rospy.loginfo("Waiting for the move_base action server to come up")
+
+        rospy.loginfo("The server comes up")
+
+        self.goal = MoveBaseGoal()  # ゴールの生成
+        self.goal.target_pose.header.frame_id = 'map'  # 地図座標系
+        self.goal.target_pose.header.stamp = rospy.Time.now()  # 現在時刻
+
+        way_point = [[-1.0, -1.0, 0.0 * pi], [0.0, -5.0, 0.5 * pi],
+                     [3.0, -5.0, -1.0 * pi], [3.0, 3.0, -0.5 * pi],
+                     [-2.0, 2.0, 0.0 * pi], [999, 999, 999]]
+
+        # メインループ。ウェイポイントを順番に通過
+        i = 0
+        while not rospy.is_shutdown():
+            # ROSではロボットの進行方向がx座標、左方向がy座標、上方向がz座標
+            self.goal.target_pose.pose.position.x = way_point[i][0]
+            self.goal.target_pose.pose.position.y = way_point[i][1]
+
+            if way_point[i][0] == 999:
+                break
+
+            q = tf.transformations.quaternion_from_euler(0, 0, way_point[i][2])
+            self.goal.target_pose.pose.orientation = Quaternion(
+                q[0], q[1], q[2], q[3])
+            rospy.loginfo("Sending goal: No" + str(i + 1))
+
+            self.ac.send_goal(self.goal)
+            # サーバーにgoalを送信
+
+            # 結果が返ってくるまで30.0[s] 待つ。ここでブロックされる。
+            succeeded = self.ac.wait_for_result(rospy.Duration(30))
+
+            # 結果を見て、成功ならSucceeded、失敗ならFailedと表示
+            state = self.ac.get_state()
+            if succeeded:
+                rospy.loginfo(
+                    "Succeeded: No." + str(i + 1) + "(" + str(state) + ")")
+            else:
+                rospy.loginfo(
+                    "Failed: No." + str(i + 1) + "(" + str(state) + ")")
+
+            i = i + 1
+
+    # シャットダウン時の処理
+    def shutdown(self):
+        rospy.loginfo("The robot was terminated")
+        self.ac.cancel_goal()  # ゴールをキャンセル
+
+
+if __name__ == '__main__':
+    # 例外処理。rospy.ROSInterruptExceptionを捕まえる。
+    # この例外はCrl+cキーが押されるときに発生するので、
+    # この例外処理によりこのノードが終了する。
+    try:
+        WpNavi()
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        rospy.loginfo("WP navigation finished.")
+</pre>
+<p><strong>launchファイル</strong></p>
+<ul>
+<li>ノードを実行するためにrosrunコマンドを実行しました。複数のノードを立ち上げたり、複数の変数を設定するのをコマンドでいちいち実行するのは面倒です。それを解決してくれるのが<span style="color: #0000ff;"><strong>launchファイル</strong>と<span style="color: #000000;">よばれるファイルです。</span></span></li>
+<li>launchファイルを作りたい場合、パッケージディレクトリの中にlaunchというディレクトリを作り、そのなかに拡張子がlaunchというファイルを作ります。それがlaunchファイルです。以下のコードがその例です。launchファイルはXML形式で書きます。XML形式はいろいろなアプリでよく使われています。
+<ul>
+<li>launchタグ： launchファイルは&lt;launch&gt;で始まり&lt;/launch&gt;で終わります。その中に書いていきます。</li>
+<li>argタグ：引数を指定する。
+<ul>
+<li>name: 引数名。</li>
+<li>default：引数のデフォルト(規定)値</li>
+<li>value: 引数の値</li>
+</ul>
+</li>
+<li>nodeタグ：ノードを設定する。
+<ul>
+<li>pkg：パッケージ名。この例ではwp_navi。</li>
+<li>type：実行ファイル名。この例ではwp_navi.py。</li>
+<li>name：ノード名。この例ではwp_navi。パッケージ名とノード名は同じ場合が多い。</li>
+<li>ns: 名前空間(name space)。create_autonomyパッケージでは複数台のロボットを扱うために名前空間を使っている。ns = $(args ns)は3行目で設定した値 create1を名前空間としている意味。これがないとwp_navi.pyは動かない。</li>
+<li>output：screenの場合はノードからの出力を端末に表示する。指定しないとログファイルだけに記録される。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/wp_navi_launch.png"><img class="aligncenter size-full wp-image-20123" src="{{ site.baseurl }}/assets/images/2021/03/wp_navi_launch.png" alt="" width="900" height="216" /></a></p>
+<p>&nbsp;</p>
+<p><strong>ハンズオン</strong></p>
+<ul>
+<li>では、さっそくwp_naviパッケージを作り、wp_navi.pyを起動するlaunchファイルを作って実行して、ロボットにナビゲーションをさせてみましょう！</li>
+</ul>
+<ul>
+<li>パッケージの作成
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2021</code></li>
+<li><code>$ catkin_create_pkg wp_navi roscpp rospy std_msgs</code></li>
+</ul>
+</li>
+<li>ソースコードの作成
+<ul>
+<li>次のコマンドでgeditを開き、上のソースコード(wp_navi.py)をコピペしてセーブする。
+<ul>
+<li><code>$ gedit ~/catkin_ws/src/hard2021/wp_navi/src/wp_navi.py &amp;</code></li>
+</ul>
+</li>
+<li>wp_navi.pyに実行権を与える。
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2021/src</code></li>
+<li><code>$ chmod u+x wp_navi.py</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>launchファイルの作成
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2021/wp_navi</code></li>
+<li><code>$ mkdir launch</code></li>
+<li><code>$ cd launch	</code></li>
+<li>次のコマンドでgeditを開き、上図のソースコード(wp_navi.launch)を打ち込んでwp_navi.launchというファイル名をつけてlaunchディレクトリの中にセーブする。全部打ち込むのがつらい場合は、~/catkin_ws/src/create_autonomy/navigation/ca_move_base/launch/send_goal.launchファイルをコピーして改変すると楽できます。
+<ul>
+<li><code>$ gedit ~/catkin_ws/src/hard2021/wp_navi/launch/wp_navi.launch &amp;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> ビルドと実行権の付与
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build wp_navi</code><code></code></li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>端末を２つ開く</li>
+<li>１番目の端末
+<ul>
+<li><code>$ export LOCALIZATION=amcl</code></li>
+<li>新しいcreate_playgroundの3Dモデルをネットから読み込むので表示に数分かかる。
+<ul>
+<li><code>$ roslaunch ca_gazebo create_playground.launch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>２番目の端末
+<ul>
+<li><code>$ source ~/.bashrc</code></li>
+<li>上で作成したwp_navi.launchファイルを使います。
+<ul>
+<li><code>$ roslaunch wp_navi wp_navi.launch</code></li>
+</ul>
+</li>
+<li>上で作成したlaunchファイルを使わない場合は、wp_navi.pyの22行目の'move_base'を'create1/move_base'に変更して次のコマンドを実行する。
+<ul>
+<li><code>$ rosrun wp_navi wp_navi.py</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>成功するとロボットがウェイポイント順番に通過し、ぐるっと１周してスタート地点に戻ります。</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Gazebo_2020-8-21_22-32-5_No-00.png"><img class="aligncenter size-large wp-image-18893" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_Gazebo_2020-8-21_22-32-5_No-00-1024x613.png" alt="" width="1024" height="613" /></a><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/playground.png"><img class="aligncenter size-large wp-image-20124" src="{{ site.baseurl }}/assets/images/2021/03/playground-1024x615.png" alt="" width="1024" height="615" /></a></p>

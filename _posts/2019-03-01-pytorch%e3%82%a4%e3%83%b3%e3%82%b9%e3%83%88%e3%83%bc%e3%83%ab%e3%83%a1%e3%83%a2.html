@@ -1,0 +1,60 @@
+---
+layout: post
+title: PyTorchインストールメモ
+date: 2019-03-01 16:37:02.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '462'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/15576.html"
+---
+<p>CycleGANを試そうとしたらPyTorchという深層学習フレームワークが必要なのでPyTorch1.0をインストールしたときのメモ。</p>
+<p><strong>公式ウェブサイト</strong></p>
+<ul>
+<li><a href="https://pytorch.org/">PyTorch</a></li>
+</ul>
+<p><strong>環境</strong></p>
+<ul>
+<li>Ubuntu16.04</li>
+<li>Python3.5</li>
+<li>CUDA9.2</li>
+</ul>
+<p><strong>インストール</strong></p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2019/03/Screenshot_2019-03-01_16-13-49.png"><img src="{{ site.baseurl }}/assets/images/2019/03/Screenshot_2019-03-01_16-13-49.png" alt="" width="1149" height="366" class="aligncenter size-full wp-image-15577" /></a></p>
+<ul>
+<li>PyTorchのウェブサイトへ行き、自分の環境を選択するとRun the Comandに実行するコマンドが表示されるので実行する。私の場合は以下のコマンドであった。</li>
+<li>pip3 install torch torchvision</li>
+</ul>
+<p><strong>検証</strong></p>
+<ul>
+<li>以下のコードを実行して、うまくインストールできたか検証する。ここでは、ファイル名をtest.pyとする。</li>
+<li>
+<pre class="brush:cpp;"> 
+from __future__ import print_function
+import torch
+x = torch.rand(5, 3)
+print(x)
+y = torch.cuda.is_available()
+print('cuda is available:', y)
+</pre>
+</li>
+<li>次のコマンドを実行し、うまくいった場合は5x3のランダムテンソルを表示し、Cudaが使えるときはTrue、使えないときはFalseを表示する。インストールはとても簡単。
+<ul>
+<li>python3  test.py</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

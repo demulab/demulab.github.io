@@ -1,0 +1,81 @@
+---
+layout: post
+title: Windows用pthreadインストールメモ
+date: 2014-05-19 08:48:17.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2578'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/10817.html"
+---
+<p>Linuxで作成したpthreadを使うプログラムをWindowsでコンパイルする必要があり，そのときのメモ．開発環境はWindows7,  Codeblocks 13.12 + MinGW.</p>
+<p>CodeblocksはMinGW付きのパッケージを選択できるのでそれを利用．g++,  make, gdbなどの開発環境は入っているが，Pthreadが必要なのでWindows用のものをダウンロードする．それをMinGWのディレクトリにコピーして終わり．以下はその具体的な作業．</p>
+<p><!--more--></p>
+<ul>
+<li>Pthread関係で必要なファイルをsourceforgeの<a href="http://sourceforge.net/projects/mingw/files/">mingwプロジェクト</a>の<a href="http://sourceforge.net/projects/mingw/files/MinGW/Base/pthreads-w32/pthreads-w32-2.9.1/">pthreadのページ</a>から次のファイルをダウンロードする．
+<ul>
+<li>pthreads-w32-2.9.1-1-mingw32-dev.tar.lzma</li>
+<li>pthreads-w32-2.9.1-1-mingw32-dll.tar.lzma</li>
+</ul>
+</li>
+<li>lzmaで圧縮されているので，7zipを解凍できるソフトで解凍する．<a href="http://www.7-zip.org/">7-zipのサイト</a>にウインドウズ用のソフトがある．</li>
+<li>解凍すると以下のファイルができる．
+<ul>
+<li>pthreads-w32-2.9.1-1-mingw32-dev\mingw</li>
+<li>
+<ul>
+<li>include
+<ul>
+<li>pthread.h</li>
+<li>sched.h</li>
+<li>semaphore.h</li>
+</ul>
+</li>
+<li>lib
+<ul>
+<li>libpthreawd.a, libpthread.dll.a, libpthreadGC2.a, libpthreadGC2.dll.a, libpthreawdGCE2.dll.a</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>pthreads-w32-2.9.1-1-mingw32-dll.tar
+<ul>
+<li>bin
+<ul>
+<li>pthreadGC2.dll, pthreadGCE2.dll</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>上記のファイルを以下のディレクトリ（フォルダ）のbin, include, libの中にそれぞれコピーする．
+<ul>
+<li>64ビットOS
+<ul>
+<li>c:\Program Files (x86) \CodeBlocks\MinGW\</li>
+</ul>
+</li>
+<li>32ビットOS
+<ul>
+<li>c:\Program Files\CodeBlocks\MinGW\</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>
+<p style="text-align: right;">でむ</p>

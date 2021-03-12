@@ -1,0 +1,46 @@
+---
+layout: post
+title: 'ODE Petit Camp 4: How to make the petit waru biped robot'
+date: 2007-03-07 09:48:00.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '914'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/381.html"
+---
+<p>Most of this page was translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.<br />
+Sorry for strange and funny English from "<a href="http://en.wikipedia.org/wiki/Chinese_room">the Chinese room</a>".</p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/camp4.jpg" alt="" width="480" height="118" /></p>
+<p>My article, Open Dynamics Engine Petit Camp in <a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fwww.ohmsha.co.jp%2frobocon%2f">RoboCon Magazine(No.50)</a>, finished  February 15th, 2007. This time in order the world of ODE is made to enjoy it has publishing to the color page, method of using the draw staff of attachment such as background and modification method of the texture file to main explains, concerning the control of simple biped walking.</p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/fire3s.jpg" alt="Open Dynamics Engine, A biped robot" title="Open Dynamics Engine, A Biped robot" width="480" height="309" /></p>
+<p><strong>A screen shot of the sample program.   The Petit Waru (evil) Biped Robot: Warusa P01</strong></p>
+<p>Furthermore, the SF like robot which is the upper figure as a sample program being to designate  a biped robot, Warusa P01, please read the article on RoboCon Magazine if you have interest.</p>
+<p>Control of simple biped walking to be mounted by the program, because it can get from link below, please play freely. However, there is no warraty for  the program. It is the mere sample, you can not enjoy it like a game. The program has bugs, so please do not redistribute it. Furthermore, method of playing is not completed, but the article of  the RoboCon magazine or please see the command function in  the source code.</p>
+<ul>
+<li>Sample program (Petit Waru Robot Simulator) download</li>
+</ul>
+<ul>
+<li><a href="http://demura.net/english/381.html/attachment/warusap070221" rel="attachment wp-att-12678">warusap070221.tgz</a></li>
+<li>Two files above compressed method just are different, but content are same ones.</li>
+</ul>
+<p><!--more--></p>
+<p>By the way, as for name Warusa of this robot P01 gun Walther P38 which animation "Rupin The Third" has regularly used the letter  it is something which designates. For the design priority it is not faced to the control of walking. In the first place, being not to be easy it does that it can point to smooth 2 foot walking to the robot of the structure where the crotch joint has been attached to the immediate side of the body. Because it does not tune either parameter sufficiently, somehow you walk it is level. Tuning parameter, please try making walk more smoothly.</p>
+<p>Furthermore, because you sent makefile for Mac OS X from Mr. Yamada of the University of Ryukyu, in the above-mentioned file is inserted. Being to be the name, makefile.osx copying in makefile, please use. It meaning that from ODE0.8 libdrawstuff.a stops being copied by /usr/local/lib with make install, after by your you copying in /usr/local/lib, please use. In addition, also drawsutff corresponded to the carbon and there is no X11 and reached the point where it moves on OS X. It is something which extremely has become the easy chin. Information above is all information from Mr. Yamada. My iMac was saved the interior being to have converted, truly.</p>
+<p><strong>[ Errata ]</strong><br />
+There is P69 of   RoboCon Magazine No.50, "Petit Lecture: What is a rotation matrix? "With as for the element which corresponds to r33 of revolution queue R [ 0 ] is not and R [ 10 ] is. Formula below is correct answer. When you verified in RoboCon Magazine, this mistake seems that occurred at stage of printing from stage of compilation separated. It is not my mistake, but borrowing this place, the correction tide you apologize.</p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/matrix.jpg" alt="" /><br />
+<strong>[Acknowledgement]</strong><br />
+It becomes last, but serialization of  RoboCon Magazine became the valuable experience for me. Thank you for taking care very much in Ms. Takahashi taking charge of compilation. In addition, reading my article, the method which can begin ODE to be, because and others it is the plain gauze, or you wrote, being something which was, it does. In addition, the opportunity will be made and being to think, that the article will be contributed to also the other magazine, also in the future we ask may.</p>

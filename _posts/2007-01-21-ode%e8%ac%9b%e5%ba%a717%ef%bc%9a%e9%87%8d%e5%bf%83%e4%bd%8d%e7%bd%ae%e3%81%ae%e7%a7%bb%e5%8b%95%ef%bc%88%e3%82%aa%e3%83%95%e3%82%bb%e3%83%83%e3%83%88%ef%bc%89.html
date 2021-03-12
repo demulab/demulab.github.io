@@ -1,0 +1,170 @@
+---
+layout: post
+title: ODE講座17：重心位置の移動（オフセット）
+date: 2007-01-21 23:03:21.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '3273'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/372.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2007/01/koboshi.gif" alt="" /></p>
+<p>ゲーム開発やロボットの研究者にも広く使われているオープンソースの物理計算エンジンODE(Open Dynamics  Engine、オープン ダイナミクスエンジン）を学ぶODE講座の第１７回目です。</p>
+<p>今回は重心の位置を移動する方法について説明します。dGeomSetOffsetPositionというAPIを使うと重心の位置をずらして設定することができます。初期の重心位置からずれした量をオフセット(offset)とよびます。</p>
+<ul>
+<li><strong>ジオメトリの位置を移動させるAPI</strong></li>
+</ul>
+<div style="margin-left: 40px"><span style="color: #000099;"><strong>void dGeomSetOffsetPosition (dGeomID, dReal x, dReal y, dReal z);</strong><br />
+dGeomIDの位置をbodyの位置から(x, y, z)だけずらして設定する。このAPIを使用する前にジオメトリはボディと関連づけられていなければいけない。つまり、dGeomSetBodyが先に呼び出されている必要あり。</span></div>
+<p>では、サンプルプログラムとして上図の起き上がり小法師を紹介します。<a href="http://demura.net/archives/images/ode/koboshi2.tgz">ソースコードはここからダウンロードしてください。</a>この例では、小法師の胴体に相当するの球（質量10kg、半径0.4m)の重心を球の中心より0.4m下に設定し、頭に相当する球の質量は1gしかないので、この小法師は必ず起き上がってくれます。具体的には、dBodySetPositionで重心位置を球の中心から半径分(0.4m)下にずらして設定し、dGeomSetOffsetPositionでそのずらした量（オフセット,ここではdz）を設定しています。</p>
+<p>キーボードからfキーやjキーを押すと、 起き上がり小法師へ左右方向へ100Nの力が加えられますが、復元力があるので起き上がるようすを確認できます。</p>
+<p><!--more--></p>
+<p>[code]<br />
+// koboshi2.cpp by Kosei Demura 2007-1-20<br />
+#include<br />
+#include</p>
+<p>#ifdef dDOUBLE<br />
+#define dsDrawSphere dsDrawSphereD<br />
+#endif</p>
+<p>#define MAX_CONTACTS 4</p>
+<p>static dWorldID world;<br />
+static dSpaceID space;<br />
+static dGeomID  ground;<br />
+static dJointGroupID contactgroup;<br />
+dsFunctions fn;</p>
+<p>typedef struct {<br />
+dBodyID body;<br />
+dGeomID geom;<br />
+dReal   radius;<br />
+dReal   length;<br />
+dReal   mass;<br />
+} MyLink;</p>
+<p>MyLink   head, torso; // だるまの頭、胴体<br />
+dJointID joint;　　　　　// 頭と胴体の固定用ジョイント</p>
+<p>static void nearCallback (void *data, dGeomID o1, dGeomID o2)<br />
+{<br />
+int i;</p>
+<p>// exit without doing anything if the two bodies are connected by a joint<br />
+dBodyID b1 = dGeomGetBody(o1);<br />
+dBodyID b2 = dGeomGetBody(o2);<br />
+if (b1 &amp;&amp; b2 &amp;&amp; dAreConnectedExcluding (b1,b2,dJointTypeContact)) return;</p>
+<p>dContact contact[MAX_CONTACTS];   // up to MAX_CONTACTS contacts per box-box<br />
+for (i=0; i<br />
+contact[i].surface.mode = dContactBounce | dContactSoftCFM;<br />
+contact[i].surface.mu = 1.0;     // 摩擦係数<br />
+contact[i].surface.bounce = 0.01;  //  跳ね返り係数<br />
+contact[i].surface.bounce_vel = 0.01;  // 跳ね返りの最小速度<br />
+contact[i].surface.soft_cfm = 0.00001;<br />
+}<br />
+if (int numc = dCollide (o1,o2,MAX_CONTACTS,&amp;contact[0].geom,<br />
+sizeof(dContact))) {<br />
+for (i=0; i<br />
+dJointID c = dJointCreateContact (world,contactgroup,contact+i);<br />
+dJointAttach (c,b1,b2);<br />
+}<br />
+}<br />
+}</p>
+<p>static void drawSphere(dGeomID g)<br />
+{<br />
+if (!g) return;<br />
+const dReal *pos = dGeomGetPosition(g);<br />
+const dReal *R = dGeomGetRotation(g);</p>
+<p>dsDrawSphere(pos,R,dGeomSphereGetRadius(g));<br />
+}</p>
+<p>static void simLoop (int pause)<br />
+{<br />
+dSpaceCollide(space,0,&amp;nearCallback);<br />
+dWorldStep(world,0.01);<br />
+dJointGroupEmpty(contactgroup);</p>
+<p>dsSetColor(1.0,0.0,0.0);<br />
+drawSphere(torso.geom);<br />
+dsSetColor(1.0, 0.0, 0.0);<br />
+drawSphere(head.geom);<br />
+}</p>
+<p>void start()<br />
+{<br />
+static float xyz[3] = {   3.5,0.0,1.0};<br />
+static float hpr[3] = {-180.0,0.0,0.0};<br />
+dsSetSphereQuality(3);<br />
+dsSetViewpoint(xyz,hpr);<br />
+}</p>
+<p>// Create an object<br />
+void createDaruma()<br />
+{<br />
+dMass m,m1;<br />
+dReal x0 = 0.0, y0 = 0.0, z0 = 0.4;<br />
+dReal dx = 0.0, dy = 0.0, dz = 0.4;  // オフセット[m]</p>
+<p>// 胴体：重心位置を移動して設定<br />
+torso.body   = dBodyCreate(world);<br />
+torso.radius = 0.4;　　// 半径<br />
+torso.mass   = 10.0;　// 質量</p>
+<p>dMassSetZero(&amp;m);<br />
+dMassSetSphereTotal(&amp;m,torso.mass,torso.radius);<br />
+dBodySetMass(torso.body, &amp;m);</p>
+<p>torso.geom = dCreateSphere(space,torso.radius);<br />
+dGeomSetBody(torso.geom,torso.body);<br />
+// 胴体（球）ボディの重心位置を、球の半径分下に設定する。<br />
+dBodySetPosition(torso.body, x0, y0, z0 - dz);<br />
+// このままでは、胴体のジオメトリ（形状）が地面に埋まるため、球の半径分上に設定する。この移動により球の重心が半径分下に移動し、胴体が復元力を持つ。<br />
+dGeomSetOffsetPosition(torso.geom, 0, 0, dz);</p>
+<p>// 頭<br />
+head.body = dBodyCreate(world);<br />
+head.radius = 0.3;<br />
+head.mass   = 0.001;</p>
+<p>dMassSetZero(&amp;m1);<br />
+dMassSetSphereTotal(&amp;m1,head.mass, head.radius);<br />
+dBodySetMass(head.body,&amp;m1);</p>
+<p>head.geom = dCreateSphere(space,head.radius);<br />
+dGeomSetBody(head.geom,head.body);<br />
+dGeomSetPosition(head.geom, x0, y0, z0 + torso.radius + head.radius);</p>
+<p>// 固定ジョイント　（頭と胴体固定用）<br />
+joint = dJointCreateFixed(world, 0);<br />
+dJointAttach(joint, torso.body,head.body);<br />
+dJointSetFixed(joint);<br />
+}</p>
+<p>void command(int cmd)<br />
+{<br />
+switch(cmd) {<br />
+case ‘f’:　// fキーを押すとｘ軸の正方向に100Nの力を加える<br />
+dBodyAddTorque(head.body,  100, 0, 0); break;<br />
+case ‘j’:　// fキーを押すとｘ軸の正方向に-100Nの力を加える<br />
+dBodyAddTorque(head.body, -100, 0, 0); break;<br />
+}<br />
+}</p>
+<p>void  setDrawStuff() {<br />
+fn.version = DS_VERSION;<br />
+fn.start   = &amp;start;<br />
+fn.step    = &amp;simLoop;<br />
+fn.command = &amp;command;<br />
+fn.stop    = NULL;<br />
+fn.path_to_textures = "../../drawstuff/textures";<br />
+}</p>
+<p>int main(int argc, char **argv)<br />
+{<br />
+setDrawStuff();    // 描画関数のセット<br />
+world = dWorldCreate();　// 　動力学計算用ワールドの生成<br />
+space = dHashSpaceCreate(0);　// 　衝突計算用スペースの生成<br />
+contactgroup = dJointGroupCreate(0);　// 接触点グループの生成<br />
+dWorldSetGravity(world,0,0,-9.8);　// 重力加速度の設定<br />
+ground = dCreatePlane(space,0,0,1,0);　//  地面用平面ジオメトリの生成<br />
+createDaruma();　// 小法師の生成<br />
+dsSimulationLoop (argc,argv,640,480,&amp;fn);　// シミュレーションループ<br />
+dSpaceDestroy(space);     // スペースの破壊<br />
+dWorldDestroy (world); 　// ワールドの破壊<br />
+return 0;<br />
+}</p>
+<p>[/code]</p>
+<p>おしまい。</p>

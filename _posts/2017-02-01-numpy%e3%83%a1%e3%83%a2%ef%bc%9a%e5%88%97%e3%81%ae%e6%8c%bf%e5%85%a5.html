@@ -1,0 +1,47 @@
+---
+layout: post
+title: numpyメモ：列の挿入
+date: 2017-02-01 12:35:12.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1180'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/13159.html"
+---
+<p>numpyのメモ．行列に要素が全て１の列ベクトルを挿入</p>
+<p>>>>import numpy as np<br />
+>>>X = np.array([[1,2],[3,4],[5,6]])<br />
+>>>print X<br />
+​[[1 2]<br />
+ [3 4]<br />
+ [5 6]]</p>
+<p>>>>a = np.column_stack((np.ones((3,1)),X))<br />
+>>>print a​<br />
+[[ 1.  1.  2.]<br />
+ [ 1.  3.  4.]<br />
+ [ 1.  5.  6.]]</p>
+<p>>>>import numpy as np<br />
+>>>b = np.concatenate((np.ones((3,1)),X),axis=1)<br />
+>>>print b<br />
+[[ 1.  1.  2.]<br />
+ [ 1.  3.  4.]<br />
+ [ 1.  5.  6.]]</p>
+<p>>>>import numpy as np<br />
+>>>c = np.hstack((np.ones((3,1)),X))<br />
+>>>print c<br />
+[[ 1.  1.  2.]<br />
+ [ 1.  3.  4.]<br />
+ [ 1.  5.  6.]]</p>

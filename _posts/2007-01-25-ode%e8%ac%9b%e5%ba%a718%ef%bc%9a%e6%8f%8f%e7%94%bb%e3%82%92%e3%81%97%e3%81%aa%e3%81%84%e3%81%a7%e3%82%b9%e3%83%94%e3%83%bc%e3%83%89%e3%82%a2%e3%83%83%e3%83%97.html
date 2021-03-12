@@ -1,0 +1,70 @@
+---
+layout: post
+title: ODE講座18：描画をしないでスピードアップ
+date: 2007-01-25 17:59:07.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1597'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/373.html"
+---
+<p>１月２２日～２４日までKITの池の平セミナーハウスへ学生といってまいりました。今年は雪が少なく池の平温泉スキー場でも積雪が1mしかありませんでした。それでも滑るには十分な量で学生達とスキーやスノボーを満喫しました。それにしても、最近の若者はスノーボードしかやりません。スキーをやっている人はオヤジやご老人がほとんどでしたが、ご老人（推定年齢70歳）のスノーボーダーを発見して勇気付けられました。そのおじいちゃんは全身銀色のウェアを身にまとい、頭に銀色のヘルメットをかぶり、もの凄い速さでかっ飛ばしています。私もそれに刺激を受け、久しぶりにスノボーにチャレンジしましたが、簡単ではありません。それでも、七転び八起きしながらなんとか滑れるようになったのが今研修の成果？でした。</p>
+<p>体がズキズキ痛みますが、ゲーム開発やロボットの研究者にも広く使われているオープンソースの物理計算エンジンODE(Open Dynamics  Engine、オープン ダイナミクスエンジン）を学ぶODE講座の第１８回目をはじめましょう。今回はODEについている3Dグラフィクスライブラリdrawstuffを使わずにシミュレーションをスピードアップする方法をご説明します。</p>
+<p>drawstuffはODEの一部ではなく、テストプログラムを表示するためのいわばオマケで、OpenGLをベースに作られています。とてもシンプルでソースコードもあるのでOpenGLを勉強するにはとても良い教材だと思います。</p>
+<p>描画しない方法はとても簡単です。テストプログラムではdsSimulationLoopをmain関数の中で呼び出しています。この部分が描画ループを呼び出しシミュレーションの各ステップで描画やキーボードからのイベント処理をしているので、これを呼び出さなければＯＫです。simLoop関数の中でも描画している部分があるので、そこも呼び出さないようにする必要があります。</p>
+<p>つまり、以下のようにしてください。</p>
+<hr />
+<ul>
+<li><strong>描画をする場合</strong></li>
+</ul>
+<p>[code]<br />
+static void simLoop (int pause)<br />
+{<br />
+必要な処理に関するコードをここに書く。<br />
+dSpaceCollide(space,0,&amp;nearCallback);<br />
+dWorldStep(world,0.01);<br />
+dJointGroupEmpty(contactgroup);</p>
+<p>drawSphere(torso.geom);<br />
+}</p>
+<p>int  main(int argc, char *argv[])<br />
+{<br />
+略<br />
+dsSimulationLoop(argc, argv, 640, 480,  &amp;fn);<br />
+略<br />
+}<br />
+[/code]</p>
+<ul>
+<li><strong>描画をしない場合</strong></li>
+</ul>
+<p>[code]<br />
+static void simLoop (int pause)<br />
+{<br />
+必要な処理に関するコードをここに書く。<br />
+dSpaceCollide(space,0,&amp;nearCallback);<br />
+dWorldStep(world,0.01);<br />
+dJointGroupEmpty(contactgroup);</p>
+<p>//  drawSphere(torso.geom);  描画はしない<br />
+}</p>
+<p>int  main(int argc, char *argv[])<br />
+{<br />
+略<br />
+while (1) {<br />
+simLoop(0);  //  引数は必ず0にしてください。<br />
+}<br />
+略<br />
+}<br />
+[/code]</p>
+<p>今回はこれでおしまい。</p>

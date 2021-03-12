@@ -1,0 +1,37 @@
+---
+layout: post
+title: bagファイルから画像を生成する
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>bagファイルから画像を生成したときのメモ。</p>
+<p>ROSの<a href="http://wiki.ros.org/image_view">image_viewパッケージ</a>のextract_imagesツールを利用。</p>
+<p>実行手順<br />
+1. マスター起動<br />
+  roscore<br />
+2. バグファイルからトピックを再生<br />
+　<code>rosbag play バグファイル名</code><br />
+3. 画像の取り出し<br />
+<code><br />
+rosrun image_view extract_images _sec_per_frame:=0.01 image:=<トピック名><br />
+ _filename_format:=%04d.jpg<br />
+</code><br />
+_sec_per_frame:1フレームの秒数で、デフォルト値は0.1[s]<br />
+_filename_format:ファイル名の指定。default: frame%04d.jpg<br />
+トピック名　/camera/color/image_raw</p>

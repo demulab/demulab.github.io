@@ -1,0 +1,267 @@
+---
+layout: post
+title: PD実践：講義第１回目(9/24)までの準備作業
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2522'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19295'
+  _wp_old_date: '2020-09-18'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/pdpractice/19311.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_futurekreate-Edu_2020-9-15_15-3-38_No-00.png"><img class="aligncenter size-large wp-image-19295" src="{{ site.baseurl }}/assets/images/SnapCrab_futurekreate-Edu_2020-9-15_15-3-38_No-00-1024x738.png" alt="" width="1024" height="738" /></a>KITロボティクス学科の2020年度後学期PD実践用のページです。今年度は新型コロナの影響で今まで実施したようなLEGOマインドストームEV3実機を使った密なグループワークはできませんので、シミュレータを使います。</p>
+<p>開発環境のインストールは半日からトラブルがある場合は１日ほど時間がかかりますので、必ず講義第１回目9月24日までに以下の作業を事前に済ませてください。</p>
+<p><span style="color: #008000;"><strong>なお、この作業どおり実施してエラーでお困りの場合は一番下のコメントへエラー内容を具体的に記載してください。回答します。メールではなく多くの学生が共通に困っていることだと思うのでこちらにお願いします。なお、スパム対策のためにコメントに入力してもすぐ表示されません。私が内容をチェックしてから公開します。<span style="color: #ff0000;">コメントに記入する際は、個人情報がわからないようにニックネームでお願いします。クラス番号などは入れないでください。</span></strong></span></p>
+<p><span style="color: #0000ff;"><strong>注意：学内のファイアウォール下ではこの作業の一部が失敗し</strong></span><span style="color: #0000ff;"><strong>ます。proxyを設定する必要があるからです。極力、自宅で実施してください。なお、proxyの設定法は「6. Proxy設定」をご覧ください。</strong></span></p>
+<p><strong>0. 準備</strong></p>
+<ul>
+<li>Windows10ノートパソコンを使います。MacやLinuxでは動きません。</li>
+<li>このインストール作業に必要なハードディスクやSSDの空き容量は約5.5GBです。今後、他のソフトウェアもインストールしますので<span style="color: #ff0000;"><strong>最低10GBの空き容量を確保してください。</strong></span>使わないファイルはBoxに移動しておくとよいですよ。</li>
+</ul>
+<p><strong>1.WSLのインストール</strong></p>
+<ul>
+<li><strong>WSL2ではシミュレータが動かないので、以下のリンクに従ってWSLをインストールして使うこと。</strong>Ubuntuはバージョン20.04を選択する。
+<ul>
+<li><a href="https://demura.net/education/pd%e5%ae%9f%e8%b7%b5/19314.html">WSL: Windows for Subsystem for Linux (Ubuntu20.04)のインストールと設定</a></li>
+<li>なお、Windowsストアでインストール時にエラーが出る場合は以下のリンクを参考に解決して欲しい。
+<ul>
+<li><a href="https://sway.office.com/ed01xaxv1uWPVVYI">Windows 10 でストア アプリが正常に動作しない場合の対処方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>WSLのUbuntu20.04のターミナル(端末)を起動して以下のコマンドを実行してRubyと必要なライブラリをインストールする。なお、コマンドの先頭にある$はプロンプトなので打ち込まないこと。コピペでもよい。特に長いコマンドの場合はコピペを推奨する。<code></code>
+<ul>
+<li><code>$ sudo apt update</code></li>
+<li><code>$ sudo apt upgrade</code></li>
+<li><code>$ sudo apt install ruby</code></li>
+<li><code>$ sudo gem install shell</code><code></code></li>
+</ul>
+</li>
+</ul>
+<p><strong>2. 作業用フォルダの作成(Windowsでの作業）</strong></p>
+<ul>
+<li><span style="color: #ff0000;"><strong>WindowsのCドライブ直下にeduというフォルダをエクスプローラーを使い作成する(下図参照)。eduは全部半角小文字にすること。</strong></span>これからこのフォルダで作業をする。特に断らない限り、WSL Ubuntu20.04の端末にコマンドを打ち込む作業になる。<strong>なお、以下の説明はCドライブ直下にeduフォルダを作ることを前提にしており、他のドライブでは動かないので注意して欲しい。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/eduフォルダ.png"><img class="aligncenter size-large wp-image-19337" src="{{ site.baseurl }}/assets/images/edu&#12501;&#12457;&#12523;&#12480;-1024x398.png" alt="" width="1024" height="398" /></a><br />
+</strong></li>
+</ul>
+<p><strong>3. athrill2のインストール</strong></p>
+<ul>
+<li>ダウンロード
+<ul>
+<li>Ubuntu20.04の端末を起動して次のコマンドを実行する。
+<ul>
+<li><code>$ cd /mnt/c/edu</code>
+<ul>
+<li>上のコマンドを失敗する場合は、Cドライブ直下にeduという作業用フォルダができていなので、[2. 作業用フォルダの作成(Windowsでの作業）]を再度実行する。なお、ウインドウズで作成したc:\eduフォルダはUbuntuからみると/mnt/c/eduになる。UbuntuとWindowsではパスの表記が異なる。</li>
+</ul>
+</li>
+<li><code>$ sudo apt update</code></li>
+<li><code>$ sudo apt upgrade</code></li>
+<li><code>$ sudo apt install -y language-pack-ja</code></li>
+<li><code>$ sudo update-locale LANG=ja_JP.UTF-8</code></li>
+<li><code>$ sudo apt install git</code></li>
+<li><code>$ sudo apt install build-essential</code></li>
+<li><code>$ git clone https://github.com/tmori/athrill.git</code></li>
+<li><code>$ git clone https://github.com/tmori/athrill-target.git</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ cd /mnt/c/edu/athrill-target/v850e2m/build_linux</code></li>
+<li><code>$ make timer32=true clean</code></li>
+<li><code>$ make timer32=true</code></li>
+<li>ファイルの確認
+<ul>
+<li>エクスプローラで以下のファイルがあるか確認する。あればOK!
+<ul>
+<li>C:\edu\athrill\bin\linux\athrill2<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/athrill2.png"><img class="aligncenter size-large wp-image-19368" src="{{ site.baseurl }}/assets/images/athrill2-1024x434.png" alt="" width="1024" height="434" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>設定
+<ul>
+<li>エディタでファイル~/.bashrcを開く。ここで~はホームディレクトリの意味。ホームディレクトリはログインしたときのディレクトリで<code>/home/ユーザ名</code>。つまり、<code>~/.bashrc</code>は<code>/home/ユーザ名/.bashrc</code>と同じになる。.bashrcはシェルの設定ファイル。エディタがよくわからない場合は端末で以下のコマンドを実行してnanoを使う。<a href="https://news.mynavi.jp/article/liunx_win-23/">使い方はこのリンクを参考にして欲しい。</a>
+<ul>
+<li><code>$ nano ~/.bashrc</code></li>
+</ul>
+</li>
+<li> ~/.bashrcの最後に以下の行を加えセーブする。セーブの方法はコントロールキーを押しながら’x’キーを押す。Save modified buffer?と表示されるので’Y’キーを押す。保存されるファイルが表示されるので確認してEnterキーを押す。
+<ul>
+<li>export PATH=/mnt/c/edu/athrill/bin/linux:${PATH}</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>4. linux版64bit gccコンパイラのインストール</strong></p>
+<ul>
+<li>ダウンロード
+<ul>
+<li>端末を開き以下のコマンドを実行する。ファイルサイズが225MBあり少し時間がかかる。私の環境では10分程度かかった。
+<ul>
+<li>cdコマンドでディレクトリを移動
+<ul>
+<li><code>$ cd /mnt/c/edu</code></li>
+</ul>
+</li>
+<li>wgetコマンドは指定したURLのファイルを取得する。
+<ul>
+<li><code>$ wget https://github.com/toppers/athrill-gcc-v850e2m/releases/download/v1.1/athrill-gcc-package.tar.gz</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>展開
+<ul>
+<li>端末を開き以下のコマンドを実行する。
+<ul>
+<li>ディレクトリ移動
+<ul>
+<li><code>$ cd /mnt/c/edu</code></li>
+</ul>
+</li>
+<li>圧縮ファイルを展開。tarコマンドはフォルダを圧縮または展開する。xvzfは展開を指定するオプション。
+<ul>
+<li><code>$ tar xvzf athrill-gcc-package.tar.gz</code></li>
+</ul>
+</li>
+<li>ディレクトリ移動
+<ul>
+<li><code>$ cd athrill-gcc-package</code></li>
+</ul>
+</li>
+<li>圧縮ファイルを展開。
+<ul>
+<li><code>$ tar xvzf athrill-gcc.tar.gz</code></li>
+</ul>
+</li>
+<li>ディレクトリのファイル一覧を表示。lsコマンドはファイルの一覧や詳細情報を表示する。
+<ul>
+<li><code>$ ls usr/local/athrill-gcc</code>
+<ul>
+<li>bin include lib libexec share v850-elf</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> 移動
+<ul>
+<li>以下のコマンドを実行してusr/local/athrill-gccを/usr/localに移動する。
+<ul>
+<li>ディレクトリ移動
+<ul>
+<li><code>$ cd /mnt/c/edu/athrill-gcc-package</code></li>
+</ul>
+</li>
+<li>ディレクトリのコピー。sudoコマンドはスーパーユーザ権限でコマンドを実行する。ここではシステム領域にコピーしているのでsudoが必要。cpはコピーコマンド。ディレクトリをコピーするときは'-r'オプションをつける。
+<ul>
+<li><code>$ sudo cp -r usr/local/athrill-gcc /usr/local</code></li>
+</ul>
+</li>
+<li>ディレクトリの削除。'f'はエラーメッセージの非表示、'r'はディレクトリを削除するときに付ける。
+<ul>
+<li><code>$ rm -fr usr</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>エディタを使って~/.bashrcの一番下の行に以下を追加して保存する。
+<ul>
+<li>export PATH=/usr/local/athrill-gcc/bin/:${PATH}<br />
+export LD_LIBRARY_PATH=/usr/local/athrill-gcc:/usr/local/athrill-gcc/lib:${LD_LIBRARY_PATH}</li>
+</ul>
+</li>
+<li>sourceコマンドはファイルを実行するコマンド。追加したパスを有効化する。
+<ul>
+<li><code>$ source  ~/.bashrc</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>５．FutureKreate×箱庭」用EV3RT開発環境のインストール</strong></p>
+<ul>
+<li>ダウンロード
+<ul>
+<li>以下のリンクをc:\eduフォルダーにダウンロードして解凍する。なお、KIT関係者しかダウンロードできません。
+<ul>
+<li><a href="https://kanazawa-it.box.com/s/cu64mz3e1sblraux51bx3b6sp9x8885i">athrill-sample-speakerlcd200915.zip(授業用サンプルを削除済み)</a></li>
+</ul>
+</li>
+<li>解凍すると以下のフォルダができる。
+<ul>
+<li>c:\edu\athrill-sample</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>６．確 認</p>
+<ul>
+<li>エクスプローラでc:\eduにathrill, athrill-gcc-package, athrill-sample, athrill-targetができているか確認する。なけれ手順３からやり直す。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/verify.png"><img class="aligncenter size-full wp-image-19580" src="{{ site.baseurl }}/assets/images/verify.png" alt="" width="841" height="182" /></a></li>
+</ul>
+<p><strong>7. Proxy設定</strong></p>
+<ul>
+<li>学内のファイアウォール内でこの作業を実施する場合はProxyの設定が必要です。以下のリンクを参考に設定してください。なお、対面授業時にもProxy設定が必要です。
+<ul>
+<li><a href="https://demura.net/education/lecture/15309.html">WSL: proxyの切り替えスクリプト</a></li>
+</ul>
+</li>
+</ul>
+<p>以上で終わり。お疲れ様！</p>
+<p>１週目の授業では、上図のようなシミュレータをさっそく動かします。楽しみにしてください。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

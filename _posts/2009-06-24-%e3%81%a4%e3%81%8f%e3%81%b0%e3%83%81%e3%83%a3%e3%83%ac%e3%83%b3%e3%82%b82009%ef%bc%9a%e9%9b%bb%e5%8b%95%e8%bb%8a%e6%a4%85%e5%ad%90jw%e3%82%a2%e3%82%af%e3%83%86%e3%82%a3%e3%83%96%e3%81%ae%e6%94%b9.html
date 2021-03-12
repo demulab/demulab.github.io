@@ -1,0 +1,38 @@
+---
+layout: post
+title: つくばチャレンジ2009：電動車椅子の制御法 （回路図）
+date: 2009-06-24 23:20:27.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+- つくばチャレンジ
+tags:
+- つくばチャレンジ
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '2657'
+  image: http://demura.net/wordpress/wp-content/uploads/2009/06/jwx1-imcs01.jpg
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/4241.html"
+---
+<p><br class="spacer_" /></p>
+<p>[caption id="attachment_4242" align="alignnone" width="580" caption="JWアクティブ改造の回路図　by 山澤君(クリックすると拡大します)"]<a href="http://demura.net/wordpress/wp-content/uploads/2009/06/jwx1-imcs01.jpg"><img class="size-medium wp-image-4242" title="jwx1-imcs01" src="{{ site.baseurl }}/assets/images/2009/06/jwx1-imcs01-300x203.jpg" alt="JWアクティブ改造の回路図　by 山澤君 (クリックすると拡大します）" width="580" height="380" /></a>[/caption]</p>
+<p>demura.netチームのエース山澤君が苦労して作成した回路図を公開します．この改造はほとんど彼にやってもらいました．</p>
+<p>さて，ヤマハ発動機の<a href="http://www.yamaha-motor.jp/wheelchair/complete/active/index.html">軽量型電動車椅子JWアクティブ</a>の制御方法はいたって簡単です．イクシスリサーチ社の超小型USB接続モータコントローラ<a href="http://www.ixs.co.jp/products/controller/imcs01-j.html">iMCs01</a>（回路図左下）を使いDAによりアナログ値(0～5v)をJWアクティブの自走操作部に入力することでJWアクティブを動かしています．また，デッドレコニングに必要な情報はJWアクティブのエンコーダをiMCs01のカウンタで読むことにより取得しています．さらに，JWアクティブ単体でも使えるように自走操作部に切り替えスイッチ(回路図左上：4PDTSW，製品名：8E ロッキングトグルスイッチ，型番：8E4011-Z，メーカ：フジソク）を取り付け，ノートパソコンによる自動走行と自走操作部によるマニュアル操作を実現可能にしています．</p>
+<p>回路図右上のモザイクがかかっているところはヤマハ発動機さんから教えて頂いた情報なのでここでは非公開にしています．研究用途でJWアクティブを購入すると技術サポートを受けることができます．</p>
+<p>また，JWアクティブに搭載されているエンコーダの解析は不十分でA, B相しかわかっていません．Z相がわかれば良いのですが，それらしい信号を発見できていません．エンコーダから出ている線は７芯になっており，３本が不明(unknown)です．回転数に比例してパルス幅が大きくなっているようにも見えますが詳しく解析していません．</p>
+<p>なお，回路図等に間違いや問題が起きる可能性もあります．このページを参考にされる場合は自己責任でお願いします．私は一切責任を取れません．メーカ保障も効かなくなりますので十分注意してください．</p>
+<p>回路図にコメントや間違いがある場合はご指摘して頂ければありがたい限りです．</p>
+<p style="text-align: right;">でむ</p>
+<p><br class="spacer_" /></p>
+<p><br class="spacer_" /></p>

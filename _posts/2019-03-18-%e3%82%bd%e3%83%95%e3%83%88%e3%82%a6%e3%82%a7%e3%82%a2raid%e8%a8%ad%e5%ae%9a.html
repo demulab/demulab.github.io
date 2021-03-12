@@ -1,0 +1,401 @@
+---
+layout: post
+title: ソフトウェアRAID1設定
+date: 2019-03-18 13:56:17.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _oembed_f02de496442e0c4cf0b8abb37bdb6f45: "{{unknown}}"
+  views: '327'
+  _edit_last: '2'
+  the_page_no_amp: '0'
+  the_page_toc_novisible: '0'
+  the_page_ads_novisible: '0'
+  the_page_nofollow: '0'
+  the_page_noindex: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/15600.html"
+---
+<p>Seagateの8TBハードディスクを２台購入したので、RAIDを組むことにした。デスクトップに使用しているマザーボードにはfake RAID機能はあるが、柔軟に運用したいのでソフトウェアRAIDを使う。RAIDのレベルは１のミラーリング。作業が終わってからまとめたので実際の作業と違う場合があると思う。あくまで防備録。このとおり作業してうまく行かないかもしれないので、自己責任で参考にして欲しい。</p>
+<p><strong>概　要</strong></p>
+<ul>
+<li>500GBのSSDにxubuntu16.04がインストール済み。ファイルフォーマットはLVM。</li>
+<li>新規に8TBのハードディクスを２台購入したので、これらをRAID化する。</li>
+<li>デスクトップにハードディスクに搭載したところ、デバイス名は/dev/sdbと/dev/sdcになった。</li>
+<li>上記のRAID化されたハードディスクにはSSDの/home以下のすべてのファイルを移動する。</li>
+</ul>
+<p><strong>作　業</strong></p>
+<ul>
+<li>ハードディスクのフォーマット
+<ul>
+<li><code></code> <code>$ sudo gdisk /dev/sdb</code><br />
+GPT fdisk (gdisk) version 1.0.1Partition table scan:<br />
+MBR: protective<br />
+BSD: not present<br />
+APM: not present<br />
+GPT: presentFound valid GPT with protective MBR; using GPT.Command (? for help): ?<br />
+b back up GPT data to a file<br />
+c change a partition's name<br />
+d delete a partition<br />
+i show detailed information on a partition<br />
+l list known partition types<br />
+n add a new partition<br />
+o create a new empty GUID partition table (GPT)<br />
+p print the partition table<br />
+q quit without saving changes<br />
+r recovery and transformation options (experts only)<br />
+s sort partitions<br />
+t change a partition's type code<br />
+v verify disk<br />
+w write table to disk and exit<br />
+x extra functionality (experts only)<br />
+? print this menuCommand (? for help): i<br />
+No partitionsCommand (? for help): n<br />
+Partition number (1-128, default 1):<br />
+First sector (34-15628053134, default = 2048) or {+-}size{KMGTP}:<br />
+Last sector (2048-15628053134, default = 15628053134) or {+-}size{KMGTP}:<br />
+Current type is 'Linux filesystem'<br />
+Hex code or GUID (L to show codes, Enter = 8300): L<br />
+0700 Microsoft basic data 0c01 Microsoft reserved 2700 Windows RE<br />
+3000 ONIE boot 3001 ONIE config 3900 Plan 9<br />
+4100 PowerPC PReP boot 4200 Windows LDM data 4201 Windows LDM metadata<br />
+4202 Windows Storage Spac 7501 IBM GPFS 7f00 ChromeOS kernel<br />
+7f01 ChromeOS root 7f02 ChromeOS reserved 8200 Linux swap<br />
+8300 Linux filesystem 8301 Linux reserved 8302 Linux /home<br />
+8303 Linux x86 root (/) 8304 Linux x86-64 root (/ 8305 Linux ARM64 root (/)<br />
+8306 Linux /srv 8307 Linux ARM32 root (/) 8400 Intel Rapid Start<br />
+8e00 Linux LVM a500 FreeBSD disklabel a501 FreeBSD boot<br />
+a502 FreeBSD swap a503 FreeBSD UFS a504 FreeBSD ZFS<br />
+a505 FreeBSD Vinum/RAID a580 Midnight BSD data a581 Midnight BSD boot<br />
+a582 Midnight BSD swap a583 Midnight BSD UFS a584 Midnight BSD ZFS<br />
+a585 Midnight BSD Vinum a600 OpenBSD disklabel a800 Apple UFS<br />
+a901 NetBSD swap a902 NetBSD FFS a903 NetBSD LFS<br />
+a904 NetBSD concatenated a905 NetBSD encrypted a906 NetBSD RAID<br />
+ab00 Recovery HD af00 Apple HFS/HFS+ af01 Apple RAID<br />
+af02 Apple RAID offline af03 Apple label af04 AppleTV recovery<br />
+af05 Apple Core Storage bc00 Acronis Secure Zone be00 Solaris boot<br />
+bf00 Solaris root bf01 Solaris /usr &amp; Mac Z bf02 Solaris swap<br />
+bf03 Solaris backup bf04 Solaris /var bf05 Solaris /home<br />
+bf06 Solaris alternate se bf07 Solaris Reserved 1 bf08 Solaris Reserved 2<br />
+Press the &lt;Enter&gt; key to see more codes: 8e00<br />
+bf09 Solaris Reserved 3 bf0a Solaris Reserved 4 bf0b Solaris Reserved 5<br />
+c001 HP-UX data c002 HP-UX service ea00 Freedesktop $BOOT<br />
+eb00 Haiku BFS ed00 Sony system partitio ed01 Lenovo system partit<br />
+ef00 EFI System ef01 MBR partition scheme ef02 BIOS boot partition<br />
+f800 Ceph OSD f801 Ceph dm-crypt OSD f802 Ceph journal<br />
+f803 Ceph dm-crypt journa f804 Ceph disk in creatio f805 Ceph dm-crypt disk i<br />
+fb00 VMWare VMFS fb01 VMWare reserved fc00 VMWare kcore crash p<br />
+fd00 Linux RAID<br />
+Hex code or GUID (L to show codes, Enter = 8300): 8e00<br />
+Changed type of partition to 'Linux LVM'Command (? for help): ?<br />
+b back up GPT data to a file<br />
+c change a partition's name<br />
+d delete a partition<br />
+i show detailed information on a partition<br />
+l list known partition types<br />
+n add a new partition<br />
+o create a new empty GUID partition table (GPT)<br />
+p print the partition table<br />
+q quit without saving changes<br />
+r recovery and transformation options (experts only)<br />
+s sort partitions<br />
+t change a partition's type code<br />
+v verify disk<br />
+w write table to disk and exit<br />
+x extra functionality (experts only)<br />
+? print this menuCommand (? for help): t<br />
+Using 1<br />
+Current type is 'Linux LVM'<br />
+Hex code or GUID (L to show codes, Enter = 8300): fd00<br />
+Changed type of partition to 'Linux RAID'Command (? for help): p<br />
+Disk /dev/sdb: 15628053168 sectors, 7.3 TiB<br />
+Logical sector size: 512 bytes<br />
+Disk identifier (GUID): 3989C8E8-0741-47FE-B36E-B96590B6BD7E<br />
+Partition table holds up to 128 entries<br />
+First usable sector is 34, last usable sector is 15628053134<br />
+Partitions will be aligned on 2048-sector boundaries<br />
+Total free space is 2014 sectors (1007.0 KiB)Number Start (sector) End (sector) Size Code Name<br />
+1 2048 15628053134 7.3 TiB FD00 Linux RAIDCommand (? for help): wFinal checks complete. About to write GPT data. THIS WILL OVERWRITE EXISTING<br />
+PARTITIONS!!Do you want to proceed? (Y/N): Y<br />
+OK; writing new GUID partition table (GPT) to /dev/sdb.<br />
+The operation has completed successfully.</li>
+<li><code>$ sudo gdisk /dev/sdc</code><br />
+GPT fdisk (gdisk) version 1.0.1Partition table scan:<br />
+MBR: not present<br />
+BSD: not present<br />
+APM: not present<br />
+GPT: not presentCreating new GPT entries.Command (? for help): ?<br />
+b back up GPT data to a file<br />
+c change a partition's name<br />
+d delete a partition<br />
+i show detailed information on a partition<br />
+l list known partition types<br />
+n add a new partition<br />
+o create a new empty GUID partition table (GPT)<br />
+p print the partition table<br />
+q quit without saving changes<br />
+r recovery and transformation options (experts only)<br />
+s sort partitions<br />
+t change a partition's type code<br />
+v verify disk<br />
+w write table to disk and exit<br />
+x extra functionality (experts only)<br />
+? print this menuCommand (? for help): n<br />
+Partition number (1-128, default 1):<br />
+First sector (34-15628053134, default = 2048) or {+-}size{KMGTP}:<br />
+Last sector (2048-15628053134, default = 15628053134) or {+-}size{KMGTP}:<br />
+Current type is 'Linux filesystem'<br />
+Hex code or GUID (L to show codes, Enter = 8300): fd00<br />
+Changed type of partition to 'Linux RAID'Command (? for help): wFinal checks complete. About to write GPT data. THIS WILL OVERWRITE EXISTING<br />
+PARTITIONS!!Do you want to proceed? (Y/N): Y<br />
+OK; writing new GUID partition table (GPT) to /dev/sdc.<br />
+The operation has completed successfully.</li>
+<li>RAIDソフトウェアのインストール
+<ul>
+<li><code>$ sudo apt install mdadm</code></li>
+</ul>
+</li>
+<li>HDD(/dev/sdb1, /dev/sdc1) ２台をソフトウェアRAIDにするために /dev/md0 に割り当てる。
+<ul>
+<li><code>$ sudo mdadm --create /dev/md0 --level=raid1 --raid-devices=2 /dev/sdb1 /dev/sdc1 --assume-clean</code></li>
+<li>/dev/sdb1, /dev/sdc1はブート可能なパーティションでないので以下のようにwarningが出るがyキーを押して次に進むとRAIDアレー/dev/md0がスタートする。<br />
+mdadm: Note: this array has metadata at the start and<br />
+may not be suitable as a boot device. If you plan to<br />
+store '/boot' on this device please ensure that<br />
+your boot-loader understands md/v1.x metadata, or use<br />
+--metadata=0.90<br />
+Continue creating array? y<br />
+mdadm: Defaulting to version 1.2 metadata<br />
+mdadm: array /dev/md0 started.</li>
+</ul>
+</li>
+<li>RAIDができているか次のコマンドで確認する。
+<ul>
+<li><code>$ cat /proc/mdstat</code></li>
+<li>以下のようなメッセージが出たら成功<br />
+Personalities : [raid1]<br />
+md0 : active raid1 sdc1[1] sdb1[0]<br />
+7813894464 blocks super 1.2 [2/2] [UU]<br />
+bitmap: 0/59 pages [0KB], 65536KB chunkunused devices: &lt;none&gt;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>RAIDの設定
+<ul>
+<li>ここでは、RAIDシステムからブートをしないので、LVMだけの１パーティションとする。２TBを超えるRAIDシステムからブートしたい場合はGPTからブートするための1MBの領域を先頭に確保する必要があるが、ここではしない。</li>
+<li><code>$ sudo gdisk /dev/md0</code><br />
+[sudo] パスワード:<br />
+GPT fdisk (gdisk) version 1.0.1Partition table scan:<br />
+MBR: not present<br />
+BSD: not present<br />
+APM: not present<br />
+GPT: not presentCreating new GPT entries.Command (? for help): n<br />
+Partition number (1-128, default 1):<br />
+First sector (34-15627788894, default = 2048) or {+-}size{KMGTP}:<br />
+Last sector (2048-15627788894, default = 15627788894) or {+-}size{KMGTP}:<br />
+Current type is 'Linux filesystem'<br />
+Hex code or GUID (L to show codes, Enter = 8300): L<br />
+0700 Microsoft basic data 0c01 Microsoft reserved 2700 Windows RE<br />
+3000 ONIE boot 3001 ONIE config 3900 Plan 9<br />
+4100 PowerPC PReP boot 4200 Windows LDM data 4201 Windows LDM metadata<br />
+4202 Windows Storage Spac 7501 IBM GPFS 7f00 ChromeOS kernel<br />
+7f01 ChromeOS root 7f02 ChromeOS reserved 8200 Linux swap<br />
+8300 Linux filesystem 8301 Linux reserved 8302 Linux /home<br />
+8303 Linux x86 root (/) 8304 Linux x86-64 root (/ 8305 Linux ARM64 root (/)<br />
+8306 Linux /srv 8307 Linux ARM32 root (/) 8400 Intel Rapid Start<br />
+8e00 Linux LVM a500 FreeBSD disklabel a501 FreeBSD boot<br />
+a502 FreeBSD swap a503 FreeBSD UFS a504 FreeBSD ZFS<br />
+a505 FreeBSD Vinum/RAID a580 Midnight BSD data a581 Midnight BSD boot<br />
+a582 Midnight BSD swap a583 Midnight BSD UFS a584 Midnight BSD ZFS<br />
+a585 Midnight BSD Vinum a600 OpenBSD disklabel a800 Apple UFS<br />
+a901 NetBSD swap a902 NetBSD FFS a903 NetBSD LFS<br />
+a904 NetBSD concatenated a905 NetBSD encrypted a906 NetBSD RAID<br />
+ab00 Recovery HD af00 Apple HFS/HFS+ af01 Apple RAID<br />
+af02 Apple RAID offline af03 Apple label af04 AppleTV recovery<br />
+af05 Apple Core Storage bc00 Acronis Secure Zone be00 Solaris boot<br />
+bf00 Solaris root bf01 Solaris /usr &amp; Mac Z bf02 Solaris swap<br />
+bf03 Solaris backup bf04 Solaris /var bf05 Solaris /home<br />
+bf06 Solaris alternate se bf07 Solaris Reserved 1 bf08 Solaris Reserved 2<br />
+Press the &lt;Enter&gt; key to see more codes: 8e00<br />
+bf09 Solaris Reserved 3 bf0a Solaris Reserved 4 bf0b Solaris Reserved 5<br />
+c001 HP-UX data c002 HP-UX service ea00 Freedesktop $BOOT<br />
+eb00 Haiku BFS ed00 Sony system partitio ed01 Lenovo system partit<br />
+ef00 EFI System ef01 MBR partition scheme ef02 BIOS boot partition<br />
+f800 Ceph OSD f801 Ceph dm-crypt OSD f802 Ceph journal<br />
+f803 Ceph dm-crypt journa f804 Ceph disk in creatio f805 Ceph dm-crypt disk i<br />
+fb00 VMWare VMFS fb01 VMWare reserved fc00 VMWare kcore crash p<br />
+fd00 Linux RAID<br />
+Hex code or GUID (L to show codes, Enter = 8300): 8e00<br />
+Changed type of partition to 'Linux LVM'Command (? for help): wFinal checks complete. About to write GPT data. THIS WILL OVERWRITE EXISTING<br />
+PARTITIONS!!Do you want to proceed? (Y/N): Y<br />
+OK; writing new GUID partition table (GPT) to /dev/md0.<br />
+The operation has completed successfully.</li>
+<li>ボリュームグループの作成
+<ul>
+<li><code>$ sudo vgcreate vg0 /dev/md0p1</code></li>
+</ul>
+</li>
+<li>論理グループの作成（容量7000GB,　グループ名home)
+<ul>
+<li><code>$ sudo lvcreate -L 7000G -n home vg0</code></li>
+</ul>
+</li>
+<li>論理グループの確認
+<ul>
+<li><code>$ sudo lvdisplay</code><br />
+--- Logical volume ---<br />
+LV Path /dev/vg0/home<br />
+LV Name home<br />
+VG Name vg0<br />
+LV UUID istCD7-ChY7-wnln-7p7C-BmFN-zktF-qpwZ1x<br />
+LV Write Access read/write<br />
+LV Creation host, time deneb, 2019-03-14 12:11:06 +0900<br />
+LV Status available<br />
+# open 0<br />
+LV Size 6.84 TiB<br />
+Current LE 1792000<br />
+Segments 1<br />
+Allocation inherit<br />
+Read ahead sectors auto<br />
+- currently set to 256<br />
+Block device 252:2--- Logical volume ---<br />
+LV Path /dev/xubuntu-vg/root<br />
+LV Name root<br />
+VG Name xubuntu-vg<br />
+LV UUID YXZMxe-ZRvz-E925-dXq7-ifam-6D2E-2gjmYK<br />
+LV Write Access read/write<br />
+LV Creation host, time xubuntu, 2017-11-27 19:11:58 +0900<br />
+LV Status available<br />
+# open 1<br />
+LV Size 433.34 GiB<br />
+Current LE 110936<br />
+Segments 1<br />
+Allocation inherit<br />
+Read ahead sectors auto<br />
+- currently set to 256<br />
+Block device 252:0--- Logical volume ---<br />
+LV Path /dev/xubuntu-vg/swap_1<br />
+LV Name swap_1<br />
+VG Name xubuntu-vg<br />
+LV UUID 9UY9Wk-DRAD-J0ou-OD2Y-Vkhk-JZcJ-L6Xn3w<br />
+LV Write Access read/write<br />
+LV Creation host, time xubuntu, 2017-11-27 19:11:58 +0900<br />
+LV Status available<br />
+# open 2<br />
+LV Size 31.94 GiB<br />
+Current LE 8176<br />
+Segments 1<br />
+Allocation inherit<br />
+Read ahead sectors auto<br />
+- currently set to 256<br />
+Block device 252:1</li>
+</ul>
+</li>
+<li>論理グループにext4ファイルシステムを作成
+<ul>
+<li><code>$ sudo mkfs -t ext4 /dev/vg0/home</code></li>
+<li>以下のようなメッセージが表示される。<br />
+mke2fs 1.42.13 (17-May-2015)<br />
+Creating filesystem with 1835008000 4k blocks and 229376000 inodes<br />
+Filesystem UUID: 20824f90-4741-4c0a-8947-d53945ff2a13<br />
+Superblock backups stored on blocks:<br />
+32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,<br />
+4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,<br />
+102400000, 214990848, 512000000, 550731776, 644972544Allocating group tables: done<br />
+Writing inode tables: done<br />
+Creating journal (32768 blocks): done<br />
+Writing superblocks and filesystem accounting information: done</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>RAIDのディスクをマウント
+<ul>
+<li><code>$ cd /</code></li>
+<li><code>$ sudo mkdir  home_raid</code></li>
+<li><code>$ sudo mount -o rw -t ext4 /dev/vg0/home  /home_raid</code></li>
+</ul>
+</li>
+<li>起動時に自動的にマウントするために、/etc/fstabを以下のように変更する。</li>
+</ul>
+<p style="padding-left: 80px;"># /etc/fstab: static file system information.<br />
+#<br />
+# Use 'blkid' to print the universally unique identifier for a<br />
+# device; this may be used with UUID= as a more robust way to name devices<br />
+# that works even if disks are added and removed. See fstab(5).<br />
+#<br />
+# &lt;file system&gt; &lt;mount point&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;pass&gt;<br />
+/dev/mapper/xubuntu--vg-root / ext4 errors=remount-ro 0 1<br />
+/dev/mapper/xubuntu--vg-swap_1 none swap sw 0 0<br />
+/dev/vg0/home /home_raid ext4 defaults 1 2</p>
+<ul>
+<li>再起動してマウントされているか確認する。
+<ul>
+<li><code>$ sudo reboot</code></li>
+</ul>
+</li>
+<li>起動したら以下のコマンドでマウントされているか 確認する
+<ul>
+<li><code>$ df</code></li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 120px;">Filesystem 1K-blocks Used Available Use% Mounted on<br />
+udev 16414044 0 16414044 0% /dev<br />
+tmpfs 3287988 9716 3278272 1% /run<br />
+/dev/mapper/xubuntu--vg-root 447132544 411764952 12631516 98% /<br />
+tmpfs 16439936 4228 16435708 1% /dev/shm<br />
+tmpfs 5120 4 5116 1% /run/lock<br />
+tmpfs 16439936 0 16439936 0% /sys/fs/cgroup<br />
+/dev/loop0 93184 93184 0 100% /snap/core/6405<br />
+/dev/loop1 108288 108288 0 100% /snap/cloudcompare/131<br />
+/dev/loop2 93312 93312 0 100% /snap/core/6531<br />
+/dev/loop3 93184 93184 0 100% /snap/core/6350<br />
+/dev/mapper/vg0-home 7282070296 51592 6915000720 1% /home_raid<br />
+tmpfs 3287988 4 3287984 1% /run/user/108<br />
+tmpfs 3287988 40 3287948 1% /run/user/1000</p>
+<ul>
+<li>マウントされていたら、SSDにある/homeの内容をRAIDに移動させるためにTRL+ALT+F1を同時に押してXを落としてrootでログインする。/homeを/home_ssdに移動する。
+<ul>
+<li><code>#  mv  /home   /home_ssd</code></li>
+</ul>
+</li>
+<li>空の/homeディレクトリを作成する
+<ul>
+<li><code># mkdir  /home</code></li>
+</ul>
+</li>
+<li> /home_ssdの内容を/home_raidにコピーする。
+<ul>
+<li><code># cp -a /home_ssd   /home_raid</code></li>
+</ul>
+</li>
+<li>SSDの/homeの内容をRAIDに移動したのでマウントポイントを変更するために、/etc/fstabの一番下の行を以下のように変更してリブートする。# /etc/fstab: static file system information.<br />
+#<br />
+# Use 'blkid' to print the universally unique identifier for a<br />
+# device; this may be used with UUID= as a more robust way to name devices<br />
+# that works even if disks are added and removed. See fstab(5).<br />
+#<br />
+# &lt;file system&gt; &lt;mount point&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;pass&gt;<br />
+/dev/mapper/xubuntu--vg-root / ext4 errors=remount-ro 0 1<br />
+/dev/mapper/xubuntu--vg-swap_1 none swap sw 0 0<br />
+/dev/vg0/home /home ext4 defaults 1 2</li>
+</ul>
+<p>再起動して /homeの内容に問題なければ成功。</p>
+<p style="text-align: right;">終わり</p>
+<p><strong>参　考</strong></p>
+<ul>
+<li>https://www.linuxmania.jp/raid_md_grub.html</li>
+</ul>

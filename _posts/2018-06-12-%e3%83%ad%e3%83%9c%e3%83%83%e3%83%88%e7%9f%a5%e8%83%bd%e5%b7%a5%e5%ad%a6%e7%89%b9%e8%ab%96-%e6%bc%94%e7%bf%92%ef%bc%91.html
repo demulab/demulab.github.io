@@ -1,0 +1,202 @@
+---
+layout: post
+title: ロボット知能工学特論 演習１
+date: 2018-06-12 10:19:44.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '504'
+  _thumbnail_id: '14644'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14622.html"
+---
+<p><a href="http://demura.net/lecture/14011.html/attachment/goal" rel="attachment wp-att-14042"><img src="{{ site.baseurl }}/assets/images/2018/06/goal.png" alt="" width="485" height="400" class="aligncenter size-full wp-image-14042" /></a></p>
+<p>この記事は私が担当している講義ロボット知能工学特論用です。ウェイポイントナビゲーションのプログラムを作りましょう。なお、この世界モデルを使って、MCLを実装していきます。</p>
+<p>以下のチュートリアルも参考にしてください。</p>
+<ul>
+<li><a href="http://wiki.ros.org/ja/navigation/Tutorials/SendingSimpleGoals">SendingSimpleGoals</a></li>
+</ul>
+<p>ソース</p>
+<pre class="brush:cpp;"> 
+// 本プログラムは
+// http://wiki.ros.org/ja/navigation/Tutorials/SendingSimpleGoals
+// を改変しています。
+#include &#60;ros/ros.h&#62;
+#include &#60;geometry_msgs/PoseWithCovarianceStamped.h&#62;
+#include &#60;move_base_msgs/MoveBaseAction.h&#62;
+#include &#60;actionlib/client/simple_action_client.h&#62;
+
+typedef actionlib::SimpleActionClient&#60;move_base_msgs::MoveBaseAction&#62; MoveBaseClient;
+
+struct MyPose {
+  double x;
+  double y;
+  double yaw;
+};
+
+int main(int argc, char** argv){
+  MyPose way_point&#91;&#93; = {{-0.15, -0.54, 0.0 * M_PI}, {1.6, -0.6, M_PI}, 
+	                {1.6, 1.5,  0.0 * M_PI},{999, 999, 999}};
+
+  ros::Publisher  pub;
+
+  ros::init(argc, argv, "simple_goal");
+
+  ros::NodeHandle nh;
+  pub= nh.advertise&#60;geometry_msgs::PoseWithCovarianceStamped&#62;("initialpose", 2, true);
+
+  // 時間の取得
+  ros::Time tmp_time = ros::Time::now();
+  //create msg
+  geometry_msgs::PoseWithCovarianceStamped initPose;
+
+  // 初期位置の設定 turtlebot3_worldの初期位置が(-2.0, -0.5)なのでそれに設定
+  initPose.header.stamp = tmp_time;  //  時間
+  initPose.header.frame_id = "map";  //  フレーム
+  initPose.pose.pose.position.x = -2.0;
+  initPose.pose.pose.position.y = -0.5;
+  initPose.pose.pose.position.z =  0;
+  initPose.pose.pose.orientation.w = 1.0;
+
+  // パブリッシュ amclパッケージに初期位置を送る
+  pub.publish(initPose);
+  
+  // アクションクライアンを作成。1番目の引数は接続するアクションサーバー名。
+  // アクションサーバーが立ち上がっていないとだめ。
+  // ２番目の引数はtrueならスレッドを自動的に回す(ros::spin()。
+  MoveBaseClient ac("move_base", true);
+  // アクションサーバーが起動するまで待つ。引数はタイムアウトする時間(秒）。
+  // この例では５秒間待つ(ブロックされる)
+  while(!ac.waitForServer(ros::Duration(5.0))){
+      ROS_INFO("Waiting for the move_base action server to come up");
+  }
+
+  ROS_INFO("The server comes up");
+  move_base_msgs::MoveBaseGoal goal;
+  // base_link座標系（ロボット座標系)
+  goal.target_pose.header.frame_id = "base_link";
+  // 現在時刻                                                                       
+  goal.target_pose.header.stamp = ros::Time::now();
+
+
+  int i = 0;
+  while (ros::ok()) {
+    // ROSではロボットの進行方向がx座標、左方向がy座標、上方向がz座標
+    goal.target_pose.pose.position.x =  way_point&#91;i&#93;.x;
+    goal.target_pose.pose.position.y =  way_point&#91;i&#93;.y;
+    goal.target_pose.pose.orientation.w = 1; 
+
+    ROS_INFO("Sending goal: No.%d", i+1);
+    // サーバーにgoalを送信
+    ac.sendGoal(goal);
+
+    // 結果が返ってくるまで30.0&#91;s&#93; 待つ。ここでブロックされる。
+    bool succeeded = ac.waitForResult(ros::Duration(30.0));
+
+    // 結果を見て、成功ならSucceeded、失敗ならFailedと表示
+    actionlib::SimpleClientGoalState state = ac.getState();
+
+    if(succeeded) {
+      ROS_INFO("Succeeded: No.%d (%s)",i+1, state.toString().c_str());
+    }
+    else {
+      ROS_INFO("Failed: No.%d (%s)",i+1, state.toString().c_str());
+    }
+    i++;  
+  }
+  return 0;
+}
+</pre>
+<ul>
+<li>packageのディレクトリ毎、圧縮したファイル
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2017/12/simple_goal.tar">simple_goal.tar</a></li>
+</ul>
+</li>
+<li>展開・ビルド方法
+<ul>
+<li>$  cp  simple_goal.tar    ~/catkin_ws/src</li>
+<li>$  cd  ~/catkin_ws/src</li>
+<li>$  tar  xvf  simple_goal.tar</li>
+<li>$  cd  ~/catkin_ws</li>
+<li>$  catkin_make</li>
+</ul>
+</li>
+</ul>
+<p>演習</p>
+<ul>
+<li>上で展開したsimple_goalを次の要領で実行しよう。
+<ul>
+<li>まず、geditで~/.bashrcを開き、最後の行に以下を追加し保存する。これにより、毎回入力する手間がはぶける。
+<ul>
+<li> export TURTLEBOT3_MODEL=burger</li>
+</ul>
+</li>
+<li> まず、端末を開き次のコマンドを実行。
+<ul>
+<li>$ roslaunch turtlebot3_gazebo turtlebot3_world.launch</li>
+</ul>
+</li>
+<li>演習６で作成した地図を使います。ROS演習６ができていない場合は<a href="http://demura.net/wordpress/wp-content/uploads/2017/12/maps.tar">このmap.tarファイル</a>をダウンロードして、次のようにホームディレクトリで展開してください。
+<ul>
+<li>cd</li>
+<li>tar xvf maps.tar</li>
+<li>展開するとmapsディレクトリができ、その中に、mymap.pgmとmymap.yamlの２つのファイルがあります。pgmファイルは地図画像ファイルで、yamlファイルは設定ファイルです。mymap.yamlファイルの1行目に画像ファイルの場所を指定する必要があります。ダウンロードしたファイルは以下のようにimage: /home/demulab/maps/mymap.pgmになっています。demulabの部分を自分のユーザ名に変更、保存してください。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2017/12/yaml.png"><img src="{{ site.baseurl }}/assets/images/2018/06/yaml.png" alt="" width="674" height="299" class="aligncenter size-full wp-image-14053" /></a></li>
+</ul>
+</li>
+<li>２個目の端末を開き次のコマンドを実行。
+<ul>
+<li>roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/maps/mymap.yaml</li>
+</ul>
+</li>
+<li> ３個目の端末を開きrvizを起動する。
+<ul>
+<li>rosrun rviz rviz -d `rospack find turtlebot3_navigation`/rviz/turtlebot3_nav.rviz</li>
+</ul>
+</li>
+<li>４個目の端末を開き、catkin_makeして生成したsimple_goalノードを起動する。
+<ul>
+<li>$ rosrun simple_goal simple_goal</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>ハンズオン</p>
+<ul>
+<li>もう少し規模の大きい建物内でのナビゲーションを考えましょう。以下のワールドファイルを使い、ロボットの初位置から右奥にあるポールまでウェイポイントナビゲーションをするプログラムをつくりましょう。</li>
+<li>準備
+<ul>
+<li><code>$ cd</code></li>
+<li><code>$ mkdir downloads</code></li>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2018/06/fmt_world-1.tar">fmt_world.tar</a>ダウンロードして~/downloadsの中に保存。</li>
+<li><code>$ cd downloads</code></li>
+<li><code>$ tar xvf  fmt_world.tar</code></li>
+<li><code>$ cd fmt_world</code></li>
+<li><code>$ sudo cp turtlebot3_fmt_world.launch  ~/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/launch</code></li>
+<li><code>$ sudo cp  fmt.world  ~/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/worlds</code></li>
+<li><code>$ cp -r fmt ~/.gazebo/models</code></li>
+<li><code>$ roslaunch turtlebot3_gazebo turtlebot3_fmt_world.launch</code></li>
+</ul>
+</li>
+<li>下のような建物とロボットが表示されたら終わり。右奥のボールがゴール。</li>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2018/06/building.jpg"><img src="{{ site.baseurl }}/assets/images/2018/06/building-1024x617.jpg" alt="" width="800" height="482" class="aligncenter size-large wp-image-14644" /></a></li>
+<li>A simple_goal program with subscribe the scan topic of Turtlebot3
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2018/06/simple_goal3.tar">simple_goal3</a></li>
+</ul>
+</li>
+</ul>

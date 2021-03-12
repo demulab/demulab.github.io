@@ -1,0 +1,44 @@
+---
+layout: post
+title: linuxでのmbr修復
+date: 2009-12-04 08:33:28.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '1195'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/5309.html"
+---
+<p>ubuntuをインストールすることによりwindowsが立ち上がらなくなった場合の解決法のメモ</p>
+<ul>
+<li><span style="background-color: #ffffff;">方法１</span>
+<ul>
+<li><span style="background-color: #ffffff;">sudo  apt-get  install  mbr</span></li>
+<li><span style="background-color: #ffffff;">sudo  install-mbr  /dev/sda      (sdaは自分の環境により変更）</span></li>
+</ul>
+</li>
+<li>方法２
+<ul>
+<li>sudo  apt-get  install  ms-sys</li>
+<li>sudo  ms-sys  -m  /dev/sda    (sdaは自分の環境により変更）</li>
+</ul>
+</li>
+<li>リンク
+<ul>
+<li><a href="http://ms-sys.sourceforge.net/">my-sys</a></li>
+</ul>
+</li>
+</ul>

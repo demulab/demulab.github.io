@@ -1,0 +1,76 @@
+---
+layout: page
+title: 14. 描画をしないでスピードアップ
+date: 2008-10-01 23:41:13.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '4485'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode14"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/sample14.jpg"><img src="{{ site.baseurl }}/assets/images/2008/10/sample14.jpg" alt="" title="sample14" width="500" height="363" class="alignnone size-full wp-image-2203" /></a></p>
+<p>ODE(Open Dynamics Engine初級講座の第１４回目です。今回はODEについている3Dグラフィクスライブラリdrawstuffを使わずにシミュレーションをスピードアップする方法をご説明します。</p>
+<p>drawstuffはODEの一部ではなく、テストプログラムを表示するためのいわばオマケで、OpenGLをベースに作られています。とてもシンプルでソースコードもあるのでOpenGLを勉強するにはとても良い教材だと思います。</p>
+<p>描画しない方法はとても簡単です。テストプログラムではdsSimulationLoopをmain関数の中で呼び出しています。この部分が描画ループを呼び出しシミュレーションの各ステップで描画やキーボードからのイベント処理をしているので、これを呼び出さなければＯＫです。</p>
+<p>さらに，simLoop関数の中でも描画している部分があるので、そこも呼び出さないようにする必要があります。</p>
+<p>つまり、以下のようにしてください。</p>
+<hr />
+<ul>
+<li><strong>描画をする場合</strong></li>
+</ul>
+<pre class="brush:cpp">static void simLoop (int pause)
+{   // 必要な処理に関するコードをここに書く。
+  dSpaceCollide(space,0,&amp;nearCallback);
+  dWorldStep(world,0.01);
+  dJointGroupEmpty(contactgroup);
+  drawSphere(torso.geom);
+}
+
+int  main(int argc, char *argv&#91;&#93;)
+{
+  // 略
+  dsSimulationLoop(argc, argv, 640, 480,  &amp;fn);
+  // 略
+}</pre>
+<ul>
+<li><strong>描画をしない場合</strong></li>
+</ul>
+<pre class="brush:cpp">static void simLoop (int pause)
+{
+  // 必要な処理に関するコードをここに書く。
+  dSpaceCollide(space,0,&amp;nearCallback);
+  dWorldStep(world,0.01);
+  dJointGroupEmpty(contactgroup);
+
+  //  drawSphere(torso.geom);  描画はしないのでコメントアウト
+}
+
+int main(int argc, char *argv&#91;&#93;)
+{
+  // 略
+  while (1) {
+    simLoop(0);  //  引数は必ず0にしてください。
+  }
+  // 略
+}</pre>
+<p>なお、描画をしないで、バウンドするボールの重心位置をターミナルに表示するサンプルプログラム１４を作りました。<br />
+以下に示す１３行目にある先頭の//を外すと描画するようになりますので速さを比較してください。<br />
+// #define DRAW 　先頭のコメントを外すと描画します。</p>
+<p>サンプルプログラムを次からダウンロードできます。</p>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/sample14-120904.zip">サンプルプログラム１４</a></li>
+</ul>
+<p>重心位置の表示を止めると更に速くなりますよ。今回はこれでおしまい。</p>

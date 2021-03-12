@@ -1,0 +1,57 @@
+---
+layout: post
+title: ハードディスクの引越し
+date: 2004-06-02 12:11:36.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '651'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/134.html"
+---
+<p>今までWindowsとLinuxで使っていた80Gのハードディスクが一杯になったので250Gのハードディスクへデータを引っ越しました。思ったより苦労したので忘備録として記録を残します。ただ、個人用なので説明等はあまりしていません。また、データの損失など危険が伴うのでこれを参考にする方は個人の責任でやってください。</p>
+<ol>
+<li>KNOPPIX3.4のＣＤ－Ｒを作成</li>
+<li>それで起動し、ハードディスクのパーティションをfdiskできる
+<ul>領域１　Windows用　178G</ul>
+<ul>領域２　Linux用　　　　80G</ul>
+<ul>領域３　Linux Swap用　2G</ul>
+</li>
+<p>　</p>
+<li>各領域を各ＯＳでフォーマット</li>
+<li>旧ディスクから新ディスクへディスクイメージのコピー
+<ul>dd if=/dev/hda1 of=/dev/hde1 bs=512</ul>
+<ul>dd if=/dev/hda2 of=/dev/hde2 bs=512</ul>
+</li>
+<p>　</p>
+<li>パーティションのサイズ拡大
+<ul>ntfsresizer -n 　/dev/hde1</ul>
+<ul>ntfsresizer --size 177284M /dev/hde1</ul>
+<ul>/sbin/tune2fs -O ^has_journal /dev/hda2</ul>
+<ul>resize2fs -p -f /dev/hda2</ul>
+<ul>/sbin/tune2fs -j /dev/hda2</ul>
+</li>
+<p>領域１はNTFSフォーマットなのでフリーソフト<a href="http://mlf.linux.rulez.org/mlf/ezaz/ntfsresize.html">ntfsresizer</a>を利用した。　　</p>
+<p>領域２はext3ファイルシステムなので普通はqtpartedなどを使えばサイズを拡大できるがなぜかできなかったのでresize2fsを利用した。これはext2ファイルシステムしか利用できないのでまずext3をext2に戻した。　</p>
+<p>以下のコマンドでext2をext3に変更する。</p>
+<li>grubをMBRにインストール
+<ul>grubを入れたフロッピーを作成し、それでＰＣを起動し以下のコマンドを実行してリブートした。</ul>
+<ul>root (hd0,1)</ul>
+<ul>setup (hd0)</ul>
+<ul>reboot</ul>
+</li>
+<li>終わり</li>
+</ol>
+<p>　</p>

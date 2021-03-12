@@ -1,0 +1,277 @@
+---
+layout: post
+title: HARD2021:ルンバの位置をPythonプログラムで知ろう！
+date: 2021-03-11 22:04:15.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- HARD
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-03-11 23:30:15'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18810'
+  views: '16'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/hard/20085.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Gazebo_2020-8-20_9-44-33_No-00.png"><img class="aligncenter size-large wp-image-18810" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_Gazebo_2020-8-20_9-44-33_No-00-1024x420.png" alt="" width="1024" height="420" /></a></p>
+<p>このページではルンバの位置を知るためのROSを使ったPythonプログラムを学びます。ここでいう位置とはROSのcreate_autonomyパッケージで計算した<strong>odometry</strong>(<strong>オドメトリ</strong>)情報です。オドメトリはロボットの車輪回転速度から移動量を求め自分の位置を計算する方法のことで、<strong>デッドレコニング</strong>ともいいます。</p>
+<p>Pythonプログラムを読む前にROSの基本を簡単に説明します。これらの知識はプログラムを読むうえで頭に入れておく必要があります。まず、ROSでは<strong>ノード</strong>(実行中のプログラム)間でいろいろなデータを通信することで、ロボットを動作させています。</p>
+<p>ROSの通信方式には<strong>トピック通信</strong>と<strong>サービス通信</strong>があり、<strong>トピック通信</strong>は１対多の非同期通信で、<strong>メッセージ通信</strong>は１体１の同期通信です。ここではトピック通信を学びます。</p>
+<p><strong>トピック通信</strong>では送り手と受け手が<strong>Topic(トピック)</strong>とよばれる名前付きのバス(伝送路)を介してデータをやり取りしています。送り手のことを<strong>Publisher(配信者）</strong>、受け手のことを<strong>Subscriber(購読者)</strong>、データのことを<strong>メッセージ</strong>とよびます。</p>
+<p>オドメトリのトピックは/odomが一般的ですが、HARDワークショップで使っているcreate_autonomyパッケージでは/create1/odomとなっています。</p>
+<p><strong>ソースコード</strong></p>
+<p>では、さっそくソースコードを紹介します。たったの３７行です。</p>
+<pre>#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+import rospy 
+from nav_msgs.msg import Odometry   
+import tf
+from tf.transformations import euler_from_quaternion
+
+_odom_x, _odom_y, _odom_theta = 0.0, 0.0, 0.0
+
+def callback_odom(msg):
+    global _odom_x, _odom_y, _odon_theta 
+    _odom_x = msg.pose.pose.position.x  
+    _odom_y = msg.pose.pose.position.y  
+    qx = msg.pose.pose.orientation.x
+    qy = msg.pose.pose.orientation.y
+    qz = msg.pose.pose.orientation.z
+    qw = msg.pose.pose.orientation.w
+    q = (qx, qy, qz, qw)
+    e = euler_from_quaternion(q)
+    _odom_theta = e[2] 
+    rospy.loginfo("Odomery: x=%s y=%s theta=%s", _odom_x, _odom_y, _odom_theta)
+
+def odometry():
+    rospy.init_node('odometry')
+    odom_subscriber = rospy.Subscriber('/create1/odom', Odometry, callback_odom)
+    rospy.spin()
+
+if __name__ == '__main__':
+    odometry()
+</pre>
+<p><strong>説明付きソースコード</strong></p>
+<p>次に説明付きソースコードを読んでプログラムを理解しよう。なお、このプログラムは上で説明した<strong>Subscriber</strong> (購読者)のプログラム例となっています。</p>
+<pre>#!/usr/bin/env python
+# -*- coding: utf-8 -*- # 日本語を使うためのおまじない。
+import rospy  # ROSでpython使う場合に必要
+from nav_msgs.msg import Odometry   # オドメトリを使う場合は必要
+import tf
+from tf.transformations import euler_from_quaternion
+
+# グローバル変数。先頭のアンダーバーはグローバル変数の目印。
+# 0.0で初期化している。
+_odom_x, _odom_y, _odom_theta = 0.0, 0.0, 0.0
+
+
+# callback_odom関数
+def callback_odom(msg):
+    global _odom_x, _odom_y, _odon_theta # グローバル変数
+    _odom_x = msg.pose.pose.position.x  # x座標 [m]
+    _odom_y = msg.pose.pose.position.y  # y座標 [m]
+    # クォーターニオン(4次元数) 姿勢を表す手法の一つ
+    qx = msg.pose.pose.orientation.x
+    qy = msg.pose.pose.orientation.y
+    qz = msg.pose.pose.orientation.z
+    qw = msg.pose.pose.orientation.w
+    q = (qx, qy, qz, qw)
+    # クォータニオンからオイラー角を取得
+    e = euler_from_quaternion(q)
+    _odom_theta = e[2] # e[0]:ロール角, e[1]：ピッチ角, e[2]：ヨー角 [rad]
+
+    rospy.loginfo("Odomery: x=%s y=%s theta=%s", _odom_x, _odom_y, _odom_theta)
+
+
+# odometry関数
+def odometry():
+    #  ノードの初期化。引数はノード名。ROSでは同じノード名のノードを複数作ることはできない。
+    rospy.init_node('odometry')
+
+    # サブスクライバー（購読者)の生成。一番目の引数はトピック名、２番目の引数はメッセージの型、
+    # オドメトリのメッセージはOdometry型。３番目の引数はコールバック関数。
+    # 新しいメッセージが来るたびにコールバック関数が自動的に呼び出される。
+    # これは以下のrospy.spin()とは別に並列で実行される。
+    odom_subscriber = rospy.Subscriber('/create1/odom', Odometry, callback_odom)
+
+    # spin()はノードが終了するまで、このプロプグラムを終わらせないようにしている。
+    # これがないとプログラムはすぐ終了しノードも死んでしまう。
+    rospy.spin()
+
+# このプログラムをモジュールとしてimportできるようにするおまじない。
+# なお、モジュールとは他のプログラムから再利用できるようにしたファイルのこと。
+if __name__ == '__main__':
+    odometry()
+</pre>
+<p><strong>実　行</strong></p>
+<ul>
+<li><strong>パッケージの作成</strong>
+<ul>
+<li>パッケージは次のcatkin_create_pkgコマンドで作ります。依存パッケージはそのパッケージを作るために必要なパッケージです。
+<ul>
+<li>catkin_create_pkg &lt;パッケージ名&gt; [依存パッケージ1] [依存パッケージ2]　[依存パッケージ3]</li>
+</ul>
+</li>
+<li>では、odometryパッケージを作っていきましょう！
+<ul>
+<li>まず、odometryパッケージを格納するhard2021ディレクトリを作成。
+<ul>
+<li><code>$ mkdir -p ~/catkin_ws/src/hard2021</code></li>
+</ul>
+</li>
+<li>hard2021ディレクトリに移動。
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2021</code></li>
+</ul>
+</li>
+<li>odometryパッケージの作成。依存パッケージとしてroscpp、rospy、std_msgsを指定します。
+<ul>
+<li><code>$ catkin_create_pkg odometry roscpp rospy std_msgs</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>上手く作成できたか確認しましょう。
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2021/odometry</code></li>
+<li><code>$ ls</code></li>
+<li>下図のようにCMakeLIsts.txt, include, package.xml, srcができていれば成功。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/03/package1.png"><img class="aligncenter size-full wp-image-20092" src="{{ site.baseurl }}/assets/images/2021/03/package1.png" alt="" width="769" height="118" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ソースコードの作成</strong>
+<ul>
+<li>エディタを開き、上の説明のついていない方のソースコードをコピペして保存する。以下のコマンドはエディタにgeditを使う場合。
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2021/odometry/src</code></li>
+<li><code>$ gedit odometry.py</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ビルド</strong>
+<ul>
+<li>Pythonはビルドする必要はないが、ROSで使用する場合は必要になる場合があるので、以下のコマンドを実行する。
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build odometry</code></li>
+</ul>
+</li>
+<li> 作成したpythonプログラムに実行権を与える。実行権を与えないとrosrunコマンドでノードを実行できない。
+<ul>
+<li><code>$ source ~/.bashrc</code></li>
+<li><code>$ roscd odometry/src</code></li>
+<li>chmodはファイルのアクセス権を変更するコマンド。ここでは、このファイルをユーザが実行できるように変更している。
+<ul>
+<li><code>$ chmod u+x odometry.py</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>実　行</strong>
+<ul>
+<li>シミュレータの起動
+<ul>
+<li>端末を開き、以下のコマンドを実行してシミュレータGazeboを起動する。一番上図のルンバをベースにしたロボットが現れる。
+<ul>
+<li><code>$ roslaunch ca_gazebo create_empty_world.launch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>tutlebot_teleop_keyboardノードの実行
+<ul>
+<li>端末をもう一つ開き、以下のコマンドを実行してGazebo上のルンバをキー入力により遠隔制御する。
+<ul>
+<li><code>$ roslaunch ca_tools keyboard_teleop.launch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>odometryノードの実行
+<ul>
+<li>端末をさらに一つ開き、以下のrosrunコマンドによりodometryノードを実行する。rosrunコマンドの１番目の引数はノード名でディレクトリ名にもなっている。２番目の引数は実行するPythonプログラム。
+<ul>
+<li><code>$ rosrun odometry odometry.py</code></li>
+</ul>
+</li>
+<li>キーボードでロボットを動かすと、以下のようにオドメトリの値が変化していることがわかる。最上図で、赤線がx軸、緑線がy軸、青線がz軸となっており、碁盤の目の１目盛りが1mとなっている。オドメトリのthetaはロボットの姿勢で単位はradian。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_demulab@EARTH-catkin_wssrchard2020odometrysrc_2020-8-20_9-43-24_No-00.png"><img class="aligncenter size-large wp-image-18809" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_demulab@EARTH-catkin_wssrchard2020odometrysrc_2020-8-20_9-43-24_No-00-1024x531.png" alt="" width="1024" height="531" /></a></p>
+<p><strong>ノードとトピックの可視化</strong></p>
+<ul>
+<li>では、以下のコマンドでノードやトピックを見てみよう。ノードは楕円で囲まれ中の文字列がノード名、矢印はデータの流れる方向で、その上の文字列がノード名です。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_rqt_graph__RosGraph-rqt_2020-8-20_11-24-15_No-00.png"><img class="aligncenter size-large wp-image-18817" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_rqt_graph__RosGraph-rqt_2020-8-20_11-24-15_No-00-1024x462.png" alt="" width="1024" height="462" /></a></li>
+<li>ここでは、/create1と書かれた四角枠の外の、楕円で囲まれたteleop_twist_keyboardノードとgazeboノードとodometryノードだけに注目します。gazeboノードはシミュレータで、odemetryノードへ/create1/odomトピックを送り、teleop_twist_keyboardノードから/create1/cmd_velトピックを受け取っていることがわかります。</li>
+</ul>
+<p><strong>トピックをコマンドで調べる</strong></p>
+<ul>
+<li>次のトピックを調べるコマンドを紹介します。
+<ul>
+<li>rostopicコマンドの説明
+<ul>
+<li><code>$ rostopic</code><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_demulab@EARTH-_2020-8-20_11-34-39_No-00.png"><img class="aligncenter size-full wp-image-18818" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_demulab@EARTH-_2020-8-20_11-34-39_No-00.png" alt="" width="834" height="315" /></a></li>
+<li>rostopicコマンドを実行すると使い方がわかります。その中で良く使うのは次のrostopic listです。使われているトピックがわかります。</li>
+</ul>
+</li>
+<li>トピックの表示
+<ul>
+<li><code>$ rostopic list</code><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_demulab@EARTH-_2020-8-20_11-37-58_No-00.png"><img class="aligncenter size-full wp-image-18819" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_demulab@EARTH-_2020-8-20_11-37-58_No-00.png" alt="" width="834" height="690" /></a></li>
+</ul>
+</li>
+<li>メッセージの表示
+<ul>
+<li><code>$ rostopic echo トピック名</code></li>
+<li>例として gazeboノードからは/create1/joint_statesトピックも出ているので、そのメッセージを見てみましょう。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_demulab@EARTH-_2020-8-20_11-45-39_No-00.png"><img class="aligncenter size-large wp-image-18820" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_demulab@EARTH-_2020-8-20_11-45-39_No-00-1024x791.png" alt="" width="1024" height="791" /></a></li>
+<li>/create1/joint_statesトピックは左右のロボット車輪の回転量[rad]がわかります。これを使うとロボットのオドメトリを計算できそうですね。なお、各トピックには連番と時間情報がついています。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

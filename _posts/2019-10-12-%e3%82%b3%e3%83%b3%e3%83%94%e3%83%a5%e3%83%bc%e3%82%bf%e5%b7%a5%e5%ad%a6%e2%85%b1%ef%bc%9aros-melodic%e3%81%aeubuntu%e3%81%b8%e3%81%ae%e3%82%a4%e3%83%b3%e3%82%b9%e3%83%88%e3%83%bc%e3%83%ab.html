@@ -1,0 +1,113 @@
+---
+layout: post
+title: ロボットプログラミングⅡ：ROS Melodicのインストール
+date: 2019-10-12 13:26:47.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '12235'
+  views: '1395'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _wp_old_date: '2019-10-02'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/16135.html"
+---
+<p>私が担当している2019年度後学期開講の講義ロボットプログラミングⅡ用です．この記事はROS のオフィシャルウェブサイトの次の日本語記事を簡略化しています。詳しい説明は次のリンクをご覧ください。なお、学内のようなfirewall内の場合は、インストール方法が煩雑になるので、firewall外の自宅に戻ってからインストールすることをお勧めします。</p>
+<ul>
+<li><a href="http://wiki.ros.org/melodic/Installation/Ubuntu">ROS Melodic の Ubuntu へのインストール</a></li>
+</ul>
+<p>----------------------------------------------------------------------------------------------</p>
+<p>以下の手順でROSをインストールしてください。Ubuntuをブートして、Firefoxを起動し、このページを開く。</p>
+<p>１．準備</p>
+<p style="padding-left: 30px;">(1) 端末(ターミナル、terminal)を開いて、以下のコマンドをコピペして、Enterキーを押し実行する。パスワードを聞かれたら入力する。</p>
+<ul>
+<li>$ <code>sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" &gt; /etc/apt/sources.list.d/ros-latest.list'</code></li>
+</ul>
+<p style="padding-left: 30px;"> (2)  同様にして以下のコマンドを実行する。</p>
+<ul>
+<li>$ <code>sudo apt install curl</code></li>
+<li>$ <code>curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&amp;search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | sudo apt-key add -</code></li>
+</ul>
+<p>2. インストール</p>
+<p>(0)  Proxyの設定（学内のみ）</p>
+<ul>
+<li>$ <code>cd</code></li>
+<li>$ gedit<code>  .bashrc</code></li>
+<li>.bashrcに以下を追加する。
+<ul>
+<li><code>export ftp_proxy="ftp://プロキシ―サーバー名:ポート番号/"</code></li>
+<li><code>export http_proxy="http://プロキシ―サーバー名:ポート番号/"</code></li>
+<li><code>export https_proxy="https://プロキシ―サーバー名:ポート番号/"</code></li>
+</ul>
+</li>
+<li>「保存(s)」ボタンを押して、ファイルを保存する。</li>
+<li>以下のコマンドを端末から実行して入力した部分が表示できれば成功。終了するときはqキーを押す。
+<ul>
+<li>$ <code>less .bashrc</code></li>
+</ul>
+</li>
+<li>なお、このproxy設定をすると学外からはapt installができなくなります。それを避けるためには学内ネットワークに接続可能なVPNサービスを利用するか、.bashrcに挿入した3行の先頭に#を入れてコメント化してください。</li>
+</ul>
+<p>(1)  以下のコマンドでインストール先をアップデートし、ソフトウェアを最新バージョンにする。</p>
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt upgrade</code></li>
+</ul>
+<p>(2)  ROS Melodicのインストール</p>
+<ul>
+<li>$ <code>sudo apt install ros-melodic-desktop-full</code></li>
+</ul>
+<p>なお、sudo apt-get updateで次のように怒られる場合は、Ubuntuのネットワーク設定がうまくいっていない可能性があります。proxyを設定していない場合は、上の(0)Proxyの設定作業をしてください。<code><br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/09/SnapCrab_NoName_2015-10-15_17-25-11_No-00.png"><img class="aligncenter size-full wp-image-12235" src="{{ site.baseurl }}/assets/images/2019/10/SnapCrab_NoName_2015-10-15_17-25-11_No-00.png" alt="SnapCrab_NoName_2015-10-15_17-25-11_No-00" width="698" height="151" /></a><br />
+</code></p>
+<p>3. 初期設定</p>
+<p style="padding-left: 30px;">(1)  以下のコマンドでrosdepを初期化する。rosdepはシステム依存するソフトウェアをインストールするツール。ros-melodic-desktop-fullにはrosdepが含まれていないので、まず、1行目を入力してEnterキーを押してインストールする。2行目を入力したらEnterキーを押し、3行目を入力したらEnterキーを押す。rosdepはコンパイルを楽にするツール。<span style="color: #ff0000;"><strong>なお、以下の作業だけはProxy環境下では失敗するので、スマホのデザリングや自宅など学外ネットワークで実施すること。</strong></span></p>
+<ul>
+<li>$ <code>sudo apt install python-rosdep</code></li>
+<li>$ <code>sudo rosdep init</code></li>
+<li>$ <code>rosdep update</code></li>
+</ul>
+<p style="padding-left: 30px;">(2) 環境設定。楽をするための設定。以下のコマンドを端末にコピペしてEnterキーを押す。1行ずつ実施すること。</p>
+<ul>
+<li>$ <code>cd</code></li>
+<li>$ <code>echo "source /opt/ros/melodic/setup.bash" &gt;&gt; ~/.bashrc</code></li>
+<li>$ <code>source ~/.bashrc</code></li>
+</ul>
+<p style="padding-left: 30px;">(3) rosinstall 。インストールが簡単になるツールを以下のコマンドでインストールする。</p>
+<ul>
+<li>$ <code>sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential</code></li>
+</ul>
+<p>終わり</p>

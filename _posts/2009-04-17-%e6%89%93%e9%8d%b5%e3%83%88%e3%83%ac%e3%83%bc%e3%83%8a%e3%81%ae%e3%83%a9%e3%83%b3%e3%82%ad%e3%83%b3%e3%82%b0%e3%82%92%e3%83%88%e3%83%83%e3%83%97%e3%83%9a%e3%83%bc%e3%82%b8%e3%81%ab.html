@@ -1,0 +1,57 @@
+---
+layout: post
+title: 打鍵トレーナのランキングをトップページに
+date: 2009-04-17 10:44:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '450'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/3371.html"
+---
+<p>個人的な作業メモです．</p>
+<p>打鍵トレーナのランキングをトップページサイドバーに表示するために以下の作業を実施．</p>
+<p>１．打鍵トレーナの改造</p>
+<p>type.cgiの３６行目に以下を追加</p>
+<p><br class="spacer_" /></p>
+<p><span> </span>open(OUT,"&gt;ファイル名");<br />
+   my($index) = 1;<br />
+   foreach(@data){<br />
+    <span> </span>$_ =~ s/\r//g;<br />
+     $_ =~ s/\n//g;<br />
+     @para = split(/&lt;&gt;/, $_);<br />
+     print OUT "No.$index: $para[0] $para[3] \n";<br />
+     $index++;<br />
+     if ($index &gt; 5) {<br />
+          last;<br />
+     }<br />
+ }<br />
+   close(OUT);</p>
+<p>2. サイドバーsidebar.phpに以下を追加</p>
+<p>&lt;!-- 打鍵トレーナ --&gt; <br />
+ &lt;div id="categories" class="dbx-box"&gt; <br />
+ &lt;h3 class="dbx-handle"&gt;打鍵トレーナー (日本国憲法)&lt;/h3&gt; <br />
+ &lt;div class="dbx-content"&gt; <br />
+ &lt;ul&gt; タイピングの腕前を競い合おう！&lt;/ul&gt;</p>
+<p>&lt;?php      $file = file("ファイル名"); <br />
+ 　　foreach($file as $line){<br />
+ 　　　$line = mb_convert_encoding($line, "UTF-8", "auto"); <br />
+ 　　　echo nl2br($line);      }<br />
+ ?&gt; <br />
+ &lt;/div&gt; <br />
+ &lt;/div&gt; </p>
+<p>おしまい．</p>
+<p><br class="spacer_" /></p>
+<p><br class="spacer_" /></p>

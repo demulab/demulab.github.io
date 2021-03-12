@@ -1,0 +1,180 @@
+---
+layout: post
+title: Open3D：RealSenseを使った３次元点群処理
+date: 2020-03-29 14:44:46.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '17461'
+  views: '4916'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/17459.html"
+---
+<p>本記事は以下に示す秋月秀一先生の参考リンクをRealSense D435iを使ってやってみただけのメモ。第24回画像センシングシンポジウム(SSII2018)の チュートリアル講演「3D物体検出とロボットビジョンへの応用 -3D点群処理の基礎と位置姿勢推定のしくみ-」のために用意した資料とのこと。Open3Dのバージョンが違いAPIが変更になったのでその部分だけを変更している。PCLと比較して圧倒的に簡単なのがわかった。</p>
+<p><strong>参考資料</strong></p>
+<ul>
+<li>ソースコード：<a href="https://github.com/sakizuki/SSII2018_Tutorial_Open3D">Open3Dを利用した3次元点群処理</a></li>
+<li>PPT: <a href="https://www.slideshare.net/SSII_Slides/3d-101077557">チュートリアル講演「3D物体検出とロボットビジョンへの応用 -3D点群処理の基礎と位置姿勢推定のしくみ-」</a></li>
+</ul>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Ubuntu 18.04</li>
+<li>Open3D  0.9.0</li>
+<li>Python  3.6</li>
+</ul>
+<p><strong>準　備</strong></p>
+<ul>
+<li><a href="https://demura.net/robot/17449.html">Open3Dのインストール</a></li>
+<li><a href="https://demura.net/robot/17396.html">librealsenseのインストール</a></li>
+</ul>
+<p><strong>ビルド</strong></p>
+<ul>
+<li>$ cd ~/src</li>
+<li>$ git clone  https://github.com/sakizuki/SSII2018_Tutorial_Open3D.git</li>
+<li>$ cd  SSII2018_Tutorial_Open3D</li>
+<li>$ mkdir build</li>
+<li>$ cd build</li>
+<li>$ cmake ../</li>
+<li>$ make</li>
+</ul>
+<p><strong>RGB画像と距離画像の取得</strong></p>
+<ul>
+<li>RealSenseをパソコンに接続</li>
+<li>端末で次のコマンドを実行
+<ul>
+<li>$ cd ~/src/SSII2018_Tutorial_Open3D/build</li>
+<li>$ ./rs-capture</li>
+</ul>
+</li>
+<li>"depth"と"image"ディレクトが作成され、RGB画像と距離画像が保存される。放おっておくとずっとキャプチャし続けれので良いところで止める。rs-captureを実行している端末で"Ctrl+C"により実行を終了する。</li>
+<li>次のコマンドで画像が何番目まで保存されているか確認する。
+<ul>
+<li>$ ls depth
+<ul>
+<li>depth00000.pngから多くのファイルが連番で表示される。</li>
+</ul>
+</li>
+<li>$ ls image
+<ul>
+<li>depth00000.pngから多くのファイルが連番で表示される。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>ポイントクラウドの取得</strong></p>
+<ul>
+<li>上で取得したdepthとimage画像からポイントクラウドを取得する。取得にはrgbd_and_pcd.pyスクリプトを使う。ただし、githubにあるソースコードはOpen3Dのバージョン0.9.0には対応していないのでAPIを改変して次のコードを使った。
+<pre># RGBD画像の表示 rgbd_and_pcd.py
+# https://github.com/sakizuki/SSII2018_Tutorial_Open3D 
+# Open3D 0.9.0に対応
+#from open3d import *
+import open3d as o3d
+import matplotlib.pyplot as plt
+import numpy as np
+
+file_num = "00150" # 
+
+if __name__ == "__main__":
+    color_raw = o3d.io.read_image("../build/image/image"+file_num+".png")
+    depth_raw = o3d.io.read_image("../build/depth/depth"+file_num+".png")
+    camera_intrinsic = o3d.io.read_pinhole_camera_intrinsic("../data/d435.json")
+    print( camera_intrinsic )
+    #rgbd_image = o3d.geometry.create_rgbd_image_from_color_and_depth( color_raw, depth_raw )
+    rgbd_image = o3d.geometry.RGBDImage.create_from_color_and_depth(color_raw, depth_raw) #API変更
+
+    #print(rgbd_image)
+    plt.subplot(1, 2, 1)
+    plt.title('Grayscale image')
+    plt.imshow(rgbd_image.color)
+    plt.subplot(1, 2, 2)
+    plt.title('Depth image')
+    plt.imshow(rgbd_image.depth)
+    plt.show()
+
+    #pcd = o3d.io.create_point_cloud_from_rgbd_image(rgbd_image, camera_intrinsic)
+    pcd = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, camera_intrinsic) #API変更
+
+    print(np.asarray(pcd.points))
+    print("\n")
+
+    # o3d.io.draw_geometries([pcd])
+    o3d.visualization.draw_geometries([pcd])  # API変更
+    print("save point cloud")
+    o3d.io.write_point_cloud(file_num+".ply", pcd)
+
+</pre>
+</li>
+<li>実行
+<ul>
+<li>$ ~/src/SSII2018_Tutorial_Open3D/Python</li>
+<li>$ python3  ./rgbd_and_pcd.py</li>
+<li>実行すると以下のウインドウが現れる。右上の☓印をクリックしてウインドウを閉じる。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/rgb_and_pcd.png"><img class="size-full wp-image-17460 aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/rgb_and_pcd.png" alt="" width="640" height="566" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>ポイントクラウドが表示される。これは壁をキャプチャしたので平面らしきものが表示されている。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/rgb_and_pcd2.png"><img class="aligncenter size-large wp-image-17461" src="{{ site.baseurl }}/assets/images/2020/03/rgb_and_pcd2-1024x766.png" alt="" width="1024" height="766" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>このようにウインドウに表示される他に、プログラムで設定したファイル番号名.plyの3Dフォーマットファイルが実行したディレクトに保存される。この例では"00150.ply"ができる。</li>
+</ul>
+</li>
+<li>3Dフォーマットファイルの表示
+<ul>
+<li>ウインドウで表示されたポイントクラウドと同じか、meshlabを使って生成された3Dフォーマットファイルを表示してみよう。同じ形状のポイントクラウドが表示されることがわかる。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/00150ply.png"><img class="aligncenter size-large wp-image-17463" src="{{ site.baseurl }}/assets/images/2020/03/00150ply-1024x779.png" alt="" width="1024" height="779" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>ポイントクラウドをマウスでドラッグして真横からみてみましょう。3DカメラStructure Coreと比較してなんだか波打っている。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/00150ply2.png"><img class="aligncenter size-large wp-image-17464" src="{{ site.baseurl }}/assets/images/2020/03/00150ply2-1024x779.png" alt="" width="1024" height="779" /></a></p>
+<p>準備ができたので、次は定量的にStructure CoreとRealSenseを比較してみよう。</p>
+<p>終わり</p>

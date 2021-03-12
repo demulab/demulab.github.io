@@ -1,0 +1,200 @@
+---
+layout: page
+title: 3. Hello Physics World !
+date: 2008-10-11 14:32:24.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '5120'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode3"
+---
+<p style="margin: 0px 0px 15px;"><img src="{{ site.baseurl }}/assets/images/2008/10/sample1.jpg" alt="ODE" title="The red ball falling" width="320" height="310" style="border-style: none;" /></p>
+<p style="margin: 0px 0px 15px;">This is the 3rd ODE (Open Dynamics Engine) tutorial.</p>
+<p style="margin: 0px 0px 15px;">ODE is simulation using this to the basic flow associated with the API. The sample program as the most simple physical simulation covered by falling objects. Programming is a textbook example is the first Hello World example to show the need. This is the physical simulation version of Hello World.</p>
+<p style="margin: 0px 0px 15px;">ODE simulations of a typical flow associated with the API enumeration.</p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>Simulation flow</strong>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span style="color: #000066;"><strong>Drawing setting function Drawstuff</strong></span>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Setup a cameras </span><span style="color: #cc0000;">dsSetViewPoint ()</span></strong><strong><br />
+</strong></li>
+</ul>
+</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Initialize ODE </span><span style="color: #cc0000;">dInitODE ()</span></strong><strong><br />
+</strong></li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Create a world for dynamics </span><span style="color: #cc0000;">dWorldCreate ()</span></strong><strong><br />
+</strong></li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Set gravity </span><span style="color: #cc0000;">dWorldSetGravity ()</span></strong></li>
+</ul>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span style="color: #000066;"><strong>Create a rigid body</strong></span>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Set mass </span><span style="color: #ff0000;">dBodySetMass ()</span></strong><strong><br />
+</strong></li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Set position </span><span style="color: #cc0000;">dBodySetPosition ()</span></strong></li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Set orientation </span><span style="color: #cc0000;">dBodySetRotation ()</span></strong><strong><br />
+</strong></li>
+</ul>
+</li>
+</ul>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span style="color: #000066;"><strong>Simulation Loop</strong></span>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Step a simulation world </span><span style="color: #cc0000;">dWorldStep ()</span></strong></li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span style="color: #000066;"><strong>Write simulation codes</strong></span><span style="color: #000066;"><strong><br />
+</strong></span></li>
+</ul>
+</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Destroy the world </span><span style="color: #cc0000;">dWorldDestroy ()</span></strong></li>
+</ul>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong><span style="color: #000066;">Close ODE </span><span style="color: #cc0000;">dCloseODE ()</span></strong></li>
+</ul>
+</li>
+</ul>
+<p style="margin: 0px 0px 15px;">Then, please read the following source code.</p>
+<pre class="brush:cpp">// Sample3 by Kosei Demura
+#include "ode/ode.h"
+#include "drawstuff/drawstuff.h" 　
+#ifdef  dDOUBLE
+#define dsDrawSphere dsDrawSphereD
+#endif
+
+static dWorldID world; 　// a physics world
+dBodyID ball; 　　　　　     // an ball
+const dReal radius = 0.2, mass = 1.0;　// radius(m)、weight(kg) of an ball
+
+// Simulation loop
+static void simLoop (int pause)
+{
+  const dReal *pos,*R;　//　position, rotation matrix 　
+  dWorldStep(world,0.05);　　// Step a simulation world, time step is 0.05 &#91;s&#93;
+　dsSetColor(1.0,0.0,0.0);  // Set color  (red, green, blue) value is from 0 to 1.0
+  pos = dBodyGetPosition(ball);　　// Get a position
+  R = dBodyGetRotation(ball);　　　// Get a rotation
+  dsDrawSphere(pos,R,radius);　　// Draw a sphere
+}
+
+// Start function void start()
+{
+  // Set a camera
+  static float xyz&#91;3&#93; = {0.0,-3.0,1.0}; 　  // View position (x, y, z &#91;m&#93;)
+  static float hpr&#91;3&#93; = {90.0,0.0,0.0};　  // View direction （head, pitch, roll&#91;°&#93;）
+  dsSetViewpoint (xyz,hpr);　　// Set a view point
+}
+
+// main function
+int main (int argc, char **argv)
+{
+  dReal x0 = 0.0, y0 = 0.0, dReal z0 = 1.0; // initial position of an ball&#91;m&#93;
+  dMass m1; 　　// mass parameter
+
+  // for drawstuff
+  dsFunctions fn;　//　drawstuff structure
+  fn.version = DS_VERSION;　  // the version of the drawstuff
+  fn.start = &amp;start;　　　　　      　// start function
+  fn.step = &amp;simLoop;　　        // step function
+  fn.command = NULL;　　　　   // no command function for keyboard
+  fn.stop 　　 = NULL;　　　　     // no stop function
+  fn.path_to_textures = "../../drawstuff/textures";　//　path to the texture
+
+  dInitODE();      // Initialize ODE
+  world = dWorldCreate();  　// Create a dynamic world
+  dWorldSetGravity(world,0,0,-0.001);　// Set gravity（x, y, z)
+
+  //　Create a ball
+  ball = dBodyCreate(world); 　//  Crate a rigid body
+  dMassSetZero(&amp;m1);　　　　 // Initialize mass parameters
+  dMassSetSphereTotal(&amp;m1,mass,radius);　// Calculate a mass parameter
+  dBodySetMass(ball,&amp;m1);　 // Set a mass parameter
+  dBodySetPosition(ball, x0, y0, z0);　　//　Set a position(x, y, z)
+
+  // Simulation loop
+  // argc, argv are argument of main function. Window size is  352 x 288 &#91;pixel&#93;
+  // fn is a structure of drawstuff
+  dsSimulationLoop (argc,argv,352,288,&amp;fn);
+
+  dWorldDestroy(world);　// Destroy the world 　
+  dCloseODE();                 // Close ODE
+  return 0;
+}</pre>
+<p>&nbsp;</p>
+<p>This is a red ball of a  free fall program. The flow of the ODE simulation is as follows,  first, dInitODE () initializes ODE. Next, create the dynamic world (World) by calling dWorldCreate () . The gravity is set by dWorldSetGravity(world,0,0,-0.001). In this case, the gravity vector is set to (0, 0, -0.001) that makes objects falling very slowly.</p>
+<p>dBodyCreate is called to create a rigid body, then initialize a mass parameter, calculate and set it. Set position of the body by dBodySetPosition().</p>
+<p>The simulation is executed by the simLoop function. This function is call in every simulation step.<br />
+dWorldStep(world, 0.05) steps is a single step. The second argument is a time step. In this case, 0.05  seconds is stepped. dsDrawSphere() shows a sphere in your computer screen.</p>
+<p>At the end of the code, clean up the simulation. dWorldDestroy(world) destroys the world, and dCloseODE () closes ODE.</p>
+<p>The function begins with a lowercase 'd' is the ODE API (application program interface),    and, 'ds' is the Drawstuff API. The Drawstuff is the graphics library for demo programs of ODE.</p>
+<p>You can download <a style="color: #990000; text-decoration: none;" href="http://demura.net/downloads/odesample/sample1-110105.zip">sample1-110105.zip from here</a>, build and run! Visual C 2008 and the Code:: Blocks 8.02 for the project files are included.</p>
+<p>This sample program simulates a free fall.  A red ball falls and disappears because of lacking the collision detection  function.</p>
+<p>Next time, we learn how to use the Drawstuff which is a simple 3 D graphics library based on OpenGL.</p>
+<p><strong>API</strong></p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;">dBodyID dBodyCreate (dWorldID world)<br />
+Create a rigid body and return  the ID number of it.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">const dReal * dBodyGetPosition (dBodyID body)<br />
+Get the center of gravity of the body, and return the pointer of it.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">const dReal * dBodyGetRotation (dBodyID body)<br />
+Get the rotation matrix and return its pointer.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dBodySetMass (dBodyID body, const dMass * mass)<br />
+Set the mass parameter to the body.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dBodySetPosition (dBodyID body, dReal x, dReal y, dReal z)<br />
+Set the position (x, y, z), the absolute coordinate system, to the body.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dBodySetRotation (dBodyID body, const dMatrix3 R)<br />
+Set the rotation matrix R to the body.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">dGeomID dCreateBox (dSpaceID space, dReal lx, dReal ly, dReal lz)<br />
+Create a box with the size of  (lx, ly, lz) according each x, y, z axis, and return its ID number.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">dGeomID dCreateCylinder (dSpaceID space, dReal r, dReal l)<br />
+Create a cylinder with, a radius: r,  length:l and return its ID number</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">dGeomID dCreatePlane (dSpaceID space, dReal a, dReal b, dReal c, dReal d)<br />
+Create a plane which is described by ax+ by+ cz = d, and return its ID.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dGeomSetBody (dGeomID geom, dBodyID body)<br />
+Two attributes of the object are a geometry and a body. This API associates both.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">dSpaceID dHashSpaceCreate (0)<br />
+Create a hash space for collision dectection and return its ID.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dJointGroupEmpty (dJointGroupID)<br />
+Contact points are stored in the joint group. This API empties the  joint group.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dJointAttach (dJointID joint, dBodyID body1, dBodyID dBody2)<br />
+Attach the joint to body1 and body2.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">dJointGroupID dJointGroupCreate (0)<br />
+Create the joint group and return its ID.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dMassSetBoxTotal (dMass * mass, dReal m, dReal lx, dReal ly, dReal lz)<br />
+Calculate the mass related parameter, i.e. the moment of inertia,  of the box with the size of  (lx, ly, lz).</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dMassSetCylinderTotal (dMass * mass, dReal m, int dir, dReal r, dReal l)<br />
+Calculate the mass of  the cylinder with  the Direction dir: (1 = x, 2 = y, 3 = z), radius: r, the length: l, and mass:m total mass of the cylinder</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dMassSetZero (dMass * mass)<br />
+Initalize an argument mass</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dRFromAxisAndAngle (dMatrix3 R, dReal ax, dReal ay, dReal az, dReal angle)<br />
+Get the rotation matrix from the axial vector(ax, ay, az) and rotation angle [rad]</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dSpaceCollide (dSpaceID space, void * data, dNearCallback * callback)<br />
+Call the callback function, callback, which is used for the collision detection.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">dWorldID dWorldCreate ()<br />
+Create the dynamics world and return its ID.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dWorldDestroy (dWorldID world)<br />
+Destroy the world.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dWorldSetGravity (dWorldID world, dReal x, dReal y, dReal z)<br />
+Set the  acceleration of gravity  (x, y, z) [m/s^2]  to the world.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dWorldStep (dWorldID world, dReal step_size)<br />
+Step a single simulation. The second argument step_size[s] is integral step time.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dsDrawBoxD (const double pos [3], const double R [12], const double sides [3])<br />
+Draw the box with the position pos, the rotation matrix R and the size of  sides.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dsSetViewPoint (float xyz [3], float hpr [3])<br />
+Set the view-point of the camera. xyz[3] are  xyz positions[m] and hpr are heading, pitch, roll [°].</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">void dsSimulationLoop (int argc, char ** argv, int w, int h, dsfunction * fn)<br />
+Call the simulation loop. the first and the second argument are  arguments from the main function, the third and fourth argument is  the size of the window (width: w, height:h), fifth argument is the pointer of the drawing function.</li>
+</ul>
+<p>&nbsp;</p>

@@ -1,0 +1,46 @@
+---
+layout: post
+title: 'つくばチャレンジ2010: IEEE1394カメラ'
+date: 2010-07-21 23:44:58.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  _edit_last: '2'
+  views: '219'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/7554.html"
+---
+<p>今年のつくばチャレンジはステレオカメラを使う予定なのでその作業メモ。</p>
+<ul>
+<li>CORIANDERのインストール
+<ul>
+<li><a href="http://damien.douxchamps.net/ieee1394/coriander/">ここからcoriander-2.0.0.tar.gzをダウンロード</a></li>
+<li>tar xvzf  coriander-2.0.0.tar.gz</li>
+<li>./configure
+<ul>
+<li>エラーが出たら必要なパッケージをインストール。私の場合は以下をインストール</li>
+<li>sudo  apt-get install libgnomeui-dev</li>
+</ul>
+</li>
+<li>make</li>
+<li>sudo make install</li>
+<li>sudo  /sbin/ldconfig</li>
+<li>カメラをつないでcorianderを起動. デフォルトではスーパーユーザでないとvideoデバイスにアクセスできない。
+<ul>
+<li>sudo  coriander</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

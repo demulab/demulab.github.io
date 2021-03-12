@@ -1,0 +1,222 @@
+---
+layout: post
+title: 'つくばチャレンジ2010: Ubuntu10.4の開発環境設定'
+date: 2010-10-09 23:38:45.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2588'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/7052.html"
+---
+<p>つくばチャレンジ用のノートパソコンThinkPad T410とLet's note CF-Y7にUbuntu10.4を入れ。開発環境を設定したときのメモ。</p>
+<ul>
+<li>libsdl-ttf2.0-dev, libsdl-image1.2-dev, libsdl-mixer1.2-devのインストール追加。</li>
+<li>Boostのインストールが不完全だったので更新。　sudo apt-get install  libboost.*.1.40-dev   libboost1.40-dbg libboost1.40-doc (2010-09-11)</li>
+</ul>
+<p><!--more--></p>
+<ul>
+<li><a href="http://www.ubuntulinux.jp/products/GetUbuntu">Ubuntu 10.4 日本語Remix CDイメージ</a>をDVDに焼く</li>
+<li>そのDVDで起動、インストール。Windows7はすでにインストール済みで、空き領域を１２０GBぐらい確保しておいた。最大空き領域にUbuntuを入れる項目を選択。無事終了。デュアルブートでWindows7も問題なく起動可能。</li>
+<li>Ubuntu9.04のgrubとはメニュー設定場所が変更になっていた。/etc/default/grubを変更し、update-grubコマンドを実行すると/boot/grub/grub.cfgが書き換えられる。/boot/grub/grub.cfgは直接編集するなと書いてある。/etc/default/grubの１行目GRUB_DEFAULT=0の番号を変更してWindows7をデフォールトにした。</li>
+<li>CapsLockとCtrlキーのスワップ
+<ul>
+<li>システム→設定→キーボード→レイアウト→オプション→Ctrlキーの位置→Swap Ctrl and CapsLock</li>
+</ul>
+</li>
+<li>画面の輝度調整：T410はNvidiaのNVS3100Mというグラフィクスチップを選択できる。標準ではFn+Home/Endで輝度調整ができないので、/etc/X11/xorg.confのDeviceセクションに以下の行を挿入する。
+<ul>
+<li>Option  "RegistryDwords"  "EnableBrightnessControl=1"</li>
+</ul>
+</li>
+<li>開発環境
+<ul>
+<li>C, C++言語の開発環境
+<ul>
+<li>sudo apt-get install build-essential</li>
+</ul>
+</li>
+<li>Subversionのインストール
+<ul>
+<li>sudo apt-get install subversoin</li>
+</ul>
+</li>
+<li>Irrlichtに必要なライブラリのインストール
+<ul>
+<li>sudo apt-get install  xserver-xorg-dev   libxxf86vm-dev mesa-common-dev libgl1-mesa-dev libglu1-mesa-dev</li>
+</ul>
+</li>
+<li>OpenCVに必要なライブラリのインストール
+<ul>
+<li>sudo apt-get install cmake</li>
+<li>sudo apt-get install  libgtk2.0-dev</li>
+<li>sudo apt-get install libtbb-dev</li>
+<li>sudo apt-get install libjasper-dev</li>
+<li>sudo apt-get install libavformat-dev</li>
+<li>sudo apt-get install libswscale-dev</li>
+<li>sudo apt-get install libavfilter-dev</li>
+<li>sudo apt-get install libdc1394-22-dev</li>
+<li>sudo apt-get install libucil-dev</li>
+<li>sudo apt-get install libgstreamer-*</li>
+<li>sudo apt-get install libxine-*</li>
+<li>sudo apt-get install ffmpeg</li>
+<li>sudo apt-get install x264</li>
+<li>sudo apt-get install  libx264-dev</li>
+</ul>
+</li>
+<li>IPPのインストール
+<ul>
+<li>IntelのNon-Commercial Software Downloadサイトへ<a href="http://software.intel.com/en-us/articles/non-commercial-software-download/">ここをクリック</a>していく。</li>
+<li><a href="http://software.intel.com/en-us/articles/non-commercial-software-development/">Terms of non-commercial software dovelopment</a>を読みライセンスを確認する。</li>
+<li>Downloadサイトの<a href="https://registrationcenter.intel.com/RegCenter/AutoGen.aspx?ProductID=1287&amp;AccountID=&amp;EmailID=&amp;ProgramID=&amp;RequestDt=&amp;rm=NCOM&amp;lang=">Performance Libraries-&gt;Intel Integrated Performance Primitives for Linus</a>をクリックする。</li>
+<li>非商用版申し込みのページになるので、メールアドレスと国をいれて、送信をクリック。</li>
+<li>シリアル番号が表示されるのでメモする。</li>
+<li>Select fileで希望するパッケージを選択。ここでは、Package  for IA32を選択する。Download nowをクリック。</li>
+<li>l_ipp_ia32_p_6.1.2.051.tar.gzがダウンロードされる。</li>
+<li>上記のファイルを以下のコマンドで展開する。
+<ul>
+<li>tar  xvzf  l_ipp_ia32_p_6.1.205.tar.gz</li>
+</ul>
+</li>
+<li>インストールする
+<ul>
+<li>cd  l_ipp_ia32_p_6.1.205</li>
+<li>./install.sh
+<ul>
+<li>インストールの途中でシリアル番号を聞かれるので、メモしていた番号を入力する。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>環境変数の設定　.bashrcに以下を追加する。
+<ul>
+<li>source  /opt/intel/ipp/6.1.2.051/ia32/tools/env/ippvars32.sh</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>OpenCV2.1.0のインストール
+<ul>
+<li>
+<div id="_mcePaste">ＩＰＰを使うためソースからビルドする。</div>
+<div id="_mcePaste"><a href="http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.1/">OpenCVをダウンロードする。</a></div>
+</li>
+<li>好きな場所にソースを展開する。ここでは~/srcの下にする。
+<ul>
+<li>cp  OpenCV-2.1.0.tar.bz2  ~/src</li>
+<li>tar xjf  OpenCV-2.1.0.tar.bz2</li>
+</ul>
+</li>
+<li>mkdir  release</li>
+<li>cd release</li>
+<li>cmake -D BUILD_EXAMPLES=ON -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_PYTHON_SUPPORT=ON  -D WITH_TBB=yes  ..</li>
+<li>make</li>
+<li>sudo make install</li>
+<li>sudo ldconfig</li>
+</ul>
+</li>
+<li>Qtのインストール
+<ul>
+<li>http://qt.nokia.com/downloads-jpから<a href="http://qt.nokia.com/downloads/sdk-linux-x11-32bit-cpp">qt-sdk-linux-x86-opensource-2010.04.bin</a>を/home/ユーザ名/download/にダウンロード</li>
+<li>chmod u+x  qt-sdk-linux-x86-opensource-2010.04.bin</li>
+<li>./qt-skd-linux-x86-opensource-2010.04.bin</li>
+<li>Setupのウインドウが開くので指示に従ってインストール。ここで以下のディレクトリにインストールする。
+<ul>
+<li>/home/ユーザ名/src</li>
+</ul>
+</li>
+<li>Qtが原因のエラーをなくすために以下のパッケージをインストール</li>
+<li>sudo apt-get install libglib2.0-dev</li>
+<li>sudo apt-get install libxrender-dev</li>
+<li>sudo apt-get install libfontconfig1-dev</li>
+</ul>
+</li>
+<li>Code:blocksのインストール
+<ul>
+<li>sudo apt-get install codeblocks</li>
+</ul>
+</li>
+<li>Doxygenのインストール
+<ul>
+<li>sudo apt-get install doxygen</li>
+<li>sudo apt-get install doxygen-gui</li>
+<li>sudo apt-get install graphviz</li>
+</ul>
+</li>
+<li>SDLのインストール
+<ul>
+<li>sudo apt-get install libSDL1.2-dev</li>
+<li>sudo apt-get install libsdl-net1.2-dev   libsdl-image1.2-dev   libsdl-mixer1.2-dev</li>
+<li>sudo apt-get install libsdl-ttf2.0-dev</li>
+</ul>
+</li>
+<li>Boostのインストール
+<ul>
+<li>sudo aptitude install libboost.*1.40-dev libboost1.40-dbg libboost1.40-doc</li>
+</ul>
+</li>
+<li>Urgのインストール
+<ul>
+<li>cd</li>
+<li>mkdir src</li>
+<li><span style="background-color: #ffffff;"><a href="http://www.hokuyo-aut.co.jp/02sensor/07scanner/download/index.html">北陽電機のウェブサイト</a>からurg-0.8.11をダウンロードし，/home/demulab/srcの中にダウンロードする</span>
+<ul>
+<li>なお，ユーザ名，パスワードはプレゼミ時連絡する．</li>
+</ul>
+</li>
+<li><span style="background-color: #ffffff;">tar xvzf  urg-0.8.11.tgz</span></li>
+<li><span style="background-color: #ffffff;">cd  urg-0.8.11</span></li>
+<li>./configure</li>
+<li>make</li>
+<li>sudo make install</li>
+</ul>
+</li>
+<li>gpsdのインストール
+<ul>
+<li>sudo apt-get install gpsd  gpsd-clients  libgps-dev  gpsdrive</li>
+</ul>
+</li>
+<li><span style="font-family: 'MS PGothic'; line-height: 18px; font-size: 14px;">モータコントローラ用ドライバのインストール<br />
+</span>
+<ul>
+<li><span style="background-color: #ffffff;">ここから<a style="text-decoration: none; outline-style: none; outline-width: initial; outline-color: initial; color: #cc0000;" href="http://his.kanazawa-it.ac.jp/~demura/research/demulab/software/urbtc2.6.tgz">urbtc2.6.tgz</a>をダウンロードし，/home/demulab/srcの中にコピーする．</span>
+<ul>
+<li>なお，ユーザ名，パスワードはプレゼミ時連絡する．</li>
+</ul>
+</li>
+<li>cd  src</li>
+<li>tar xvzf   urbtc2.6.tgz</li>
+<li>成功すると/home/demulab/src/urbtc2.6/driver/urbtc.koというファイルが生成される．ない，場合はもう一度，注意深く上記の作業を実行．</li>
+<li>/etc/rc.localのexit 0の一行上に以下のコードを書く．
+<ul>
+<li>/sbin/insmod  /home/demulab/src/urbtc2.6/driver/urbtc.ko</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>音声合成ライブラリ
+<ul>
+<li>sudo apt-get install libespeak-dev  libportaudio-dev</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>アプリケーション
+<ul>
+<li>Google chrome: googleのページからUbunt用パッケージをインストール。パッケージインストーラーが自動で起動するので指示に従ってインストールする。</li>
+</ul>
+</li>
+</ul>
+<p style="text-align: right;">でむ</p>

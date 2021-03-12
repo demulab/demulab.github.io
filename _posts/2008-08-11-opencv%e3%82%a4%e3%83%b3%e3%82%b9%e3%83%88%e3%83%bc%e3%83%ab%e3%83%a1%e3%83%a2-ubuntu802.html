@@ -1,0 +1,134 @@
+---
+layout: post
+title: OpenCVインストールメモ (Ubuntu8.04)
+date: 2008-08-11 10:59:42.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2347'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/1505.html"
+---
+<p>[caption id="attachment_1598" align="alignnone" width="500" caption="OpenCV:　ハフ変換による直線検出のサンプルプログラム"]<a href="http://demura.net/wordpress/wp-content/uploads/2008/08/opencv.jpg"><img class="size-full wp-image-1598" title="opencv" src="{{ site.baseurl }}/assets/images/2008/08/opencv.jpg" alt="OpenCV： ハフ変換による直線検出のサンプルプログラム" width="500" height="199" /></a>[/caption]</p>
+<p><br class="spacer_" /></p>
+<p>Ubuntu8.02にOpenCV-1.0.0をインストールしたときの単なる作業メモなので正しいかどうか保証できません。インストールには研究室の奥田君が作ってくれた資料を元にしています。</p>
+<ul>
+<li>準備：以下のライブラリ等の名称をインストールします。インストール方法はsudo apt-get install 名称です。
+<ul>
+<li>libgtk2.0-dev</li>
+<li>libpng-dev</li>
+<li>libjpeg-dev</li>
+<li>libtiff-dev</li>
+<li>libavformat-dev</li>
+<li>libavutil-dev</li>
+<li>libpostproc-dev</li>
+<li>libavcodec-dev</li>
+<li>libswscale-dev</li>
+<li>libdlna-dev</li>
+<li>libmpeg4ip-dev</li>
+<li>libdc1394-13-dev</li>
+<li>subversion</li>
+</ul>
+</li>
+<li>Linux UVC　(USBカメラのドライバ）のインストール
+<ul>
+<li>svn checkout svn://svn.berlios.de/linux-uvc/linux-uvc/trunk</li>
+<li>cd trunk</li>
+<li>make</li>
+<li>sudo make install</li>
+</ul>
+</li>
+<li>IPP(Integrated Performance Primitives)のインストール
+<ul>
+<li>IntelのCPUを使っている場合はIPPを使うとOpenCVが高速になる。私の使っているIntel Core2 Duoでは1.5倍〜2倍高速になった。なお、OpenCVは自動的にIPPを検出し読み込んでくれます。</li>
+<li><a href="http://www.intel.com/cd/software/products/ijkk/jpn/perflib/ipp/244518.htm">公式サイト</a>からインストール</li>
+<li>メールアドレス、地域を登録</li>
+<li><span class="noprint">Package for IA-32 </span>l_ipp_ia32_p_5.3.3.075.tgz　をダウンロードした</li>
+<li>tar xvzf  <span class="noprint"> </span>l_ipp_ia32_p_5.3.3.075.tgz</li>
+<li>cd l_ipp_ia32_p_5.3.3.075</li>
+<li>./install.sh
+<ul>
+<li>いろいろ聞かれるので指示に従って作業を行う </li>
+</ul>
+</li>
+<li>OpenCVがIPPを自動で見つけてくれるように.bashrcに以下を追加する。インクルードパスとライブラリパスの環境変数を設定してくれます。
+<ul>
+<li>source /opt/intel/ipp/5.3.3.075/ia32/tools/env/ippvars32.sh</li>
+</ul>
+</li>
+<li>IPPが読み込まれているかどうかの確認。<a href="http://www.intel.com/technology/itj/2005/volume09issue02/art03_learning_vision/p03_auto_optimization.htm">この情報元はこのインテルサイト。</a>
+<ul>
+<li>以下のコードを入れる。<br />
+ const char* opencv_libraries = 0;<br />
+ const char* addon_modules = 0;<br />
+ cvGetModuleInfo( 0, &amp;opencv_libraries,&amp;addon_modules );<br />
+ printf( "\nOpenCV: %s\nAdd-on Modules: %s\n", opencv_libraries, addon_modules );</li>
+</ul>
+<ul>
+<li>IPPが読み込まれていると以下のように表示される。<br />
+ OpenCV: cxcore: 1.0.0, cv: 1.0.0<br />
+ Add-on Modules: libippcv.so, libippi.so, libipps.so, libippvm.so, libippcc.so</p>
+<p><br class="spacer_" /></p>
+<p><br class="spacer_" /></p>
+<p><br class="spacer_" /></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>OpenCVのインストール
+<ul>
+<li>opencv-1.0.0.tar.gzをダウンロードする。</li>
+<li>tar xvzf opencv-1.0.0.tar.gz</li>
+<li>cd opencv-1.0.0</li>
+<li>./configure
+<ul>
+<li>うまくいくと以下のようになる</li>
+<li>HighGUI configuration ================================================
+<p>Windowing system --------------<br />
+ Use Carbon / Mac OS X:    no<br />
+ Use gtk+ 2.x:             yes<br />
+ Use gthread:              yes</p>
+<p>Image I/O ---------------------<br />
+ Use libjpeg:              yes<br />
+ Use zlib:                 yes<br />
+ Use libpng:               yes<br />
+ Use libtiff:              yes<br />
+ Use libjasper:            no<br />
+ Use libIlmImf:            no</p>
+<p>Video I/O ---------------------<br />
+ Use QuickTime / Mac OS X: no<br />
+ Use xine:                 no<br />
+ Use ffmpeg:               yes<br />
+ Use dc1394 &amp; raw1394:     yes<br />
+ Use v4l:                  yes<br />
+ Use v4l2:                 yes</p>
+</li>
+</ul>
+</li>
+<li>make</li>
+<li>sudo make install</li>
+<li>sudo　/sbin/ldconfig</li>
+</ul>
+<ul>
+<li>サンプルプログラムのコンパイル
+<ul>
+<li>cd /usr/local/share/opencv/samples/c</li>
+<li>sudo  ./build_all.sh</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

@@ -1,0 +1,213 @@
+---
+layout: post
+title: EX1.1 開発環境とODEのインストール　(Visual C++ 2008 Express Edition編）
+date: 2008-04-14 08:30:36.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _aioseop_title: ODEインストール　Visual C++ 2008 Express Edition
+  _aioseop_description: Open Dynamics Engine  Install
+  _edit_last: '2'
+  _aioseop_keywords: ODE Visual C++
+  views: '10694'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/491.html"
+---
+<hr />
+<p><span style="font-size: large; color: #ff0000;"><strong>注意：この記事はODE0.9用です。</strong></span></p>
+<p><span style="font-size: large; color: #ff0000;"><strong><a href="http://demura.net/9ode/3864.html">最新のODE0.11.1のインストールはこのページをご覧ください。</a></strong></span></p>
+<p><img src="{{ site.baseurl }}/assets/images/2008/04/vc.jpg" alt="" /></p>
+<p><br class="spacer_" /></p>
+<hr />
+<p>やっとODE (Open Dynamics Engine) 本のサンプルプログラムがVisual C++に対応しました。これでサンプルプログラムは、MinGW, Linux, Mac OS X, Visual C++に対応したことになります。では早速、Visual C++ 2008 Expression EditionでODEを使う方法を紹介します。作成には<a href="http://www.eml.ele.cst.nihon-u.ac.jp/~momma/wiki/wiki.cgi/OpenDynamicsEngine/BuildOnWindows.html">mommaさんのページ</a>を参考にさせて頂きご了解を得ました。mommaさんありがとうございます。私はVisual C++のエキスパートではないので、内容に不備な点があればご指摘頂ければハッピーです。ここでは以下の方法を全くのビギナーを対象に図を多用してわかりやすく説明します。</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li>A. Visual C++ 2008 Expression Editionのインストール</li>
+<li>B. <a href="#a1">ODEのダウンロード</a></li>
+<li>C. <a href="#a2">ODEのインストール</a></li>
+<li>D. <a href="#a3">環境設定</a></li>
+<li>E. ODE本のサンプルプログラムをビルドする方法
+<ul>
+<li><a href="#a4">プロジェクトファイルを使わない方法</a></li>
+<li><a href="#a5">既存のプロジェクトファイルを利用して作る方法 </a></li>
+</ul>
+</li>
+</ul>
+<p><!--more--></p>
+<hr />
+<ul>
+<li><strong>A. Visual C++ 2008 Expression Editionのインストール</strong>
+<ul>
+<li> <a href="http://www.microsoft.com/japan/msdn/vstudio/express/">Microsoftのこのページの指示に従ってダウンロード・インストールしてください。</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li><a name="a1"></a><strong>B. ODEのダウンロード</strong>
+<ol>
+<li><a href="http://sourceforge.net/projects/opende">ここをクリックして</a>sourceforge.netのOpen Dynamics Engineのページ飛ぶと以下の画面になります。中ほどの赤丸で囲んだDownload Open Dynamics Engineのバナーをクリックします。</li>
+</ol>
+<p><img src="{{ site.baseurl }}/assets/images/2008/04/sourceForge1.jpg" alt=" " width="500" height="442" /></p>
+</li>
+<li>すると次の画面になるので、下の方にある赤丸で囲んでいるode-src-0.9.zipをクリックすると ダウンロードが始まりす。</li>
+<p><img src="{{ site.baseurl }}/assets/images/2008/04/sourceForge2.jpg" alt=" " /></p>
+<li>この例では簡単にするためにデスクトップにダウンロードしましょう。</li>
+</ul>
+<hr />
+<ul>
+<li><a name="a2"></a><strong>C. ODEのインストール</strong>
+<ol>
+<li><a name="a2"></a>解凍ソフトの準備（持っていない方のみ）
+<ul>
+<li><a name="a2"></a>ode-src-0.9.zipはzipフォーマットで圧縮されていますのでzipを解凍できるソフトウェアをインストールしてください．ここでは，Lhaplusという圧縮・解凍ソフトを使っています．<a href="http://www.google.co.jp/" target="_self">Google</a>でLhaplusを検索するとダウンロード先を簡単に見つけることができます．</li>
+</ul>
+</li>
+<li>解凍と移動
+<ul>
+<li> デスクトップにあるode-src-0.9.zipをダブルクリックすると、ode-0.9というフォルダーがデスクトップに生成されます。</li>
+</ul>
+<ul>
+<li>ode-0.9フォルダをCドライブのすぐ下に移動する
+<ul>
+<li> マウスをode-0.9フォルダーに当て、右マウスボタンをクリック、「切り取り(T)」を選択</li>
+<li>スタート→(マイ)コンピュータ→ローカルディスク(c)をダブルクリック</li>
+<li> マウスの右ボタンをクリックし、「貼り付け（P)」を選択</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ライブラリの作成
+<ol type="a">
+<li>ode-0.9ではVisual C++ 2008用のファイルがないので、Visual C++ 2005用のファイルを使う。 c:￥ode-0.9￥build￥vs2005にある<strong>ode.sln</strong>をダブルクリックする。 <img src="{{ site.baseurl }}/assets/images/2008/04/odesln.jpg" alt="" /></li>
+<li>Visual C++ 2008　Expression Editionのウインドウが開き、Visual Studio 変換ウィザードが開くので「次へ(<span style="text-decoration: underline;">N</span>)&gt;」をクリックする。 <img src="{{ site.baseurl }}/assets/images/2008/04/henkan.jpg" alt="" width="500" /></li>
+<li>バックアップ作成の選択画面になるので、画面のまま「次へ(<span style="text-decoration: underline;">N</span>)&gt;」をクリックする。 <img src="{{ site.baseurl }}/assets/images/2008/04/backup.jpg" alt="" width="500" /></li>
+<li>変換準備完了になるので、「完了（<span style="text-decoration: underline;">F</span>)」をクリックする。変換の完了になるので「閉じる」をクリックする。 <img src="{{ site.baseurl }}/assets/images/2008/04/henkanOwari.jpg" alt="" width="500" /></li>
+<li>Visual C++の「ツール(<span style="text-decoration: underline;">T</span>)」→「オプション(<span style="text-decoration: underline;">O</span>)」を選択。 <img src="{{ site.baseurl }}/assets/images/2008/04/tooloption.jpg" alt="" width="500" height="303" align="middle" /></li>
+<li>以下の「オプション」ウインドウが開くので「プロジェクトおよびソリューション」の 「VC++ディレクトリ」を選択する。 <img src="{{ site.baseurl }}/assets/images/2008/04/vcdirectory.jpg" alt="" width="550" /></li>
+<li>「ディレクトリを表示するプロジェクト(<span style="text-decoration: underline;">S</span>)」で「インクルード　ファイル」を選択し、<br />
+ <strong> ｃ：￥ode-0.9￥include</strong> を追加 <strong><span style="color: #ff0000;">注意：上の文字列をカット＆ペーストで貼り付けると失敗します。上の文字列は表示の関係で全角文字が含まれています。半角英数文字で入力しなければなりません。</span></strong><span style="color: #000000;"> <span style="color: #0000ff;"><strong>カット＆ペーストはこちら</strong><strong> c:\ode-0.9\include</strong></span></span> <img src="{{ site.baseurl }}/assets/images/2008/04/include.jpg" alt="" width="550" /></li>
+<li>「ディレクトリを表示するプロジェクト(<span style="text-decoration: underline;">S</span>)」で「ライブラリ　ファイル」を選択し、<br />
+ <strong> ｃ:￥ode-0.9￥lib</strong> を追加し　「OK」をクリックする。 <strong><span style="color: #ff0000;">注意：上の文字列をカット＆ペーストで貼り付けると失敗します。上の文字列は表示の関係で全角文字が含まれています。半角英数文字で入力しなければなりません。 </span></strong><span style="color: #000000;"> <span style="color: #0000ff;"><strong>カット＆ペーストはこちら</strong><strong> c:\ode-0.9\lib</strong></span></span> <img src="{{ site.baseurl }}/assets/images/2008/04/lib.jpg" alt="" width="550" /></li>
+<li>Visual C++の「ソリューション　エクスプローラー」で ode￥include￥config.hを選択しダブルクリックすると下の図となり、右側のウインドウにconfig.hの内容が表示される。 <span style="color: #ff0000;"><strong>ODEは例え計算精度が要求されない場合でも、倍精度で使った方が内部エラーなども発生しづらくなるので倍精度でビルドする。</strong></span> つまり、以下のように30行目をコメントアウトし、31行目のコメントを外す。<br />
+ 30行目　<strong>// #define  dSINGLE</strong><br />
+ 31行目<strong>#define  dDOUBLE</strong><br />
+ 「編集(E)」のすぐ下にあるフロッピーディスクのアイコンをクリックしconfig.hを保存する。 <img src="{{ site.baseurl }}/assets/images/2008/04/configh.jpg" alt="" width="550" /></li>
+<li>「ビルド(<span style="text-decoration: underline;">B</span>)」→「ソリューションのビルド(<span style="text-decoration: underline;">B</span>)」を選択し、ライブラリを生成する。私のデスクトップでは２分弱でビルドが終わりました。ビルドに成功するとライブラリとデモプログラムが <strong><br />
+ c:￥ode-0.9￥lib￥DebugDLL </strong>に生成されます。 <img src="{{ site.baseurl }}/assets/images/2008/04/odebuild.jpg" alt="" width="550" /></li>
+<li><strong> c:¥ode-0.9</strong>フォルダにbinフォルダを作る。</li>
+<li><strong>c:￥ode-0.9￥lib￥DebugDLL</strong>の中の<strong><span style="color: #ff0000;">ode.dll</span> </strong>と <strong><span style="color: #ff0000;">drawstuff.dll</span> </strong>を <span style="color: #ff0000;"><strong>c:¥ode-0.9¥bin</strong></span>にコピーする。 なお、dll　(dynamic link library)は実行時に動的にリンクされるライブラリで、Linuxでは共有ライブラリに相当します。</li>
+<li><strong>c:￥ode-0.9￥lib￥DebugDLL</strong>の中の<span style="color: #0000ff;"><strong>ode.lib</strong></span>と<span style="color: #0000ff;"><strong>drawstuff.lib</strong></span>を<span style="color: #0000ff;"><strong>c:¥ode-0.9¥lib</strong></span>にコピーする。<br />
+ <span style="color: #800000;"><strong>上のl.の作業とは、拡張子とコピー場所が違うので注意してください。</strong></span></li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>ODEのインストールは終わりです。</li>
+</ul>
+<hr />
+<li><strong>D. <a name="a3"></a> 環境設定 </strong>
+<ul>
+<li><strong>システム環境変数の設定 (Windows XP)</strong>
+<ol type="a">
+<li>ここでは、先ほどコピーしたdllの場所をシステムに教える設定をします。</li>
+<li>コントロールパネルを開き、「パフォーマンスとメンテナンス」を選択すると以下の画面になる。 下側に「システム」があるので選択する。<img src="{{ site.baseurl }}/assets/images/2008/04/maintenance3.jpg" alt="" /></li>
+<li>「システムのプロパティ」の画面になるので、「詳細設定」のタブを選択し、「環境変数(<span style="text-decoration: underline;">N</span>)」をクリックする。<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/04/system.jpg" alt="" /></li>
+<li>「環境変数」ウインドウが開くので、「システム環境変数(<span style="text-decoration: underline;">S</span>)」のPathを編集する。 つまり、「システム環境変数(<span style="text-decoration: underline;">S</span>)」のPathにカーソルを当てクリックしてから、 「編集(<span style="text-decoration: underline;">I</span>)」をクリックする。 <img src="{{ site.baseurl }}/assets/images/2008/04/variables.jpg" alt="" /></li>
+<li>「システム変数の編集」ウインドウが開くので、「変数値(<span style="text-decoration: underline;">V</span>)」の一番最後に以下を追加する。なお、C:¥ode-0.9¥binの前にある記号はセミコロン<strong>;</strong>です。セミコロンによって区切っています。 <strong> ;C:¥ode-0.9¥bin </strong><strong><span style="color: #ff0000;"><br />
+ 注意：上の文字列をカット＆ペーストで貼り付けると失敗します。上の文字列は表示の関係で全角文字が含まれています。半角英数文字で入力しなければなりません。</span></strong><span style="color: #000000;"><span style="color: #0000ff;"><strong>カット＆ペーストはこちら</strong><strong> ;c:\ode-0.9\bin</strong></span></span> <strong><span style="color: #ff0000;"> </span></strong><img src="{{ site.baseurl }}/assets/images/2008/04/path.jpg" alt="" width="487" height="435" /></li>
+</ol>
+</li>
+<li><strong>システム環境変数の設定 (Windows Vista)</strong>
+<ul>
+<li>基本的にXPと同じ。違いは、コントロールパネルの中の「システムとメンテナンス」の項目を選ぶ点だけです。</li>
+</ul>
+</li>
+<li><strong>作業用フォルダの確認</strong>
+<ul>
+<li>ここでは、作業用フォルダを以下のようなVisual C++標準のフォルダとして説明します。 C:¥Documents and Settings¥ユーザ名¥My Documents¥Visual Studio 2008¥Projects</li>
+</ul>
+</li>
+<li><strong>drawstuffフォルダのコピー</strong>
+<ul>
+<li>C:¥ode-0.9¥drawstuffフォルダを丸ごと上のProjectsフォルダの中にコピーします。 これは、ODE本のサンプルプログラムでは空や地面の模様を表すテクスチャファイルの場所を、実行ファイルから相対位置で指定しているためです。 絶対パスで指定すれば必要ありませんが、互換性に欠けてしまうので相対パスで指定しています。</li>
+</ul>
+</li>
+</ul>
+</li>
+<hr />
+<li> <strong>E. ODE本のサンプルプログラムをビルドする方法</strong></li>
+<ul>
+<li> <strong><a name="a4"></a> I. プロジェクトファイルを使わない方法 </strong>
+<ol type="a">
+<li>ここでは、自分でODEを使ったプログラムを作成する方法を紹介しましょう。ソースコードを一から作成するのは大変なので、ODE本のサンプルプログラムpro1-1を使います。このプログラムはボールが自由落下するだけのとても簡単なプログラムです。
+<ul>
+<li><a href="http://demura.net/archives/images/ode/robotsimu/pro1-1-070602.zip">ここをクリックしてpro1-1をダウンロードしてください。</a></li>
+</ul>
+</li>
+<li>ダウンロードしたzipファイルを作業用フォルダの中で解凍します。解凍後はこの例では以下のようになります。中にmakefile, makefile.linux, makefile.osxという名前のファイルがありますがVisual C++では使いませんので削除してかまいません。
+<ul>
+<li>C:¥Documents and Settings¥ユーザ名¥My Documents¥Visual Studio 2008¥Projects¥pro1-1</li>
+</ul>
+</li>
+<li>Visual C++の「ファイル(<span style="text-decoration: underline;">F</span>)」→「新規作成(<span style="text-decoration: underline;">N</span>)」→「プロジェクト(<span style="text-decoration: underline;">P</span>)」を選択。 <img src="{{ site.baseurl }}/assets/images/2008/04/newproject.jpg" alt="" /></li>
+<li>プロジェクトの種類はWin32コンソールアプリケーションを選ぶ。 ここでは「プロジェクト名(<span style="text-decoration: underline;">N</span>)」を「pro1-1」とします。標準では「ソリューション名(<span style="text-decoration: underline;">M</span>)」はプロジェクト名と同じになるので、あえて入力する必要はありません。 <img src="{{ site.baseurl }}/assets/images/2008/04/win32.jpg" alt="" /></li>
+<li>「Win32　アプリケーション　ウィザードへようこそ」の画面が開く、「次へ&gt;」をクリックする。 <img src="{{ site.baseurl }}/assets/images/2008/04/win32wizard0.jpg" alt="" /></li>
+<li><span style="color: #ff0000;"><strong>「アプリケーションの設定」になるので、以下のように「空のプロジェクト(<span style="text-decoration: underline;">E</span>)」を選ぶ　（重要）。</strong></span> <span style="color: #0000ff;"><strong>今回はODE本のサンプルプログラムをそのまま使うのでこのようにします。また、自分で一から作成する場合でも、「空のプロジェクト」を選択しないとstdafx.hという謎のヘッダファイルをインクリードしたり、main関数の代わりに_tmain関数を含んだファイルが自動されます。今まで習ってきた標準C++言語の常識が全く通用しないMicorsoftの世界に陥ってしまうので教育用途としてはお勧めできません。</strong></span><img src="{{ site.baseurl }}/assets/images/2008/04/win32wizard.jpg" alt="" /></li>
+<li>「ソースファイル」→「追加(<span style="text-decoration: underline;">D</span>)」→「既存の項目(<span style="text-decoration: underline;">G</span>)」を選択し、ODE本のサンプルプログラムhello.cppを選ぶ。<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/04/kizonTuika.jpg" alt="" /></li>
+<li>「プロジェクト(<span style="text-decoration: underline;">P</span>)」→「pro1-1のプロパティ(<span style="text-decoration: underline;">P</span>)」を選択する。 <img src="{{ site.baseurl }}/assets/images/2008/04/property.jpg" alt="" /></li>
+<li>「構成プロパティ」→「リンカ」→「入力」を選択し、右欄の「追加の依存ファイル」に 以下のようにライブラリを記入する。 <strong><br />
+ ode.lib</strong> <strong>drawstuff.lib</strong> <br />
+ <img src="{{ site.baseurl }}/assets/images/2008/04/property2.jpg" alt="" /> </li>
+<li>ビルドする前に、drawstuffフォルダが作業フォルダProjectsの中にコピーされているかどうか確認する。 ない場合は、C:¥ode-バージョン番号¥drawstuffフォルダを丸ごと上のProjectsフォルダの中にコピーする。<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/04/drawstuff.jpg" alt="" /></li>
+<li>ビルドする。つまり、「ビルド(<span style="text-decoration: underline;">B</span>)」→「pro1-1のビルド(<span style="text-decoration: underline;">U</span>)」を選択する。 <img src="{{ site.baseurl }}/assets/images/2008/04/build.jpg" alt="" /></li>
+<li> 成功するとpro1-1フォルダの中にDebugフォルダが作成され、その中に以下のように pro1-1.exeが作成される。<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/04/pro1exe.jpg" alt="" /></li>
+<li>pro1-1.exeをダブルクリックして実行する。成功すると以下のウインドウが開く。 <img src="{{ site.baseurl }}/assets/images/2008/04/hello.jpg" alt="" /></li>
+<li>おしまい。お疲れ様！</li>
+</ol>
+</li>
+<hr />
+<li><a name="a5"></a><strong>Ⅱ. 既存のプロジェクトファイルを利用する方法</strong>
+<ol type="a">
+<li><a name="a5"></a>ここでは、上で作成したプロジェクトファイルを利用する方法を説明します。</li>
+<li><a name="a5"></a><strong>pro1-3.zip</strong>を<a href="http://demura.net/archives/images/ode/robotsimu/pro1-3-070602.zip">ここからダウンロード</a>して、作業フォルダに展開する。この例では次のようになる。 C:¥Documents and Settings¥ユーザ名¥My Documents¥Visual Studio 2008¥Projects¥pro1-3</li>
+<li>上で作成したプロジェクトファイル<strong>pro1-1.vcproj</strong>を<strong>pro1-3</strong>フォルダの中にコピーする。プロジェクトファイルの名前を<strong>pro1-3.vcproj</strong>に変更する。 もし、<a href="http://demura.net/archives/images/ode/vc/pro1-1.vcproj"><strong>pro1-1.vcproj</strong>がない場合はここをクリックしてダウンロードする。</a></li>
+<li><strong>pro1-1.vcproj</strong>をVisual C++で開く。ソリューションエクスプローラーの中のフォルダ名が<strong>pro1-1</strong>になっているので、カーソールを当て右マウスボタンをクリックして「名前の変更(<span style="text-decoration: underline;">M</span>)」を選択し、<strong>pro1-3</strong>に名前を変更する。 <img src="{{ site.baseurl }}/assets/images/2008/04/pro13.jpg" alt="" /></li>
+<li>pro1-3の「ソースファイル」の<strong>hello.cpp</strong>にカーソールを当て、右マウスボタンをクリックして、「削除(<span style="text-decoration: underline;">V</span>)」を選択し<strong>hello.cpp</strong>を削除する。 <img src="{{ site.baseurl }}/assets/images/2008/04/hellodelete.jpg" alt="" /></li>
+<li>「ソースファイル」にカーソールを当て、右マウスボタンをクリックして、「追加(<span style="text-decoration: underline;">D</span>)」→「既存の項目(<span style="text-decoration: underline;">G</span>)」を選択する。<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/04/tuika.jpg" alt="" /></li>
+<li>「既存項目の追加」ウインドウが開くので<strong>monoBot.cpp</strong>を選択し、「追加(<span style="text-decoration: underline;">A</span>)」ボタンをクリックする。 <img src="{{ site.baseurl }}/assets/images/2008/04/tuika2.jpg" alt="" /></li>
+<li>ビルドする。つまり、「pro1-3のビルド(<span style="text-decoration: underline;">U</span>)」を選択する。すると、すぐにソリューションファイル<strong>pro1-3.sln</strong>を保存するよう聞かれるので「保存(<span style="text-decoration: underline;">S</span>）」をクリックする。 <img src="{{ site.baseurl }}/assets/images/2008/04/solution.jpg" alt="" /></li>
+<li>成功するとDebugフォルダが作成され、その中にpro1-3.exeができる。</li>
+<li>ダブルクリックして実行する。</li>
+</ol>
+</li>
+<li>これで、本当のおしまい。お疲れ様！</li>
+</ul>
+<hr />
+<p><strong>追　記</strong> プログラム1.1用以外のプロジェクトファイルもRoboCupジャパンオープンが終わったら時間を見つけて作ります。もう少々お待ちを！</p>
+<p><br class="spacer_" /></p>
+<hr />
+<p>2008-4-16: 　間違える可能性のある部分を修正（悩める初心者さんありがとう！）<br />
+ 2008-4-15:　カット&amp;ペーストに対応<br />
+ 2008-3-14:　初投稿</p>
+<p><br class="spacer_" /></p>

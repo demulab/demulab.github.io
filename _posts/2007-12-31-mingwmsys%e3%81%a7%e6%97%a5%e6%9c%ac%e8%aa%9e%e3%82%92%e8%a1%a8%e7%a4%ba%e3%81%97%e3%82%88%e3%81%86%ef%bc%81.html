@@ -1,0 +1,41 @@
+---
+layout: post
+title: MinGW+MSYSで日本語を表示しよう！
+date: 2007-12-31 00:05:43.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '11485'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/469.html"
+---
+<p><br class="spacer_" /></p>
+<p>2007年最後の記事になります．ご愛読ありがとうございました．</p>
+<p>今年はODE本の出版などdemura.netに関しては飛躍の年となりました．おかげさまで，皆様のご協力のもとにODE本は理工学専門書としてはボチボチの売り上げとなり，ご本家様のODEプロジェクトにわずかではありますが寄付をすることができました．これに関してODEの開発者ラッセル・スミス博士からお礼の言葉がありましたのでここにご報告します．</p>
+<p>さて，demura.netではODEの開発環境としてMinGW＋MSYS環境を推奨しています．フリーですからね．</p>
+<p>でも，さすがのフリーソフトも完璧ではありません．標準設定ではいくつかの問題があります．まず，日本語を表示することができません． 講義で使用する場合はローマ字や英語を表示するように指示すれば何とかなります．</p>
+<p>ところがさらにまずいことに，C言語を使う場合は問題があります． 標準入力scanfで入力する前に，普通は入力を促すためにprintfを使い画面に文字列を表示しますよね．でも，標準のMinGW+MSYS環境ではscanfが終わるまでブロックされ画面にprintfで表示するはずの文字列が表示されません．これはMSYSで使っているターミナルソフトrxvtの一部に実装の問題があるためです．</p>
+<p>この問題を解決する方法を説明します．</p>
+<p>c:\msys\1.0\msys.bat</p>
+<p>上のファイルの41行目で標準ではターミナルソフトrxvtを起動するので，下図のようにこの行をコメントアウトしてWindows標準のコマンドプロンプトに切り替えましょう．</p>
+<p><img title=" " src="{{ site.baseurl }}/assets/images/2007/12/msysbat.jpg" alt=" " /></p>
+<p><!--more--></p>
+<p>デスクトップのMSYSアイコンを起動し，日本語を表示するプログラムを起動すると以下のように日本語文字化けせずに表示します．</p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/12/msysbat2.jpg" alt=" " /></p>
+<p>なお，ウインドウの大きさやフォント，色などを変更したい場合はウインドウにカーソールを当てて右マウスクリックすると以下のように表示されますので，ご自由にどうそ．</p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/12/msysbat3.jpg" alt=" " width="827" height="454" /><br />
+ では，よいお年を！</p>

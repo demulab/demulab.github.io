@@ -1,0 +1,287 @@
+---
+layout: post
+title: CVAT：カスタムモデルによる自動アノテーション
+date: 2020-03-10 16:43:34.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: CVAT,  Annotation tool,  Auto Annotation
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '1178'
+  _thumbnail_id: '16967'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16919.html"
+---
+<p>CVAT(Computer Vision Annotation Tool)ではカスタムDNNモデルによる自動アノテーション(オートアノテーション, Auto Annotation)ができる。この記事は以下の参考リンクをもとにOpenVINOの学習済みネットワークモデルをアップロードして、fruit-360データセットのtest_multipule_fruits(45画像)に自動アノテーションまで実施する。なお、参考リンクとは違うネットワークモデルを試している。</p>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/auto_annotation/README.md">Auto annotation, CVAT</a></li>
+</ul>
+<p><strong>概　要</strong></p>
+<ul>
+<li>CVATではOpenVINOのコンポーネントをインストールすると、以下の４つのファイルを用意するだけでカスタムモデルを使って自動アノテーションできる。とても便利な機能だ。
+<ol>
+<li><strong>Model config</strong> (*.xml) - ネットワーク構成が記述されたテキストファイル。拡張子はxml。</li>
+<li><strong>Model weights</strong> (*.bin) -　学習済みのウェイトファイル（バイナリ）。拡張子はbin。</li>
+<li><strong>Label map</strong> (*.json) - ラベルの番号とオブジェクトを対応させる簡単な json ファイル。拡張子はjson。以下はその例。なお、以下の実行例では、この<a href="https://github.com/opencv/cvat/blob/develop/utils/open_model_zoo/mask_rcnn_inception_resnet_v2_atrous_coco/mapping.json">mapping.json</a>を使っている。
+<pre>{
+  "label_map": {
+    "0": "apple",
+    "1": "orange"
+  }
+}
+</pre>
+</li>
+<li><strong>Interpretation script</strong> (*.py) - ネットワークの出力層をCVATで処理できるように変換するPythonスクリプト。このコードはPythonのある限定された環境で実行される。ただし、 str, int, float, max, min, rangeなどの組み込み関数は利用できる。この記事では以下のスクリプト~/src/cvat/utils/open_model_zoo/mask_rcnn_inception_resnet_v2_atrous_coco/interp.pyを使った。詳細については参考リンクを参照。
+<pre>import numpy as np
+import cv2
+from skimage.measure import approximate_polygon, find_contours
+
+MASK_THRESHOLD = .5
+PROBABILITY_THRESHOLD = 0.2
+
+# Ref: https://software.intel.com/en-us/forums/computer-vision/topic/804895
+def segm_postprocess(box: list, raw_cls_mask, im_h, im_w, threshold):
+ymin, xmin, ymax, xmax = box
+
+width = int(abs(xmax - xmin))
+height = int(abs(ymax - ymin))
+
+result = np.zeros((im_h, im_w), dtype=np.uint8)
+resized_mask = cv2.resize(raw_cls_mask, dsize=(height, width), interpolation=cv2.INTER_CUBIC)
+
+# extract the ROI of the image
+ymin = int(round(ymin))
+xmin = int(round(xmin))
+ymax = ymin + height
+xmax = xmin + width
+result[xmin:xmax, ymin:ymax] = (resized_mask&gt;threshold).astype(np.uint8) * 255
+
+return result
+
+for detection in detections:
+frame_number = detection['frame_id']
+height = detection['frame_height']
+width = detection['frame_width']
+detection = detection['detections']
+
+masks = detection['masks']
+boxes = detection['reshape_do_2d']
+
+for index, box in enumerate(boxes):
+label = int(box[1])
+obj_value = box[2]
+if obj_value &gt;= PROBABILITY_THRESHOLD:
+x = box[3] * width
+y = box[4] * height
+right = box[5] * width
+bottom = box[6] * height
+mask = masks[index][label - 1]
+
+mask = segm_postprocess((x, y, right, bottom),
+mask,
+height,
+width,
+MASK_THRESHOLD)
+
+contours = find_contours(mask, MASK_THRESHOLD)
+contour = contours[0]
+contour = np.flip(contour, axis=1)
+contour = approximate_polygon(contour, tolerance=2.5)
+segmentation = contour.tolist()
+
+# NOTE: if you want to see the boxes, uncomment next line
+# results.add_box(x, y, right, bottom, label, frame_number)
+results.add_polygon(segmentation, label, frame_number)
+</pre>
+</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li style="list-style-type: none;"></li>
+</ol>
+<p><strong>実行例</strong></p>
+<ul>
+<li><strong>モデルの生成</strong>
+<ul>
+<li>では、OpenVINO用に公開されている次のモデルを使って自動アノテーションしてみよう。
+<ul>
+<li> mask_rcnn_resnet101_atrous_coco</li>
+</ul>
+</li>
+<li>モデルのダウンロードに関しては以下の記事を参照。
+<ul>
+<li><a href="https://demura.net/misc/16892.html">OpenVINO:モデルのダウンロード、中間表現への変換、そして推論</a></li>
+</ul>
+</li>
+<li>ダウンロードしたモデルから次の２つのネットワーク構成ファイルと重みファイルを使う。
+<ul>
+<li>~/openvino_models/public/mask_rcnn_resnet101_atrous_coco/FP32/mask_rcnn_resnet101_atrous_coco.xml</li>
+<li> ~/openvino_models/public/mask_rcnn_resnet101_atrous_coco/FP32/mask_rcnn_resnet101_atrous_coco.bin</li>
+</ul>
+</li>
+<li>残りのmapping.jsonとinterp.pyは以下を利用した。interp.pyは上で掲載したinterp.pyと同じ。
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/utils/open_model_zoo/mask_rcnn_inception_resnet_v2_atrous_coco/mapping.json">mapping.json</a></li>
+<li>~/src/cvat/utils/open_model_zoo/mask_rcnn_inception_resnet_v2_atrous_coco/interp.py</li>
+</ul>
+</li>
+<li>では、上の４つのファイルを使ってモデルを作ろう。CVATを起動して、"Models"をクリック、"Create  new  model"をクリックする。
+<ul>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_model1-1.png"><img class="alignleft size-large wp-image-17089" src="{{ site.baseurl }}/assets/images/2020/03/cvat_model1-1-1024x351.png" alt="" width="1024" height="351" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>新しいモデルの名前と４つのファイルを指定する。この例では次のとおり。
+<ul>
+<li>Name：mask_rcnn_resnet101_atrous_coco</li>
+<li>Select files:
+<ul>
+<li>mask_rcnn_resnet101_atrous_coco.xml</li>
+<li>mask_rcnn_resnet101_atrous_coco.bin</li>
+<li>mapping.json</li>
+<li>interp.py</li>
+</ul>
+</li>
+<li>"submit"をクリックして新しいモデルをアップロードする。
+<ul>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_model2.png"><br />
+<img class="alignleft size-large wp-image-17090" src="{{ site.baseurl }}/assets/images/2020/03/cvat_model2-1024x638.png" alt="" width="1024" height="638" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>成功するとModelsに新しいモデルが追加される。
+<ul>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_model3.png"><img class="alignleft size-large wp-image-17091" src="{{ site.baseurl }}/assets/images/2020/03/cvat_model3-1024x474.png" alt="" width="1024" height="474" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>タスクの生成</strong></li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>以下のリンクを参考に、まず、アノテーションするタスクを生成する。
+<ul>
+<li><a href="https://demura.net/misc/16949.html">CVAT: タスクの生成</a></li>
+<li>この例ではオートアノテーションをかけるデータセットとしてFruits 360 (Version 1)のtest-multiple-fruits(45枚)を用いた。次のリンクからダウンロードできる。
+<ul>
+<li><a href="https://data.mendeley.com/datasets/rp73yg93n8/1">Fruits 360 dataset</a>
+<ul>
+<li><a href="https://data.mendeley.com/datasets/rp73yg93n8/1/files/56487963-3773-495e-a4fc-c1862b6daf91">ダウンロード：fruits-360_dataset.zip</a></li>
+</ul>
+</li>
+<li>ダウンロードしたfruits-360_dataset.zipを~/Downloadsに保存し、次のコマンドで展開する。
+<ul>
+<li>$ cd ~/Downloads</li>
+<li>$ unzip fruits-360_dataset.zip</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>自動アノテーション</strong></li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>Tasks画面から自動アノテーションしたいタスクのActions -&gt; Automatic annotationをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task5.png"><img class="alignleft size-large wp-image-16956" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task5-1024x526.png" alt="" width="1024" height="526" /></a></li>
+<li>Modelを選択する次の画面になるので、"Select a model"をクリックして好きなモデルを選び、自動アノテーションをかける。この例ではmask_rcnn_resnet101_atrous_cocoモデルを選択した。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task6.png"><img class="alignleft size-large wp-image-16957" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task6-1024x526.png" alt="" width="1024" height="526" /></a></li>
+<li>次の画面になるので、ラベルと認識結果の対応を確認して問題なければ"Submit"をクリックする。左列がmapping.jsonのクラス名、右列がTaskを生成するときに設定したラベル名。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task7.png"><img class="alignleft size-large wp-image-16958" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task7-1024x526.png" alt="" width="1024" height="526" /></a></li>
+<li>下のような画面になり、進行状況が緑色のプログレスバーで表示される。私の環境ではGPUを使わずに、46枚を自動アノテーションするのに約６分かかった。<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task8.png"><img class="alignleft size-large wp-image-16959" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task8-1024x526.png" alt="" width="1024" height="526" /></a></li>
+</ul>
+</li>
+<li><strong>結果の確認</strong>
+<ul>
+<li>では、自動アノテーション結果を確認してみよう。Tasksの"Open"をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task9.png"><img class="alignleft size-large wp-image-16961" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task9-1024x526.png" alt="" width="1024" height="526" /></a></li>
+<li>下画面になるので、一番したの"Try new UI"をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task10.png"><img class="alignleft size-large wp-image-16962" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task10-1024x691.png" alt="" width="1024" height="691" /></a></li>
+<li></li>
+<li>COCOデータセットの学習済みネットワークで自動アノテーションかけた。当たり前だが、画像によって比較的うまくアノテーションをかけられているものもあれば、だめなものもある。サンプルを以下に示す。
+<ul>
+<li>比較的うまくいった例<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/apple1.png"><img class="wp-image-16963 size-medium aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/apple1-300x230.png" alt="" width="300" height="230" /></a></li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/orange1.png"><img class="wp-image-16964 size-medium aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/orange1-226x300.png" alt="" width="226" height="300" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>うまくいかなかった例：青リンゴとさくらんぼ。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/apple2.png"><img class="size-medium wp-image-16965 aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/apple2-225x300.png" alt="" width="225" height="300" /></a><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/berry.png"><img class="size-medium wp-image-16966 aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/berry-225x300.png" alt="" width="225" height="300" /></a></li>
+</ul>
+</li>
+<li>Swap領域は多めに必要：Fruits-360/Training/Apple Braeburnの492枚の画像にオートアノテーションをかけたところ、所要時間は1時間ぐらいだった。ただ、メモリを16GB搭載しているマシンでも途中でメモリを使い果たし処理が途中で終了したので、Swap領域(swapfile)を16GBに増やしたところ無事終了した。htopで確認したところSwap領域も8GB程度使用していた。枚数が多い場合はSwap領域を大きくする必要がある。</li>
+</ul>
+</li>
+<li><strong>所感</strong>
+<ul>
+<li>オートアノテーションで全て済めば、そもそもDNNに学習させる必要はないが、うまく活用するとアノテーション作業にかけるリソースを大幅に削減できる可能性がある。深層学習に関する技術はここ数年で飛躍的に伸びているので、オートアノテーションで多くの場合済むようになると思う。</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

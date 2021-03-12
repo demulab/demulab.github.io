@@ -1,0 +1,110 @@
+---
+layout: post
+title: 音声認識エンジンKaldiのgstreamサーバーの構築メモ
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  views: '65'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/13181.html"
+---
+<p>Kaldiを使いやすくするためのKaldi-gstream-server設定のメモ。</p>
+<ul>
+<li>環境
+<ul>
+<li>ThinkPad T450<br />
+(CPU: Intel i7-5500U, GPU: nvidia 940m)</li>
+<li>xubunut14.04.5</li>
+<li>Kernel 4.4.0-66-generic</li>
+<li>gcc/g++ 4.8.4</li>
+</ul>
+</li>
+<li>準備: Python用パッケージのインストール
+<ul>
+<li>非同期のネットワークライブラリtornadoのインストール
+<ul>
+<li>pip install tornado</li>
+</ul>
+</li>
+<li>Python用ウェブソケットプロトコルのインストール
+<ul>
+<li>pip install ws4py == 0.3.2</li>
+</ul>
+</li>
+<li>yamlのインストール
+<ul>
+<li>pip install pyyaml</li>
+</ul>
+</li>
+<li>JSONのインストール
+<ul>
+<li>pip install simplejson</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>kaldi-gstreamer-serverを使うために、kaldiをソースコードからビルドする。<br />
+$ cd ~/src<br />
+$ git clone <a href="https://github.com/kaldi-asr/kaldi.git" target="_blank" rel="noreferrer">https://github.com/kaldi-asr/kaldi.git</a><br />
+$ cd ~/src/kaldi/src<br />
+$<code>./configure --shared</code><br />
+<a href="http://xn--kaldi-ic4dvb81bgg1hpir324a.mk/" target="_blank" rel="noreferrer">上のコマンドでkaldi.mk</a>ファイルが生成されるので、その中のCXXFLAGSの$(EXTRA_CXXFLAGS)の後に-O3 -DNDEBUGをつける。<br />
+$ make depend<br />
+$ make -j 4<br />
+$ make ext<br />
+1時間ぐらい時間がかかる。</li>
+<li>kaldi-gstreamer-serverのインストール<br />
+$ <code>pip install ws4py==0.3.2</code><br />
+$ cd ~/src<br />
+$ git clone <a href="https://github.com/alumae/kaldi-gstreamer-server.git" target="_blank" rel="noreferrer">https://github.com/alumae/kaldi-gstreamer-server.git</a></li>
+<li>gst-kaldi-nnet2-onlineのインストール
+<ul>
+<li>$ cd ~/src</li>
+<li>$ git clone <a href="https://github.com/alumae/gst-kaldi-nnet2-online.git" target="_blank" rel="noreferrer">https://github.com/alumae/gst-kaldi-nnet2-online.git</a></li>
+<li>$ sudo apt-get install gstreamer1.0-plugins-bad gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-pulseaudio gstreamer1.0-plugins-ugly gstreamer1.0-tools libgstreamer1.0-dev</li>
+<li>$ sudo apt-get install libjansson-dev</li>
+<li>$ cd ~/src/gst-kaldi-nnet2-online/src<br />
+Makefileの中をKALDI_ROOT=/home/demulab/src/kaldi<br />
+と書き換える.</li>
+<li>$ make depend</li>
+<li>$ make</li>
+<li>~/.bashrcに以下を追加<br />
+export GST_PLUGIN_PATH=~/src/gst-kaldi-nnet2-online/src</li>
+<li>$ cd ;  source .bashrc</li>
+<li>次のコマンドを実行してプラグインに関する情報が表示されればＯＫ<br />
+$ gst-inspect-1.0 kaldinnet2onlinedecoder</li>
+</ul>
+</li>
+<li>dictate.jsのインストール<br />
+$ cd ~/src<br />
+$ git clone <a href="https://github.com/Kaljurand/dictate.js" target="_blank" rel="noreferrer">https://github.com/Kaljurand/dictate.js.git</a></li>
+<li>Recorder.jsのインストール<br />
+$ cd ~/src<br />
+$ git clone <a href="https://github.com/mattdiamond/Recorderjs.git" target="_blank" rel="noreferrer">https://github.com/mattdiamond/Recorderjs.git</a></li>
+<li>実行<br />
+(1), (2), (3)はそれぞれ別端末で実行<br />
+(1) サーバーの起動<br />
+$ cd ~/src/kaldi-gstreamer-server<br />
+$ python kaldigstserver/master_server.py --port=8888<br />
+(2) ワーカーの起動<br />
+$ cd ~/src/kaldi-gstreamer-server<br />
+$ python kaldigstserver/<a href="http://worker.py/" target="_blank" rel="noreferrer">worker.py</a> -u <a href="ws://localhost:8888/worker/ws/speech" target="_blank" rel="noreferrer">ws://localhost:8888/worker/ws/speech</a> -c sample_english_nnet2.yaml<br />
+(3) クライアントの起動<br />
+$ cd ~/src/<a href="http://dictate.js/demos" target="_blank" rel="noreferrer">dictate.js</a><br />
+$ python -m SimpleHTTPServer<br />
+ウェブブラウザを起動し、アドレスに以下を記入<br />
+<a href="http://localhost:8000/demos/mob.html" target="_blank" rel="noreferrer">http://localhost:8000/demos/mob.html</a></li>
+</ul>

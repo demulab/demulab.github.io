@@ -1,0 +1,222 @@
+---
+layout: page
+title: 4.  3D Graphics
+date: 2008-10-11 14:38:21.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '3210'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode4"
+---
+<p>[caption id="attachment_1535" align="alignnone" width="500"]<a href="http://demura.net/wordpress/wp-content/uploads/2008/08/types22.jpg"><img src="{{ site.baseurl }}/assets/images/2008/10/types22.jpg" alt="Basic geometries: sphere, box, cylinder, capsule and rays" title="types22" width="500" height="275" class="size-full wp-image-1535" /></a> Basic geometries: sphere, box, cylinder, capsule and rays[/caption]</p>
+<p style="margin: 0px 0px 15px;">This is the 4th ODE tutorial.</p>
+<p style="margin: 0px 0px 15px;">This ODE tutorial  teaches you about the 3D graphics, i.e., the Drawstuff library. ODE's demo program shows the good appearance that are beautiful sky with clouds and  the grid-shaped ground.  This is one of the advantage of  ODE .</p>
+<p style="margin: 0px 0px 15px;">However, Drawstuff is a very simple 3D graphics library. It is not suitable for a commercial game, but it may be sufficient for simulators of your own works.  Drawstuff works in Windows and Linux.  The alternates of Drawstuff are  Ogre3D and Irrlicht, both work in Windows and Linux.</p>
+<p style="margin: 0px 0px 15px;">Drawstuff is implemented on the OpenGL 3D graphics library. Drawstuff is very simple library, so it may be useful for learning OpenGL.</p>
+<p style="margin: 0px 0px 15px;">The APIs of Drawstuff start with the small letters " ds",  and the API of ODE start with the small letter 'd'.</p>
+<p style="margin: 0px 0px 15px;"><strong>Using  Drawstuff</strong></p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;">Include the header file to use the Drawstuff library.</li>
+</ul>
+<pre class="brush:cpp">#include &#60;drawstuff/drawstuff.h&#62;</pre>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li><span style="color: #000000; line-height: 100%;">Settings</span></li>
+</ul>
+<p style="margin: 0px 0px 15px;">In order to use Drawstuff, each member of dsFunctions must be set.</p>
+<pre class="brush:cpp">// define of dsFunctions structure
+typedef struct dsFunctions {
+  int version;  /* set DS_VERSION */ 　
+  void (*start)(); 	/* start function before simulation */
+  void (*step) (int pause);	/* step function  */
+  void (*command) (int cmd); /* command function for keyboard  */
+  void (*stop)();	/* stop function after simulation */
+  const char *path_to_textures;	/* a path to the texture */
+} dsFunctions;</pre>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;">Drawstuff related settings
+<ul>
+<li style="margin: 0px; color: #000000; line-height: 100%;">Version: DS_VERSION must be assigned
+<ul>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span style="line-height: 100%;">fn.version = DS_VERSION</span></li>
+</ul>
+</li>
+<li><span style="color: #000000; line-height: 100%;">Pre-processing functions: the simulation will be called before the start of the simulation loop. </span><span style="color: #000000; line-height: 100%;">Here, the camera viewpoint and gaze direction are set.</span>
+<ul>
+<li><span style="color: #000000; line-height: 100%;">fn.start = &amp;start;</span></li>
+</ul>
+</li>
+<li><span style="color: #000000; line-height: 100%;">Viewpoint of the camera, eyes</span>
+<ul>
+<li><span style="color: #000000; line-height: 100%;">dsSetViewpoint (point of view, the gaze direction);</span></li>
+</ul>
+</li>
+<li><span style="color: #000000; line-height: 100%;">Simulation Loop function: the simLoop function is called  in each loop of the Simulation. </span><span style="color: #000000; line-height: 100%;">The function do  almost every  thing in the simulation, such as compute dynamics, collision detection, and visualization. </span>
+<ul>
+<li><span style="color: #000000; line-height: 100%;">fn.step = &amp;simLoop;</span></li>
+</ul>
+</li>
+<li><span style="color: #000000; line-height: 100%;">Key processing function: the command function is called when a key pressed. </span><span style="color: #000000; line-height: 100%;">If you do not need this function.  NULL (null pointer) or 0 (zero) must be assignment to it. </span>
+<ul>
+<li><span style="color: #000000; line-height: 100%;">fn.command = &amp;command;  // NULL  or 0 (when you do not need)</span></li>
+</ul>
+</li>
+<li><span style="color: #000000; line-height: 100%;">Post-processing function: the function is called after the simulation loop. </span><span style="color: #000000; line-height: 100%;">If you do not need it, set the NULL pointer.</span>
+<ul>
+<li><span style="color: #000000; line-height: 100%;">fn.stop = &amp;stop; //  NULL   (when you do not need)</span></li>
+</ul>
+</li>
+<li><span style="color: #000000; line-height: 100%;">Texture path</span>
+<ul>
+<li><span style="color: #000000; line-height: 100%;">fn.path_to_textures = "path";</span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;">The Simulation Loop
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;">The following API must be called only once in the main function.
+<p style="margin: 0px 0px 15px;">dsSimulationLoop (argc, argv, witdh, height, &amp; fn);</p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;">argc, argv: main function arguments</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">width: The width of the window</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">height: The height of the window</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;">fn: dsFunctions is a structure for Drawstuff</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p style="margin: 0px 0px 15px;"><strong>Sample program</strong></p>
+<pre class="brush:cpp">/* ODE tutorial  by Kosei Demura */
+/* Lesson 4 3D Graphics          */
+#include "ode/ode.h"
+#include "drawstuff/drawstuff.h"
+#ifdef _MSC_VER
+#pragma warning(disable:4244 4305)  // Stop VC++ warnings
+#endif
+#ifdef dDOUBLE
+#define dsDrawBox  dsDrawBoxD
+#define dsDrawSphere   dsDrawSphereD
+#define dsDrawCylinder dsDrawCylinderD
+#define dsDrawCapsule  dsDrawCapsuleD
+#define dsDrawLine     dsDrawLineD
+#endif
+
+#define DENSITY (5.0)
+
+struct MyObject {
+  dBodyID body;		// a rigid body
+};
+
+dReal radius = 0.25; // radius
+dReal length = 1.0;  // length
+dReal sides&#91;3&#93; = {0.5,0.5,1.0}; // length of edges
+static dWorldID world;  // a dynamic world
+static MyObject sphere, box, capsule, cylinder; // objects
+
+// start simulation
+static void start()
+{
+  static float xyz&#91;3&#93; = {5,3,0.5};    // view point &#91;m&#93;
+  static float hpr&#91;3&#93; = {-180, 0, 0}; // view direction&#91;°&#93;
+  dsSetViewpoint (xyz,hpr);           // set a view point and direction
+}
+
+// Simulation loop
+static void simLoop (int pause)
+{
+  const dReal *pos1,*R1,*pos2,*R2,*pos3,*R3;    //　draw a sphere
+  dsSetColor(1,0,0);      // set red color
+  dsSetSphereQuality(3);  // set quality of spere. 3 is pretty good
+  pos1 = dBodyGetPosition(sphere.body); // get a position
+  R1   = dBodyGetRotation(sphere.body); // get an orientation
+  dsDrawSphere(pos1,R1,radius);         // draw a sphere
+
+  // draw a cylinder
+  dsSetColorAlpha (0,1,0,1);
+  pos2 = dBodyGetPosition(cylinder.body);
+  R2   = dBodyGetRotation(cylinder.body);
+  dsDrawCylinder(pos2,R2,length,radius);
+  // draw an capsule   dsSetColorAlpha (1,1,1,1);
+  pos2 = dBodyGetPosition(capsule.body);
+  R2   = dBodyGetRotation(capsule.body);
+  dsDrawCapsule(pos2,R2,length,radius);
+
+  // draw a box
+  dsSetColorAlpha (0,0,1,1);
+  pos3 = dBodyGetPosition(box.body);
+  R3   = dBodyGetRotation(box.body);
+  dsDrawBox(pos3,R3,sides);           // draw a line
+  dReal posA&#91;3&#93; = {0, 5, 0},  posB&#91;3&#93;={0, 5, 1.9};
+  dsDrawLine(posA,posB);
+}
+
+int main (int argc, char **argv)
+{
+  // set drawstuff
+  dsFunctions fn;
+  fn.version = DS_VERSION;
+  fn.start   = &amp;start;
+  fn.step    = &amp;simLoop;
+  fn.command = NULL;
+  fn.stop    = NULL;
+  fn.path_to_textures = "../../drawstuff/textures";
+
+  dInitODE();              // Initialize ODE
+  world = dWorldCreate();  // Create a world
+
+  dMass m;                 // mass parameter
+  dMassSetZero (&amp;m);  //set mass parameter to zero
+
+  //　sphere
+  sphere.body = dBodyCreate (world);     //  create a body
+  dReal radius = 0.5;       // radius &#91;m&#93;
+  dMassSetSphere (&amp;m,DENSITY,radius); // Calcurate mass parameter
+  dBodySetMass (sphere.body,&amp;m);  // Set mass parameter to the body
+  dBodySetPosition (sphere.body,0,1, 1); // Set a position
+
+  //　Box
+  box.body = dBodyCreate (world);
+  dMassSetBox (&amp;m,DENSITY,sides&#91;0&#93;,sides&#91;1&#93;,sides&#91;2&#93;);
+  dBodySetMass (box.body,&amp;m);
+  dBodySetPosition (box.body,0,2,1);
+
+  // Capsule
+  capsule.body = dBodyCreate (world);
+  dMassSetCapsule(&amp;m,DENSITY,3,radius,length);
+  dBodySetMass (capsule.body,&amp;m);
+  dBodySetPosition (capsule.body,0,4,1);
+
+  // Cylinder
+  cylinder.body = dBodyCreate (world);
+  dMassSetCylinder(&amp;m,DENSITY,3,radius,length);
+  dBodySetMass (cylinder.body,&amp;m);
+  dBodySetPosition (cylinder.body,0,3,1);
+
+  // Simulation loop
+  dsSimulationLoop (argc,argv,960,480,&amp;fn);
+
+ dWorldDestroy (world); // destroy the world
+  dCloseODE();              // close ODE
+  return 0;
+}</pre>
+<p style="margin: 0px 0px 15px;"><strong>Download</strong></p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><a style="color: #990000; text-decoration: none;" href="http://demura.net/downloads/odesample/sample4-110105.zip">Sample4 (sample4-110105.zip) can be downloaded from here.</a></li>
+</ul>
+<p>That's all. Next time, let's learn a body and a geometry.</p>

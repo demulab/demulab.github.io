@@ -1,0 +1,66 @@
+---
+layout: post
+title: ＰＤ実践：音を鳴らそう！
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '9'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14969.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、以下の方法は西川教授の資料を参考にしています。</p>
+<p>本記事は、EV3で音を鳴らす方法を学びます。</p>
+<ul>
+<li><strong>API</strong>
+<ul>
+<li>440Hz（ラの音）で100ミリ秒鳴らす
+<ul>
+<li> ev3_speaker_play_tone( 440, 100);</li>
+</ul>
+</li>
+<li> 音量を1に設定する（0～100、0はミュート）
+<ul>
+<li> ev3_speaker_set_volume(1);</li>
+</ul>
+</li>
+<li> 音を停止する
+<ul>
+<li> ev3_speaker_stop();</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サンプルプログラム</strong>
+<ul>
+<li>/sound_1/app.c：beep音を鳴らす。</li>
+<li> /sound_2/app.c：「カエルの歌」を鳴らす。</li>
+</ul>
+</li>
+<li><strong>演習</strong>
+<ul>
+<li>サンプルプログラムをEV3にアップロードし、動作を確認しよう！</li>
+<li> サンプルプログラムを改造し、自分の好きな曲のメロディ（音）を鳴らそう！</li>
+</ul>
+</li>
+<li>参考
+<ul>
+<li>音階と周波数の関係<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/melody.png"><img src="{{ site.baseurl }}/assets/images/melody.png" alt="" width="762" height="491" class="aligncenter size-full wp-image-14972" /></a></li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 30px; text-align: right;">終わり</p>

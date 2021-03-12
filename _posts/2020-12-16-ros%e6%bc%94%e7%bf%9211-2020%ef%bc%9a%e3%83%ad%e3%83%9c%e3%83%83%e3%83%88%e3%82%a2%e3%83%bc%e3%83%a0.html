@@ -1,0 +1,195 @@
+---
+layout: post
+title: ROS演習11-2020：ロボットアーム
+date: 2020-12-16 16:53:53.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '12534'
+  views: '73'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19693.html"
+---
+<p><a href="http://demura.net/lecture/12512.html/attachment/arm2-gazebo" rel="attachment wp-att-12534"><img class="aligncenter size-large wp-image-12534" src="{{ site.baseurl }}/assets/images/2020/12/arm2-gazebo-1024x522.png" alt="arm2-gazebo" width="800" height="408" /></a></p>
+<p><a href="http://demura.net/lecture/12512.html/attachment/arm2-rviz" rel="attachment wp-att-12535"><img class="aligncenter size-medium wp-image-12535" src="{{ site.baseurl }}/assets/images/2020/12/arm2-rviz-300x173.png" alt="arm2-rviz" width="600" height="346" /></a><br />
+本記事は私が金沢工業大学ロボティクス学科で担当している講義ロボットプログラミングⅡ用です。今週はgazeboを使い２自由度のロボットアームを作り、関節を動かします。2自由度ロボットアームのURDFは参考リンクを参照してください。このサンプルでは参考リンクのrrbot.xacroをベースに作っています。</p>
+<p><strong>ソース</strong><br />
+Turtlebotをテレオペ（遠隔操作）したソースコードをベースに ~/catkin_ws/src/armbot2/src/teleop.cppを作成しました。ジョイント1とジョイント２の目標角度をパブリッシュし、/armbot2/joint_statesトピックをサブスクライブしジョイントの現在値を取得しています。この例では、目標角度に追従するのに時間がかかるのでループ毎に１秒スリープしてから現在値を取得しています。</p>
+<pre class="brush:cpp;"> 
+// ~/catkin_ws/src/armbot2/src/teleop.cpp
+#include "ros/ros.h"  // rosで必要はヘッダーファイル
+#include "std_msgs/Float64.h"
+#include "sensor_msgs/JointState.h"
+#include "nav_msgs/Odometry.h"
+
+using namespace std;
+std_msgs::Float64 tmp_joint1, tmp_joint2;
+double pos_x, pos_y, pos_z;
+
+void monitorJointState(const sensor_msgs::JointState::ConstPtr&amp; jointstate)
+{
+  tmp_joint1.data = jointstate-&gt;position[0];
+  tmp_joint2.data = jointstate-&gt;position[1]; 
+}
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "teleop");  // ノードの初期化
+  ros::NodeHandle nh; // ノードハンドラ  
+  ros::Publisher  pub_joint1, pub_joint2;  // パブリッシャの作成
+  ros::Subscriber sub_joints, sub_sensor;  // サブスクライバの作成
+
+  std_msgs::Float64 target_joint1, target_joint2;
+
+  pub_joint1 = nh.advertise&lt;std_msgs::Float64&gt;("/armbot2/joint1_position_controller/command", 100);
+  pub_joint2 = nh.advertise&lt;std_msgs::Float64&gt;
+("/armbot2/joint2_position_controller/command", 100);
+  sub_joints = nh.subscribe("/armbot2/joint_states", 100, monitorJointState);
+
+  target_joint1.data = 0;
+  target_joint2.data = 0;
+
+  while (ros::ok()) { // このノードが使える間は無限ループ
+    char key;  // 入力キーの値
+
+    ROS_INFO("[Input] j: Joint1++, f: Joint1--, k: Joint2++, d:Joint2--");
+    cin &gt;&gt; key; 
+    cout &lt;&lt; key &lt;&lt; endl;
+
+    switch (key) {
+    case 'j': target_joint1.data  +=  5 * M_PI/180.0; break;
+    case 'f': target_joint1.data  -=  5 * M_PI/180.0; break;
+    case 'k': target_joint2.data  +=  5 * M_PI/180.0; break;
+    case 'd': target_joint2.data  -=  5 * M_PI/180.0; break;
+    default: ROS_INFO("Input j,f,k,d");
+    }
+      
+    pub_joint1.publish(target_joint1); // 角度を送信    
+    pub_joint2.publish(target_joint2);
+    ROS_INFO("Targe: Joint1=%f Joint2=%f", target_joint1.data, target_joint2.data);
+
+    usleep(1000*1000); // 制御に時間がかかるので1秒寝て待つ
+    ros::spinOnce();   // コールバック関数を呼ぶ
+    ROS_INFO("Tmp:Joint1=%f Joint2=%f", tmp_joint1.data,    tmp_joint2.data);
+  }
+  
+  return 0;
+}
+</pre>
+<p>なお、ジョイントのPIDゲインやコントローラーは以下のファイルに記述されています。詳細については参考リンクをご覧ください。<br />
+~/catkin_ws/src/armbot2/config/armbot2_control.yaml</p>
+<p><strong>準　備</strong></p>
+<ul>
+<li>$ sudo apt update</li>
+<li>$ sudo apt upgrade</li>
+<li>$ sudo apt install ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros-control</li>
+<li>$ sudo apt install ros-melodic-gazebo-plugins  ros-melodic-gazebo-ros</li>
+<li>$ sudo apt install ros-melodic-moveit-*</li>
+<li>$ sudo apt install ros-melodic-ros-control ros-melodic-ros-controllers  ros-melodic-joint-state-controller ros-melodic-effort-controllers ros-melodic-position-controllers ros-melodic-joint-trajectory-controller</li>
+<li>$ sudo apt install liburdfdom-tools</li>
+</ul>
+<p><strong>プログラムとビルド</strong></p>
+<ul>
+<li>$  cd  ~/src/robot_programming2</li>
+<li>$  git pull
+<ul>
+<li>git pullでarmbot2をダウンロードできない場合は以下の作業を行う。
+<ul>
+<li>学内
+<ul>
+<li>$ rm ~/src/robot_programming2</li>
+<li>$ git clone https://github.com/demulab/robot_programming2.git</li>
+</ul>
+</li>
+<li>学外
+<ul>
+<li>$ rm ~/src/robot_programming2</li>
+<li>$ git clone https://github.com/demulab/robot_programming2.git -c http.proxy=””</li>
+</ul>
+</li>
+<li>~/catkin_ws/srcの下にコピーする。
+<ul>
+<li>$ cp -r ~/src/robot_programming2/armbot2 ~/catkin_ws/src/.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>$  catkin build armbot2</li>
+</ul>
+<p><strong>実　行</strong><br />
+端末を２つ開き、次のコマンドを実行する。</p>
+<ul>
+<li>$ roslaunch  armbot2  armbot2.launch</li>
+<li>$ rosrun armbot2 armbot2
+<ul>
+<li>armbot2を実行している端末をクリックし、j, k, f, dコマンドを入力する毎にEnterキーを入力するとロボットアームが動く。各コマンドを入力する度にEnterキーを押さなければ動きません。jは第1関節を正方向、fは負方向、 kは第2関節を正方向、dは負方向に目標角度を5度ずつ変化させる。</li>
+</ul>
+</li>
+<li>成功するとrvizとgazeboの２つのウインドウが開く。そのままではrvizにロボットモデルが表示されないので、次の設定を行う。</li>
+</ul>
+<p><strong>rvizの設定<br />
+</strong><a href="http://demura.net/%e6%9c%aa%e5%88%86%e9%a1%9e/12512.html/attachment/rviz-gazebo-2" rel="attachment wp-att-12531"><img class="aligncenter size-full wp-image-12531" src="{{ site.baseurl }}/assets/images/2020/12/rviz-gazebo-1.jpg" alt="rviz-gazebo" width="846" height="666" /></a></p>
+<ul>
+<li>次の操作を行う
+<ol>
+<li>(1) Global Option -&gt; Fixed Frameをbase_linkに設定</li>
+<li>(2) Addボタンをクリックする</li>
+<li>(3) RobotModelを追加する</li>
+</ol>
+</li>
+</ul>
+<p><strong>ノードグラフ<br />
+</strong><br />
+ノードグラフは次のとおり。端末を開き、次のコマンドを実行。</p>
+<ul>
+<li>$ rqt_graph</li>
+</ul>
+<p><a href="http://demura.net/lecture/12512.html/attachment/rqt_graph" rel="attachment wp-att-12546"><img class="aligncenter size-full wp-image-12546" src="{{ site.baseurl }}/assets/images/2020/12/rqt_graph.png" alt="rqt_graph" width="933" height="538" /></a></p>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li>Gazebo Tutorials
+<ul>
+<li><a href="http://gazebosim.org/tutorials?tut=ros_urdf&amp;cat=connect_ros">URDF in Gazebo</a></li>
+<li><a href="http://gazebosim.org/tutorials?cat=connect_ros">Connect to ROS</a></li>
+<li><a href="http://gazebosim.org/tutorials?tut=ros_control#Tutorial:ROSControl">ROS Control</a></li>
+</ul>
+</li>
+</ul>

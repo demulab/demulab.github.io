@@ -1,0 +1,214 @@
+---
+layout: post
+title: PD実践：LEGO Mindstorms EV3 開発環境のインストール
+date: 2019-09-23 10:15:22.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  views: '573'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16081'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/16071.html"
+---
+<div id="magicdomid5" class="ace-line" data-node-type="line"><span class="author-9498102131 font-color-333333 font-size-medium">本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、ノートパソコンのOSはWindowsに限定します。なお、以下の方法は西川教授の資料と以下のサイトを参考にしています。</span></div>
+<ul class="list-bullet2">
+<li class="list-bullet2"><strong><span class="author-9498102131 font-color-333333 font-size-medium">参考サイト</span></strong>
+<ul class="list-bullet2">
+<li class="list-bullet2"><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODc1Ny1odHRwOi8vZGV2LnRvcHBlcnMuanAvdHJhY191c2VyL2V2M3BmL3dpa2kvRGV2RW52"><a class="link" href="http://dev.toppers.jp/trac_user/ev3pf/wiki/DevEnv" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODc1Ny1odHRwOi8vZGV2LnRvcHBlcnMuanAvdHJhY191c2VyL2V2M3BmL3dpa2kvRGV2RW52">Toppers/EV3 RT 開発環境構築のマニュアル</a></span></li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODc2Ni1odHRwOi8vZGV2LnRvcHBlcnMuanAvdHJhY191c2VyL2V2M3BmL3dpa2kvRGV2RW52V2lu"><a class="link" href="http://dev.toppers.jp/trac_user/ev3pf/wiki/DevEnvWin" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODc2Ni1odHRwOi8vZGV2LnRvcHBlcnMuanAvdHJhY191c2VyL2V2M3BmL3dpa2kvRGV2RW52V2lu">開発環境（Cygwin)のインストール</a></span></li>
+</ul>
+</li>
+<li class="list-bullet2"><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODc2Ni1odHRwOi8vZGV2LnRvcHBlcnMuanAvdHJhY191c2VyL2V2M3BmL3dpa2kvRGV2RW52V2lu"><strong>開発環境(cygwin)のインストール</strong>：</span><span class="author-9498102131 font-color-333333 font-size-medium">（以下の補足説明は重要）<span style="color: #ff0000;"><strong>インストール作業で使用するウェブブラウザはGoogle Chromeを必ず使うこと。</strong></span>インターネットエクスプローラーでは失敗します。</span>
+<ul class="list-bullet3">
+<li style="list-style-type: none;">
+<ul class="list-bullet3">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium">CygwinはWindows上でUNIXのような環境を提供するもので、UNIXのコマンドが使えます。</span></li>
+</ul>
+</li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium"><strong>1. Cygwin Setup</strong> (セットアップ):</span> <a href="http://cygwin.com/setup-x86_64.exe">ここをクリックして</a>64-bit版Cygwinのインストーラをダウンロードする。<span class="author-9498102131 font-color-333333 font-size-medium">ダウンロードしたインストーラsetup-x86_64.exeをダブルクリックして起動する。</span>
+<ul class="list-bullet4">
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium">ダブルクリックすると「Cygwin Setup」ウインドウが開くので「次へ(N)」をクリックする。<br />
+</span><span id="embeddedContainer_7d7968fdeb0248fab05c1c513a589679" class="author-9498102131 font-color-333333 font-size-medium image-7d7968fdeb0248fab05c1c513a589679-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGY3lnd2luMS0zMDB4MjAwLnBuZyUyMiU3RA== link-MTU2ODc5MDAzODc3NC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luMS5wbmc="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin1.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODc3NC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luMS5wbmc="><img id="embeddedObject_7d7968fdeb0248fab05c1c513a589679" src="{{ site.baseurl }}/assets/images/2019/09/cygwin1-300x200.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin1-300x200.png" data-embedded-object="image" /></a></span></li>
+</ul>
+</li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium"><strong>2. Choose A Download Source (</strong>インストール方法の選択)：Install from Internetを選択し、「次へ(N)」をクリックする。</span></li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium"><strong>3. Select Root Install Directory</strong> (ルートインストールディレクトリの選択）:デフォルト(標準)でRoot Directoryが"C:\cygwin64"、Install Forが"All Users (RECOMMENDED)になっているので、そのまま「次へ(N)」をクリックする。</span><span id="embeddedContainer_588f7af480164c9280383bebe7ab1f3a" class="author-9498102131 font-color-333333 font-size-medium image-588f7af480164c9280383bebe7ab1f3a-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGY3lnd2luMi0xLTMwMHgyMDAucG5nJTIyJTdE link-MTU2ODc5MDAzODc4MC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luMi0xLnBuZw=="><br />
+<a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin2-1.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODc4MC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luMi0xLnBuZw=="><img id="embeddedObject_588f7af480164c9280383bebe7ab1f3a" src="{{ site.baseurl }}/assets/images/2019/09/cygwin2-1-300x200.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin2-1-300x200.png" data-embedded-object="image" /></a></span></li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium"><strong>4. Select Local Package Directory</strong> (ローカルパッケージディレクトリの選択）：ダウンロードしたパッケージを置くディレクトリを設定する。Local Package Directoryを「C:\Users\ユーザー名\Downloads」にして「次へ(N)」をクリックする。<br />
+Downloadsディレクトリがない場合は、"Directory ... does not exist, would you like me to create it?"と聞かれるので「はい(Y)」をクリックする。<br />
+</span><span id="embeddedContainer_6110242c493642e29144242e65a1cc06" class="author-9498102131 font-color-333333 font-size-medium image-6110242c493642e29144242e65a1cc06-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGY3lnd2luMy0xLTMwMHgyMDAucG5nJTIyJTdE link-MTU2ODc5MDAzODc4NC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luMy0xLnBuZw=="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin3-1.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODc4NC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luMy0xLnBuZw=="><img id="embeddedObject_6110242c493642e29144242e65a1cc06" src="{{ site.baseurl }}/assets/images/2019/09/cygwin3-1-300x200.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin3-1-300x200.png" data-embedded-object="image" /></a></span></li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium"><strong>5. Select Your Internet Connection</strong> (インターネット接続の選択）：学内LANではUse HTTP/FTP Proxyにチェックを入れる。Proxy Host、Portは次のとおり。<span style="color: #ff0000;"><strong>なお、Proxyの設定はウェブブラウザでも行うこと。</strong></span></span><span class="author-9498102131 font-color-333333 font-size-medium">学外の場合は、Direct Connectionを選択する。</span><span class="author-9498102131 font-color-333333 font-size-medium"><span style="color: #ff0000;"><strong>　</strong></span></span>
+<ul class="list-bullet3">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium">Proxy Host: wwwproxy.kanazawa-it.ac.jp</span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium">Port: 8080</span><span id="embeddedContainer_705f84768d3c4a99bec71142988f961b" class="author-9498102131 font-color-333333 font-size-medium image-705f84768d3c4a99bec71142988f961b-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGY3lnd2luNGEtMzAweDIwMC5wbmclMjIlN0Q= link-MTU2ODc5MDAzODc4OC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luNGEucG5n"><br />
+<a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin4a.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODc4OC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luNGEucG5n"><img id="embeddedObject_705f84768d3c4a99bec71142988f961b" src="{{ site.baseurl }}/assets/images/2019/09/cygwin4a-300x200.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin4a-300x200.png" data-embedded-object="image" /></a></span></li>
+</ul>
+</li>
+<li> <span class="author-9498102131 font-color-333333 font-size-medium"><strong>6. Choose A Download Site</strong>（ダウンロードサイトの選択)： ダウンロードサイトは</span><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODc5My1odHRwOi8vZnRwLmphaXN0LmFjLmpwLw=="><a class="link" href="http://ftp.jaist.ac.jp/" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODc5My1odHRwOi8vZnRwLmphaXN0LmFjLmpwLw==">http://ftp.jaist.ac.jp</a></span><span class="author-9498102131 font-color-333333 font-size-medium">を選び、「次へ(N)」をクリックする。</span><span id="embeddedContainer_15f761c746984f148edba07b53aae6d4" class="author-9498102131 font-color-333333 font-size-medium image-15f761c746984f148edba07b53aae6d4-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGY3lnd2luNi0zMDB4MjAwLnBuZyUyMiU3RA== link-MTU2ODc5MDAzODc5Ni1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luNi5wbmc="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin6.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODc5Ni1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luNi5wbmc="><img id="embeddedObject_15f761c746984f148edba07b53aae6d4" src="{{ site.baseurl }}/assets/images/2019/09/cygwin6-300x200.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin6-300x200.png" data-embedded-object="image" /></a></span></li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium"><strong>7. Select Packages</strong> (パッケージの選択）：EV3RTを使うためには次の４パッケージ(gcc-core, make, diffutils, perl)をインストールしなければならない。Searchにパッケージ名を入れてViewをCategoryにする。CategoryにDevelなどの名前が表示されるので、その左の「田」印をクリックするとパッケージがたくさん表示される。インストールするパッケージが見つかったら、Newの欄にある「 Skip」をクリックするとインストールするバージョンが表示される。</span>
+<ul class="list-bullet4">
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium">　同様にして４つのパッケージを全て選択してから最後に「次へ」をクリックする。gcc-core（バージョン4.9.0-1以降、本演習では7.4.0-1）</span>
+<ul class="list-bullet5">
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium">Category: Devel<a href="https://demura.net/wordpress/wp-content/uploads/2019/09/gcc-1.png"><img class="aligncenter size-large wp-image-16081" src="{{ site.baseurl }}/assets/images/2019/09/gcc-1-1024x400.png" alt="" width="1024" height="400" /></a></span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium">make（バージョン4.0-2以降、本演習では4.2.1-2）<br />
+</span><span class="author-9498102131 font-color-333333 font-size-medium">Category:Devel<a href="https://demura.net/wordpress/wp-content/uploads/2019/09/make.png"><img class="aligncenter size-large wp-image-16082" src="{{ site.baseurl }}/assets/images/2019/09/make-1024x400.png" alt="" width="1024" height="400" /></a></span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium">diffutils（バージョン3.3-2以降、本演習では3.5-2）<br />
+</span><span class="author-9498102131 font-color-333333 font-size-medium">Category: Utils<a href="https://demura.net/wordpress/wp-content/uploads/2019/09/diffutils.png"><img class="aligncenter size-large wp-image-16083" src="{{ site.baseurl }}/assets/images/2019/09/diffutils-1024x400.png" alt="" width="1024" height="400" /></a></span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium">perl（バージョン5.22.1以降、本演習では5.26.3-2）<br />
+</span><span class="author-9498102131 font-color-333333 font-size-medium">Category: Perl<a href="https://demura.net/wordpress/wp-content/uploads/2019/09/perl-1.png"><img class="aligncenter size-full wp-image-16095" src="{{ site.baseurl }}/assets/images/2019/09/perl-1.png" alt="" width="708" height="378" /></a></span></li>
+</ul>
+</li>
+</ul>
+<ul class="list-bullet3">
+<li></li>
+</ul>
+</li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium"><strong>8. Review and confirm changes</strong> (選択したパッケージの確認): 後でパッケージを詳しくチェックするので、以下のようなウインドウになっていれば良いので、「次へ(N)」をクリックする。</span></li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/09/review.png"><img class="aligncenter size-full wp-image-16085" src="{{ site.baseurl }}/assets/images/2019/09/review.png" alt="" width="536" height="358" /></a></p>
+<ul class="list-bullet3">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium"><strong>9. Create Icons</strong> (アイコンの作成): Cygwinのインストールが完了ので、アイコンをデスクトップに生成し、スタートメニューに追加する。「完了」をクリックする。</span><span id="embeddedContainer_0c4109bd9564408ab2cd723ab0356e8b" class="author-9498102131 font-color-333333 font-size-medium image-0c4109bd9564408ab2cd723ab0356e8b-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGY3lnd2luOS5wbmclMjIlN0Q= link-MTU2ODc5MDAzODgyNC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luOS5wbmc="><br />
+<a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin9.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODgyNC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvY3lnd2luOS5wbmc="><img id="embeddedObject_0c4109bd9564408ab2cd723ab0356e8b" src="{{ site.baseurl }}/assets/images/2019/09/cygwin9.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/cygwin9.png" data-embedded-object="image" /></a></span></li>
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium"><strong>10. インストールのチェック</strong>：デスクトップにあるCygwin64 Terminalアイコンをダブルクリックして起動し、以下のコマンドを実行する。Cygwinのパッケージ情報が出力されるので、以下のバージョンと同じか新しいこととStatusがOKであることを確認する。違う場合は「7. Select Packages」の作業をやり直す。$はプロンプトなので入力しない。</span>
+<ul class="list-bullet3">
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-color-dd1144 font-size-medium font-size-small">$ cygcheck -c gcc-core make diffutils perl<a href="https://demura.net/wordpress/wp-content/uploads/2019/09/cygcheck-1.png"><img class="aligncenter size-full wp-image-16087" src="{{ site.baseurl }}/assets/images/2019/09/cygcheck-1.png" alt="" width="581" height="202" /></a></span></li>
+</ul>
+</li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium"><strong>11. UNIXコマンドの説明</strong>：Cygwinインストール後の作業これからの作業で必要になるCygwinで使えるUNIXコマンドを説明します。</span>
+<ul class="list-bullet3">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium">pwd：現在のディレクトリ位置を表示</span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium"> cd␣フォルダ名：ディレクトリを移動</span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium"> cd: ホームディレクトリに戻る</span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium"> ls: ファイルリストを表示</span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium"> ls␣-l: ファイルリストの詳細情報を表示</span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium">rm␣ファイル名: ファイルを削除(ディレクトリは削除不可)</span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium"> cp␣ファイル名1␣ファイル名2: ファイルのコピー</span></li>
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium"> mv␣ファイル名1␣ファイル名2: ファイルの移動</span></li>
+</ul>
+</li>
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium"><strong> 12. 作業ディレクトリ(フォルダー)の作成</strong>：Cygwin64 Terminalで以下のコマンドを実行し、作業フォルダーを作成する。</span>
+<ul class="list-bullet3">
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-color-dd1144 font-size-medium font-size-small">$ mkdir /ev3rt</span>
+<ul class="list-bullet5">
+<li class="list-bullet5"><span class="author-9498102131 font-color-333333 font-size-medium">WindowsのフォルダはC:¥cygwin64¥ev3rtになる。</span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium"><strong>GCC ARMのインストール</strong></span>
+<ul class="list-bullet2">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium">GCC ARM（GNU Tools for ARM Embedded Processors）のインストーラをダウンロードする。</span>
+<ul class="list-bullet3">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODg0MC1odHRwczovL2xhdW5jaHBhZC5uZXQvZ2NjLWFybS1lbWJlZGRlZC80LjgvNC44LTIwMTQtcTMtdXBkYXRlLytkb3dubG9hZC9nY2MtYXJtLW5vbmUtZWFiaS00XzgtMjAxNHEzLTIwMTQwODA1LXdpbjMyLmV4ZQ==">​以下の確認済みバージョンのインストーラをダウンロードする。</span>
+<ul class="list-bullet3">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODg0MC1odHRwczovL2xhdW5jaHBhZC5uZXQvZ2NjLWFybS1lbWJlZGRlZC80LjgvNC44LTIwMTQtcTMtdXBkYXRlLytkb3dubG9hZC9nY2MtYXJtLW5vbmUtZWFiaS00XzgtMjAxNHEzLTIwMTQwODA1LXdpbjMyLmV4ZQ=="><a class="link" href="http://edu1.kanazawa-it.ac.jp/~demura/education/PDpractice/gcc-arm-none-eabi-4_8-2014q3-20140805-win32.exe" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg0MC1odHRwczovL2xhdW5jaHBhZC5uZXQvZ2NjLWFybS1lbWJlZGRlZC80LjgvNC44LTIwMTQtcTMtdXBkYXRlLytkb3dubG9hZC9nY2MtYXJtLW5vbmUtZWFiaS00XzgtMjAxNHEzLTIwMTQwODA1LXdpbjMyLmV4ZQ==">gcc-arm-none-eabi-4_8-2014q3-20140805-win32.exe</a> </span>(学内)</li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODg0MC1odHRwczovL2xhdW5jaHBhZC5uZXQvZ2NjLWFybS1lbWJlZGRlZC80LjgvNC44LTIwMTQtcTMtdXBkYXRlLytkb3dubG9hZC9nY2MtYXJtLW5vbmUtZWFiaS00XzgtMjAxNHEzLTIwMTQwODA1LXdpbjMyLmV4ZQ=="><a class="link" href="https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update/+download/gcc-arm-none-eabi-4_8-2014q3-20140805-win32.exe" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg0MC1odHRwczovL2xhdW5jaHBhZC5uZXQvZ2NjLWFybS1lbWJlZGRlZC80LjgvNC44LTIwMTQtcTMtdXBkYXRlLytkb3dubG9hZC9nY2MtYXJtLW5vbmUtZWFiaS00XzgtMjAxNHEzLTIwMTQwODA1LXdpbjMyLmV4ZQ==">gcc-arm-none-eabi-4_8-2014q3-20140805-win32.exe</a> </span>(学外)</li>
+</ul>
+</li>
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium">ダウンロードしたインストーラをダブルクリックして起動する。Language Selectionウインドウが開くのでEnglishを選択して、「OK」をクリックする。<br />
+</span><span id="embeddedContainer_9233d08f873549fabd02f072b7473a5b" class="author-9498102131 font-color-333333 font-size-medium image-9233d08f873549fabd02f072b7473a5b-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGZ2NjMS5wbmclMjIlN0Q="><img id="embeddedObject_9233d08f873549fabd02f072b7473a5b" src="{{ site.baseurl }}/assets/images/2019/09/gcc1.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc1.png" data-embedded-object="image" /><br />
+</span><span class="author-9498102131 font-color-333333 font-size-medium">以下のウインドウが開くので、「Yes」をクリックする。</span><span class="author-9498102131 font-color-333333 font-size-medium image-270311455f75496fb38c8c418f8c70c6-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGZ2NjMi5wbmclMjIlN0Q= link-MTU2ODc5MDAzODg0NS1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjMi5wbmc="><span class="author-9498102131 font-color-333333 font-size-medium image-270311455f75496fb38c8c418f8c70c6-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGZ2NjMi5wbmclMjIlN0Q= link-MTU2ODc5MDAzODg0NS1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjMi5wbmc="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc2.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg0NS1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjMi5wbmc="><img id="embeddedObject_270311455f75496fb38c8c418f8c70c6" src="{{ site.baseurl }}/assets/images/2019/09/gcc2.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc2.png" data-embedded-object="image" /></a></span></span><span class="author-9498102131 font-color-333333 font-size-medium">以下のウインドウが開くので、「Next」をクリックしてSetupを続ける。</span><span id="embeddedContainer_38ac6a2efeb34be9a019f2ce80cae69f" class="author-9498102131 font-color-333333 font-size-medium image-38ac6a2efeb34be9a019f2ce80cae69f-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGZ2NjMy5wbmclMjIlN0Q= link-MTU2ODc5MDAzODg1MC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjMy5wbmc="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc3.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg1MC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjMy5wbmc="><img id="embeddedObject_38ac6a2efeb34be9a019f2ce80cae69f" src="{{ site.baseurl }}/assets/images/2019/09/gcc3.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc3.png" data-embedded-object="image" /></a></span></li>
+</ul>
+</li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium"><strong>License Agreement</strong> (ライセンス同意)：ライセンスの確認になるので、”I accept the terms of the license agreement”にチェックを入れて、「Next」をクリックする。</span><span id="embeddedContainer_72eee0e918724ffb89b7e696b08cfef6" class="author-9498102131 font-color-333333 font-size-medium image-72eee0e918724ffb89b7e696b08cfef6-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGZ2NjNC5wbmclMjIlN0Q= link-MTU2ODc5MDAzODg1NC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjNC5wbmc="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc4.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg1NC1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjNC5wbmc="><img id="embeddedObject_72eee0e918724ffb89b7e696b08cfef6" src="{{ site.baseurl }}/assets/images/2019/09/gcc4.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc4.png" data-embedded-object="image" /></a></span></li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium"><strong>Choose Destination Location</strong> (インストール先の選択): インストール先を聞かれるのでデフォルトのまま、「Next」をクリックする。</span><span id="embeddedContainer_0e57601fe8a042acaf34c00d22758672" class="author-9498102131 font-color-333333 font-size-medium image-0e57601fe8a042acaf34c00d22758672-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGZ2NjNS5wbmclMjIlN0Q= link-MTU2ODc5MDAzODg1OS1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjNS5wbmc="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc5.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg1OS1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjNS5wbmc="><img id="embeddedObject_0e57601fe8a042acaf34c00d22758672" src="{{ site.baseurl }}/assets/images/2019/09/gcc5.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc5.png" data-embedded-object="image" /></a></span></li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium"><strong>Start Copying Files</strong> (ファイルコピー開始）：「Next」をクリックする。</span><span id="embeddedContainer_5ac112a9a9b84153adcd797543855866" class="author-9498102131 font-color-333333 font-size-medium image-5ac112a9a9b84153adcd797543855866-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGZ2NjNi5wbmclMjIlN0Q= link-MTU2ODc5MDAzODg2Mi1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjNi5wbmc="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc6.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg2Mi1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjNi5wbmc="><img id="embeddedObject_5ac112a9a9b84153adcd797543855866" src="{{ site.baseurl }}/assets/images/2019/09/gcc6.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc6.png" data-embedded-object="image" /></a></span></li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium"><strong>Install wizard Complete</strong> (インストールの完了):  “Add path to environment variable”だけにチェックを入れて「Finish」をクリックする。他の項目にチェックを入れてはいけない。</span><span id="embeddedContainer_88ee5d9cab0641cb9d6b9ddb4e51a261" class="author-9498102131 font-color-333333 font-size-medium image-88ee5d9cab0641cb9d6b9ddb4e51a261-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGZ2NjNy5wbmclMjIlN0Q= link-MTU2ODc5MDAzODg2Ni1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjNy5wbmc="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc7.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg2Ni1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjNy5wbmc="><img id="embeddedObject_88ee5d9cab0641cb9d6b9ddb4e51a261" src="{{ site.baseurl }}/assets/images/2019/09/gcc7.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc7.png" data-embedded-object="image" /></a></span></li>
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium"><strong>インストールの確認</strong>: 新しくCygwin Terminalを起動して、以下のコマンドを打ち込みバージョンを確認する。</span>
+<ul class="list-bullet3">
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-color-dd1144 font-size-medium font-size-small"><code>$ arm-none-eabi-gcc -v</code></span></li>
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium">この例では、gccのバージョンは4.8.4であることがわかる。</span><span id="embeddedContainer_ff77be8d519a4caabb303e58cb511ad5" class="author-9498102131 font-color-333333 font-size-medium image-ff77be8d519a4caabb303e58cb511ad5-JTdCJTIyZXh0ZXJuYWxVcmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGZGVtdXJhLm5ldCUyRndvcmRwcmVzcyUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGMjAxOCUyRjA5JTJGZ2NjOC5wbmclMjIlN0Q= link-MTU2ODc5MDAzODg3Mi1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjOC5wbmc="><a class="link" href="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc8.png" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg3Mi1odHRwOi8vZGVtdXJhLm5ldC93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTgvMDkvZ2NjOC5wbmc="><img id="embeddedObject_ff77be8d519a4caabb303e58cb511ad5" src="{{ site.baseurl }}/assets/images/2019/09/gcc8.png" data-external-url="http://demura.net/wordpress/wp-content/uploads/2018/09/gcc8.png" data-embedded-object="image" /></a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium"><strong> U-Bootのmkimageのインストール：</strong>U-BootとはOSを起動するためのブートローダとよばれるプログラムであり、組み込み機器でよく使われている。以下のリンクからmkimageのバイナリをダウンロードする。mkimageはU-Boot用のフォーマットに変換するコマンド。なお、ダウンロードにはChromeを使うこと。Internet ExplorerやFireFoxを使うと余分な拡張子がついてこれからの作業がうまくいかないので注意。</span>
+<ul>
+<li style="list-style-type: none;">
+<ul class="list-bullet3">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODg3Ni1odHRwOi8vd3d3LnRyaW1zbGljZS5jb20vZG93bmxvYWQvdG9vbHMvTWtpbWFnZS50YXIuZ3o="><a class="link" href="http://www.trimslice.com/download/tools/Mkimage.tar.gz" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg3Ni1odHRwOi8vd3d3LnRyaW1zbGljZS5jb20vZG93bmxvYWQvdG9vbHMvTWtpbWFnZS50YXIuZ3o=">​http://www.trimslice.com/download/tools/Mkimage.tar.gz</a></span></li>
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium">ダウンロードした“Mkimage.tar.gz” を“作業フォルダー C:¥cygwin64¥ev3rt (cygwinでは/ev3rt)” にマウスを使ってコピペする。WindowsのC:¥cygwin64¥ev3rtフォルダはcygwin terminalでは/ev3rtとなる。</span></li>
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium">Cygwin Terminal を起動し、以下のコマンドを実行して“作業フォルダー(ev3rt)” に移動する。</span>
+<ul class="list-bullet3">
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-color-dd1144 font-size-medium font-size-small"><code>$ cd /ev3rt</code></span></li>
+</ul>
+</li>
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium">下記のコマンドを使いMkimage.tar.gzを展開する。</span>
+<ul class="list-bullet3">
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-color-dd1144 font-size-medium font-size-small"><code>$ tar xvzf Mkimage.tar.gz</code></span></li>
+</ul>
+</li>
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-size-medium">実行ファイルmkimage.exeを以下のコマンドでコピーする。</span>
+<ul class="list-bullet3">
+<li class="list-bullet4"><span class="author-9498102131 font-color-333333 font-color-dd1144 font-size-medium font-size-small"><code>$ cp mkimage.exe  /usr/local/bin</code></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>開発プラットフオームEV3RTのインストール</strong>
+<ul class="list-bullet2">
+<li>参考サイト
+<ul class="list-bullet2">
+<li><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODg4MC1odHRwOi8vZGV2LnRvcHBlcnMuanAvdHJhY191c2VyL2V2M3BmL3dpa2kvRGV2RW52"><a class="link" href="http://dev.toppers.jp/trac_user/ev3pf/wiki/DevEnv" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg4MC1odHRwOi8vZGV2LnRvcHBlcnMuanAvdHJhY191c2VyL2V2M3BmL3dpa2kvRGV2RW52">開発プラットフォームEV3RTのダウンロード＆インストール</a></span></li>
+</ul>
+</li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium">パッケージバージョンβ7-3をダウンロードする。</span>
+<ul class="list-bullet2">
+<li><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODg4NC1odHRwOi8vd3d3LnRvcHBlcnMuanAvZG93bmxvYWQuY2dpL2V2M3J0LWJldGE3LTItcmVsZWFzZS56aXA="><a class="link" href="http://edu1.kanazawa-it.ac.jp/~demura/education/PDpractice/ev3rt-beta7-3-release.zip" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg4NC1odHRwOi8vd3d3LnRvcHBlcnMuanAvZG93bmxvYWQuY2dpL2V2M3J0LWJldGE3LTItcmVsZWFzZS56aXA=">ev3rt-beta7-3-release.zip</a></span> (学内)</li>
+<li><span class="author-9498102131 font-color-333333 font-size-medium link-MTU2ODc5MDAzODg4NC1odHRwOi8vd3d3LnRvcHBlcnMuanAvZG93bmxvYWQuY2dpL2V2M3J0LWJldGE3LTItcmVsZWFzZS56aXA="><a class="link" href="http://www.toppers.jp/download.cgi/ev3rt-beta7-3-release.zip" target="_blank" rel="noreferrer nofollow" data-attrib-id="MTU2ODc5MDAzODg4NC1odHRwOi8vd3d3LnRvcHBlcnMuanAvZG93bmxvYWQuY2dpL2V2M3J0LWJldGE3LTItcmVsZWFzZS56aXA=">ev3rt-beta7-3-release.zip</a></span> (学外)</li>
+</ul>
+</li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium">ダウンロードしたEV3RTのパッケージ(ev3rt-beta7-3-release.zip) を解凍し、hrp2.tar.xzだけを“作業フォルダーC:¥cygwin64¥ev3rt (cygwinでは/ev3rt)の中にマウスを使ってコピペする。なお、hrp2.tar.xzはカーネルのソースコードが格納されている。</span></li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium">Cygwin Terminalを起動して以下のコマンドで作業フォルダー(/ev3rt)に移動する。</span>
+<ul class="list-bullet2">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-color-dd1144 font-size-medium font-size-small"><code>$ cd  /ev3rt</code></span></li>
+</ul>
+</li>
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-size-medium">起動したCygwin Terminalで以下のコマンドを実行してhrp2.tar.xzを解凍する。</span>
+<ul class="list-bullet2">
+<li class="list-bullet3"><span class="author-9498102131 font-color-333333 font-color-dd1144 font-size-medium font-size-small"><code>$ tar xvf  hrp2.tar.xz</code></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="list-bullet2"><span class="author-9498102131 font-color-333333 font-size-medium">以上で開発環境のインストールは終わりです。お疲れ様！</span></li>
+</ul>
+<div id="magicdomid75" class="ace-line" data-node-type="line"></div>

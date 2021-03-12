@@ -1,0 +1,34 @@
+---
+layout: post
+title: Fedora Core3 のインストールメモ
+date: 2004-12-02 22:15:16.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '428'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/186.html"
+---
+<p>新しいノートパソコン　Let's note CF-Y2が届いたので早速Linuxをインストールした。この記事は自分用に書いたメモ。ディストリビューションはFedora Core3。</p>
+<p>1. Linux magazine １２月号の付録CD-ROM 1にKNOPPIX 3.6が収録されているので、それでPCを起動する。</p>
+<p>２．Let's noteはパーティションが分けられておらず４０Gの１パーティションなのでこれをLinux用に10G、Windows用に30Gに分割する。昔はこのパーティションを分ける作業が大変で、この作業のためだけにPartition Magicを購入したものだ。最近はFreeのソフトntfsresizeなるものがあり簡単になった。ただ、このソフトは無保証なのでデータが消える可能性がある。個人の責任でやっていただきたい。なお、これはすでにKNOPPIX 3.6に収められている。グラフィカルなインターフェースはないのでroot shellを立ち上げてntfsresizeというコマンドを入力する。使い方は<a href="http://mlf.linux.rulez.org/mlf/ezaz/ntfsresize.html">ntfsresizeのウェブサイト</a>を参照。</p>
+<p>３．　コンピュータを再起動してパーティションが３０Gになっているか確認する。</p>
+<p>４．　Fedora Core3のDVDを入れてコンピュータを再起動してインストール作業に入る。</p>
+<p>５．　パーティションの構成は以下とした。<br />
+ /dev/hda1 ntfs 28812M<br />
+ /dev/hda2 swap 　518M<br />
+ /dev/hda3 ext3 　8825M</p>
+<p>６．　インストールのタイプをワークステーションにしてパッケージを取捨選択したら全体で3G程度になった。最近のディストリビューションは大食らいである。４倍速のDVDを使い３０分程度でインストール作業が終了した。</p>

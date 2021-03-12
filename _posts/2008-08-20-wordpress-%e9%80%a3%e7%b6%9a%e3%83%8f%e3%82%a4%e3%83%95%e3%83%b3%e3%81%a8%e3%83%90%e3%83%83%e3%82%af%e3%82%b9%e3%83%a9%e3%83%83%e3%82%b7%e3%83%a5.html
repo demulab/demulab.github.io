@@ -1,0 +1,62 @@
+---
+layout: post
+title: WordPressメモ： 連続ハイフンとバックスラッシュ
+date: 2008-08-20 09:15:27.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '503'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/1625.html"
+---
+<p>この記事はWordPressに関する個人用のメモです．</p>
+<p>WordPress2.6でプログラミングに関する記事を書くと，２つの連続ハイフンが自動的に１つの連続ハイフンに置き換わったり，￥記号がバックスラッシュになるなどして，読者に誤解をかけることになります．それを避けるためにはHTMLの&lt;pre&gt;タグを使えば良いという簡単なことに気が付きました．</p>
+<ul>
+<li>連続ハイフン
+<ul>
+<li>&lt;pre&gt;タグを使用しない場合
+<ul>
+<li>--</li>
+</ul>
+</li>
+<li>&lt;pre&gt;タグを使用する場合
+<ul>
+<li>
+<pre>--</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>バックスラッシュ
+<ul>
+<li>&lt;pre&gt;タグを使用しない場合
+<ul>
+<li>\</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>&lt;pre&gt;タグを使用する場合
+<ul>
+<li>
+<pre>\</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>でむ</p>

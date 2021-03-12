@@ -1,0 +1,116 @@
+---
+layout: post
+title: RobotVision勉強会：第３回 カメラ・動画の読込みと画素へのアクセス
+date: 2017-10-19 15:57:57.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  views: '541'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/13786.html"
+---
+<p>この記事は私が主催しているRobotVision勉強会の内容メモです。OpenCVの内容については下のサイトやOpenCV3.2.0のドキュメントを参考にしています。なお、開発環境はUbuntu16.04、OpenCV3.2.0です。第２回に実施した色による物体抽出のサンプルコードを紹介します。</p>
+<p><strong>1．サンプルコード</strong></p>
+<pre class="brush:cpp;">// Robot Vision勉強会 sample3
+// 2017-10-19
+#include &#60;opencv2/line_descriptor.hpp&#62;
+#include &#60;opencv2/imgproc.hpp&#62;
+#include &#60;opencv2/features2d.hpp&#62;
+#include &#60;opencv2/highgui.hpp&#62;
+#include "opencv2/imgproc/imgproc.hpp"
+#include &#60;opencv2/core/core.hpp&#62;
+#include &#60;opencv2/highgui/highgui.hpp&#62;
+#include &#60;iostream&#62;
+
+
+char window_name&#91;&#93;  = "Sample Program 3";
+char window_name2&#91;&#93; = "Output Image";
+
+int main( int argc, char** argv )
+{
+  cv::Mat img_src;
+  cv::Mat img_dst = cv::Mat::zeros(cvSize(640, 480), CV_8UC3);
+  
+  // カメラから動画の読み込み
+  cv::VideoCapture capture(0); // カメラ０番をオープン
+  if (!capture.isOpened()) {
+    std::cout &#60;&#60; "camera open error" &#60;&#60; std::endl;
+  }
+  
+  // 動画ファイルへの書き出し準備
+  cv::VideoWriter writer("output.avi", CV_FOURCC_DEFAULT, 30,
+			 cv::Size(640, 480), true);
+  if (!writer.isOpened()) {
+    std::cout &#60;&#60; "writer error" &#60;&#60; std::endl;
+  }
+  
+  // ウインドウの生成
+  cv::namedWindow(window_name, CV_WINDOW_AUTOSIZE);
+  cv::namedWindow(window_name2, CV_WINDOW_AUTOSIZE);
+  
+  int height = img_dst.rows;       // 画像の高さ&#91;pixel&#93;
+  int width  = img_dst.cols;       // 画像の幅&#91;pixel&#93; 
+  int step   = img_dst.step;       // 1行のチャンネル総数
+  int c      = img_dst.channels(); // チャンネル数
+  
+  // qキーが押されるまでループ
+  while(true) {
+    capture &#62;&#62;  img_src;  // カメラからの読み込み
+    writer  &#60;&#60;  img_src;  // ファイルへの書き出し
+
+    img_dst = img_src.clone(); // コピー
+    for (int y =0; y &#60; height; y++) {
+      for (int x = 0; x &#60; width; x++) {
+	if (x == y || x &#60; 50) {
+	  // 教科書P49参照
+	  img_dst.data&#91;y* step + x * c + 0&#93; = 0; // B　青
+	  img_dst.data&#91;y* step + x * c + 1&#93; = 0; // G　緑
+	  img_dst.data&#91;y* step + x * c + 2&#93; = 0; // R　赤
+	}
+      }
+    }
+
+    cv::imshow(window_name,img_src);   // 入力画像の表示
+    cv::imshow(window_name2, img_dst); // 出力画像の表示
+    
+    int c = cv::waitKey(1);
+    if( (char)c == 'q') break; // qキーが押されると終了
+  }
+
+  return(0);
+}
+</pre>
+<p><strong>2．ハンズオン</strong></p>
+<ul>
+<li>次のファイルをダウンロード、makeして実行しよう！
+<ul>
+<li><a href="http://demura.net/%e6%9c%aa%e5%88%86%e9%a1%9e/13786.html/attachment/sample3" rel="attachment wp-att-13790">sample3</a></li>
+</ul>
+</li>
+<li>動画を読み込むことができるように改良しよう！</li>
+<li>画像を操作して赤い円を出力画像に描こう！</li>
+<li>画素の赤成分が100以上、青と緑成分が５０以下の画素を黒くしよう！</li>
+</ul>
+<p><strong>３．発展研究</strong></p>
+<ul>
+<li>次の機能を持つ信号機検出プログラムを作ろう！
+<ul>
+<li>赤（黄、青）信号なら赤（黄、青）丸表示</li>
+<li>各信号色の座標を表示</li>
+<li>いつでも使えること（昼、夜、曇り、晴れ）</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>

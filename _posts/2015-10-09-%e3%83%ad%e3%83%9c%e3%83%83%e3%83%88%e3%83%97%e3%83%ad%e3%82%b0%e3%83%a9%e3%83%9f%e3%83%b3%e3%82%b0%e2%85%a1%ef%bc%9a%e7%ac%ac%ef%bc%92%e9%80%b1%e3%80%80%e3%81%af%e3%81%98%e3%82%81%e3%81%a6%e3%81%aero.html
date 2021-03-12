@@ -1,0 +1,57 @@
+---
+layout: post
+title: ロボットプログラミングⅡ：第２週　はじめてのROS
+date: 2015-10-09 07:43:33.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2683'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/12154.html"
+---
+<p>この記事は私が担当している講義ロボットプログラミングⅡ用です。ROSをインストールしたので、動作確認を兼ねて亀で遊んでみましょう。この記事は以下の記事を参考にしています。</p>
+<ul>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingTopics">ROSトピックの理解</a></li>
+</ul>
+<p>---------------------------------------------------------------</p>
+<p>1. 亀を動かす</p>
+<p>(1) 新しい端末を開き、「roscore」と入力しEnterキーを押し、roscoreを起動する。ノード間で通信するために必要。ノードはROSの実行プログラム。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/10/roscore1.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/roscore1.jpg" alt="roscore" width="502" height="204" class="aligncenter size-full wp-image-12156" /></a></p>
+<p>(2) 新しい端末を開き、「 rosrun turtlesim turtlesim_node」と入力しEnterキーを押すと、亀のいる水色のウインドウが開く。rosrunコマンドの使い方は、rosrun  [パッケージ名] [ノード名]で、パッケージのノードを起動する。パッケージはある機能を実現するためのプログラムの集まり。この例では、turtlesimというパッケージの中のturtlesim_nodeノードを起動している。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/10/turtlesim_node.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/turtlesim_node.jpg" alt="turtlesim_node" width="518" height="218" class="aligncenter size-full wp-image-12157" /></a></p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/10/turtlesim.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/turtlesim.jpg" alt="turtlesim" width="501" height="526" class="aligncenter size-full wp-image-12158" /></a></p>
+<p>(3) キーボードで亀を操作。新しい端末を開き「rosrun turtlesim turtle_teleop_key」と入力する。キーボードの矢印キーで亀を動かすことができる。動かない場合は、ここで入力した端末をクリックして選択する。亀のいるTurtleSimウインドウや他の端末をクリックして選択した場合は動かないので注意。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/10/teleop.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/teleop.jpg" alt="teleop" width="517" height="216" class="aligncenter size-full wp-image-12159" /></a></p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/10/teleop2.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/teleop2.jpg" alt="teleop2" width="501" height="531" class="aligncenter size-full wp-image-12160" /></a></p>
+<p>２．解説</p>
+<p>動作を確認するために亀と遊んだので少しお勉強。亀が矢印キーで動く仕組みは、turtle_simノードがturtle_teleop_keyノードから送られた(publish、出版)キーのデータを受け取り(subscribe、購読)、亀を動かしている。このデータのことをROSではトピック(topic)とよぶ。これはPublish/Subscribe (<a href="https://ja.wikipedia.org/wiki/%E5%87%BA%E7%89%88-%E8%B3%BC%E8%AA%AD%E5%9E%8B%E3%83%A2%E3%83%87%E3%83%AB">出版/購読型モデル</a>）に基づいている。ROSではトピックを使った通信の他にクライアント/サーバーモデルのサービスもある。</p>
+<p>３．演習</p>
+<p>以下のROSチュートリアルの1.2 ROSトピックから最後まで説明に従って、自分のノートパソコンで動作を確認しよう！</p>
+<ul>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingTopics">ROSトピックの理解</a></li>
+</ul>
+<p>４．ホームワーク</p>
+<ul>
+<li><a href="https://www.lpi.or.jp/linuxtext/download.php">Linux標準教科書</a>：必要事項を記入しダウンロードし、１章を読み、３章を実習しよう！</li>
+<li>次のROSチュートリアル（初級）をやろう！
+<ul>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/NavigatingTheFilesystem">ROSのファイルシステムを学ぶ</a></li>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingNodes">ROSのノードを理解する</a></li>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingTopics">ROSトピックの理解</a></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

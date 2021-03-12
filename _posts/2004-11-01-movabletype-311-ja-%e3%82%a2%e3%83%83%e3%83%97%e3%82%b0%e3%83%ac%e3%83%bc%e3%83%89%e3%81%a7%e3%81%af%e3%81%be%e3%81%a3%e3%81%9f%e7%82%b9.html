@@ -1,0 +1,26 @@
+---
+layout: post
+title: Movabletype 3.11-ja アップグレードではまった点
+date: 2004-11-01 17:29:22.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '327'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/183.html"
+---
+<p>Movabletype 3.11-ja のアップグレードは比較的簡単でしたが、少しはまった点を紹介します。</p>
+<p>アップグレードの方法は<a href="http://rebecca.ac/milano/mt/archives/000956.html">Milano::Monolog</a>を参考にしそのとおり行いました。はまった点は \mt\pluginsにsub_cat.plが既にインストールされていたため再定義エラーになりサブカテゴリがうまく実行されなかったことです。3.11aからはサブカテゴリの機能が標準で搭載されているので、sub_cat.plは必要ありません。それを削除したら問題なく動きました。</p>
+<p>なお、このエラーはmt-upgrade30.cgi、mt-upgrade31.cgiを実行すると表示されます。</p>

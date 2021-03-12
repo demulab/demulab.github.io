@@ -1,0 +1,74 @@
+---
+layout: post
+title: ＰＤ実践：タッチセンサの組立法と使用法
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '9'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14974.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、以下の方法は西川教授の資料を参考にしています。</p>
+<p>本記事は、タッチセンサの使い方と組み立て方を学びます。</p>
+<ul>
+<li><strong>API</strong>
+<ul>
+<li>ポート1のタッチセンサの状態を検出する
+<ul>
+<li> bool_t isPressed = ev3_touch_sensor_is_pressed(EV3_PORT_1);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サンプルプログラム</strong>
+<ul>
+<li>/touch/app.c：タッチセンサーが押されたら、LCDに「Pressed!」と表示し終了する。</li>
+</ul>
+</li>
+<li>LEGO Digital Designer
+<ul>
+<li>演習でLEGOブロックの3Dモデルを使います<a href="http://demura.net/lecture/14944.html">。そのためこのリンクに従ってLEGO Digital Designerをインストールしてください。</a></li>
+</ul>
+</li>
+<li><strong>演習</strong>
+<ul>
+<li>タッチセンサをEV3（ポート1）に接続した後、サンプルプログラムをEV3にアップロードし、動作を確認してください。</li>
+<li><span style="color: #ff0000;"><strong> [レポート課題]</strong> </span>サンプルプログラムを改造し、以下の機能を実現してください。<br />
+タッチセンサが押されている間は「かえるの歌」が流れ、押されていない間は音がでないプログラムを作成しよう！</li>
+<li> 下記のタッチセンサの組立例を組立ててください。タッチセンサが押されたらLCD表示するプログラムを作成し、動作を確認してください。なお、３Dモデルは以下のリンクからダウンロードしてください。西川教授から提供されたものです。
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2018/09/9b18968d5d57a2da47eeb468fdddf477.zip">LEGO組立図</a></li>
+</ul>
+</li>
+<li>24-1_touchsensor.lxf：てこの原理のタッチセンサ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/24-1_touchsensor.png"><img src="{{ site.baseurl }}/assets/images/24-1_touchsensor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-14982" /></a></li>
+<li>24-2_touchsensor.lxf：90度方向を変えるタッチセンサ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/24-2_touchsensor.png"><img src="{{ site.baseurl }}/assets/images/24-2_touchsensor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-14983" /></a></li>
+<li>25_touchsensor.lxf：前後センサ。前も後ろも感知する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/25_touchsensor.png"><img src="{{ site.baseurl }}/assets/images/25_touchsensor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-14977" /></a></li>
+<li>26-1_touchsensor.lxf：スライドスイッチ。灰色のホイールをスライドすることで、タッチセンサのオン／オフを切り替える。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/26-1_touchsensor.png"><img src="{{ site.baseurl }}/assets/images/26-1_touchsensor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-14978" /></a></li>
+<li>27-1_touchsensor.lxf：往復型回転スイッチ。回転するとオン／オフが切り替わる。回しすぎを防ぐストッパー付き。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/27-1_touchsensor.png"><img src="{{ site.baseurl }}/assets/images/27-1_touchsensor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-14979" /></a></li>
+<li>27-2_touchsensor.lxf：連続型回転スイッチ。90度回す毎に連続してオン／オフが切り替わる。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/27-2_touchsensor.png"><img src="{{ site.baseurl }}/assets/images/27-2_touchsensor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-14980" /></a></li>
+<li>28-1_touchsensor.lxf：差し込み式スイッチ。シャフトを差し込むとオンになる。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/28-1_touchsensor.png"><img src="{{ site.baseurl }}/assets/images/28-1_touchsensor-1024x472.png" alt="" width="800" height="369" class="aligncenter size-large wp-image-14981" /></a></li>
+</ul>
+</li>
+</ul>
+<p style="text-align: right;">終わり</p>

@@ -1,0 +1,131 @@
+---
+layout: post
+title: PD実践：TOPPERS/EV3RTプログラムミング演習（センサ）
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '111'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14954.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、以下の方法は西川教授の資料を参考にしています。</p>
+<p>本記事は、TOPPERS/EV3RTプログラム作成演習について説明します。</p>
+<ul>
+<li><strong>配布サンプルプログラムのビルド方法</strong>：このサンプルプログラムは西川教授から提供頂いたものです。
+<ul>
+<li>以下のリンクからサンプルプログラムをダウンロードし、解凍する。
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2018/09/LEGOsampleProgram.zip">LEGOsampleProgram</a></li>
+</ul>
+</li>
+<li>解凍後のフォルダ全体をworkspaceフォルダ下にコピーする。workspaceのWindowsでの場所は次のとおり。
+<ul>
+<li>C:\cygwin64\ev3rt\hrp2\sdk\workspace</li>
+</ul>
+</li>
+<li>各プログラムのフォルダ内には以下のファイルがある。
+<ul>
+<li> app.c：アプリケーションのデフォルトのソースファイル</li>
+<li> app.h：アプリケーションのデフォルトのヘッダファイル</li>
+<li> app.cfg：アプリケーションのタスク管理などの設定ファイル</li>
+<li> Makefile.inc：全ての実行形式で共有するメイクファイル</li>
+</ul>
+</li>
+<li><strong>ビルド方法</strong>
+<ul>
+<li>cygwin terminalを開き、workspaceに以下のコマンドで移動する。
+<ul>
+<li><code>$ cd  /ev3rt/hrp2/sdk/workspace</code></li>
+</ul>
+</li>
+<li>次のコマンドでビルドする。例えば、プログラム名がsampleの場合はmake app=sampleとなる。ダブルクゥオーテションはつけない。
+<ul>
+<li><code>$ make  app="プログラム名"</code></li>
+</ul>
+</li>
+<li><span style="color: #ff0000;"><strong>プチ演習：sampleプログラムをビルドし、EV3で実行しよう！</strong></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>プログラムの新規作成方法</strong>
+<ul>
+<li>配布サンプルプログラムを改造して（配布サンプルプログラムをテンプレートとして）、プログラムを新規作成する場合は以下の手順で行う。</li>
+<li> ワークスペースのフォルダに移動する。
+<ul>
+<li><code>$ cd /ev3rt/hrp2/sdk/workspace</code></li>
+</ul>
+</li>
+<li>テンプレートとするプログラムのフォルダから新規作成するプログラムのフォルダを作成する（コピーする）。cp -r コマンドはフォルダ毎全てコピーするときに使う。
+<ul>
+<li><code>$ cp -r &lt;テンプレートのフォルダ名&gt; &lt;新規作成のフォルダ名&gt;</code></li>
+<li>例） <code>$ cp -r lcd lcd_kadai</code></li>
+</ul>
+</li>
+<li> 新規作成したフォルダのソースプログラムをエディタで編集する。</li>
+<li> ワークスペースのフォルダでビルドする。
+<ul>
+<li><code>$ make app=&lt;新規作成のフォルダ名&gt;</code></li>
+<li>例）<code> $ make app=lcd_kadai</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>プログラム作成時の注意</strong>
+<ul>
+<li>コンパイルエラーの場合：コンパイラのエラーメッセージの内容をよく読む。わからない英単語が出た場合は調べる。ググってもよい。エラーメッセージに問題解決のヒントがあるので、それを読まないのは大損。</li>
+<li>プログラムの変更によりプログラムの動作がおかしくなった場合：多くの場合、おかしくなった原因は変更した部分にある。変更した部分をよく見直そう！全角空白文字もエラーの原因なので、コメントに日本語は使わない方が安全。</li>
+<li> プログラム実行時、EV3ロボットの動きをしっかりと観察し、プログラムと見比べて、何が問題であるかを考えること。ロボットは思った通りには動かない。プログラムの書いた通りに動く。</li>
+</ul>
+</li>
+<li><strong>センサ等のAPI</strong>
+<ul>
+<li><a href="http://demura.net/lecture/14965.html">LCDの使い方</a></li>
+<li><a href="http://demura.net/lecture/14969.html">音を鳴らそう！</a></li>
+<li><a href="http://demura.net/lecture/14974.html">タッチセンサの組立法と使用法</a></li>
+<li><a href="http://demura.net/lecture/14985.html">カラーセンサの使い方</a></li>
+<li><a href="http://demura.net/lecture/14989.html">超音波センサの使い方</a></li>
+<li><a href="http://demura.net/lecture/14991.html"> ジャイロセンサの使い方</a></li>
+</ul>
+</li>
+<li><strong>レポート課題１：以下の３問をレポートにまとめ、moodleの指定アドレスへPDFファイルを提出しなさい。</strong>
+<ul>
+<li>提出期日：</li>
+<li>表紙：<br />
+「2018年度 PD実践 レポート１：プログラミング演習（センサ）」<br />
+提出日：提出した年月日<br />
+著者情報：クラス－名 列番号・班番号・氏名<br />
+班員情報：クラス－名 列番号・氏名</li>
+<li>レポート内容
+<ul>
+<li>作成したプログラムのソースコード</li>
+<li>プログラムの内容を日本語で説明する。特に、サンプルプログラムとの変更点は詳しく説明すること。</li>
+</ul>
+</li>
+<li>問題
+<ol>
+<li>タッチセンサが押されている間は「かえるの歌」が流れ、押されていない間は音がでないプログラムを作成しよう！</li>
+<li>カラーセンサ（環境光と反射光）の組立例(29_lightsensor.lxf)を組み立ててください。フタが開いたら好きな曲が流れ、閉じたら止まるプログラムを作成しよう！<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/29_lightsensor-1.png"><img src="{{ site.baseurl }}/assets/images/29_lightsensor-1-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-14998" /></a></li>
+<li>超音波センサの計測値を表示するサンプルプログラムを改造し、以下の機能を実現してください。「障害物が20cm未満なら"Danger"、20cmから50cm未満なら"Caution"、それ以上なら"Safe"」と表示するプログラムを作成しよう！</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 30px; text-align: right;">終わり</p>
+<p>&nbsp;</p>

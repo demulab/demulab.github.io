@@ -1,0 +1,117 @@
+---
+layout: post
+title: '物理エンジンＯＤＥで学ぶＣ言語2015[Step2: Switch文]'
+date: 2015-06-24 22:49:28.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '720'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/11897.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/06/step2.jpg"><img src="{{ site.baseurl }}/assets/images/2015/06/step2.jpg" alt="step2" width="816" height="659" class="aligncenter size-full wp-image-11907" /></a></p>
+<p>物理エンジンODEを使い，ゲームを作りながらＣ言語をマスターすることを目指して連載します。ODEのバージョンは0.13に対応しています。シューティングゲームの２回目です．</p>
+<p>今回はswtich文を使ったキーボードによる戦闘機の移動と標的を表示します．<br />
+<!--more--><br />
+該当するソースコードは次のとおりです．</p>
+<pre class="brush:cpp;">/* step2　*/
+/* step2 switch文とキー処理関数　*/
+#include "dm2.h"
+#include &#60;time.h&#62;
+#include &#60;stdlib.h&#62;
+
+int fire = 0; // 発射
+double start_x = 0.0, start_y = 0.5, start_z = 0.5; // 初期位置
+double R&#91;12&#93; = {1,0,0,0, 0,1,0,0, 0,0,1,0}; // 回転行列が格納される配列, 位置(x,y,z)&#91;m&#93;
+double target&#91;3&#93; = {0.0, 0.0, 0.5};   // 位置(x,y,z)&#91;m&#93;
+double robot&#91;3&#93;  = {start_x, start_y, start_z}; // ロボットの位置
+double bullet&#91;3&#93; = {start_x, start_y, start_z}; // 弾の位置;
+double sides&#91;3&#93; = {1.0, 0.5, 1.0}; // 直方体のサイズ(x, y, z)&#91;m&#93;
+
+void command(int cmd) {
+    switch (cmd) {
+    case 'a':
+        robot&#91;0&#93; -= 1.0;
+        if (fire == 0) bullet&#91;0&#93; -= 1.0;
+        break;
+    case 'd':
+        robot&#91;0&#93; += 1.0;
+        if (fire == 0) bullet&#91;0&#93; += 1.0;
+        break;
+    case 'x':
+        robot&#91;1&#93; -= 1.0;
+        break;
+    case 'w':
+        robot&#91;1&#93; += 1.0;
+        break;
+    case 32:
+        fire = 1;
+        break;
+    default:
+        printf("Input %c (%d)\n",(char)cmd, cmd);
+    }
+}
+
+void drawTarget() {
+    int i, j, num =10;
+    for (i = 0; i &#60; num; i++) {
+        dsSetColor(1.0, 0.0, 0.0); // 色の設定
+        target&#91;0&#93; = 2 * i  + start_x - num + 1;       // 位置のx成分
+        target&#91;1&#93; = start_y + 10;       // 位置のx成分
+        target&#91;2&#93; = 0.5;                 // 位置のz成分
+        dsDrawBox(target,R,sides); // 直方体の表示
+    }
+}
+
+void drawBullet() {
+    dsSetColor(0.0, 0.0, 1.0); // 色の設定
+    dsDrawSphere(bullet,R,0.1); // 直方体の表示
+}
+
+void simLoop(int pause) {      /***  シミュレーションループ　***/
+    // ロボットの表示
+    dsSetColor(1.0, 1.0, 0.0);   // 黄色
+    dsDrawSphere(robot, R, 0.5);
+
+    if (fire) bullet&#91;1&#93; += 0.01;
+    drawBullet();  // 弾の表示
+    drawTarget();  // 標的の表示
+}
+
+int main() {       /*** main関数 ***/
+    robot&#91;1&#93; = bullet&#91;1&#93; = start_y - 10;
+    dmLoop(800, 600, simLoop, command); // シミュレーションループ ウインドウの幅，高
+    return 0;
+}
+</pre>
+<p>ここではswitch文を使ったキー処理の方法を学びます．キーボード入力の処理にswitch文はうってつけです。 ゲームではキーボード入力により弾丸を発射したり，車を操縦しますね．switch文を使って，キーボードからのキー入力を処理する方法を学びます．</p>
+<p><strong>switch文とキー処理</strong><br />
+新しく登場したのが１５行目のcommand関数です．これは，キーボードからのキー入力を引数cmdとして受け取ります．このサンプルプログラムではswitch文を使いキー入力の値に応じて分岐させ違う処理をさせています．aまたはdが入力されるとロボットを表す黄色の球を左または右へ１[m]移動します．wまたはxならロボットを上または下へ1[m]移動させます．</p>
+<p>その他のキーを入力するとdefaultにあるprintf文でcmdで入力された文字を表示します． なお、switch文の代わりにif文でもできますが、キー入力が増え分岐が多くなるとswitch文の方がすっきりした読みやすいプログラムを書けます。</p>
+<p>では，演習をしながらシューティングゲームを作っていきましょう．</p>
+<ul>
+<li><strong>演習<br />
+</strong></p>
+<ol>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2015/06/step2-150625.zip">step2-150625.tgz</a>をダウンロードし，実行してください。</li>
+<li>ロボットの形や色を自分な好きに変えよう。</li>
+<li>弾の発射速度を変更しよう。</li>
+<li>ロボットを左右にキーで動かしても、弾は移動しません。ロボットと弾を同時に動かすように変更しよう。</li>
+<li>弾が１発しか発射できません。１００発打てるようにロボットをバージョンアップしよう。</li>
+</ol>
+</li>
+</ul>
+<p>今回はここまで．</p>
+<p>以上</p>

@@ -1,0 +1,138 @@
+---
+layout: post
+title: 仮想シミュレーション環境「箱庭」の使い方
+date: 2020-08-17 22:49:17.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18547'
+  views: '164'
+  _wp_old_date: '2020-08-03'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/18504.html"
+---
+<p>仮想シミュレーション環境「箱庭」V850版の使い方を説明する。ここでは授業で使用する通信方式MMAP版の説明だけを行う。UDP版はオリジナルである参考サイトを参照されたい。</p>
+<ul>
+<li>参考サイト
+<ul>
+<li><a href="https://toppers.github.io/hakoniwa/prototypes/single-robot/">TOPPERS/箱庭 単体ロボット向け</a></li>
+</ul>
+</li>
+<li>EV3ロボット制御プログラムのビルド
+<ul>
+<li>端末で以下のコマンドを実行してビルドする。
+<ul>
+<li><code>$ cd ~/src/ev3rt-athrill-v850e2m/sdk/workspace</code></li>
+<li><code>$ make img=&lt;プログラムのディレクトリ名&gt; clean</code></li>
+<li><code>$ make img=&lt;プログラムのディレクトリ名&gt;</code></li>
+</ul>
+</li>
+<li>ビルドが成功するとaspという実行可能ファイルが生成される。</li>
+</ul>
+</li>
+<li>Unityシミュレータの起動
+<ul>
+<li>athrillより先にUnityを起動しなければ動きません。</li>
+<li>Unityの&#x25b6;ボタン（下図参照）を押すと以下の画面に切り替わりシミュレーションモードになる。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/07/mmap3.png"><img class="aligncenter size-large wp-image-18547" src="{{ site.baseurl }}/assets/images/2020/08/mmap3-1024x599.png" alt="" width="1024" height="599" /></a></p>
+<ul>
+<li>athrillの起動
+<ul>
+<li>最後に、端末で以下のコマンドを実行してathrillを実行する。
+<ul>
+<li>移動
+<ul>
+<li><code>$ cd ~/src/ev3rt-athrill-v850e2m/sdk/workspace/&lt;プログラムディレクトリ&gt;</code></li>
+</ul>
+</li>
+<li> 実行
+<ul>
+<li><code>$ athrill2 -c1 -t -1 -m memory_mmap.txt -d device_config_mmap.txt ../asp</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ライントレースの実行例
+<ul>
+<li>ビルド
+<ul>
+<li><code>$ cd ~/src/ev3rt-athrill-v850e2m/sdk/workspace</code></li>
+<li><code>$ make img=line_trace clean</code></li>
+<li><code>$ make img=line_trace</code></li>
+</ul>
+</li>
+<li>ファイルの変更
+<ul>
+<li><code>$ cd ~/src/ev3rt-athrill-v850e2m/sdk/workspace/line_trace</code></li>
+<li>Unityがアクセスしているmmap.binとunity_mmap.binにathrillがアクセスできるようにエディタで<code>~/src/ev3rt-athrill-v850e2m/sdk/workspace/line_trace/memory_mmap.txt</code>の下２行を以下のように変更する。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 160px;"><code>ROM, 0x00000000, 512<br />
+RAM, 0x00200000, 512<br />
+RAM, 0x05FF7000, 10240<br />
+RAM, 0x07FF7000, 10240<br />
+MMAP, 0x40000000, /mnt/c/Unity/line_trace/athrill_mmap.bin<br />
+MMAP, 0x40010000, /mnt/c/Unity/line_trace/unity_mmap.bin</code></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>athrillの実行
+<ul>
+<li>$ <code> athrill2 -c1 -t -1 -m memory_mmap.txt -d device_config_mmap.txt ../asp</code></li>
+</ul>
+</li>
+<li>問題がなければ、ロボットが動き出しライントレースをする。Enjoy、箱庭！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>
+<p>&nbsp;</p>

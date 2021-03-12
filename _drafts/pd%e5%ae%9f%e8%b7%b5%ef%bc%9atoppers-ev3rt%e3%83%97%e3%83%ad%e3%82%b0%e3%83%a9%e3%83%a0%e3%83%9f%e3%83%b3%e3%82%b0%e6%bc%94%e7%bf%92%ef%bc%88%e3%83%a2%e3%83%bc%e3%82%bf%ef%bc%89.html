@@ -1,0 +1,130 @@
+---
+layout: post
+title: PD実践：TOPPERS/EV3RTプログラムミング演習（モータ）
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '45'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/15015.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、以下の方法は西川教授の資料を参考にしています。</p>
+<p>本記事は、TOPPERS/EV3RT　モータ演習について説明します。</p>
+<ul>
+<li>API
+<ul>
+<li>ポートAに接続されたモータをフルパワーで回す
+<ul>
+<li> ev3_motor_set_power (EV3_PORT_A, 100);
+<ul>
+<li>第1引数はポート番号</li>
+<li>第2引数はパワー(-100～+100）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> ポートAに接続されたモータを止める
+<ul>
+<li> ev3_motor_stop (EV3_PORT_A, true);
+<ul>
+<li>第1引数はポート番号</li>
+<li>第2引数はtrue(ブレーキモード), false(フロートモード)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> ポートAに接続されたモータを360度だけフルパワーで回転させる
+<ul>
+<li> EV3_motor_rotate(EV3_PORT_A, 360, 100, true)
+<ul>
+<li>第1引数はポート番号</li>
+<li>第2引数は回転角度（マイナスの値で逆方向に回転）</li>
+<li>第3引数は回転速度（0～+100）</li>
+<li>第4引数はtrue（回転完了してからリターン）, false（回転操作を待たずにリターン）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Aポートのモータ回転角をリセットする
+<ul>
+<li> ev3_motor_reset_counts (EV3_PORT_A);</li>
+</ul>
+</li>
+<li> Aポートのモータ回転角を取得する
+<ul>
+<li> int32_t counts = ev3_motor_get_counts (EV3_PORT_A);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>サンプルプログラム
+<ul>
+<li> /motor_l_1/app.c<br />
+モーターLを1秒間正転→1秒間停止→1秒間反転→1秒間停止の後、終了する。</li>
+<li> /motor_m_1/app.c<br />
+モーターMを1秒間正転→1秒間反転→1秒間停止→1秒間正転の後、終了する。</li>
+<li>/motor_l_2/app.c または/motor_m_2/app.c<br />
+モーター（LまたはM）の回転角度（ロータリーエンコーダー値）をLCDに表示する。</li>
+</ul>
+</li>
+<li>演習
+<ul>
+<li> モータLまたはモータMをEV3（ポートA）に接続した後、サンプルプログラム(motor_m_1, motor_l_2)をEV3にアップロードし、動作を確認してください。</li>
+<li> 次のモータの組立例を組立ててください。<br />
+サンプルプログラム(motor_m_1, motor_l_1)で動作を確認してください。</li>
+<li>モータをEV3（ポートA）に接続した後、サンプルプログラム(motor_l_2)をEV3にアップロードし、動作を確認してください。</li>
+<li> サンプルプログラムを改造し、以下の機能を実現してください。<br />
+『モータを回転させ、360度回転したら、モータを停止する。』</li>
+<li><span style="color: #ff0000;"><strong> [レポート課題2] </strong></span>下記のモータの組立例(38_motor.lxf)を組み立ててください。以下の機能を実現するプログラムを作成し、動作を確認してください。<br />
+『組立例の図の左側のモータを手で回すと、右側のモータの回転速度が変化する。右側のモーターの回転速度は、左側のモーターの回転角度×100÷360とし、範囲は-100～+100とする。（マイナスは逆回転になる。）』<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/38_motor.png"><img src="{{ site.baseurl }}/assets/images/38_motor.png" alt="" width="1366" height="630" class="aligncenter size-full wp-image-15017" /></a></li>
+<li> <span style="color: #ff0000;"><strong> [レポート課題2] </strong></span>モータの組立例（(36_motor.lxf)を組み立ててください。以下の機能を実現するプログラムを作成し、動作を確認してください。<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/36_motor.png"><img src="{{ site.baseurl }}/assets/images/36_motor.png" alt="" width="1366" height="630" class="aligncenter wp-image-15016 size-full" /></a><br />
+『プログラム起動後、タッチセンサを1回押したら、タイヤによる距離の測定を開始する。もう一度、タッチセンサを押したら、距離の測定を終了する。この間のロータリエンコーダ値からタイヤの動いた距離を計算し、LCDに表示する。』</p>
+<ul>
+<li>距離の計算方法<br />
+タイヤ直径：56mmなので、タイヤ外周は56×3.14＝<br />
+175.84mmタイヤ1度あたり距離＝175.84÷360度＝0.488mm<br />
+センサー1度あたり距離＝0.488×（24歯÷8歯）＝<br />
+1.465mm。EV3は整数で計算するので、センサーの回転角度に<br />
+いったん1000倍の1465を掛けた後、1000で割ると、移動距離（mm）が計算される。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>モータの組立例
+<ul>
+<li>44_motor.lxf：かんたんシンプルカー。モーターとタイヤを直結した車。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/44_motor.png"><img src="{{ site.baseurl }}/assets/images/44_motor-1024x472.png" alt="" width="800" height="369" class="aligncenter size-large wp-image-15019" /></a></li>
+<li>46_pushsensor.lxf：ギア減速カー。1組のギアで、スピードを落とした車1組2つのギアでは、回転方向が逆転する<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/46_motor.png"><img src="{{ site.baseurl }}/assets/images/46_motor-1024x472.png" alt="" width="800" height="369" class="aligncenter size-large wp-image-15020" /></a></li>
+<li>48_motor.lxf：ウォームギア前方向回転タイプ<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/48_motor.png"><img src="{{ site.baseurl }}/assets/images/48_motor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-15022" /></a></li>
+<li>49-1_motor.lxf：ウォームギア上方向回転タイプ<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/49-1_motor.png"><img src="{{ site.baseurl }}/assets/images/49-1_motor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-15023" /></a></li>
+<li>50-1_motor.lxf：上下反復運動タイプ<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/50-1_motor.png"><img src="{{ site.baseurl }}/assets/images/50-1_motor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-15024" /></a></li>
+<li>50-2_motor.lxf：振れ幅調節のできる上下反復運動タイプ<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/50-2_motor.png"><img src="{{ site.baseurl }}/assets/images/50-2_motor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-15025" /></a></li>
+<li>51_motor.lxf：水平反復運動タイプ<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/51_motor.png"><img src="{{ site.baseurl }}/assets/images/51_motor-1024x472.png" alt="" width="800" height="369" class="aligncenter size-large wp-image-15026" /></a></li>
+<li>51_1_motor.lxf：サーボモータMとウォームギアを用いた<br />
+横方向回転タイプ<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/51_1_motor.png"><img src="{{ site.baseurl }}/assets/images/51_1_motor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-15027" /></a></li>
+</ul>
+</li>
+</ul>
+<p style="text-align: right;">終わり</p>

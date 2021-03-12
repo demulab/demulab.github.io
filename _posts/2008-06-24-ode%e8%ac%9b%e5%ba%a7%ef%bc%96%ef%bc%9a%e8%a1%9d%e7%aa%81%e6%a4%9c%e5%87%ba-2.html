@@ -1,0 +1,151 @@
+---
+layout: post
+title: ODE講座6：衝突検出
+date: 2008-06-24 08:00:39.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _aioseop_keywords: Open Dynamics Engine, ODE
+  _aioseop_title: ODE講座６：衝突検出
+  _edit_last: '2'
+  views: '6459'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/335.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2008/06/sample2.jpg" alt=" " width="280" height="269" /></p>
+<p>初心者さんからご質問があったので、よりわかりやすくするために赤いボールが地面に接触したら青色になるようにプログラムを改良しました。ゲーム開発やロボットの研究者にも使われているオープンソースの物理計算エンジンODE (Open Dynamics  Engine、オープン ダイナミクスエンジン）を学ぶODE講座の第６回目です。</p>
+<p>今回は衝突検出機能について勉強します。前回のプログラムでは衝突検出機能がなかったので、ボールが地面をすり抜けていったわけです。ODEでは動力学計算と衝突検出計算が別々に実装されています。動力学計算をするためには、ワールドworldをdWorldCreate()で生成し、その中に剛体bodyを生成し、dWorldStep()で動力学計算をしましたね。</p>
+<p><strong>ジオメトリ</strong></p>
+<p>ジオメトリとは物体の形状という意味で、下図の左からsphere（球）、box（直方体）、cylinder（円柱）、capsule（カプセル）などの種類があります。<br />
+<img src="{{ site.baseurl }}/assets/images/2008/06/geometry.jpg" alt=" " width="320" height="239" /></p>
+<p><!--more--><br />
+一方、衝突検出計算をするためには、スペースspaceをdHashSpaceCreate()で生成し、その中に剛体bodyに対応するジオメトリgeometryを生成しなければなりません。以下のサンプルプログラムでは、８５行目で球に対応するジオメトリをdCreateSphere()で生成しています。８６行目で、動力学計算の対象となるボディball.bodyと衝突検出計算の対象となるball.geomを結びつけています。これでODEの物体が完成です。<br />
+次に、simLoop関数の中で、dSpaceCollide()を呼び出します。このAPIは衝突しそうな２つのジオメトリが発生したら、それらをnearCallback関数に渡します。nearCallback関数の引数o1, o2が衝突する可能性のある２つのジオメトリです。nearCallback関数では、接触点を算出したり、接触点の性質などを設定します。　<strong><span style="color: #ff0000;">なお、注意しなければいけないことは、引数o1、o2は接触する可能性があるだけで、実際に接触しているかどうかよくわからないことです。それを知るためにはdCollide()の戻り値、つまり、接触点数が１以上かどうかチェックすれば良いのです。</span></strong></p>
+<p>また、７４行目にあるように接触点の集まりが格納される入れ物をdJointGroupCreate()で生成し、シミュレーションループで毎回それをdJointGroupEmpty()を使って空にしなければなりません。サンプルプログラムでは５７行目でやっています。これを忘れると１ステップ前の接触点達が悪さをしますのでお忘れなく！</p>
+<ul>
+<li><strong>衝突検出に関するAPI</strong>
+<ul>
+<li><span style="color: #000066;"><strong>dSpaceID dHashSpaceCreate(0)<br />
+</strong></span>衝突計算用スペースを生成し、そのID（識別子）を返す。</li>
+<li><span style="color: #000066;"><strong>dGeomID dCreatePlane(dSpaceID space ,dReal a, dReal b, dReal c, dReal d)<br />
+</strong></span>spaceにax+by+cz=dの平面ジオメトリを生成する。</li>
+<li><span style="color: #000066;"><strong>dGeomID dCreateSphere(dSpaceID space, dReal r)<br />
+</strong></span>spaceに半径rの球ジオメトリを生成する。</li>
+<li><span style="color: #000066;"><strong>void dGeomSetBody(dGeomID geom, dBodyID body)<br />
+</strong></span>物体の2つの属性であるジオメトリgeomと剛体bodyを関連づける。</li>
+<li><span style="color: #000066;"><strong>dJointGroupID dJointGroupCreate(0)<br />
+</strong></span>接触点のグループを格納するジョイントグループを生成し、そのIDを返す。</li>
+<li><span style="color: #000066;"><strong>void dJointGroupEmpty(dJointGroupID)<br />
+</strong></span>接触点が格納されているジョイントグループを空にする。</li>
+</ul>
+</li>
+</ul>
+<p>以下にソースコードを示します。 前回のプログラムと違うところだけコメントを入れています。</p>
+<p>さて、ソースコードをさっそく読みましょう。なお、前回のsample1 と全く同じstart関数やprepDrawStuff関数は省略しています。</p>
+<p>[code]<br />
+// sample2.cpp 　by 　でむ<br />
+#include<br />
+#include<br />
+#ifdef  dDOUBLE<br />
+#define dsDrawSphere dsDrawSphereD   // 単精度と倍精度の描画関数に対応するおまじない<br />
+#endif</p>
+<p>static dWorldID world;    // 動力学計算用のワールド<br />
+static dSpaceID space;  // 衝突検出用のスペース<br />
+static dGeomID  ground; // 　地面<br />
+static dJointGroupID contactgroup; // コンタクトグループ<br />
+static int flag = 0; // 地面との接触を示すflag</p>
+<p>dsFunctions fn;<br />
+const dReal   radius = 0.2,  mass   = 1.0;　　// 半径[m]、質量[m]</p>
+<p>// 前回は動力学計算用のbodyだけでしたが、今回は衝突検出用のgeomが加わったので ボールオブジェクトを構造体で定義しました。<br />
+typedef struct {<br />
+dBodyID body;    　// 動力学計算用<br />
+dGeomID geom;     // 衝突検出用<br />
+} MyObject;<br />
+MyObject ball;      // 　ボールオブジェクト</p>
+<p>// 　衝突検出のコールバック関数<br />
+static void nearCallback(void *data, dGeomID o1, dGeomID o2)<br />
+{<br />
+static const int N = 4;　　　　// 接触点数の上限は4個  staticを忘れずにつけてください．</p>
+<p>dContact contact[N];</p>
+<p>int isGround = ((ground == o1) || (ground == o2));　// 衝突する２つのうちどちらかが地面ならisGroundのフラグを立てる<br />
+int n =  dCollide(o1,o2,N,&amp;contact[0].geom,sizeof(dContact));　// nは衝突点数</p>
+<p>if (isGround)  {　// 大地の旗が立っていたら衝突検出機能を働かせる<br />
+if (n &gt;= 1) flag = 1;<br />
+else         flag = 0;<br />
+for (int i = 0; i &lt; n; i++) {<br />
+contact[i].surface.mode = dContactBounce;　// 地面の反発係数を設定<br />
+contact[i].surface.bounce = 0.0; // (0.0~1.0)   反発係数は0から1まで<br />
+contact[i].surface.bounce_vel = 0.0; // (0.0以上)   反発に必要な最低速度</p>
+<p>// コンタクトジョイント生成<br />
+dJointID c = dJointCreateContact(world,contactgroup,&amp;contact[i]);<br />
+// 接触している２つのgeometryをコンタクトジョイントで拘束<br />
+dJointAttach (c,dGeomGetBody(contact[i].geom.g1),<br />
+dGeomGetBody(contact[i].geom.g2));<br />
+}<br />
+}<br />
+}</p>
+<p>static void simLoop (int pause)<br />
+{<br />
+const dReal *pos,*R;</p>
+<p>flag = 0;                           // 地面との衝突flagを０にセット<br />
+dSpaceCollide(space,0,&amp;nearCallback); // 衝突判定、これは一番最初に書くこと。<br />
+dWorldStep(world,0.01);　　　　　           // シミュレーションを1ステップ進める<br />
+dJointGroupEmpty(contactgroup);        // ジョイントグループを空にする<br />
+if (flag == 0) dsSetColor(1.0, 0.0, 0.0);　 // 赤色の設定<br />
+else             dsSetColor(0.0, 0.0, 1.0);  //  青色の設定<br />
+pos = dBodyGetPosition(ball.body);　      // 位置<br />
+R   = dBodyGetRotation(ball.body);　      // 回転行列<br />
+dsDrawSphere(pos,R,radius);　　          　// 球の描画<br />
+}</p>
+<p>int main (int argc, char **argv)<br />
+{<br />
+dReal x0 = 0.0, y0 = 0.0, z0 = 2.0;<br />
+dMass m1;</p>
+<p>prepDrawStuff();<br />
+world = dWorldCreate();<br />
+dWorldSetGravity(world,0,0,-0.5);<br />
+space = dHashSpaceCreate(0);　// 衝突検出スペースの生成<br />
+contactgroup = dJointGroupCreate(0); //　コンタクトグループ（接触点が格納される）の生成<br />
+// 　地面の生成<br />
+ground = dCreatePlane(space,0,0,1,0); //　地面用ジオメトリの生成</p>
+<p>// 球の生成l<br />
+ball.body = dBodyCreate(world);<br />
+dMassSetZero(&amp;m1);<br />
+dMassSetSphereTotal(&amp;m1,mass,radius);<br />
+dBodySetMass(ball.body,&amp;m1);<br />
+dBodySetPosition(ball.body, x0, y0, z0);</p>
+<p>ball.geom = dCreateSphere(space,radius); // 玉ジオメトリの生成<br />
+dGeomSetBody(ball.geom,ball.body);       // 　bodyにgeomをセット</p>
+<p>dsSimulationLoop (argc,argv,352,288,&amp;fn);<br />
+dSpaceDestroy(space);    // スペースの破壊<br />
+dWorldDestroy (world);<br />
+return 0;<br />
+}<br />
+[/code]</p>
+<p>オブジェクトも動力学計算用のbody(ボディ）の他に衝突検出計算用にgeom（ジオメトリ）を設定する必要があるのでMyObject 構造体でそれらをメンバとして定義していますね。</p>
+<p>main関数の中で玉オブジェクトのgeomをdCreateSphere()で作り、dGeomSetBodyでbodyとgeomを関連付けていますのでオブジェクトの位置と姿勢はbodyだけで設定すればOKです。これをしないと幽体離脱現象に陥ってしまいます。</p>
+<p>衝突検出関数dSpaceCollideはシミュレーションの各ステップで実行されるsimLoop関数の中で呼び出されています。注意する点としては、必ずsimLoopの一番始めで呼び出してください。これを後のほうにもっていくと玉が地面を突き抜けてしまいますよ。dSpaceCollideではコー ルバック関数nearCallbackを呼び出しています。31行目で接触する可能性のある２つの物体のうち、どちらかが地面groundならisGroundをtrueにセットします。32行目のdCollide()の戻り値は接触点数です。</p>
+<p><strong> <span style="color: #ff0000;">３４行目のif (isGround)文は，衝突する可能性のある物体のうちどちらかが地面なら３５行目から４８行目までの処理をします．つまり，地面との衝突以外は考えていません．地面以外との衝突を考慮する場合は，このif文を削除してください． </span></strong></p>
+<p>３５行目で地面でかつ接触点数が１以上なら、地面と接触したことを示すflagを１にセットしています。</p>
+<p>では、<a href="http://demura.net/archives/images/ode/sample2-080124.tgz">ここからソースコードsample2-080124.tgz</a>をダウンロードして実行してください。今度は地面を突き抜けないはずです。　実行の仕方は前回とほぼ同じです。sample1をsample2と読み替えてください。</p>
+<p>課題を１つ出します。sample2を実行すると大地が好きなのかどうかよくわかりませんがボールがまったく弾みません。 この呪縛を解いてください。</p>
+<p>では、また次回！</p>
+<hr />更新履歴</p>
+<ul>
+<li>2008-6-26: nearCallbackの説明を補足（赤字）．</li>
+<li>2008-1-24: 接触したら色が変わるようにプログラムを変更し、拡張子をcppにした。</li>
+<li>2008-1-13: ソースコードを整形した．</li>
+<li>2007-9-19: sample2.tgzのmakefileを変更し怒られずに済むようにした。</li>
+<li>2007-1-20: 本文の説明をより詳しくし、ジオメトリの種類の図を追加ました。</li>
+</ul>

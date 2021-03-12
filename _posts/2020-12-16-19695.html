@@ -1,0 +1,255 @@
+---
+layout: post
+title: ROS演習12-2020：ロボットアーム２
+date: 2020-12-16 17:12:54.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '12556'
+  views: '51'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19695.html"
+---
+<p><a href="http://demura.net/lecture/12554.html/attachment/arm_sensor" rel="attachment wp-att-12556"><img class="aligncenter size-large wp-image-12556" src="{{ site.baseurl }}/assets/images/2020/12/arm_sensor-1024x598.png" alt="arm_sensor" width="800" height="467" /></a><br />
+<br />&nbsp; この記事は私が金沢工業大学ロボティクス学科で担当している講義ロボットプログラミングⅡ用です。今回は先回作った２自由度のロボットアームの先端に位置センサを取り付け、先端位置を取得するプログラムを作ります。&nbsp;
+<p></p>
+<p><strong>位置センサ用プラグインの追加</strong><br />
+<br />&nbsp; &nbsp; gazeboのロボットモデルに位置センサを取り付けるために、~/catkin_ws/src/armbot2_sensor/urdf/armbot2_sensor.gazeboに以下のプラグインを追加します。</p>
+<pre class="brush:cpp;"> 
+ &lt;gazebo&gt;
+    &lt;plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so"&gt;
+      &lt;alwaysOn&gt;true&lt;/alwaysOn&gt;
+      &lt;updateRate&gt;100.0&lt;/updateRate&gt;
+      &lt;bodyName&gt;link_sensor&lt;/bodyName&gt;
+      &lt;topicName&gt;/armbot2_sensor/pose_ground_truth&lt;/topicName&gt;
+      &lt;gaussianNoise&gt;0&lt;/gaussianNoise&gt;
+      &lt;frameName&gt;base_link&lt;/frameName&gt;
+      &lt;xyzOffsets&gt;0 0 0&lt;/xyzOffsets&gt; 
+      &lt;rpyOffsets&gt;0 0 0&lt;/rpyOffsets&gt;
+    &lt;/plugin&gt;
+  &lt;/gazebo&gt;
+</pre>
+<p><strong>ソース<br /></strong>&nbsp; 前週のソースコードにgroundTruthCallback関数を追加し、トピック/armbot2_sensor/pose_ground_truthTurtlebtをサブスクライブするだけで、位置センサからのデータを取得できます。</p>
+<pre class="brush:cpp;"> 
+#include "ros/ros.h"  // rosで必要はヘッダーファイル
+#include "std_msgs/Float64.h"
+#include "sensor_msgs/JointState.h"
+#include "nav_msgs/Odometry.h"
+
+using namespace std;
+
+std_msgs::Float64 tmp_joint1, tmp_joint2;
+double pos_x, pos_y, pos_z;
+
+
+void groundTruthCallback(const nav_msgs::Odometry::ConstPtr&amp; msg)
+{ 
+  //msg-&gt;pose.pose.position, msg-&gt;pose.pose.orientation, 
+  pos_x = msg-&gt;pose.pose.position.x;
+  pos_y = msg-&gt;pose.pose.position.y;
+  pos_z = msg-&gt;pose.pose.position.z;
+  ROS_INFO("Pose: x=%f y=%f \n",pos_x,pos_y);
+}
+
+void monitorJointState(const sensor_msgs::JointState::ConstPtr&amp; jointstate)
+{
+  tmp_joint1.data = jointstate-&gt;position[0];
+  tmp_joint2.data = jointstate-&gt;position[1]; 
+}
+
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "teleop_sensor"); 
+  // initでROSを初期化して、my_teleopという名前をノードにつける                        
+  // 同じ名前のノードが複数あってはいけないので、ユニークな名前をつける
+
+  ros::NodeHandle nh;
+  // ノードハンドラの作成。ハンドラは必要になったら起動される。
+  ros::Publisher  pub_joint1, pub_joint2;
+  // パブリッシャの作成。トピックに対してデータを送信。
+
+  ros::Subscriber sub_joints, sub_sensor;
+  // サブスクライバの作成
+
+  ros::Rate rate(10);
+  // ループの頻度を設定。この場合は10Hz、1秒間に10回数、1ループ100ms。
+
+  std_msgs::Float64 target_joint1, target_joint2;
+
+  pub_joint1 = nh.advertise&lt;std_msgs::Float64&gt;("/armbot2_sensor/joint1_position_controller/command", 100);
+  pub_joint2 = nh.advertise&lt;std_msgs::Float64&gt;("/armbot2_sensor/joint2_position_controller/command", 100);
+  sub_sensor = nh.subscribe&lt;nav_msgs::Odometry&gt;("/armbot2_sensor/pose_ground_truth", 100, groundTruthCallback);
+  sub_joints = nh.subscribe("/armbot2_sensor/joint_states", 100, monitorJointState);
+
+  target_joint1.data = 0;
+  target_joint2.data = 0;
+
+  int loop = 0;
+  while (ros::ok()) { // このノードが使える間は無限ループ
+    char key;  // 入力キーの値
+
+    ROS_INFO("[Input] j: Joint1++, f: Joint1--, k: Joint2++, d:Joint2--");
+    cin &gt;&gt; key; 
+    cout &lt;&lt; key &lt;&lt; endl;
+
+    switch (key) {
+    case 'j': target_joint1.data  +=  5 * M_PI/180.0; break;
+    case 'f': target_joint1.data  -=  5 * M_PI/180.0; break;
+    case 'k': target_joint2.data  +=  5 * M_PI/180.0; break;
+    case 'd': target_joint2.data  -=  5 * M_PI/180.0; break;
+    default: ROS_INFO("Input j,f,k,d");
+    }
+      
+    pub_joint1.publish(target_joint1); // 角度を送信    
+    pub_joint2.publish(target_joint2);
+    ROS_INFO("Targe: Joint1=%f Joint2=%f", target_joint1.data, target_joint2.data);
+
+    usleep(1000*1000);
+    ros::spinOnce(); // コールバック関数を呼ぶ
+    ROS_INFO("Tmp:   Joint1=%f Joint2=%f", tmp_joint1.data,    tmp_joint2.data);
+    //rate.sleep();     // 指定した周期でループするよう寝て待つ
+  }
+ 
+  return 0;
+}
+</pre>
+<p><strong>launchファイル</strong><br />
+<br />&nbsp; この演習で使うlaunchファイルarmbot2_sensor.launchを以下示す。説明はコメントを読んで頂きたい。このlaunchファイルでgazeboやロボットコントローラなどの必要なノードを起動している。</p>
+<pre class="brush:xml;"> 
+&lt;launch&gt;
+  &lt;!-- armbot2_sensor.launch --&gt;
+  &lt;!-- GAZEBO用のパラメータ --&gt;
+  &lt;arg name="paused" default="false"/&gt;       &lt;!-- true：起動時は一時停止 --&gt;
+  &lt;arg name="use_sim_time" default="true"/&gt;  &lt;!-- true：システムクロックではなくROSの/clockトピックを使う --&gt;
+  &lt;arg name="gui" default="true"/&gt;           &lt;!-- true：GAZEBOのグラフィクスユーザインタフェースを起動 --&gt;
+  &lt;arg name="headless" default="false"/&gt;     &lt;!-- true：GAZEBOのログを取る --&gt;
+  &lt;arg name="debug" default="false"/&gt;        &lt;!-- true：デバッグモードでGAZEBOサーバーを起動 --&gt;
+
+  &lt;!-- ワールドの起動 --&gt;
+  &lt;include file="$(find gazebo_ros)/launch/empty_world.launch"&gt; 
+   &lt;arg name="world_name" value="$(find armbot2_sensor)/launch/armbot2.world"/&gt;
+  &lt;/include&gt;
+
+  &lt;!-- ROSパラメータサーバーへURDFをロード --&gt;
+  &lt;param name="robot_description"
+  command="$(find xacro)/xacro '$(find armbot2_sensor)/urdf/armbot2_sensor.xacro'" /&gt;
+
+  &lt;!-- URDFで記述されたロボットを生成するためgazebo_rosへサービスコールを送付 --&gt;
+  &lt;node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+	args="-urdf -model armbot2_sensor -param robot_description"/&gt;
+
+  &lt;!-- ROSパラメータサーバーへのジョイントコントローラ設定ファイルのロード --&gt;
+  &lt;rosparam file="$(find armbot2_sensor)/config/armbot2_control.yaml" command="load"/&gt;
+
+  &lt;!-- コントローラのロード --&gt;
+  &lt;node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/armbot2_sensor" args="joint_state_controller
+					  joint1_position_controller
+					  joint2_position_controller"/&gt;
+
+  &lt;node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"&gt;
+      &lt;remap from="/joint_states" to="/armbot2_sensor/joint_states" /&gt; 
+  &lt;/node&gt; 
+&lt;/launch&gt;
+</pre>
+<p><strong>準　備 ([ROS演習11-2020：ロボットアーム]で実施した場合は必要ありません)</strong></p>
+<ul>
+<li>$ sudo apt-get update</li>
+<li>$ sudo apt-get install ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros-control</li>
+<li>$ sudo apt-get install ros-melodic-gazebo-plugins &nbsp;ros-melodic-gazebo-ros</li>
+<li>$ sudo apt-get install ros-melodic-moveit-*</li>
+<li>$ sudo apt-get install ros-melodic-ros-control ros-melodic-ros-controllers &nbsp;ros-melodic-joint-state-controller ros-melodic-effort-controllers ros-melodic-position-controllers ros-melodic-joint-trajectory-controller</li>
+<li>$ sudo apt-get install liburdfdom-tools</li>
+</ul>
+<p><strong>プログラムとビルド</strong>
+<ul>
+<li><span style="font-size: 13.2px;">$&nbsp; cd&nbsp; ~/src/robot_programming2</span></li>
+<li><span style="font-size: 13.2px;">$&nbsp; git pull</span></li>
+<ul>
+<li><span style="font-size: 13.2px;">git pullでarmbot2をダウンロードできない場合は以下の作業を行う。</span></li>
+<ul>
+<li><span style="font-size: 13.2px;">学内</span></li>
+<ul>
+<li><span style="font-size: 13.2px;">$ rm ~/src/robot_programming2</span></li>
+<li><span style="font-size: 13.2px;">$ git clone https://github.com/demulab/robot_programming2.git</span></li>
+</ul>
+<li><span style="font-size: 13.2px;">学外</span></li>
+<ul>
+<li><span style="font-size: 13.2px;">$ rm ~/src/robot_programming2</span></li>
+<li><span style="font-size: 13.2px;">$ git clone https://github.com/demulab/robot_programming2.git -c http.proxy=””</span></li>
+</ul>
+<li><span style="font-size: 13.2px;">~/catkin_ws/srcの下にコピーする。</span></li>
+<ul>
+<li><span style="font-size: 13.2px;">$ cp -r ~/src/robot_programming2/armbot2_sensor&nbsp; ~/catkin_ws/src/.&nbsp;</span></li>
+</ul>
+</ul>
+</ul>
+<li><span style="font-size: 13.2px;">$&nbsp; catkin build armbot2_sensor</span></li>
+<p></ul>
+<ul>
+</ul>
+<p><strong>実　行</strong><br />
+<br />&nbsp; &nbsp;端末を２つ開き、次のコマンドを実行する。</p>
+<ul>
+<li>$ roslaunch &nbsp;armbot2_sensor &nbsp;armbot2_sensor.launch</li>
+<li>$ rosrun armbot2_sensor armbot2_sensor
+<ul>
+<li>armbot2を実行している端末をクリックし、j, k, f, dコマンドを入力する毎にEnterキーを入力するとロボットアームが動く。各コマンドを入力する度にEnterキーを押さなければ動きません。jは第1関節を正方向、fは負方向、 kは第2関節を正方向、dは負方向に目標角度を5度ずつ変化させる。</li>
+</ul>
+</li>
+</ul>
+<p><strong>演　習</strong></p>
+<ul>
+<li>&nbsp;運動学<br />
+運動学を実装しよう。その計算結果と位置センサの出力を比較し、プログラムが正しいか確認する。</li>
+<li>&nbsp;逆運動学<br />
+逆運動学を実装しよう。２自由度の場合は解が２つあるので、数字キー１を押すと解１、数字キー２を押すと解２を選択するにしなさい。</li>
+</ul>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li>Gazebo Tutorials
+<ul>
+<li><a href="http://gazebosim.org/tutorials?tut=ros_urdf&amp;cat=connect_ros">URDF in Gazebo</a></li>
+<li><a href="http://gazebosim.org/tutorials?cat=connect_ros">Connect to ROS</a></li>
+<li><a href="http://gazebosim.org/tutorials?tut=ros_control#Tutorial:ROSControl">ROS Control</a></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>

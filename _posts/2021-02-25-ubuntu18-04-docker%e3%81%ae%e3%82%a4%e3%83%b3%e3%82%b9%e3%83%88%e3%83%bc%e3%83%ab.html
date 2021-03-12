@@ -1,0 +1,149 @@
+---
+layout: post
+title: 'Ubuntu18.04:  Dockerのインストール'
+date: 2021-02-25 15:36:30.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-03-09 15:37:27'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  views: '3'
+  _wp_old_date: '2021-03-09'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/20042.html"
+---
+<p>DockerをUbuntu18.04にインストールしたときのメモ。Dockerの公式サイトdocs.docker.comに従っている。</p>
+<p><strong>参考サイト</strong></p>
+<ul>
+<li><a href="https://docs.docker.com/engine/install/ubuntu/">Install Docker Engine on Ubuntu</a></li>
+</ul>
+<p><strong>古いバージョンの削除</strong></p>
+<ul>
+<li>以下のコマンドで古いバージョンを削除する。インストールされていなければ、インストールされていないと表示される。
+<ul>
+<li>$  <code>sudo apt-get remove docker docker-engine docker.io containerd runc</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>リポジトリの設定
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt install apt-transport-https ca-certificates curl gnupg</code></li>
+</ul>
+</li>
+<li>Docker公式GPG鍵を追加
+<ul>
+<li>$<code> curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg</code></li>
+</ul>
+</li>
+<li>リポジトリの追加
+<ul>
+<li>x86_64/amd64 (Intel,  AMD 64bit CPU)
+<ul>
+<li>$ <code>echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null</code></li>
+</ul>
+</li>
+<li>arm64 (ARM 64bit CPU,  Raspberry Pi4ならこちら）
+<ul>
+<li>$<code> echo "deb [arch=arm64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DOCKERエンジンのインストール
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt install docker-ce docker-ce-cli containerd.io</code></li>
+</ul>
+</li>
+<li>テスト
+<ul>
+<li>うまくインストールされたか以下のコマンドでテストする。このコマンドにより、テストイメージをダウンロードしてコンテナ内で実行する。実行では情報を表示して終了する。
+<ul>
+<li>$ <code>sudo docker run hello-world</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>インストール後の設定</strong></p>
+<ul>
+<li>DockerデーモンはTCPポートではなく、UNIXソケットをバインドするのでルート権限が必要になる。そのため、dockerコマンドを実行するときはsudoを前につけなければならない。いちいち付けるのが面倒な場合は、以下の設定を行う。
+<ul>
+<li>dockerグループを作る。
+<ul>
+<li>$ <code>sudo groupadd docker</code></li>
+</ul>
+</li>
+<li>ユーザをdockerグループに追加する。
+<ul>
+<li>$ <code>sudo usermod -aG docker $USER</code></li>
+</ul>
+</li>
+<li>グループの変化をシステムに反映させる。
+<ul>
+<li>$ <code> newgrp docker</code></li>
+</ul>
+</li>
+<li>テスト。先ほどはsudoをつけて実行したが、なしでやってみよう。
+<ul>
+<li>$ <code>docker run hello-world</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ブート時にDocker の自動起動
+<ul>
+<li>設定
+<ul>
+<li>$ <code>sudo systemctl enable docker.service</code></li>
+<li>$ <code>sudo systemctl enable containerd.service</code></li>
+</ul>
+</li>
+<li>解除
+<ul>
+<li>$ <code>sudo systemctl disable docker.service</code></li>
+<li>$ <code>sudo systemctl disable containerd.service</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

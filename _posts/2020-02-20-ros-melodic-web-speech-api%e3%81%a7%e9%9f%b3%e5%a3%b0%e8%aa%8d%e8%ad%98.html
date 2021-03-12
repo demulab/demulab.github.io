@@ -1,0 +1,130 @@
+---
+layout: post
+title: 'ROS Melodic: Web Speech APIで音声認識'
+date: 2020-02-20 18:09:28.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '15977'
+  views: '346'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/16748.html"
+---
+<p>Wep Speech APIを使うと音声認識が簡単にできる。しかも、ROSパッケージは以下のサイトで公開されており、開発者furushchevさんの詳しい日本語の解説記事もある。本記事はその作業メモ。</p>
+<ul>
+<li>解説記事：<a href="https://qiita.com/furushchev/items/47d4746bf17ce4589f58">ROSを使ってWebインターフェース経由で音声認識する</a> by @furushchevさん</li>
+<li>Github: <a href="https://github.com/tork-a/visualization_rwt">https://github.com/tork-a/visualization_rwt</a> by Tokyo Opensource Robotics Kyokai Association</li>
+<li>Web Speech API参考リンク
+<ul>
+<li><a href="https://wicg.github.io/speech-api/">Web Speech API, Draft Community Group Report, 21 January 2020</a></li>
+<li><a href="https://qiita.com/hmmrjn/items/be29c62ba4e4a02d305c">Webページでブラウザの音声合成機能を使おう - Web Speech API Speech Synthesis</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>作業環境</strong></p>
+<ul>
+<li>Ubuntu18.04</li>
+<li>ROS Melodic</li>
+<li>Google Chrome バージョン: 80.0.3987.87（Official Build） （64 ビット）(他のブラウザは対応してないようだ)</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ol>
+<li>以下のサイトのとおり実施した。推奨されているaptでのインストールはmelodic用のパッケージが見つけられなかったのでソースからビルドした。wstoolはワークスペースのバージョン管理システム。<a href="https://github.com/tork-a/visualization_rwt">https://github.com/tork-a/visualization_rwt</a></li>
+<li>ワークスペースを初期化する。
+<ul>
+<li><code>$ cd ~/catkin</code></li>
+<li><code>$ wstool init src</code></li>
+</ul>
+</li>
+<li>ワークスペースに新しいリポジトリを設定する。
+<ul>
+<li><code>$ cd src</code></li>
+<li><code>$ wstool set visualization_rwt --git https://github.com/tork-a/visualization_rwt/</code></li>
+</ul>
+</li>
+<li>ワークスペースのリポジトリをアップデートする。
+<ul>
+<li><code>$ wstool update</code></li>
+</ul>
+</li>
+<li>依存関係の解消
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ rosdep install --from-paths src --ignore-src --rosdistro  ${ROS_DISTRO} -r -y</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ catkin build</code><code></code></li>
+</ul>
+</li>
+</ol>
+<p><strong>実行</strong></p>
+<ul>
+<li>端末を開き、以下のコマンドを実行する
+<ul>
+<li>$ roslaunch rwt_speech_recognition rwt_speech_recognition.launch</li>
+</ul>
+</li>
+<li>以下のリンクをクリックするかChromeブラウザを起動し以下のアドレスを検索窓に入れる。
+<ul>
+<li><a href="http://localhost:8000/rwt_speech_recognition/">http://localhost:8000/rwt_speech_recognition/</a></li>
+</ul>
+</li>
+<li>音声認識をスタートさせるためには、以下のChrome画面で緑に塗られているStartボタンをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/08/Screenshot_2019-08-05_11-16-36.png"><img class="aligncenter size-large wp-image-15977" src="{{ site.baseurl }}/assets/images/2020/02/Screenshot_2019-08-05_11-16-36-1024x516.png" alt="" width="1024" height="516" /></a></li>
+<li>Chromeの画面のマイクに英語で話しかけ、認識結果が表示されていれば成功。日本語で話しかけたい場合はブラウザのLanguageを日本語にすればよい。デフォルトではROSのトピック名が/Tablet/voiceになっているが、この画面から自由に変更できる。なお、連続して音声認識をしたい場合はModeをContinuousにすればよい。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/08/Screenshot_2019-08-05_11-22-15-1.png"><img class="aligncenter size-large wp-image-15979" src="{{ site.baseurl }}/assets/images/2020/02/Screenshot_2019-08-05_11-22-15-1-1024x792.png" alt="" width="1024" height="792" /></a></li>
+<li>では、最後にトピックを確認しよう。別の端末を開き、以下のコマンドで認識結果のトピック/Tablet/voiceを表示する。
+<ul>
+<li><code>$ rostopic echo /Tablet/voice</code></li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/08/Screenshot_2019-08-05_11-22-30.png"><img class="aligncenter size-full wp-image-15980" src="{{ site.baseurl }}/assets/images/2020/02/Screenshot_2019-08-05_11-22-30.png" alt="" width="762" height="842" /></a></p>
+<ul>
+<li>うまくいかない場合は、インストールの４，５，６番の作業を繰り返してみよう。私の環境ではそれで問題が解決した。</li>
+</ul>
+<p><strong>カスタマイズ</strong></p>
+<ul>
+<li>デフォルトではトピック名が/Tablet/voiceになっている。変更したいときは以下のファイル29行目のvalueの値を変更する。
+<ul>
+<li>~/catkin_ws/src/visualization_rwt/rwt_speech_recognition/www/index.html</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>

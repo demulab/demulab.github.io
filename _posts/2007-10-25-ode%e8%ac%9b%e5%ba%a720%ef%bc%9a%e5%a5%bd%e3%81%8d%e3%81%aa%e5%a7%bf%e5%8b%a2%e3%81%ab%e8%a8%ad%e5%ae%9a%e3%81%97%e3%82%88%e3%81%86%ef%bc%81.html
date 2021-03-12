@@ -1,0 +1,138 @@
+---
+layout: post
+title: ODE講座20：好きな姿勢に設定しよう！
+date: 2007-10-25 00:39:49.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '4989'
+  _syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/457.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2007/10/orientation.jpg" alt="ODE orientation" width="360" height="291" /></p>
+<p>お待たせしました。約半年ぶりのODE講座です。さて、任意のベクトルの向きに沿うように円柱を表示させる方法に関してご質問があったので、試しにサンプルプログラムを作ってみました。</p>
+<p>ここではdRFromAxisAndAngle()とdRFromZAxis()のAPIを使って実現しています。 この他にdRFromEulerAngles()のAPIもありますが、ODEのオイラー角はロボット関係者にとっては標準的ではないので省略します。 詳細については、<a href="http://demura.net/archives/9ode/faq.html#b9">よくある質問</a>をご覧ください。</p>
+<p><!--more--></p>
+<p>このプログラムは、２点a[3], b[3]を通るベクトルと同じ姿勢を取るカプセルを２個表示させます。一つはdRFromAxisAndAngle()、もう一つはより簡単なdRFromZAxis()を使った方法です。dRFromZAxisはODEのメーリングリストで紹介された方法で、dRFromAxisAndAngle()は自分で考えてみました。</p>
+<ul>
+<li>void <strong>dRFromAxisAndAngle</strong>(dMatrix3 R, dReal rx, dReal ry, dReal rz,  dReal angle)<br />
+ 回転軸(rx, ry, rz)を中心にangle [rad]回転したときの回転行列Rを取得する。ソースはode/src/rotation.cppにある。</li>
+</ul>
+<p>このAPIを使ってベクトルの向きにカプセルの姿勢を設定するためには、自分で回転軸とその姿勢に必要な角度を計算する必要があります。ジオメトリのデフォルトの初期姿勢は、カプセルや円柱なら直立した状態です。これを重心を通るある軸を中心に回転させ、その姿勢が設定したいベクトルの向きと同じになれば良いわけです。サンプルプログラムではこれを実装しています。</p>
+<ul>
+<li>void <strong>dRFromZAxis</strong>(dMatrix3 R, dReal rx, dReal ry, dReal rz)<br />
+ 回転後のz軸(rx, ry, rz)から回転行列Rを取得する。ソースはode/src/rotation.cppにある。</li>
+</ul>
+<p>このAPIは回転後のz軸を入力すると自動的にx軸、y軸を求め、それから回転行列Rを求めます。カプセルや円柱をベクトルの向きにするためには、rxにb[0]-a[0]、ryにb[1]-a[1]、rzにb[2]-a[2]を入れてください。カプセルや円柱の長軸方向を中心とした回転を考える必要がない場合は、こちらが簡単です。</p>
+<p>なお、サンプルプログラムは簡単にするために衝突検出などは省いています。</p>
+<p><strong><br />
+ 演習問題</strong></p>
+<ul>
+<li>以下のサンプルプログラムを参考に２点a, bを端点とする円柱を表示しよう。</li>
+</ul>
+<hr />
+<pre class="brush:cpp">// orientation.cpp: 初期姿勢の設定 by Kosei Demura (2007-10-24)&#60;br /&#62;&#60;br /&#62;
+#include&#60;ode/ode.h&#62;
+#include&#60;drawstuff/drawstuff.h&#62;
+#ifdef dDOUBLE
+#define dsDrawBox      dsDrawBoxD
+#define dsDrawSphere   dsDrawSphereD
+#define dsDrawCylinder dsDrawCylinderD
+#define dsDrawCapsule  dsDrawCapsuleD
+#endif
+
+// extern void dsStartGraphics(int window_width, int window_height, struct dsFunctions *fn);
+static dWorldID world;
+static dSpaceID space;
+static dGeomID  ground;
+static dGeomID  capsule, capsule2;
+static dJointGroupID contactgroup;
+dsFunctions fn;
+
+static void simLoop(int pause)
+{
+    const dReal *pos, *pos2;
+    const dReal *R, *R2;
+    dReal r, l;
+
+    pos  = dGeomGetPosition(capsule);
+    pos2 = dGeomGetPosition(capsule2);
+    R    = dGeomGetRotation(capsule);
+    R2   = dGeomGetRotation(capsule2);
+    dGeomCapsuleGetParams(capsule, &amp;r, &amp;l);
+    dsSetColor(1.2, 0.0, 0.0);
+    dsDrawCapsule(pos, R, l, r);
+    dsSetColor(0.0, 1.2, 0.0);
+    dsDrawCapsule(pos2, R2, l, r);
+}
+
+void start()
+{
+    static float xyz&#91;3&#93; = {   3.0, 0.0, 1.0};
+    static float hpr&#91;3&#93; = {-180.0, 0.0, 0.0};
+    dsSetViewpoint(xyz, hpr);
+    dsSetSphereQuality(3);
+}
+
+void  setDrawStuff()
+{
+    fn.version = DS_VERSION;
+    fn.start   = &amp;start;
+    fn.step    = &amp;simLoop;
+    fn.command = NULL;
+    fn.stop    = NULL;
+    fn.path_to_textures = "../../drawstuff/textures";
+}
+
+// カプセルの生成
+void makeCapsule()
+{
+    dReal r = 0.05, l = 1.0;
+    dReal x  = 0, y  = -1,  z  = 1;          　 // 重心の座標
+    dReal x2 = 0, y2 =  0,  z2 = 1;          // 重心の座標
+    dReal angle;                             　　　　 // 回転角
+    dReal a&#91;3&#93; = {0, 0, 0};                  　 // ベクトルの始点
+    dReal b&#91;3&#93; = {1, 1, 1};                 　　 // ベクトルの終点
+
+    capsule  =  dCreateCapsule(space, r, l);    // 直方体ジオメトリの生成
+    capsule2 =  dCreateCapsule(space, r, l);    // 直方体ジオメトリの生成
+
+    dMatrix3 R, R2;
+    if (b&#91;1&#93; &#62; 0.0) angle = atan2(-sqrt(b&#91;0&#93;*b&#91;0&#93;+b&#91;1&#93;*b&#91;1&#93;), b&#91;2&#93;);
+    else           　angle = atan2( sqrt(b&#91;0&#93;*b&#91;0&#93;+b&#91;1&#93;*b&#91;1&#93;), b&#91;2&#93;);
+
+    if (b&#91;1&#93; != 0.0)  dRFromAxisAndAngle(R, 1, - b&#91;0&#93;/b&#91;1&#93;, 0, angle);
+    else           　　dRFromAxisAndAngle(R, 0, 1, 0, angle);
+
+    dRFromZAxis(R2, b&#91;0&#93;-a&#91;0&#93;, b&#91;1&#93;-a&#91;1&#93;, b&#91;2&#93;-a&#91;2&#93;);
+    dGeomSetPosition(capsule,  x , y , z );       // 位置の設定
+    dGeomSetPosition(capsule2, x2, y2, z2);       // 位置の設定
+    dGeomSetRotation(capsule,  R);           　   // 姿勢の設定
+    dGeomSetRotation(capsule2, R2);               // 姿勢の設定
+}
+
+int main(int argc, char *argv&#91;&#93;)
+{
+    setDrawStuff();
+    world = dWorldCreate();
+    space = dHashSpaceCreate(0);
+    contactgroup = dJointGroupCreate(0);
+    makeCapsule();
+    dsSimulationLoop(argc,argv,640,480,&amp;fn);
+    dWorldDestroy(world);
+    return 0;
+}
+</pre>

@@ -1,0 +1,394 @@
+---
+layout: post
+title: 'GAZEBO: ２自由度ロボットアーム'
+date: 2014-12-12 07:33:43.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '4480'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/11453.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2014/12/arm1.jpg"><img src="{{ site.baseurl }}/assets/images/2014/12/arm1.jpg" alt="2DOF robot arm by gazebo" width="817" height="574" class="aligncenter size-full wp-image-11458" /></a></p>
+<p>この記事が私が担当しているロボットプログラミングⅡの講義用です。</p>
+<p>今回は２自由度のロボットアームモデルを作成し、キーボード操作により動かすサンプルです。</p>
+<p>1. 作業ディレクトリの作成<br />
+端末を開き、以下のコマンドを実行する（$は打ち込まない）。ロボットプログラミングの演習では~/prog2ディレクトリ（フォルダ）の中にいろいろなプログラムを作っていく。<br />
+<code><br />
+$ mkdir -p ~/prog2/6arm<br />
+$ cd ~/prog2/6arm<br />
+$ gedit arm.cc<br />
+</code></p>
+<p>2. ソースコードの作成<br />
+プラグインとなるC++言語のソースコード(拡張子cc)を作成する。</p>
+<p>以下のプログラムを「1.作業ディレクトリの作成」で開いたgedit（エディター）に次のソースコードをコピペしてarm.ccを保存する。</p>
+<pre class="brush:cpp;">#include &#60;boost/bind.hpp&#62;
+#include &#60;gazebo/gazebo.hh&#62;
+#include &#60;gazebo/physics/physics.hh&#62;
+#include &#60;gazebo/sensors/sensors.hh&#62;
+#include &#60;gazebo/common/common.hh&#62;
+#include &#60;gazebo/transport/TransportTypes.hh&#62;
+#include &#60;gazebo/msgs/MessageTypes.hh&#62;
+#include &#60;gazebo/common/Time.hh&#62;
+#include &#60;stdio.h&#62;
+
+namespace gazebo
+{
+class MobileBasePlugin : public ModelPlugin
+{
+public:
+    void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
+    {
+        physics::WorldPtr world = physics::get_world("default");
+
+        // modelへポインタを格納
+        this-&#62;model = _parent;
+
+        hinge1 = this-&#62;model-&#62;GetJoint("hinge1");
+        hinge2 = this-&#62;model-&#62;GetJoint("hinge2");
+        sensor = this-&#62;model-&#62;GetLink("sensor");
+
+        for (int i=0; i&#60; 3; i++)
+        {
+            THETA&#91;i&#93; = 0;
+        }
+        // このプラグイン用のパラメータをロード
+        if (this-&#62;LoadParams(_sdf))
+        {
+            // アップテートイベントを聞く。シミュレーションの繰り返し時に
+            // このイベントはブロードキャストされる。
+            this-&#62;updateConnection
+            = event::Events::ConnectWorldUpdateBegin(
+                  boost::bind(&amp;MobileBasePlugin::OnUpdate, this));
+        }
+    }
+ 
+    bool LoadParams(sdf::ElementPtr _sdf)
+    {
+        // 制御用のgainパラメータを見つける
+        if (!_sdf-&#62;HasElement("gain"))
+        {
+            gzerr &#60;&#60; "param &#91;gain&#93; not found\n";
+            return false;
+        }
+        else
+        {
+            // gainの値を取得
+            this-&#62;gain = _sdf-&#62;Get&#60;double&#62;("gain");
+        }
+ 
+        // 成功時
+        return true;
+    }
+ 
+    // getch関数は以下のウェブサイトの記事を使用
+    // http://answers.ros.org/question/63491/keyboard-key-pressed/
+    int getch()
+    {
+        static struct termios oldt, newt;
+        tcgetattr(STDIN_FILENO, &amp;oldt);           // save old settings
+        newt = oldt;
+        newt.c_lflag &amp;= ~(ICANON);                 // disable buffering
+        tcsetattr(STDIN_FILENO, TCSANOW, &amp;newt);  // apply new settings
+ 
+        int c = getchar();  // read character (non-blocking)
+ 
+        tcsetattr(STDIN_FILENO, TCSANOW, &amp;oldt);  // restore old settings
+        return c;
+    }
+ 
+    /*** キー入力関数 ***/
+    void command()
+    {
+        int cmd = getch();
+ 
+        switch (cmd)
+        {
+        case 'j':
+            THETA&#91;1&#93; += M_PI/180;
+            break;     // jキー
+        case 'f':
+            THETA&#91;1&#93; -= M_PI/180;
+            break;     // fキー
+        case 'k':
+            THETA&#91;2&#93; += M_PI/180;
+            break;     // kキー
+        case 'd':
+            THETA&#91;2&#93; -= M_PI/180;
+            break;     // dキー
+        default:
+            std::cout &#60;&#60; "Input j,f,k,d" &#60;&#60; std::endl;
+        }
+    }
+ 
+    /*** センサー情報の表示　***/
+    void printSensor()
+    {
+        // 関節角表示
+        math::Angle angle1 = hinge1-&#62;GetAngle(0);   // 関節角の取得
+        math::Angle angle2 = hinge2-&#62;GetAngle(0);
+        // 度表示
+        printf("angle1=%6.3f angle2=%6.3f ", angle1.Degree(), angle2.Degree());
+        // radian表示
+        //printf("angle1=%f angle2=%f", angle1.Radian(), angle2.Radian());
+ 
+        // 手先位置表示
+        math::Pose pose = sensor-&#62;GetWorldCoGPose();
+        printf("x=%6.3f y=%6.3f \n", pose.pos.x,pose.pos.y);
+    }
+ 
+    /*** 関節を動かす ***/
+    void moveJoint()
+    {
+        hinge1-&#62;SetAngle(0, THETA&#91;1&#93;);
+        hinge2-&#62;SetAngle(0, THETA&#91;2&#93;);
+    }
+ 
+    // ワールド更新開始イベントから呼び出される
+    void OnUpdate()
+    {
+        command();    // キー入力受付
+        moveJoint();  // 関節の動かす
+        printSensor();
+    }
+ 
+private:
+    // モデルへのポインタ
+    physics::ModelPtr model;
+    physics::WorldPtr world;
+ 
+    // ワールド状態のサブスクライブ(講読)
+    transport::NodePtr node;
+    transport::SubscriberPtr statsSub;
+    common::Time simTime;
+ 
+    // 更新イベントコネクションへのポインタ
+    event::ConnectionPtr updateConnection;
+    physics::JointPtr hinge1, hinge2;
+    sensors::RaySensorPtr laser;
+    physics::LinkPtr  sensor;
+    double THETA&#91;3&#93;; // 関節目標角度 THETA&#91;0&#93;は未使用
+    double gain;     // 比例ゲイン
+};
+ 
+// シミュレータへのプラグイン登録
+GZ_REGISTER_MODEL_PLUGIN(MobileBasePlugin)
+}
+</pre>
+<p>コピペしたらgeditの「保存」ボタンをクリックして~/prog2/6arm/の中に保存し、geditメニューバーの「ファイル(F)」→「終了(Q)」でgeditを終了する。</p>
+<p>3. コンパイル設定ファイルの作成<br />
+gazeboではソースコードをコンパイル(ビルド）するのにcmakeというシステムを使う。先程から使っている端末で以下のコマンドを実行しgeditを起動する。<br />
+<code><br />
+$ gedit CMakeLists.txt<br />
+</code><br />
+CMakeLists.txtはcmakeの設定ファイル。次のソースコードをgeditにコピペし、CMakeLists.txtを保存する。保存場所は今までと同じ~/prog2/6armディレクトリ。保存したらgeditを終了する。</p>
+<pre class="brush:cpp;">cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+
+find_package(Boost REQUIRED COMPONENTS system)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+
+include (FindPkgConfig)
+if (PKG_CONFIG_FOUND)
+  pkg_check_modules(GAZEBO gazebo)
+endif()
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+
+add_library(arm SHARED arm.cc)
+target_link_libraries(arm ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+</pre>
+<p>4．コンパイル<br />
+以下のコマンドを実行し、ソースコードをメイクする。<br />
+<code><br />
+$ cd ~/prog2/6arm<br />
+$ mkdir build<br />
+$ cd build<br />
+$ cmake ../<br />
+$ make<br />
+</code></p>
+<p>5. モデルファイルの作成<br />
+以下のコマンドを実行し、モデルファイルを作成する。<br />
+<code><br />
+$ cd ~/.gazebo/models<br />
+$ mkdir arm_robot1<br />
+</code></p>
+<p>以下のmodel.configファイルをgeditにコピペし、model.configファイルと名前を付けてarm_robot1ディレクトリに保存する。</p>
+<pre class="brush:cpp;">&#60;?xml version="1.0"?&#62;
+&#60;model&#62;
+  &#60;name&#62;Arm Robot 1&#60;/name&#62;
+  &#60;version&#62;1.0&#60;/version&#62;
+  &#60;sdf version='1.4'&#62;model.sdf&#60;/sdf&#62;
+
+  &#60;author&#62;
+   &#60;name&#62;My Name&#60;/name&#62;
+   &#60;email&#62;My mail address&#60;/email&#62;
+  &#60;/author&#62;
+
+  &#60;description&#62;
+    My arm robot.
+  &#60;/description&#62;
+&#60;/model&#62;
+</pre>
+<p>同様にして、以下のmodel.sdfファイルを保存する。</p>
+<pre class="brush:cpp;">&#60;?xml version='1.0'?&#62;
+&#60;sdf version='1.4'&#62;
+
+  &#60;!-- アームロボット1 --&#62;
+  &#60;model name="arm_robot1"&#62;
+    &#60;static&#62;false&#60;/static&#62; &#60;!-- trueにすると静的モデル --&#62;
+    &#60;link name='base'&#62;　&#60;!-- リンク：土台　--&#62;
+    &#60;pose&#62;0 0 0.05 0 0 0 &#60;/pose&#62; &#60;!-- 位置(x,y,z)と姿勢(roll,pitch,yaw) --&#62;
+    &#60;visual name='visual'&#62; &#60;!-- 表示用 --&#62;
+      &#60;geometry&#62; &#60;!-- 形状情報 --&#62;
+	&#60;cylinder&#62; &#60;!-- 円柱　--&#62;
+          &#60;radius&#62;0.04&#60;/radius&#62; &#60;!-- 半径 --&#62;
+          &#60;length&#62;0.1&#60;/length&#62;  &#60;!-- 長さ --&#62;
+        &#60;/cylinder&#62;
+      &#60;/geometry&#62;
+    &#60;/visual&#62;
+    &#60;/link&#62;
+
+    &#60;link name='link1'&#62;　&#60;!-- リンク1　--&#62;
+    &#60;self_collide&#62;0&#60;/self_collide&#62;
+    &#60;pose&#62;0.250 0 0.04 0 1.5707 0&#60;/pose&#62; &#60;!-- 位置(x,y,z)と姿勢(roll,pitch,yaw) --&#62;
+    &#60;inertial&#62;
+      &#60;inertia&#62;
+	&#60;ixx&#62;0.01&#60;/ixx&#62;
+	&#60;ixy&#62;0&#60;/ixy&#62;
+	&#60;ixz&#62;0&#60;/ixz&#62;
+	&#60;iyy&#62;0.01&#60;/iyy&#62;
+	&#60;iyz&#62;0&#60;/iyz&#62;
+	&#60;izz&#62;0.01&#60;/izz&#62;
+      &#60;/inertia&#62;
+      &#60;mass&#62;2.0&#60;/mass&#62;
+    &#60;/inertial&#62;
+    &#60;visual name='visual'&#62; &#60;!-- 表示用 --&#62;
+      &#60;geometry&#62; &#60;!-- 形状情報 --&#62;
+	&#60;cylinder&#62; &#60;!-- カプセル　--&#62;
+	  &#60;radius&#62;0.04&#60;/radius&#62; &#60;!-- 半径 --&#62;
+	  &#60;length&#62;0.5&#60;/length&#62;  &#60;!-- 長さ --&#62;
+	&#60;/cylinder&#62;
+      &#60;/geometry&#62;
+    &#60;/visual&#62;
+    &#60;/link&#62;
+
+    &#60;link name='link2'&#62;　&#60;!-- リンク2　--&#62;
+    &#60;self_collide&#62;0&#60;/self_collide&#62;
+    &#60;pose&#62;0.75 0 0.04 0 1.5707 0&#60;/pose&#62; &#60;!-- 位置(x,y,z)と姿勢(roll,pitch,yaw) --&#62;
+    &#60;inertial&#62;
+      &#60;inertia&#62;
+        &#60;ixx&#62;0.01&#60;/ixx&#62;
+        &#60;ixy&#62;0&#60;/ixy&#62;
+        &#60;ixz&#62;0&#60;/ixz&#62;
+        &#60;iyy&#62;0.01&#60;/iyy&#62;
+        &#60;iyz&#62;0&#60;/iyz&#62;
+        &#60;izz&#62;0.01&#60;/izz&#62;
+      &#60;/inertia&#62;
+      &#60;mass&#62;2.0&#60;/mass&#62;
+    &#60;/inertial&#62;
+
+    &#60;visual name='visual'&#62; &#60;!-- 表示用 --&#62;
+        &#60;geometry&#62; &#60;!-- 形状情報 --&#62;
+          &#60;cylinder&#62; &#60;!-- カプセル　--&#62;
+            &#60;radius&#62;0.04&#60;/radius&#62; &#60;!-- 半径 --&#62;
+            &#60;length&#62;0.5&#60;/length&#62;  &#60;!-- 長さ --&#62;
+          &#60;/cylinder&#62;
+	&#60;/geometry&#62;
+      &#60;/visual&#62;
+  &#60;/link&#62;
+
+  &#60;link name='sensor'&#62;　&#60;!-- 位置センサ　--&#62;
+    &#60;pose&#62;1.0 0 0.04 0 0 0 &#60;/pose&#62; &#60;!-- 位置(x,y,z)と姿勢(roll,pitch,yaw) --&#62;
+    &#60;visual name='visual'&#62; &#60;!-- 表示用 --&#62;
+      &#60;geometry&#62; &#60;!-- 形状情報 --&#62;
+        &#60;sphere&#62; &#60;!-- 円柱　--&#62;
+          &#60;radius&#62;0.004&#60;/radius&#62; &#60;!-- 半径 --&#62;
+        &#60;/sphere&#62;
+      &#60;/geometry&#62;
+    &#60;/visual&#62;
+  &#60;/link&#62;
+
+  &#60;!-- ジョイント(関節)　revoluteは回転式(ヒンジ）--&#62;
+  &#60;joint type="revolute" name="hinge0"&#62; &#60;!--土台を地面に固定 --&#62;
+    &#60;child&#62;base&#60;/child&#62; &#60;!-- 子(下位)リンク --&#62;
+    &#60;parent&#62;world&#60;/parent&#62;  &#60;!-- 親(上位)リンク --&#62;
+    &#60;axis&#62;
+      &#60;limit&#62;
+          &#60;lower&#62;0&#60;/lower&#62;
+          &#60;upper&#62;0&#60;/upper&#62;
+      &#60;/limit&#62;
+      &#60;xyz&#62;0 0 1&#60;/xyz&#62; &#60;!-- 回転軸ベクトル(x,y,z)　--&#62;
+    &#60;/axis&#62;
+  &#60;/joint&#62;
+
+  &#60;joint type="revolute" name="hinge1"&#62; &#60;!--第１関節 --&#62; 
+    &#60;pose&#62;0 0 -0.25 0 0 0&#60;/pose&#62;
+    &#60;child&#62;link1&#60;/child&#62; &#60;!-- 子(下位)リンク --&#62;
+    &#60;parent&#62;base&#60;/parent&#62;  &#60;!-- 親(上位)リンク --&#62;
+    &#60;axis&#62;
+      &#60;xyz&#62;0 0 1&#60;/xyz&#62; &#60;!-- 回転軸ベクトル(x,y,z)　--&#62;
+    &#60;/axis&#62;
+  &#60;/joint&#62;
+
+  &#60;joint type="revolute" name="hinge2"&#62; &#60;!--第２関節 --&#62;
+    &#60;pose&#62;0 0 -0.25 0 0 0&#60;/pose&#62;
+    &#60;child&#62;link2&#60;/child&#62; &#60;!-- 子(下位)リンク --&#62;
+    &#60;parent&#62;link1&#60;/parent&#62;  &#60;!-- 親(上位)リンク --&#62;
+    &#60;axis&#62;
+      &#60;xyz&#62;0 0 1&#60;/xyz&#62; &#60;!-- 回転軸ベクトル(x,y,z)　--&#62;
+    &#60;/axis&#62;
+  &#60;/joint&#62;
+
+  &#60;joint type="revolute" name="sensor_joint"&#62; &#60;!--センサの固定 --&#62;
+    &#60;pose&#62;0.02 -0.02 -0.2 0 0 0&#60;/pose&#62;
+    &#60;child&#62;sensor&#60;/child&#62; &#60;!-- 子(下位)リンク --&#62;
+    &#60;parent&#62;link2&#60;/parent&#62;  &#60;!-- 親(上位)リンク --&#62;
+    &#60;axis&#62;
+      &#60;limit&#62;
+          &#60;lower&#62;0&#60;/lower&#62;
+          &#60;upper&#62;0&#60;/upper&#62;
+      &#60;/limit&#62;
+      &#60;xyz&#62;0 0 1&#60;/xyz&#62; &#60;!-- 回転軸ベクトル(x,y,z)　--&#62;
+    &#60;/axis&#62;
+ &#60;/joint&#62;
+
+ &#60;plugin name="arm" filename="libarm.so" &#62;
+      &#60;hinge1&#62;hinge1&#60;/hinge1&#62;
+      &#60;hinge2&#62;hinge2&#60;/hinge2&#62;
+      &#60;gain&#62;0.1 &#60;/gain&#62;
+      &#60;sensor&#62;sensor&#60;/sensor&#62;
+      &#60;ray_sensor&#62;laser&#60;/ray_sensor&#62;
+ &#60;/plugin&#62;
+  &#60;/model&#62;
+&#60;/sdf&#62;
+</pre>
+<p>6. 実行<br />
+以下のコマンドを実行し、gazeboを立ち上げよう！ ここでは、gazeboを起動するのに--verboseのオプションをつけます。これは、標準出力に位置や姿勢を表示するためです。</p>
+<p>gazeboが起動したら画面左側のinsert(挿入)タブから制作したarm robot 1を選択する。<br />
+d, f, j, kキーを入力するとロボットアームの関節が動いたら成功。今回はここまで。<br />
+<code><br />
+$ export GAZEBO_PLUGIN_PATH=~/prog2/6arm/build:$GAZEBO_PLUGIN_PATH<br />
+$ gazebo --verbose<br />
+</code></p>
+<p>〇　Exercise<br />
+２自由度ロボットアームのサンプルプログラムに以下を実装しよう！</p>
+<ul>
+<li>運動学<br />
+運動学の計算結果と位置センサの出力を比較し、プログラムが正しいか確認する。</li>
+<li>逆運動学<br />
+逆運動学を実装しよう。<br />
+任意の位置に直方体を表示し、アーム先端がそれを指すようなプログラムを実装する。２自由度の場合は解が２つあるので、数字キー１を押すと解１、数字キー２を押すと解２を選択する。</li>
+</ul>

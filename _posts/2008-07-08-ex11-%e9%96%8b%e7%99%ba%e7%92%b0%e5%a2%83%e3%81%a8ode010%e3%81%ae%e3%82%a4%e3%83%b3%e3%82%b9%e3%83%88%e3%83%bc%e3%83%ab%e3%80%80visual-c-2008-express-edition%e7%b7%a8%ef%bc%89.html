@@ -1,0 +1,151 @@
+---
+layout: post
+title: ODEのインストール　(Visual C++ 2008 EE）
+date: 2008-07-08 22:32:54.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _edit_last: '2'
+  views: '10518'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/538.html"
+---
+<p><span style="font-family: mceinline;"><a href="http://demura.net/9ode/3864.html">最新のODE0.11.1のインストール記事はこちらです．</a></span></p>
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/vc.jpg" /></p>
+<hr />Visual C++ 2008 Expression EditionでODEを使う方法を紹介します。<span style="color: #ff0000;"><strong>ODEのバージョンは0.10.0以上を対象にしています．説明は0.10.0を対象としているので，ode-0.10.1をお使いの方はode-0.10.0をode-0.10.1と置き換えてください．</strong></span></p>
+<ul>
+<li>A. Visual C++ 2008 Expression Editionのインストール</li>
+<li>B. <a href="#a1">ODEのダウンロード</a></li>
+<li>C. <a href="#a2">ODEのインストール</a></li>
+<li>D. ODE本のサンプルプログラムをビルドする方法</li>
+</ul>
+<p><!--more--></p>
+<hr />
+<ul>
+<li><strong>A. Visual C++ 2008 Expression Editionのインストール</strong>
+<ul>
+<li> <a href="http://www.microsoft.com/japan/msdn/vstudio/express/">Microsoftのこのページの指示に従ってダウンロード・インストールしてください。</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li><a name="a1"></a><strong>B. ODEのダウンロード</strong>
+<ol>
+<li><a href="http://sourceforge.net/projects/opende">ここをクリックして</a>sourceforge.netのOpen Dynamics Engineのページ飛び，中ほどにあるFile Relesesのode-バージョン番号.zipをクリックしてデスクトップへダウンロードする．</li>
+<li><a name="a2"></a>解凍ソフトの準備（持っていない方のみ）</li>
+<li><a name="a2"></a>ode-0.10.0.zipはzipフォーマットで圧縮されていますのでzipを解凍できるソフトウェアをインストールしてください．ここでは，Lhaplusという圧縮・解凍ソフトを使っています．<a href="http://www.google.co.jp/" target="_self">Google</a>でLhaplusを検索するとダウンロード先を簡単に見つけることができます．</li>
+<li>解凍と移動
+<ul>
+<li> デスクトップにあるode-0.10.0.zipをダブルクリックすると、ode-0.10.0というフォルダーがデスクトップに生成されます。</li>
+</ul>
+<ul>
+<li>ode-0.10.0フォルダをCドライブのすぐ下に移動する
+<ul>
+<li> マウスをode-0.10.0フォルダーに当て、右マウスボタンをクリック、「切り取り(T)」を選択</li>
+<li>スタート→(マイ)コンピュータ→ローカルディスク(c)をダブルクリック</li>
+<li> マウスの右ボタンをクリックし、「貼り付け（P)」を選択</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルド（ライブラリの作成）
+<ul>
+<li> ode-0.10.0ではpremakeコマンドを使ってVisual C++ 2008用のソリューションファイルを作成できます．</li>
+<li> コマンドプロンプトを起動する．<br />
+スタート→すべてのプログラム→アクセサリ→コマンドプロンプト</li>
+<li>以下のようにコマンドを打ち込む．カットアンドペースト の場合は以下の文字列を使用し，自分で打ち込む場合は２個の-(マイナス)文字がつながって見えるので，下画像を参照して注意深く打ち込んでください．
+<ul>
+<li>
+<pre> cd  c:\ode-0.10.0\build</pre>
+</li>
+<li>
+<pre> premake --with-demos --with-tests  --target vs2008</pre>
+<p><strong><span style="color: #ff0000;">注：withとtargetの前は-（マイナス）が２個連続している．下画像参照．</span></strong><br />
+<img src="{{ site.baseurl }}/assets/images/2008/07/command3.jpg" alt="command3.jpg" /><br />
+成功するとvs2008というVisual C++　2008用のディレクトリができる．</li>
+</ul>
+</li>
+<li>Visual C++ 2008 Express Editionを起動</li>
+<li>メニューバーから「ファイル(F)」→「開く（O)」→「プロジェクト/ソリューション(P)」を選択</li>
+<li>
+<pre> c:\ode-0.10.0\build\vs2008\ode.sln</pre>
+<p>を選択</li>
+<li>この作業は任意です．これによりOPCODEの新しい衝突検出機能を有効にします．よく分からない方は飛ばしてください．
+<ul>
+<li>
+<pre> ode-0.10\ode\src\config.h</pre>
+<p>の44行目を何らかのエディターを使って以下のように変更する．</li>
+<li> #define dTRIMESH_OPCODE_USE_NEW_TRIMESH_TRIMESH_COLLIDER 1</li>
+</ul>
+</li>
+<li>ビルドターゲットをDebugDoubleLibとする．<br />
+これはデバッグ向け，倍精度，静的ライブラリ用．ODEではDLL（Dynamic Link Library)より静的ライブラリ(Static Library)が推奨されています．また，DebugSingleLibを選ぶと単精度の静的ライブラリが生成されますが，エラーが出やすいのでお勧めできません．<br />
+<img src="{{ site.baseurl }}/assets/images/2008/07/vs2008targetlib.jpg" alt="vs2008targetlib.jpg" /></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li> 「ビルド(B)」→「ソリューションのビルド(B)」を選択</li>
+<li>デモプログラムの実行ファイルは
+<pre> c:\ode-0.10.0\lib\DebugDoubleLib</pre>
+<p>に生成される．</li>
+<li>試しに，demo_basket.exeをダブルクリックして起動すればODEのビルド成功．</li>
+<li>これで，ODEのインストールは終わりです。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr />
+<li> <strong>C. ODE本サンプルプログラムのビルド</strong></li>
+<ul>
+<li><a href="../../dl">ダウンロードカテゴリー</a>からrobosimu******(******は日付）をダウンロードして，
+<pre> c:\ode-0.10.0</pre>
+<p>にコピーし，そこに解凍する．解凍に成功すると</p>
+<pre>c:\ode-0.10.0\roboSimu</pre>
+<p>というディレクトリが生成される．その中にはsrc, texturesフォルダー，premake.exe, premake.lua, Readme.txt, roboSimu.luaファイルががあり，また，srcフォルダーの中にはODE本のサンプルコードがある．</li>
+<li>ODEのインストールと同じように，premakeコマンドを使い，ソリューション，プロジェクトファイルを生成する．コマンドプロンプトを起動し，以下のコマンドを実行する．
+<ul>
+<li>
+<pre>cd c:\ode-0.10.0\roboSimu</pre>
+</li>
+<li>
+<pre>premake  --target  vs2008
+ <span style="color: #ff0000;"><strong>注：targetの前は-(マイナス）が２個連続．</strong></span></pre>
+</li>
+</ul>
+</li>
+<li>Visual C++ 2008 Express Editionを起動</li>
+<li>メニューバーから「ファイル(F)」→「開く（O)」→「プロジェクト/ソリューション(P)」を選択
+<ul>
+<li>
+<pre>c:\ode-0.10.0\roboSimu\src\roboSimu.sln</pre>
+<p>を選択</li>
+</ul>
+</li>
+<li>ビルドターゲットをDebugLibとする．<br />
+<img src="{{ site.baseurl }}/assets/images/2008/07/vs2008targetlib2.jpg" alt="vs2008targetlib2.jpg" /></li>
+<li>「ビルド(B)」→「ソリューションのビルド(B)」を選択</li>
+<li>サンプルプログラムの実行ファイルはc:\ode-0.10.0\roboSimu\DebugLibに生成される．</li>
+<li> 試しに，arm1.exeをダブルクリックして起動すれば成功．お疲れ様でした！</li>
+</ul>

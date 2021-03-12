@@ -1,0 +1,27 @@
+---
+layout: post
+title: ODE 0.8 リリース
+date: 2007-02-12 01:31:21.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '336'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/375.html"
+---
+<p>ODE 0.8がリリースされました。特に問題なくソースからmakeできました。</p>
+<p>大きな変更点は新しいジョイントとしてPR(Prismatic and Rotoide) ジョイントが使えます。これは、直動式（スライダー）ジョイントとヒンジジョイントを結合したものです。</p>
+<p>また、衝突検出ライブラリとして<a href="http://www.codercorner.com/Opcode.htm">OPCODE</a>の他に<a href="http://gimpact.sourceforge.net/">Gimpact</a>が使えるようになりました。デフォルトではOPCODEになるので、Gimpactを選択するときは./configure  --with-trimesh=gimpactとオプションを設定してください。ただし、 単精度でしか使えません。</p>
+<p>その他に多くのバグが直されています。<a href="http://ode.org/pipermail/ode/2007-February/021557.html">詳細はこのメールを読んでください。</a></p>

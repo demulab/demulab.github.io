@@ -1,0 +1,275 @@
+---
+layout: post
+title: PD実践： マルチタスク演習１（マルチタスクの仕組み）
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- lecture
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  views: '14'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<ul>
+<li>マルチタスクとは
+<ul>
+<li>今まで習ってきたＣ言語のプログラムでは、複数の処理が並列に動作をしていなかった。マルチタスクでは処理をタスクという小さな実行単位に分けて並列に処理をする。つまり、タスクは並列実行の単位である。<br />
+なお、LEGO EV3は１CPUシングルコアなので、複数の処理を同時に処理できいない。高速にタスクを切り替えて疑似的に並列に実行しているように見える処理を行う。<br />
+また、タスクに優先度をつけることができ、他のタスクより優先的に処理をすることもできる。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>マルチタスクの仕組み</li>
+</ul>
+<div class="editor-indent"></div>
+<p>&nbsp;</p>
+<p><img class="img-responsive atto_image_button_text-bottom" role="presentation" src="{{ site.baseurl }}/assets/images/No-0087.png" alt="" width="1124" height="815" /></p>
+<h4>CRE_TSK: タスク生成API</h4>
+<p>&nbsp;</p>
+<pre>DOMAIN(TDOM_APP) {
+    CRE_TSK(BALANCE_TASK, { TA_NULL, 0, balance_task, TMIN_APP_TPRI, STACK_SIZE, NULL });
+    CRE_TSK(MAIN_TASK, { TA_ACT, 0, main_task, TMIN_APP_TPRI + 1, STACK_SIZE, NULL });
+    CRE_TSK(IDLE_TASK, { TA_NULL, 0, idle_task, TMIN_APP_TPRI + 2, STACK_SIZE, NULL });
+}
+</pre>
+<p>CRE_TSKの各パラメータの意味は、以下の通りです。</p>
+<ul>
+<li>【第１パラメータ】タスクのID。大文字で書く。</li>
+<li>【第２パラメータ】タスクの属性。
+<ul>
+<li>TA_ACTを指定すると、アプリケーション起動時にタスクを実行可能状態に遷移させる。</li>
+<li>TA_NULLを指定すると、アプリケーション起動時には休止状態である。途中から起動したいタスクで設定する。</li>
+</ul>
+</li>
+<li>【第３パラメータ】タスクに渡される値（拡張情報）。本演習では０を入れる。</li>
+<li>【第４パラメータ】周期的に実行される関数</li>
+<li>【第５パラメータ】TMIN_APP_TPRI：タスクの起動時優先度。EV3RTの場合、TMIN_APP_TPRIは、タスクに指定できる最高優先度（値は最小値）を示す。
+<ul>
+<li>数値を小さくすると優先度が高くなり、大きくすると優先度が下がる。</li>
+<li>したがって、この例では、BALANCE_TASKの優先度が最も高く, IDLE_TASKの優先度が最も低く設定されている。</li>
+</ul>
+</li>
+<li>【第６パラメータ】タスクのスタック領域のサイズ。本演習ではSTACK_SIZEのままで問題ない。</li>
+<li>【第７パラメータ】タスクのスタック領域の先頭番地。本演習ではNULLで問題ない。</li>
+</ul>
+<h4>tslp_tsk: 起床待ちAPI</h4>
+<p>&nbsp;</p>
+<div id="API_slp_tsk">
+<div>
+<pre>tslp_tsk	起床待ち（タイムアウト付き）</pre>
+</div>
+</div>
+<div>
+<p>【C言語API】</p>
+</div>
+<div>
+<div>
+<pre>	ER ercd = tslp_tsk(TMO tmout)</pre>
+</div>
+</div>
+<div>
+<p>【パラメータ】</p>
+</div>
+<div>
+<div>
+<pre>	TMO			tmout		タイムアウト時間（tslp_tskの場合）</pre>
+</div>
+</div>
+<div>
+<p>【リターンパラメータ】</p>
+</div>
+<div>
+<div>
+<pre>	ER			ercd		正常終了（E_OK）またはエラーコード</pre>
+</div>
+</div>
+<div>
+<p>【エラーコード】</p>
+</div>
+<div>
+<div>
+<pre>	E_CTX		コンテキストエラー
+				・ディスパッチ保留状態からの呼出し【NGKI1254】
+	E_NOSPT		未サポート機能
+				・制約タスクからの呼出し【NGKI1255】
+	E_PAR		パラメータエラー
+				・tmoutが無効（tslp_tskの場合）【NGKI1256】
+	E_TMOUT		ポーリング失敗またはタイムアウト（slp_tskを除く）【NGKI1</pre>
+</div>
+</div>
+<h4>act_tsk: タスク起動API</h4>
+<p>&nbsp;</p>
+<div id="API_act_tsk">
+<div>
+<pre>act_tsk		タスクの起動〔T〕</pre>
+</div>
+</div>
+<div>
+<p>【C言語API】</p>
+</div>
+<div>
+<div>
+<pre>	ER ercd = act_tsk(ID tskid)
+	ER ercd = iact_tsk(ID tskid)</pre>
+</div>
+</div>
+<div>
+<p>【パラメータ】</p>
+</div>
+<div>
+<div>
+<pre>	ID			tskid		対象タスクのID番号</pre>
+</div>
+</div>
+<div>
+<p>【リターンパラメータ】</p>
+</div>
+<div>
+<div>
+<pre>	ER			ercd		正常終了（E_OK）またはエラーコード</pre>
+</div>
+</div>
+<div>
+<p>【エラーコード】</p>
+</div>
+<div>
+<div>
+<pre>	E_CTX		コンテキストエラー
+				・非タスクコンテキストからの呼出し（act_tskの場合）【NGKI1112】
+				・タスクコンテキストからの呼出し（iact_tskの場合）【NGKI1113】
+				・CPUロック状態からの呼出し【NGKI1114】
+	E_ID		不正ID番号
+				・tskidが有効範囲外【NGKI1115】
+	E_NOEXS		オブジェクト未登録
+				・対象タスクが未登録〔D〕【NGKI1116】
+	E_OACV		オブジェクトアクセス違反
+				・対象タスクに対する通常操作1が許可されていない（act_tsk
+				　の場合）〔P〕【NGKI1117】
+	E_QOVR		キューイングオーバフロー
+				・条件については機能の項を参照</pre>
+</div>
+</div>
+<div>
+<p>【機能】</p>
+</div>
+<div>
+<p>tskidで指定したタスク（対象タスク）に対して起動要求を行う．具体的な振舞 いは以下の通り．</p>
+</div>
+<div>
+<p>対象タスクが休止状態である場合には，対象タスクに対してタスク起動時に行 うべき初期化処理が行われ，対象タスクは実行できる状態になる．</p>
+</div>
+<div>
+<p>対象タスクが休止状態でない場合には，対象タスクの起動要求キューイング数 に1が加えられる．起動要求キューイング数に1を加えると TMAX_ACTCNTを超える場合には，E_QOVRエラーとなる．</p>
+</div>
+<div>
+<p>act_tskにおいてtskidにTSK_SELF（＝0）を指定すると，自タスクが対象タスク となる．</p>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img role="presentation" src="{{ site.baseurl }}/assets/images/SnapCrab_NoName_2019-10-31_11-41-4_No-00.png" alt="" width="857" height="640" /></p>
+<div>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>マルチタスクの場合、一つのタスクにずっとプロセッサが割り当てられているわけではない。そのため、タスクは次のような状態を持つ。
+<ul>
+<li>実行できる状態（runnable）
+<ul>
+<li>実行状態（running）</li>
+<li>実行可能状態（ready）</li>
+</ul>
+</li>
+<li>休止状態（dormant）</li>
+<li>広義の待ち状態（blocked）
+<ul>
+<li>(狭義の）待ち状態（waiting）：… タスクが自ら実行を止めている状態</li>
+<li>強制待ち状態（suspended）：… タスクが他のタスクによって実行を止められた状態</li>
+</ul>
+</li>
+<li>二重待ち状態（waiting-suspended）</li>
+</ul>
+</li>
+<li>専門用語
+<ul>
+<li>スケジューリング：どの時間にどのタスクを実行するか決めること</li>
+<li>ディスパッチ：プロセッサが処理するタスクを切り替えること</li>
+<li>プリエンプト：実行中のタスクを一時的に中断すること</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>サンプルプログラム</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>ソースファイル：<a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43397/mod_page/content/55/app_multi_task1.c">/multi-task1/app.c</a>、設定ファイル：<a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43397/mod_page/content/55/app_multi-task1.cfg.txt">/multi-task1/app.cfg</a><br />
+プログラム起動後、MAIN_TASKがSUB_TASKを起動する。MAIN_TASKのカウント数がLCDに表示されてから、SUB_TASKのカウント数がLCDに表示される。</li>
+<li>ソースファイル：<a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43397/mod_page/content/55/app_multi-task2.c">/multi-task2/app.c</a>、設定ファイル：<a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43397/mod_page/content/55/app_multi-task2.cfg.txt" target="_blank" rel="noopener">/multi-task2/app.cfg</a><br />
+プログラム起動後、MAIN_TASKがSUB_TASKを起動する。MAIN_TASK、 SUB_TASKのどちらも、カウント数をLCDに同時に表示する。</li>
+</ol>
+<ul>
+<li>演習１</li>
+</ul>
+</div>
+<div class="editor-indent">
+<div>
+<ol>
+<li><i> サンプルプログラムmulti-task1を実行してください。</i>MAIN TASK = 0と表示されてからカウントアップし、MAIN terminated!と表示されてから、SUB TASK = 0が表示されてからカウントアップし、SUB terminated!と表示されます。<br />
+これを先にSUB TASK = 0から実行し、SUB terminated!と表示した後に、MAIN TASK = 0、カウントアップし、MAIN terminated!と表示するように変えてください。<br />
+ヒント：app.cfgで設定されているSUB_TASKの優先度を変えてみよう！</li>
+<li><i>サンプルプログラム</i>multi-task1, multi-task2<i>の動作を確認してください。</i>multi-task1は並列動作していませんが、multi-task2は並列動作しています。2<i>つのサンプルプログラムを見比べて 動作の違いの理由を考えて説明してください。<br />
+ヒント：multi_task2はtslp_tskが呼び出されているのでMAIN_TASKが待ち状態になり、SUB_TASKにCPUが割り当てられて処理されます。multi_task1のMAIN_TASKはどのような状態ですか？</i></li>
+<li> サンプルプログラム multi-task2のsub_taskとmain_taskをもとに、以下のプログラムを作成しよう。<br />
+『3つのタスク（MAIN_TASK、SUB_TASK1、SUB_TASK2）で、各タスクがカウント数をLCDに表示する。』なお、multi-task2のmain_taskをベースにmain_taskを作成してください。<br />
+ヒント：新たにsub_task2を作成した場合は、app.hに以下のプロトタイプ宣言を加えてください。なお、プロトタイプ宣言は関数の宣言のことです。<br />
+extern void sub_task2(intptr_t exinf);</li>
+</ol>
+<p>終わり</p>
+</div>
+</div>

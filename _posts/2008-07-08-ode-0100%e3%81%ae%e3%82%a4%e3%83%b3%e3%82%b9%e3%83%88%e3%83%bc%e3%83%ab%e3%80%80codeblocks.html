@@ -1,0 +1,145 @@
+---
+layout: post
+title: ODE 0.10.1 のインストール　(Code::Blocks + Windows)
+date: 2008-07-08 23:35:05.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _edit_last: '2'
+  views: '7025'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/524.html"
+---
+<p><a href="http://demura.net/9ode/3850.html">最新版ODE0.11.1のインストールはここです。</a></p>
+<p>ODE0.10のinstall.txtを読むと，Visual Studio, Autotools (Linux, OS X), Code::Blocksでのビルドについての説明があります．ここでは日本であまりメジャーではありませんが、海外ではそこそこメジャーなマルチプラットフォームの開発環境Code::Blocks8.02用のインストール方法を説明します．</p>
+<ol>
+<li><strong>ODE 0.10のインストール </strong>
+<ol type="a">
+<li> <a href="http://downloads.sourceforge.net/opende/ode-0.10.1.zip?modtime=1216899212&amp;big_mirror=0">ode-0.10.1.zip</a>のダウンロード．デスクトップへ保存．解凍．</li>
+<li>ode-0.10.1フォルダーをcドライブのトップへコピー．以下のディレクトリ（フォルダ）構成になります．
+<ul>
+<li>
+<pre> c:\ode-0.10.1 </pre>
+</li>
+</ul>
+</li>
+<li>コマンドプロンプトを起動する．
+<ul>
+<li>スタート→「すべてのプログラム」→「アクセサリ」→「コマンドプロンプト」</li>
+</ul>
+</li>
+<li>以下のようにコマンドを打ち込みますが，打ち間違えると失敗するのでカットアンドペーストを推奨します。自分で打ち込む場合は２個の-(マイナス)文字がつながって見えるので，下画像を参照して注意深く打ち込んでください．
+<ul>
+<li>
+<pre><strong>cd c:\ode-0.10.1\build </strong>
+
+ 注：cdコマンドはディレクトリの移動</pre>
+</li>
+<li>
+<pre><strong>premake --with-demos  --with-tests  --target cb-gcc</strong></pre>
+<p><strong><span style="color: #ff0000;">注：withとtargetの前は-（マイナス）が２個連続している．下画像参照．</span></strong></p>
+</li>
+</ul>
+<ul>
+<li>成功するとcb-gccというcode::blocks用のディレクトリがbuildフォルダの中に生成されるので，あるかどうかエクスプローラで確認する．
+<ul>
+<li>
+<pre>c:¥ode-0.10.1¥build¥cb-gcc</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2008/12/premake.jpg"><img class="alignnone size-full wp-image-2934" title="premake" src="{{ site.baseurl }}/assets/images/2008/07/premake.jpg" alt="" width="613" height="148" /></a></p>
+<li><strong>ODEのビルド </strong>
+<ol type="a">
+<li>code::blocksを起動</li>
+<li>code::blocksのメニューバーから「ファイル(F)」→「開く（O)」を選択
+<ul>
+<li>
+<pre>c:¥ode-0.10.1¥build¥cb-gcc¥ode.workspace</pre>
+<p>を選択</p>
+</li>
+</ul>
+</li>
+<li>このcの作業だけは中級者向けです．よくわからない方はdの作業へ進んでください。<span style="color: #0000ff;"><strong>私の授業でＯＤＥを使う方はこの作業はしないで、次のdの作業へ進んでください。</strong></span>これによりOPCODEの新しい衝突検出機能を有効にします．よく分からない方は飛ばしてください．
+<ul>
+<li>ode-0.10.1¥ode¥src¥config.hを何らかのエディタで開き，44行目を以下のように変更し保存する．<br />
+ #define dTRIMESH_OPCODE_USE_NEW_TRIMESH_TRIMESH_COLLIDER 1</li>
+</ul>
+</li>
+<li><span style="color: #008000;"><strong><span style="color: #ff0000;">重要：</span><span style="color: #0000ff;">ビルドターゲットを必ず</span></strong></span><strong><span style="color: #ff0000;">DebugDoubleLib</span><span style="color: #0000ff;">とする</span></strong>（下画像の赤丸箇所）．<strong><span style="color: #ff0000;">ここは非常に間違いやすい箇所です。良く説明を読み十分注意して作業を進めてください。</span></strong>
+<ul>
+<li>これによりデバッグ向け，倍精度，静的なライブラリが作られます．ODEではDLL（Dynamic Link Library)より静的ライブラリ(Static Library)が推奨されています．静的ライブラリで作成した実行ファイルはサイズが大きくなりますが，配布時はその実行ファイルだけを配布すれば良くライブラリを付属する必要はありません．自分が作成した実行ファイルを配布するときは静的ライブラリがお勧めです．<br />
+ また，DebugSingleLibを選ぶと単精度の静的ライブラリが生成されますが，エラーがでやすいのでお勧めできません． というわけで、<strong><span style="color: #ff0000;">DebugDoubleLib</span></strong>を必ず選択してください。</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/targetdebuglib.jpg" alt="targetdebuglib.jpg" /></p>
+</li>
+<li>「ビルド(B)」→「ワークスペースをビルド(W)」を選択．ワークスペースはVisual C++のソリューションと同様なものです．
+<ul>
+<li>デモプログラムの実行ファイルはc:¥ode-0.10.1¥lib¥DebugDoubleLibに生成される．</li>
+<li>試しに，demo_basket.exeをダブルクリックして起動すればODEのビルド成功．</li>
+</ul>
+</li>
+<li><span style="color: #ff0000;"><strong>ビルドに失敗する場合の対策</strong></span>
+<ul>
+<li><span style="border-collapse: separate; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 19px; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; font-family: arial; color: #000000;"><strong>DebugDoubleLib” uses an<span> </span></strong><em>invalid compiler</em>.<span> </span></span>と怒られたら
+<ul>
+<li>原因：他のコンパイラでビルドしようとしています。</li>
+<li>対策：設定(s)→コンパイラとデバッガ(C)→グローバルなコンパイラ設定のToolchain実行ファイルが以下のようになっているか確認し（クリックすると画像が拡大される）、違う場合は変更する。<br />
+ <a href="http://demura.net/wordpress/wp-content/uploads/2008/12/cb-compiler.jpg"><img class="alignnone size-medium wp-image-2946" title="cb-compiler" src="{{ site.baseurl }}/assets/images/2008/07/cb-compiler-300x278.jpg" alt="" width="300" height="278" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<p><!--more--></p>
+<li><strong>ODE本サンプルプログラムのビルド </strong>
+<ol type="a">
+<li><a href="http://demura.net/dl">ダウンロードカテゴリー</a>からrobosimu******(******は日付）をダウンロードして，c:¥ode-0.10.1にコピーし，そこに解凍する．解凍に成功するとc:¥ode-0.10.1¥roboSimuというディレクトリが生成される．その中にはsrc,texturesフォルダーとがあり，premake.exe, premake.lua, Readme.txt, roboSimu.luaファイルが生成される．srcフォルダーの中にはODE本のサンプルコードがある．</li>
+<li>ODEのインストールと同じように，premakeコマンドを使い，code::blocks用のプロジェクトを生成する．コマンドプロンプトを起動し，以下のコマンドを実行する．
+<ul>
+<li>
+<pre><strong>cd c:\ode-0.10.1\roboSimu </strong></pre>
+</li>
+<li>
+<pre><strong>premake  --target  cb-gcc</strong></pre>
+<p><span style="color: #ff0000;"><strong>注：targetの前は-(マイナス）が２個連続．</strong></span></p>
+</li>
+</ul>
+<p><br class="spacer_" /></p>
+</li>
+<li>code::blocksを起動</li>
+<li>code::blocksのメニューバーから「ファイル(F)」→「開く（O)」を選択
+<ul>
+<li>
+<pre>c:\ode-0.10.1\roboSimu\src\roboSimu.workspace</pre>
+<p>を選択</p>
+</li>
+</ul>
+</li>
+<li><strong><span style="color: #ff0000;">重要：</span><span style="color: #0000ff;">ビルドターゲットを</span></strong><strong><span style="color: #ff0000;">DebugLib</span><span style="color: #0000ff;">とする．</span></strong><br />
+ ODEのライブラリをビルドするときDebugDoubleLibを選んでいるので、必ずDebugLibを選択する。</li>
+<li>「ビルド(B)」→「ワークスペースをビルド(W)」を選択。エラーが出た場合は、ODEのビルドに失敗している可能性が高いのでODEのビルドをやり直し。</li>
+<li>サンプルプログラムの実行ファイルはc:¥ode-0.10.1¥roboSimu¥DebugLibに生成される．</li>
+<li> 試しに，arm1.exeをダブルクリックして起動すれば成功．お疲れ様でした！</li>
+</ol>
+</li>
+</ol>
+<p>最終更新日：2008-12-16</p>

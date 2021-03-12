@@ -1,0 +1,66 @@
+---
+layout: post
+title: C/C++統合開発環境Code::Blocks10.05のインストール (Windows)
+date: 2012-04-08 07:27:18.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '21309'
+  _wp_old_slug: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/8634.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2012/04/codeblocks.jpg" alt="codeblocks.jpg" /></p>
+<p><a href="http://www.codeblocks.org/">Code::Blocks</a>というフリーでオープンソースなC/C++統合開発環境のインストール法をッ説明します．日本では，Code::blocksはあまり馴染みがないかもしれませんが，オープンソースでマルチプラットフォームという利点はODEやIrrlichtと同じように多少リスキーですが，かっこいいと思いますので使っていきます．</p>
+<p>では，これからCode::Blocksのインストール方法をご説明します．</p>
+<ol>
+<li>ダウンロード・インストール
+<ul>
+<li><a href="http://www.codeblocks.org/">Code::Blocks</a>のウェブサイトからダウンロードする．
+<ul>
+<li>左にあるMainのDownloadsをクリック</li>
+<li>Download the binary releaseをクリックすると以下の画面になるので，Windows 2000/XP/Vistaの<span style="color: #ff0000;">codeblocks-10.05mingw-setup.exe</span>を選択する． <span style="color: #0000ff;"><strong>これにはmingwからのgccやgdbが含まれています．必ずこちらをダウンロードしてください．</strong></span></li>
+</ul>
+</li>
+<li>デスクトップに保存し，codeblocks-10.05mingw-setup.exeをダブルクリックし実行する．</li>
+<li>CodeBlocks Setupの窓になり，「Next&gt;」をクリック</li>
+<li>License Agreementの窓になり，読んでから「I Agree」をクリックする．同意しないとインストールできません．</li>
+<li>Choose Componentsの窓になり，C:B Share Configにもチェックを入れる「Next &gt;」をクリック</li>
+<li>Choose Install Locationの窓になる．Destination Folderを変更せずに，「Install」をクリック</li>
+<li>”Do you want to run Code::Blocks now?”と聞かれるが，日本語環境に変更するので「いいえ(N)」をクリックする．</li>
+<li>Installation Completeの窓になり，「Next&gt;」をクリックすると，「Completing the CodeBlocks Setup Wizard」窓になるので，「Finish」をクリックしてインストールを終了する．</li>
+</ul>
+</li>
+<li>日本語化
+<ul>
+<li><a href="http://sourceforge.jp/projects/foo-doc-jp/wiki/CodeBlocks">Code::Blocks日本語化</a>のウェブサイトに行き，日本語化に必要なファイルcodeblocks-ja-8.02-1.zipをダウンロードし，デスクトップに保存する．codeblocks8.02用だが、codeblocks10.05でも日本語化できる。</li>
+<li>codeblocks-ja-8.02-1.zipを解凍する．解凍するとcodeblocks-jaフォルダーの中に，locale, srcフォルダーとreadme.txtファイルができる．</li>
+<li>localeフォルダーをコピーしてcodeblockのインストールフォルダ
+<pre>c:\Program Files\CodeBlocks\share\CodeBlocks  (32bit OSの場合)</pre>
+<pre>c:\Program Files (x86)\CodeBlocks\share\CodeBlocks  (64bit OSの場合)</pre>
+<p>の中へ貼り付ける．上の行の意味は、コンピュータのローカルディスクＣ（Ｃドライブとも呼ぶ）の中にProgram Filesというフォルダーがあり、その中にCodeBlocksというフォルダーがあり、また、その中にshareというフォルダーがあり、その中のCodeBlocksを意味します。￥マークはフォルダの区切りを表します。32bit OSと64bit OSでは場所が違うので注意してください。</li>
+<li>Code::Blocksを起動する．日本語化の設定をしていないので，次のように英語表示される．<br />
+<img src="{{ site.baseurl }}/assets/images/2012/04/cbenglish.jpg" alt="cbenglish.jpg" title="cbenglish.jpg" width="500" /></li>
+<li>Settings -&gt; Environmentを選択</li>
+<li>「目玉おやじ」のようなViewをクリック. Internationalizationにチェックを入れ，Japaneseを選択し，OKをクリック．日本語化するためには再起動が必要なので，File→Quitを選択．<br />
+<img src="{{ site.baseurl }}/assets/images/2012/04/view.jpg" alt="view.jpg" title="view.jpg" width="500" /></li>
+<li>Layout Changedの画面が出て，"The layout 'Code::Blocks default' has changed. Do you want to save it?"と設定を保存するか聞いてくるので聞かれるので「Yes」をクッリクする．</li>
+<li>CodeBlocksを起動する．トップ画像のように日本語になっていればOK．おつかれさま．</li>
+</ul>
+</li>
+</ol>
+<p>説明が詳しくないので，わからない箇所があればコメントください．<br />
+以上です．</p>
+<p>でむ</p>

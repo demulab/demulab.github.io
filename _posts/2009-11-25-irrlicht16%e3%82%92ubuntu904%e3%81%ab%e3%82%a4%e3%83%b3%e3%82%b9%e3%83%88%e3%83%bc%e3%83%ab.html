@@ -1,0 +1,58 @@
+---
+layout: post
+title: irrlicht1.6をUbuntu9.04にインストール
+date: 2009-11-25 18:48:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '265'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/5107.html"
+---
+<div>irrlicht1.6をUbuntu9.04にインストールした作業メモです。そろそろロボット学会で発表したODE用の3Dグラフィクスライブラリを公開せねば．Premake4を使った配布パッケージ作成ではまっています．</div>
+<ul>
+<li>ダウンロードと展開
+<ul>
+<li><span style="background-color: #ffffff;">irrlicht　SDK 1.6を<a href="http://irrlicht.sourceforge.net/downloads.html">ここからダウンロード</a>。</span></li>
+<li><span style="background-color: #ffffff;">irrlicht-1.6.zipを/home/ユーザ名/srcにコピー</span></li>
+<li><span style="background-color: #ffffff;">unzip  irrlicht-1.6.zip</span></li>
+</ul>
+</li>
+<li>ライブラリのコンパイル
+<ul>
+<li><span style="background-color: #ffffff;">cd   ~/src/irrlicht-1.6/source</span></li>
+<li><span style="background-color: #ffffff;">sudo apt-get  install  libxxf86vm-dev</span></li>
+<li><span style="background-color: #ffffff;">make</span></li>
+</ul>
+</li>
+<li>サンプルプログラムのコンパイル
+<ul>
+<li>cd ~/src/irrlicht-1.6/examples</li>
+<li>chmod u+x  buildAllExamples.sh</li>
+<li>./buildAllExamples.sh</li>
+</ul>
+</li>
+<li>サンプルプログラムの実行
+<ul>
+<li>cd ~/src/irrlicht-1.6/bin/Linux</li>
+<li>そこにある実行ファイルを実行する
+<ul>
+<li>./01.HelloWorld</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

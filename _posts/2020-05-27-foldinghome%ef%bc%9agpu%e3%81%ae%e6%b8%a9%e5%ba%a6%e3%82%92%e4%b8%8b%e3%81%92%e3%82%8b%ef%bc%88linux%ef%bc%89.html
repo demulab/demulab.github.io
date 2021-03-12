@@ -1,0 +1,116 @@
+---
+layout: post
+title: Folding@home：GPUの温度を下げる（Linux）
+date: 2020-05-27 22:23:32.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '579'
+  _thumbnail_id: '17688'
+  the_page_main_category: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/18147.html"
+---
+<p>demura.netでFolding@homeの取り組みを2020年4月11日に紹介してからチームKanazawaメンバーが順調に増えて、2020年8月11日現在、６8名、順位341位（254551チーム中）になりました。ありがとうございます。</p>
+<p>さて、私は自宅で24時間フルスピードでFolding@homeのアプリを動かしています。マシンはGPU Nvidia GTX 1080Tiが２個、Intel Core(TM) i7-8700K です。気をつけなければならないのはGPUの温度です。そのGPUの仕様上の最大温度は91度ですが、NVIDIAの関係者に聞いたところ、長時間運用するのであれば80度以下の運用が望ましいとコメントを頂きました。私は80度を目標にGPU温度を管理しています。</p>
+<ul>
+<li>GPUの温度を知ろう
+<ul>
+<li>端末を開いて次のコマンドを実行するとGPUの温度がわかる。
+<ul>
+<li>$ nvidia-smi<br />
+Wed May 27 22:13:04 2020<br />
++-----------------------------------------------------------------------------+<br />
+| NVIDIA-SMI 440.64 Driver Version: 440.64 CUDA Version: 10.2 |<br />
+|-------------------------------+----------------------+----------------------+<br />
+| GPU Name Persistence-M| Bus-Id Disp.A | Volatile Uncorr. ECC |<br />
+| Fan Temp Perf Pwr:Usage/Cap| Memory-Usage | GPU-Util Compute M. |<br />
+|===============================+======================+======================|<br />
+| 0 GeForce GTX 108... Off | 00000000:01:00.0 On | N/A |<br />
+| 62% 74C P2 125W / 125W | 958MiB / 11175MiB | 99% Default |<br />
++-------------------------------+----------------------+----------------------+<br />
+| 1 GeForce GTX 108... Off | 00000000:02:00.0 Off | N/A |<br />
+| 62% 70C P2 168W / 170W | 228MiB / 11178MiB | 93% Default |<br />
++-------------------------------+----------------------+----------------------++-----------------------------------------------------------------------------+<br />
+| Processes: GPU Memory |<br />
+| GPU PID Type Process name Usage |<br />
+|=============================================================================|<br />
+| 0 1292 G /usr/lib/xorg/Xorg 222MiB |<br />
+| 0 3914 C ...org/v7/lin/64bit/Core_22.fah/FahCore_22 327MiB |<br />
+| 0 5707 G ...AAAAAAAAAAAAAAgAAAAAAAAA --shared-files 402MiB |<br />
+| 0 7346 G /usr/bin/nvidia-settings 1MiB |<br />
+| 1 1292 G /usr/lib/xorg/Xorg 18MiB |<br />
+| 1 7346 G /usr/bin/nvidia-settings 1MiB |<br />
+| 1 16354 C ...org/v7/lin/64bit/Core_22.fah/FahCore_22 195MiB |<br />
++-----------------------------------------------------------------------------+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>温度が高い場合、温度を下げるためにはFanの増設、PCの置き場所や部屋の空調を考えないと以下の２つの方法が考えられます。</p>
+<ul>
+<li>GPUの消費電力を下げる<br />
+端末を開いて以下のコマンドを実行する。ここで-iの後はGPUの番号、-plの後は消費電力[w]。ここではGPU０の消費電力を170Wに設定している。</p>
+<ul>
+<li><code>$ sudo nvidia-smi -i 0 -pl 170</code></li>
+</ul>
+</li>
+<li>GPUファンのスピードを上げる
+<ul>
+<li>端末を開いて次のコマンドを実行する。
+<ul>
+<li><code>$ sudo nvidia-xconfig -a --cool-bits=28 --allow-empty-initial-configuration</code></li>
+</ul>
+</li>
+<li>コンピュータを次のコマンドで再起動する。
+<ul>
+<li><code>$ sudo reboot</code></li>
+</ul>
+</li>
+<li>NVIDIA X Server Settingsを起動する。
+<ul>
+<li><code>$ nvidia-settings</code></li>
+</ul>
+</li>
+<li>GPU -&gt; Thermal SettingsでEnable GPU Fan Settingsにチェックを入れるとFan Speedを変更できる。</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

@@ -1,0 +1,87 @@
+---
+layout: post
+title: PD実践：WSLと連携したVSCodeの使い方
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19419'
+  views: '360'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/pdpractice/19418.html"
+---
+<p>VSCodeを使いWSL上のファイルを編集する方法を説明する。拡張機能Remote-WSLがインストール済みとする。</p>
+<p><strong>VSCodeでUbuntuターミナルを使う設定</strong></p>
+<ul>
+<li>VSCodeを起動する。リモートエクスプローラをクリックして、Ubuntu20.04をクリックすると右に「Connect to WSL」アイコンをクリックする。下図ではUbuntu、Ubuntu18.04もあるが、Ubuntu20.04しかインストールしていない場合は表示されない。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode21.png"><img class="aligncenter size-large wp-image-19419" src="{{ site.baseurl }}/assets/images/vscode21-1024x494.png" alt="" width="1024" height="494" /></a></li>
+<li>新しいウインドウが開き、左下に「WSL:Ubuntu-20.04」と表示される。今まで使っていたウインドウは閉じる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode22.png"><img class="aligncenter size-large wp-image-19422" src="{{ site.baseurl }}/assets/images/vscode22-1024x573.png" alt="" width="1024" height="573" /></a></li>
+<li>「Windowsセキュリティの重要な警告」ウインドウが開くので、プライベート、パブリックネットワークにチェックを入れて「アクセスを許可する」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode23.png"><img class="aligncenter size-full wp-image-19423" src="{{ site.baseurl }}/assets/images/vscode23.png" alt="" width="808" height="584" /></a></li>
+<li>VSCodeでWSL Ubunutuターミナルを使えるようにシェルの設定をする。Ctrl+Shift+P（CtrlとShiftとPキーを同時に押す）キーを押すとコマンドパレットが開くでの「Shell」と入力する。「ターミナル：既定のシェルの選択」が表示されるのでクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode24.png"><img class="aligncenter size-large wp-image-19424" src="{{ site.baseurl }}/assets/images/vscode24-1024x730.png" alt="" width="1024" height="730" /></a></li>
+<li>「bash /bin/bash」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode25.png"><img class="aligncenter size-large wp-image-19425" src="{{ site.baseurl }}/assets/images/vscode25-1024x734.png" alt="" width="1024" height="734" /></a></li>
+<li>「ターミナル」→「新しいターミナル」をクリックすると右下にUbunutuターミナルが表示される。ここを使えばUbuntu端末を開かなくてもコマンド入力でビルドもできる。つまり、VSCodeだけでプログラミングと実行が可能となる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode26.png"><img class="aligncenter size-large wp-image-19426" src="{{ site.baseurl }}/assets/images/vscode26-1024x742.png" alt="" width="1024" height="742" /></a><a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode27.png"><img class="aligncenter size-large wp-image-19427" src="{{ site.baseurl }}/assets/images/vscode27-1024x742.png" alt="" width="1024" height="742" /></a></li>
+</ul>
+<p>ファイルのオープン</p>
+<ul>
+<li>開きたいファイルのあるフォルダを開く。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode28.png"><img class="aligncenter size-large wp-image-19428" src="{{ site.baseurl }}/assets/images/vscode28-1024x742.png" alt="" width="1024" height="742" /></a></li>
+<li>「ローカルを表示します。」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode29.png"><img class="aligncenter size-large wp-image-19429" src="{{ site.baseurl }}/assets/images/vscode29-1024x742.png" alt="" width="1024" height="742" /></a></li>
+<li>「フォルダーを開く」ウインドウが表示されるので、以下のフォルダを選択する。
+<ul>
+<li>c:\edu\athrill-sample\ev3rt\ev3rt-beta7-release\asp3\sdk\workspace<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode30.png"><img class="aligncenter size-large wp-image-19430" src="{{ site.baseurl }}/assets/images/vscode30-1024x319.png" alt="" width="1024" height="319" /></a></li>
+<li>左枠にWorkspaceのファイル一覧が表示される。「lcd」をクリックするとファイルが展開される。app.cをクリックすると右枠にソースコードが表示される。でも、日本語が文字化けしているので、下バー右にある文字コードが表示されている箇所（ここではUTF-8)をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode31.png"><img class="aligncenter size-large wp-image-19431" src="{{ site.baseurl }}/assets/images/vscode31-1024x742.png" alt="" width="1024" height="742" /></a></li>
+<li>「エンコード付きで再度開く」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode32.png"><img class="aligncenter size-large wp-image-19432" src="{{ site.baseurl }}/assets/images/vscode32-1024x742.png" alt="" width="1024" height="742" /></a></li>
+<li>「Japanese (Shift JIS )コンテンツから推測」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode33.png"><img class="aligncenter size-large wp-image-19434" src="{{ site.baseurl }}/assets/images/vscode33-1024x742.png" alt="" width="1024" height="742" /></a></li>
+<li>下図のように文字化けがなおったのがわかる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode34.png"><img class="aligncenter size-large wp-image-19435" src="{{ site.baseurl }}/assets/images/vscode34-1024x594.png" alt="" width="1024" height="594" /></a></li>
+</ul>
+</li>
+</ul>
+<p>終わり。VSCodeだけで開発できます。便利ですね。</p>
+<p>&nbsp;</p>

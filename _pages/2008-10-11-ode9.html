@@ -1,0 +1,90 @@
+---
+layout: page
+title: 9. Position and Orientation
+date: 2008-10-11 14:53:40.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '2240'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode9"
+---
+<div class="wp-caption alignnone" style="border: 1px solid #dddddd; margin: 10px; width: 330px; text-align: center; background-color: #f3f3f3; padding-top: 4px;"><img src="{{ site.baseurl }}/assets/images/2008/10/rightHands.jpg" alt="ODE座標系" title="ODE coordinate system" width="320" height="285" style="border-style: none; border-width: 0px; margin: 0px; padding: 0px;" /></p>
+<p class="wp-caption-text" style="margin: 0px; padding: 0px 4px 5px; font-size: 11px; line-height: 17px;">ODE coordinate system (right handed)</p>
+</div>
+<p style="margin: 0px 0px 15px;"><span style="word-spacing: 0px; text-transform: none; text-indent: 0px; white-space: normal; letter-spacing: normal; border-collapse: separate; orphans: 2; widows: 2; font-family: Arial; color: #000000;">This is the 9th ODE (Open Dynamics Engine) tutorial.</span></p>
+<p style="margin: 0px 0px 15px;">This time, firstly,  I explain a unit system and a coordinate of ODE. Secondly, I explain how to set and get a position and a rotation of a body.</p>
+<p style="margin: 0px 0px 15px;"><span style="color: #000080;"><strong>Unit system</strong></span></p>
+<p style="margin: 0px 0px 15px;">ODE does not mind any unit system. An angle, however, is radian. In this tutorial, the SI unit system is used. This is very familiar to us (not U.S.A). Length is [m],  weight is [kg] and time is [s].</p>
+<p style="margin: 0px 0px 15px;"><span style="color: #000080;"><strong>Coordinate system</strong></span></p>
+<p style="margin: 0px 0px 15px;">The coordinate system of ODE as shown in the above figure, is the Cartesian coordinate system and right-handed. It is widely used in physics and mathematics.</p>
+<p style="margin: 0px 0px 15px;">There are nine small pyramids as shown in the above figure.  The origin of the coordinate system is  the center of pyramids, the x-axis is the direction from the center to the red pyramid. The y-axis is the direction from the center to the blue pyramid. The z-axis is the direction from the center  to the sky.  These tutorials adopt the SI unit system, so the distance between pyramids is 1[m].</p>
+<p style="margin: 0px 0px 15px;"><span style="color: #000080;"><strong>Setting position and posture</strong></span></p>
+<p style="margin: 0px 0px 15px;">A position and an orientation of a body must be set.  The following APIs are used for the purpose.</p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>void dBodySetPosition (dBodyID, dReal x, dReal y, dReal z);</strong><br />
+<span style="font-weight: normal; color: #000000;">Set a position (x, y, z) in the absolute coordinate system.</span></li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>void dRFromAxisAndAngle (dMatrix3 R, dReal ax, dReal ay, dReal az, dReal angle);</strong><span style="color: #000066;"><br />
+</span>Calculate a rotation matrix from a rotation axis vector (ax, ay, az) and rotational angle [rad] which rotates counterclockwisely.</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>void dBodySetRotation (dBodyID, const dMatrix3 R);</strong><br />
+Set an orientation of the body with the rotation matrix R.</li>
+</ul>
+<p style="margin: 0px 0px 15px;">In addition,  Quaternion can be used in ODE. The API is <strong>dBodySetQuaternion (dBodyID, const dQuaternion q)</strong>.</p>
+<p style="margin: 0px 0px 15px;"><strong>Getting the position and posture</strong></p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>const dReal *dBodyGetPosition (dBodyID);</strong><br />
+<span style="font-weight: normal; color: #000000;">Get a positon of the body. The return value is a pointer to an array.</span></li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>const dReal *dBodyGetRotation (dBodyID);</strong><br />
+<span style="font-weight: normal; color: #000000;">Get a ratation matrix of the body. </span><span style="font-weight: normal; color: #000000;">The return value is a pointer to an array.</span></li>
+</ul>
+<p style="margin: 0px 0px 15px;"><strong>Sample Code</strong><strong><br />
+</strong>In the following sample code, a cylinder is located at (0.0, 0.0, 1.0),  and the orientation is set that the cylinder is rotated 45 degrees (M_PI/4.0) along the x-axis.</p>
+<p style="margin: 0px 0px 15px;">In addition, the center of gravity position of a body is displayed by printPos().</p>
+<pre class="brush:cpp">typedef struct {
+  dBodyID body;
+  dGeomID geom;
+} MyObject;
+
+MyObject pillar;
+
+void createPillar()
+{
+  dMass m1;
+  dReal radius = 0.1, length = 0.5, mass = 1.0; // radius, length, mass
+
+  pillar.body = dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetCylinderTotal(&amp;m1,mass,3,radius,length);
+  dBodySetMass(pillar.body,&amp;m1);
+  dBodySetPosition(pillar.body,0.0,0.0,1.0); // Set a position to (0.0,0.0,1.0)&#91;m&#93;
+
+  dMatrix3 R;
+  dRFromAxisAndAngle(R,1.0,0.0,0.0, M_PI/4.0);　// Rotate PI/4&#91;rad&#93; along X axis
+  dBodySetRotation(pillar.body,R);
+  pillar.geom = dCreateCylinder(space,radius,length);
+  dGeomSetBody(pillar.geom,pillar.body);
+}
+
+void printPos(dBodyID obj_body) // print a position
+{
+  const dReal *pos;　　// Do not forget const to prevent an error
+  dReal x, y, z;
+  pos = dBodyGetPosition(obj_body);　// Return value is an pointer to a structure
+  x = pos&#91;0&#93;;　   y = pos&#91;1&#93;;   z = pos&#91;2&#93;;
+  printf("x=%f y=%f z=%f \n", x, y, z);
+}</pre>
+<p style="margin: 0px 0px 15px;"><a style="color: #990000; text-decoration: none;" href="http://demura.net/downloads/odesample/sample9-110105.zip">The sample program, sample9-110105.zip (2011-01-05) can be downloaded from here.</a></p>
+<p style="margin: 0px 0px 15px;">That's all.  See you !</p>
+<p>demu</p>

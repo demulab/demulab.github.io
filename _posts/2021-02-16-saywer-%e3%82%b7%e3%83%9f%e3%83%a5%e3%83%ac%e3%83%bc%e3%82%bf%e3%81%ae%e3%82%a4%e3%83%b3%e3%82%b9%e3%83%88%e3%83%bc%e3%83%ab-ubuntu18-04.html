@@ -1,0 +1,91 @@
+---
+layout: post
+title: 'Sawyer: シミュレータのインストール (Ubuntu18.04)'
+date: 2021-02-16 09:09:58.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-02-18 10:57:33'
+  views: '79'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19830'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/19823.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2021/02/SnapCrab_Gazebo_2020-10-7_17-48-8_No-00.png" /></p>
+<p>Sawyerで推奨されているUbuntuのバージョンは16.04ですが、18.04でも動くのでその方法を紹介します。</p>
+<p><b>インストール</b></p>
+<ul id="yui_3_17_2_1_1613434051929_99">
+<li><span id="yui_3_17_2_1_1613434051929_97">端末を開き、以下のコマンドを実行してSawyerシミュレータをインストールする。手で打ち込まないでコピペしてください。</span>
+<ul>
+<li><code>$ cd</code></li>
+<li><code>$ mkdir -p ros_ws/src</code></li>
+<li><code>$ cd ros_ws/src/</code></li>
+<li><code>$ wstool init</code></li>
+<li><code>$ wstool merge https://gist.githubusercontent.com/jarvisschultz/f65d36e3f99d94a6c3d9900fa01ee72e/raw/sawyer_packages.rosinstall</code></li>
+<li><code>$ wstool update</code></li>
+<li><code>$ sudo -E apt install ros-melodic-effort-controllers</code></li>
+<li><code>$ cd ..</code></li>
+<li>geditを使って~/ros_ws/src/intera_sdk/intera.shの30行目を以下のように変更する。
+<ul>
+<li>$ gedit ~/ros_ws/src/intera_sdk/intera.sh</li>
+<li>30行目： ros_version="melodic"<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/02/intera.png"><img class="aligncenter size-large wp-image-19866" src="{{ site.baseurl }}/assets/images/2021/02/intera-1024x768.png" alt="" width="1024" height="768" /></a></li>
+</ul>
+</li>
+<li>intera.shを~/ros_ws下にコピーする。
+<ul>
+<li>$ cd ~/ros_ws</li>
+<li>$ cp ~/ros_ws/src/intera_sdk/intera.sh .</li>
+<li><code>$ source /opt/ros/melodic/setup.bash</code></li>
+<li><code>$ catkin build</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><b>設　定</b></p>
+<ul>
+<li>ros_ws以下にインストールしたアプリを有効にするために、geditなどのエディタを使って~/.bashrcの最後に以下の1行を追加する。
+<ul>
+<li>source ~/ros_ws/devel/setup.bash</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

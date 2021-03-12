@@ -1,0 +1,36 @@
+---
+layout: post
+title: ODE講座31:　あのジオメトリの接触判定
+date: 2009-05-15 22:45:28.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '1966'
+  image: http://demura.net/wordpress/wp-content/uploads/2009/05/redblue.jpg
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/3561.html"
+---
+<p><br class="spacer_" /></p>
+<p>[caption id="attachment_3573" align="alignnone" width="550" caption="赤ボール，青ボールと地面との接触判定"]<a href="http://demura.net/wordpress/wp-content/uploads/2009/05/redblue.jpg"><img class="size-full wp-image-3573" title="redblue" src="{{ site.baseurl }}/assets/images/2009/05/redblue.jpg" alt="赤ボール，青ボールと地面との接触判定" width="550" /></a>[/caption]</p>
+<p>hideさんからのご質問に刺激を受けて，本当に久しぶりにODE(Open Dynamics Engine)講座３１を開講します．</p>
+<p>ある特定のジオメトリが別のジオメトリと接触しているか知る方法を説明します．</p>
+<p>初期高さの異なる２つの赤ボールと青ボールを同時に落下させ，それらのボールが地面と衝突する時に，ぶつかったボールがどちらかを表示する簡単なものです．ソースコードを表示するプラグインの設定が悪く，インデントしていない読みにくいコードになっています．時間を作り設定をやり直しますので，それまでご勘弁ください．学生なら怒られているところです...</p>
+<p>さて，ソースコードを簡単に説明します．25行目のnearCallback()には衝突する可能性のある２つのジオメトリo1, o2が引数として渡されます．１番目の引数dataはユーザが渡すデータです．これは64行目のdSpaceCollide()の2番目の引数です．以下の例では０なのでユーザが渡すデータはありません．</p>
+<p>実際に衝突しているかは34行目のdCollide()の戻り値（接触点数）を見るとわかります．１以上なら接触点数が１個以上あるので接触しています．0なら接触していません．これ例では地面との接触を考えているのでジオメトリ01,　o2が地面かどうかで場合分けし，さらに，o1, 02が赤ボール，青ボールがで場合分けし，それぞれの接触を調べています．</p>
+<p>このサンプルプログラムを少し変えるとあのジオメトリが接触しているかどうか簡単に調べることができます．</p>
+<p>わからないところがあれば是非コメントください．</p>
+<p style="text-align: right;">でむ</p>
+<p>[viewcode] src="ball2.cpp" geshi="cpp" lines [/viewcode]</p>

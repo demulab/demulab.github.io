@@ -1,0 +1,69 @@
+---
+layout: post
+title: 'YOLO V3: Darknetのデータ拡張'
+date: 2019-02-05 22:51:40.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+- robocup@home
+tags: []
+meta:
+  views: '4190'
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/15558.html"
+---
+<p>YOLO開発のディープラーニングフレームワークdarknetはデータ拡張（Data Augmentation）がデフォルトで機能する。これを知らないで、データ拡張を議論していたのでメモしておく。</p>
+<p>yolov3.cfgファイルのデータ拡張のパラメータは以下の４つ。ソースコードを読むとhsv色空間を使っており、hueはカラーチャンネル0、saturatioはカラーチャンネル1、exposureはカラーチャンネル2に割り当てられているので、exposureはValue(明度）のことだと思われる。</p>
+<ul>
+<li>saturation(彩度）：14行目、デフォルト値1.5、1/saturation~saturationの乱数</li>
+<li>exposure（露光）：15行目、デフォルト値1.5、1/exposure~exposureの乱数</li>
+<li>hue（色相）：16行目、デフォルト値0.1、-hue~hue</li>
+<li>jitter（変動）：785行目、デフォルト値0.3、切り抜く割合を指定するパラメータ。例えば、jitterが0.2だと、原画像のサイズから約80%まで切り抜く。つまり、ウインドウの幅と縦はそれぞれ80%~100%までの乱数となる。</li>
+<li>random:788行目、デフォルト値1。1の場合は入力画像サイズは一定ではなく、10エポック毎にネットワークサイズが320x320 から 608x608にランダムに変わる。これはいろいろな解像度の入力画像に対してYoloをロバストにすることを狙っている。</li>
+</ul>
+<p>データ拡張を無効にするためには、パラメータを以下のように設定する。</p>
+<ul>
+<li>saturation=1.0</li>
+<li>exposure=1.0</li>
+<li>hue=0</li>
+<li>jitter=0</li>
+<li>random=0</li>
+</ul>
+<p>なお、flip（左右反転）はdata.cの758~759行目に以下のようにコーディングされている。</p>
+<p><code>int flip = rand()%2;</code><br />
+<code>if(flip) flip_image(sized);</code></p>
+<p>つまり、1/2の確率で左右を反転を生成している。cfgファイルで無効にできない。</p>
+<p style="text-align: right;">以上</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

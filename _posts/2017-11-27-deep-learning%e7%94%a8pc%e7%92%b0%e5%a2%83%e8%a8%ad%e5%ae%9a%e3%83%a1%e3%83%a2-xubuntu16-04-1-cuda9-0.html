@@ -1,0 +1,84 @@
+---
+layout: post
+title: Deep Learning用PC環境設定メモ (Xubuntu16.04.1, Cuda9.0)
+date: 2017-11-27 21:11:58.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  views: '438'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/13984.html"
+---
+<p>Deep Learning用に購入したマシンにxubuntu16.04.1, Cuda9.0をインストールしたときのメモ。まず、xubuntu16.04.3をDVDからインストールしようとしたが次のエラーでインストールできない。</p>
+<ul>
+<li>ACPI Error: .... Namespace lookup failure, AE_NOT_FOUND</li>
+</ul>
+<p>Versionをxubuntu16.04.1に下げたらインストールできた。</p>
+<ul>
+<li>環境
+<ul>
+<li>CROYDON (BTO組立パソコン)<br />
+(CPU: Intel i7-8700K, GPU: Nvidia 1080Ti, Memory:32GB)</li>
+<li>Motherboard: ASRock Fatal1ty Z370 Gaming K6</li>
+<li>xubunut16.04.3</li>
+<li>Kernel 4.4.0-66-generic</li>
+<li>gcc/g++ 4.8.4</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>準備
+<ul>
+<li>インストールするとIntelのGPUでXが起動するので、Ctlr+Alt+F1でXを落とす</li>
+<li>sudo apt-get update</li>
+<li>sudo apt-get upgrade</li>
+<li>sudo service lightdm stop</li>
+</ul>
+</li>
+<li> NVIDIAドライバのインストール
+<ul>
+<li>sudo add-apt-repository ppa:graphics-drivers/ppa</li>
+<li>sudo apt-get update</li>
+<li>sudo apt install nvidia-387  nvidia-settings</li>
+<li>sudo reboot</li>
+<li>再起動後は解像度が高く快適になっている。</li>
+</ul>
+</li>
+<li> <a href="https://developer.nvidia.com/cuda-75-downloads-archive">NVIDIAのウェブサイト</a>からCuda9.0のインストール
+<ul>
+<li>Linux-&gt;x86_64-&gt;ubuntu-&gt;16.04-&gt;dev(local)を選択</li>
+<li>sudo dpkg -i cuda-repo-ubuntu1604-9-0-local_9.0.176-1_amd64.deb</li>
+<li>sudo apt-key add /var/cuda-repo-9-0-local/7fa2af80.pub</li>
+<li>sudo apt-get update</li>
+<li>sudo apt-get install cuda</li>
+<li>.bahrcに以下を追加したCUDAのパスを通す
+<ul>
+<li>export　PATH=/usr/local/cuda-9.0/bin${PATH:+:{PATH}}</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://developer.nvidia.com/cudnn">NVIDIAのウェブ</a>からcuDNNのインストール
+<ul>
+<li>nvidiaのdeveloperに登録しないとダウンロードできないので登録する。</li>
+<li>cuDNN v7.0.5 Runtime Library for Ubuntu16.04 (Deb)とcuDNN v7.0.5 Developer Library for Ubuntu16.04 (Deb)をダウンロードする。</li>
+<li>sudo dpkg -i libcudnn7_7.0.5.15-1+cuda9.0_amd64.deb</li>
+<li>sudo dpkg -i libcudnn7-dev_7.0.5.15-1+cuda9.0_amd64.deb</li>
+</ul>
+</li>
+<li><a href="http://demura.net/lecture/13657.html">ROS Kineticのインストール</a></li>
+<li><a href="http://demura.net/%E6%9C%AA%E5%88%86%E9%A1%9E/13560.html">Kinect V2の設定</a></li>
+</ul>
+<p>終わり</p>

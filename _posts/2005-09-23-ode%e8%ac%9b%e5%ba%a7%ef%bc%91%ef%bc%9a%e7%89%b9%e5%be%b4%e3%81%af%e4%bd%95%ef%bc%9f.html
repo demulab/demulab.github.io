@@ -1,0 +1,34 @@
+---
+layout: post
+title: ODE講座１：特徴は何？
+date: 2005-09-23 11:23:48.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2228'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/249.html"
+---
+<div><img src="{{ site.baseurl }}/assets/images/2005/09/manipulator.jpg" alt="ODE" width="260" height="250" /></div>
+<p>ODEで作成した３軸マニピュレータ　</p>
+<p><a href="http://ode.org/">ODE (Open Dynamics Engine)</a>の特徴はなんと言っても、フリーで使いやすい物理計算エンジン（剛体動力学計算）ということです。以下紹介します。</p>
+<ul>
+<li>フリー：オープンソースでライセンスはGNUの<a href="http://opensource.org/licenses/lgpl-license.php">LGPL</a>かBSDとなります。詳細はこのブログでは述べません（<a href="http://ode.org/ode-license.html">ここを見て</a>）が、商用でもフリーで利用することができます。 もちろん、授業や個人の趣味で使用するには最適です。</li>
+<li>使いやすい：３次元グラフィクス(Open GL)と衝突検出機構が組み込まれているのですぐ使えます。マニュアルがしっかりしており、サンプルプログラムも豊富です。さらに、ODEコミュニティの活動も盛んで、過去メーリングリストもウェブサイトで読むことができます（ただし、英語）。</li>
+<li>高速：商用のゲームエンジンなどにも使われるくらいですからスピードは高速です。遺伝的アルゴリズム、強化学習などの研究用に適しています。今年のロボット学会でも多くの研究者がシミュレーション用に使っていました。ただし、計算精度が高くないので精度が求められる用途には適しません。</li>
+<li>マルチプラットフォーム：Windows, Linux, Macでも使用可能です。Linuxでしか動かないソフトは授業では使いずらいものです。</li>
+<li>C/C++言語：プログラミング言語はCでもC++でもOKです。</li>
+</ul>
+<p>次回はODEをインストールしましょう！</p>

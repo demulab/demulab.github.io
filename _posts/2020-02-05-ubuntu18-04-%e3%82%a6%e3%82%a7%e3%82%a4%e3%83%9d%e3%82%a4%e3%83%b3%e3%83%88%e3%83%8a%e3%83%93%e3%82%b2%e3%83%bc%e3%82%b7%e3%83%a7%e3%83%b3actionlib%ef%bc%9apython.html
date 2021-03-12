@@ -1,0 +1,152 @@
+---
+layout: post
+title: 'Ubuntu18.04: ウェイポイントナビゲーション(ActionLib：Python)'
+date: 2020-02-05 08:58:13.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '12417'
+  views: '268'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/16684.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/11/wp_navi2.png"><img class="aligncenter size-large wp-image-12417" src="{{ site.baseurl }}/assets/images/2020/02/wp_navi2-1024x521.png" alt="wp_navi2" width="800" height="407" /></a></p>
+<p>この記事はROS新人教育プログラム用です。今回はActionLibを使いウェイポイントナビゲーションのプログラムを作りましょう。</p>
+<p>まずは、以下のROSチュートリアルを読みましょう。</p>
+<ul>
+<li><a href="http://wiki.ros.org/actionlib/Tutorials">ActionLib Tutorial</a></li>
+</ul>
+<p>次のソースコードは<a href="http://demura.net/lecture/12415.html">これのPython版</a>です。</p>
+<p>ソース</p>
+<pre class="brush:python;"> 
+#!/usr/bin/env python                                                            
+# -*- coding: utf-8 -*-                                                          
+
+import rospy
+import tf
+import actionlib
+from actionlib_msgs.msg import *
+from geometry_msgs.msg import Pose, PoseWithCovarianceStamped, Point, Quaternion\
+, Twist
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from math import pi
+
+class WpNavi():
+def __init__(self):  # コンストラクタ                                        
+  # ノードの初期化                                                         
+  rospy.init_node('wp_navi')
+
+  # シャットダウン時の処理                                                 
+  rospy.on_shutdown(self.shutdown)
+
+  # アクションクライアントの生成                                           
+  self.ac = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+
+  # アクションサーバーが起動するまで待つ。引数はタイムアウトの時間(秒）    
+  while not self.ac.wait_for_server(rospy.Duration(5)):
+    rospy.loginfo("Waiting for the move_base action server to come up")
+
+  rospy.loginfo("The server comes up");
+
+  # ゴールの生成                                                           
+  self.goal = MoveBaseGoal()
+  self.goal.target_pose.header.frame_id = 'map'         # 地図座標系       
+  self.goal.target_pose.header.stamp = rospy.Time.now() # 現在時刻         
+
+  way_point = &#91;&#91;-2.0, 3.0,-0.5 * pi&#93;, &#91; 3.0, 3.0, 0.0 * pi&#93;, &#91; 3.0,-4.5, 0.5 * pi&#93;,&#91; 0.0,-4.5, 1.0 * pi&#93;, &#91;0.0, 0.0, 0.0 * pi&#93;, &#91;999, 999, 999&#93;&#93;
+
+  # メインループ。ウェイポイントを順番に通過                               
+  i = 0
+  while not rospy.is_shutdown():
+    # ROSではロボットの進行方向がx座標、左方向がy座標、上方向がz座標     
+    self.goal.target_pose.pose.position.x =  way_point&#91;i&#93;&#91;0&#93;
+    self.goal.target_pose.pose.position.y =  way_point&#91;i&#93;&#91;1&#93;
+
+    if way_point&#91;i&#93;&#91;0&#93; == 999:
+      break
+
+    q = tf.transformations.quaternion_from_euler(0, 0, way_point&#91;i&#93;&#91;2&#93;)
+    self.goal.target_pose.pose.orientation = Quaternion(q&#91;0&#93;,q&#91;1&#93;,q&#91;2&#93;,q&#91;3&#93;)
+    rospy.loginfo("Sending goal: No" + str(i+1))
+
+    # サーバーにgoalを送信                                               
+    self.ac.send_goal(self.goal);
+
+    # 結果が返ってくるまで30.0&#91;s&#93; 待つ。ここでブロックされる。           
+    succeeded = self.ac.wait_for_result(rospy.Duration(30));
+    # 結果を見て、成功ならSucceeded、失敗ならFailedと表示                
+    state = self.ac.get_state();
+
+    if succeeded:
+      rospy.loginfo("Succeeded: No."+str(i+1)+"("+str(state)+")")
+    else:
+      rospy.loginfo("Failed: No."+str(i+1)+"("+str(state)+")")
+
+    i = i + 1
+
+def shutdown(self):
+  rospy.loginfo("The robot was terminated")
+  # ゴールをキャンセル                                                     
+  self.ac.cancel_goal()
+
+if __name__ == '__main__':
+  try:
+    WpNavi()
+    rospy.spin()
+  except rospy.ROSInterruptException:
+    rospy.loginfo("WP navigation finished.")
+</pre>
+<p>演習</p>
+<ul>
+<li>上のソースコードをエディタで以下の要領でファイルwp_navigation.pyに保存する。
+<ul>
+<li>$ mkdir -p ~/catkin_ws/src/wp_navigation/scripts</li>
+<li>$ cd ~/catkin_ws/src/wp_navigation/scripts</li>
+<li>次のコマンドでgeditを開き、上のソースコードをコピペして保存する。<br />
+$ gedit  ~/catkin_ws/src/wp_navigation/scripts/wp_navigation.py</li>
+</ul>
+</li>
+<li> wp_navigation.pyを次の要領で実行しよう。
+<ul>
+<li>$ roslaunch turtlebot_gazebo turtlebot_world.launch</li>
+<li>$ roslaunch turtlebot_gazebo amcl_demo.launch map_file:=/opt/ros/indigo/share/turtlebot_gazebo/maps/playground.yaml</li>
+<li>$ roslaunch turtlebot_rviz_launchers view_navigation.launch</li>
+<li>$ rosrun wp_navigation wp_navigation.py</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

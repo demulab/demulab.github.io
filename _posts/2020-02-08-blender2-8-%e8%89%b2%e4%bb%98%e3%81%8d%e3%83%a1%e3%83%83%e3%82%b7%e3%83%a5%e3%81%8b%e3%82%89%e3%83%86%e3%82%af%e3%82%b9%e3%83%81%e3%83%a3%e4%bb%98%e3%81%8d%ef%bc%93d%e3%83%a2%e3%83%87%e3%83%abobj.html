@@ -1,0 +1,167 @@
+---
+layout: post
+title: 'Blender2.8: 色付きメッシュからテクスチャ付き３Dモデルobjの作成法'
+date: 2020-02-08 19:53:51.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16707'
+  views: '2201'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_main_category: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/16696.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/monkey.png"><img class="aligncenter size-large wp-image-16697" src="{{ site.baseurl }}/assets/images/2020/02/monkey-1024x562.png" alt="" width="1024" height="562" /></a></p>
+<p>Blender2.8で作成した色付きメッシュからテクスチャ付き3Dモデルを作成する方法のメモ。ベイクしてもできるが、meshlabを使ってテクスチャファイルを作成します。以下のサイトを参考にした。</p>
+<ul>
+<li><strong>参考サイト</strong>
+<ul>
+<li><a href="https://mikaninc.com/meshlab-texture/">Meshlabでplyからテクスチャを作成する方法</a></li>
+</ul>
+</li>
+<li><strong>Blenderでの作業 </strong></li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>エクスポートしたいメッシュを選択して、ファイル→エクスポート→Wavefront(.obj)を選択して好きな名前をつけて保存する。ここでは、monkey.objとした。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/obj.png"><img class="aligncenter size-full wp-image-16706" src="{{ site.baseurl }}/assets/images/2020/02/obj.png" alt="" width="734" height="419" /></a></p>
+<ul>
+<li><strong>MeshLabでの作業</strong>
+<ul>
+<li>MeshLabを起動する。インストールされていない場合は、以下のコマンドでインストールする。
+<ul>
+<li>$ sudo apt install meshlab</li>
+<li>$ meshlab</li>
+</ul>
+</li>
+<li>先程保存したobjファイルを以下の手順でインポートする。
+<ul>
+<li>Files -&gt; Import Mesh</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/meshlab1.png"><img class="aligncenter size-large wp-image-16698" src="{{ site.baseurl }}/assets/images/2020/02/meshlab1-1024x647.png" alt="" width="1024" height="647" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>このままでは色がついていないので、レンダリングする。以下のように色がつく。
+<ul>
+<li>Render →Color→Per Face</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/meshlab_render.png"><img class="aligncenter size-large wp-image-16707" src="{{ site.baseurl }}/assets/images/2020/02/meshlab_render-1024x736.png" alt="" width="1024" height="736" /></a></p>
+<ul>
+<li style="list-style-type: none;"></li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>次にテクスチャファイルを書き出す準備をする。
+<ul>
+<li>Filters →Texture →Parameterization: Trival Per-Triangle</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/meshlab2.png"><img class="aligncenter size-large wp-image-16699" src="{{ site.baseurl }}/assets/images/2020/02/meshlab2-1024x647.png" alt="" width="1024" height="647" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>以下のウインドウが開くので、MethodをBasicに変更して、Applyをクリック。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/meshlab3.png"><img class="aligncenter size-full wp-image-16700" src="{{ site.baseurl }}/assets/images/2020/02/meshlab3.png" alt="" width="326" height="387" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>ひとまず、この状態を保存する。ここではプロジェクトファイル名をmonkeyとしている。
+<ul>
+<li>File → Save Project</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/meshlab4.png"><img class="aligncenter size-large wp-image-16701" src="{{ site.baseurl }}/assets/images/2020/02/meshlab4-1024x647.png" alt="" width="1024" height="647" /></a></p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/meshlab5.png"><img class="aligncenter size-full wp-image-16702" src="{{ site.baseurl }}/assets/images/2020/02/meshlab5.png" alt="" width="630" height="445" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>最後に、テクスチャファイルに書き出す。
+<ul>
+<li>Filters→Texture→Transfer Vertex Attributes to Texture (between 2 meshes)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/meshlab6.png"><img class="aligncenter size-large wp-image-16703" src="{{ site.baseurl }}/assets/images/2020/02/meshlab6-1024x647.png" alt="" width="1024" height="647" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>デフォルトでテクスチャファイル名はメッシュファイル名_color.pngになる。objファイルとテクスチャファイル名は関連付けられているので変えない。Applyをクリックして保存する。MeshLabはもう使わないので閉じる。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/meshlab7.png"><img class="aligncenter size-full wp-image-16704" src="{{ site.baseurl }}/assets/images/2020/02/meshlab7.png" alt="" width="381" height="528" /></a></p>
+<ul>
+<li>Blenderでの作業
+<ul>
+<li>MeshLabで作成したテクスチャファイルと関連付けられたobjファイル(ここではmonkey.obj)をインポートする。下図のようにイエローモンキーが現れる。
+<ul>
+<li>ファイル→インポート→WaveFront(.obj)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><del><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/obj2.png"><img class="aligncenter size-full wp-image-16708" src="{{ site.baseurl }}/assets/images/2020/02/obj2.png" alt="" width="933" height="469" /></a></del></p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/monkey2.png"><img class="aligncenter size-large wp-image-16705" src="{{ site.baseurl }}/assets/images/2020/02/monkey2-1024x620.png" alt="" width="1024" height="620" /></a></p>
+<p>終わり</p>

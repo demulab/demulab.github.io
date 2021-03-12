@@ -1,0 +1,118 @@
+---
+layout: post
+title: ROS演習３：シミュレータを動かそう
+date: 2016-11-11 14:34:02.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '4668'
+  _thumbnail_id: '13071'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/13054.html"
+---
+<p>この記事は私が担当している講義ロボットプログラミングⅡ用です。シミュレータGAZEBOを使い、Turtlebotを動かします。次のROS Wikiを参考にしています。</p>
+<ul>
+<li><a href="http://wiki.ros.org/turtlebot/Tutorials">turtlebot/Tutorials</a></li>
+</ul>
+<p>1.  Turtlebot用のパッケージインストール<br />
+まず、Turtlebot用のパッケージをインストール。端末を開き、次のコマンドを実行。<br />
+<code>$ sudo apt-get update </code><br />
+<code>$ sudo apt-get install ros-indigo-turtlebot ros-indigo-turtlebot-apps ros-indigo-turtlebot-interactions ros-indigo-turtlebot-simulator ros-indigo-kobuki-ftdi ros-indigo-rocon-remocon ros-indigo-rocon-qt-library ros-indigo-ar-track-alvar-msgs</code><br />
+<code> $ . /opt/ros/indigo/setup.bash </code><br />
+上はドットコマンド(.)といい、ドット(.)の後にスペース、そのあとにコマンドを入れる。機能は現在のシェルからそのコマンドを実行する。通常はコマンドを実行すると別のシェルが呼び出されコマンドを実行するが、現在のシェル変数などは引き継がれない。また、ドットコマンドは、そのコマンドの実行権限がなくても実行できる。ドットコマンドの代わりにsourceコマンドも利用できる。sourceコマンドを利用した場合は　source /opt/ros/indigo/setup.bash となる。<br />
+シミュレータだけなら必要ないが、kobuki実機を動かす場合もあるので、自動でデバイスを使えるように以下のコマンドを実行しよう。<br />
+<code> $ sudo rosrun kobuki_ftdi create_udev_rules </code></p>
+<p>2. ロボットをキーボードから動かそう<br />
+これからキーボードでシミュレータ上のロボットを操縦しよう。まず、roslaunchコマンドでシミュレータを起動。<br />
+<code>$ roslaunch turtlebot_gazebo turtlebot_world.launch</code><br />
+初回はネットからモデルを取得するので、私の環境で１０分程度かかった。しばらくすると次のようなウインドウが開く。黒い円柱状のロボットがturtlebot。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/turtlebot-gazebo.jpg"><img src="{{ site.baseurl }}/assets/images/2016/11/turtlebot-gazebo-1024x545.jpg" alt="turtlebot-gazebo" width="800" height="426" class="aligncenter size-large wp-image-12258" /></a></p>
+<p>次に、ロボットを動かすための最小限(minimal)ノードを起動。ここで、turtlebot_bringupはパッケージ名。minimal.lauchはlaunchファイル。<br />
+<code> $ roslaunch turtlebot_bringup minimal.launch </code></p>
+<p>別の端末を開き、次のコマンドを入力するとキーボードからロボットを操縦するためのlaunchファイルを起動。<br />
+<code> $ roslaunch turtlebot_teleop keyboard_teleop.launch </code></p>
+<p>端末に下のように表示される。<span style="color: #ff0000;">u</span>  <span style="color: #ff0000;">i　</span><span style="color: #ff0000;">o</span> <span style="color: #ff0000;"> j</span>  <span style="color: #ff0000;">k</span>  <span style="color: #ff0000;">l</span>  <span style="color: #ff0000;">m</span><span style="color: #ff0000;"> ,　.</span>キーでロボットを操作できる。いずれかのキーを押してロボットを動かそう！マウスのカーソルがkeyboard_teleop.launchを起動した端末上になければ動かないので注意。</p>
+<p>さらに、動かない場合は、minimal.launchを起動している端末ごと終了させて、再度、新しい端末を開いて、minimal.launchを起動する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/teleop1.jpg"><img src="{{ site.baseurl }}/assets/images/2016/11/teleop1.jpg" alt="teleop" width="660" height="475" class="aligncenter size-full wp-image-12242" /></a></p>
+<p>3. キーボードから動かすプログラムを作ろう！<br />
+次に、キーボードからロボットを操縦するmy_teleopパッケージを作ろう。<br />
+ROS演習２と同じ要領でmy_teleopパッケージを作る。忘れた人はROS演習２を見ながらやろう。今週の例ではhello, hello_nodeをmy_teleopに置き換える。</p>
+<p>以下のプログラムはmy_teleop.cpp。なお、このプログラムはトピック通信のpublisher（配信者)プログラムの簡単な例になっている。プログラムの説明はソースコード内のコメントを参照。テキストエディタ(gedit)にコピペして名前を付けて保存。<br />
+保存ディレクトリは~/catkin_ws/src/my_teleop/srcの中。</p>
+<pre class="brush:cpp;">#include "ros/ros.h"  // rosで必要はヘッダーファイル                                    
+#include &#60;geometry_msgs/Twist.h&#62; // ロボットを動かすために必要                          
+using namespace std;
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "my_teleop");
+  // initでROSを初期化し、my_teleopという名前をノードにつける                        
+  // 同じ名前のノードが複数あるとだめなので、ユニークな名前をつける                 
+
+  ros::NodeHandle nh;
+  // ノードハンドラの作成。ハンドラは必要時に起動される。                         
+
+  ros::Publisher  pub;
+  // パブリッシャの作成。トピックに対してデータを送信。                                 
+
+  ros::Rate rate(10);
+  // ループの頻度を設定。この場合は10Hz、1秒間に10回数、1ループ100ms。                  
+
+  geometry_msgs::Twist vel;
+  // geometry_msgs::Twist　この型は並進速度と回転速度(vector3:3次元ベクトル) を合わせたもので、速度指令によく使われる                                           
+
+  pub= nh.advertise&#60;geometry_msgs::Twist&#62;("/cmd_vel_mux/input/teleop", 10);
+  // マスターにgeometry_msgs::Twist型のデータを送ることを伝える                         
+  // マスターは/cmd_vel_mux/input/teleopトピック(1番目の引数）を購読する                
+  // 全てのノードにトピックができたことを知らせる(advertise)。                          
+  // 2番目の引数はデータのバッファサイズ                                                
+
+  std::cout &#60;&#60; "f: forward, b: backward, r: right, l:left" &#60;&#60; std::endl;
+
+while (ros::ok()) // このノードが使える間は無限ループ                                 
+    {
+      char key;  // 入力キーの値                                                        
+
+      cin &#62;&#62; key;
+      cout &#60;&#60; key &#60;&#60; endl;
+
+      switch (key) {
+      case 'f': vel.linear.x  =  0.5; break;
+      case 'b': vel.linear.x  = -0.5; break;
+      case 'l': vel.angular.z =  1.0; break;
+      case 'r': vel.angular.z = -1.0; break;
+        // linear.xは前後方向の並進速度(m/s)                                            
+        // angular.zは回転速度(rad/s)                                                   
+      }
+
+      pub.publish(vel); // 速度メッセージを送信                                         
+      ros::spinOnce();  // コールバック関数を呼ぶ                                       
+      vel.linear.x  = 0.0; // 並進速度の初期化                                              
+      vel.angular.z = 0.0; // 回転速度の初期化
+      rate.sleep();     // 指定した周期でループするよう寝て待つ                         
+
+     
+    }
+
+  return 0;
+}
+</pre>
+<p>では、以下のコマンドでビルドして実行しよう。</p>
+<p><code>$ cd ~/catkin_ws </code><br />
+<code>$ catkin_make </code></p>
+<p>先ほどの、roslaunch turtlebot_teleop keyboard_teleop.launch の代わりに、次のコマンドを実行する。keyboard_teleop.launchを起動した端末は閉じる。<br />
+<code>$ rosrun my_teleop my_teleop</code></p>
+<p>f, b, l, rキーでロボットが移動したら成功。キーを押した後はエンターキーを押す。お疲れ様！</p>
+<p>終わり</p>

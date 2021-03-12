@@ -1,0 +1,181 @@
+---
+layout: post
+title: 'ROS: Turtlebot2をKineticで動かす'
+date: 2019-12-12 16:53:13.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_toc_novisible: '0'
+  update_level: high
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '15972'
+  views: '1056'
+  the_page_canonical_url: ''
+  the_page_read_time_novisible: '0'
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  _wp_old_date: '2019-12-04'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/15966.html"
+---
+<p>Turtlebot2をROS Kineticで動かした時のメモ。Turtlebot2はRoboCup@Home Educationリーグでデファクトスタンダードの存在ですが、最近は開発元のYujin Roboticsからはあまりサポートされていないようです。</p>
+<p><strong>Turtlebot2関連パッケージのインストール</strong></p>
+<ul>
+<li>sudo apt install ros-kinetic-turtlebot ros-kinetic-turtlebot-apps ros-kinetic-turtlebot-interactions ros-kinetic-kobuki-ftdi ros-kinetic-ar-track-alvar-msgs ros-kinetic-turtlebot-simulator</li>
+<li>ros-kinetic-rocon-remoconとros-kinetic-rocon-qt-library, turtlebot_simulationパッケージはaptで取得できないので以下のコマンドで取得する。
+<ul>
+<li>$ ~/catkin_ws/src</li>
+<li>$ git clone <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/github.com/robotics</span>-<span class="hljs-keyword">in</span>-concert/rocon_qt_gui.git</li>
+<li>$ git clone https:/<span class="hljs-regexp">/github.com/turtlebot</span><span class="hljs-regexp">/turtlebot_simulator.git</span></li>
+</ul>
+</li>
+<li>catkin_makeでpyrcc4, pyrcc5がないと怒られるので次のパッケージをインストル
+<ul>
+<li>$ sudo apt install pyqt4-dev-tools</li>
+<li>$ <span class="hljs-built_in">sudo</span> apt-get install pyqt5-dev-tools</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ cd ~/catkin_ws</li>
+<li>$ catkin_make</li>
+</ul>
+</li>
+</ul>
+<p><strong>Kobukiのセットアップ</strong></p>
+<ul>
+<li>$ source  /opt/ros/kinetic/setup.bash</li>
+<li>$ rosrun kobuki_ftdi create_udev_rules</li>
+</ul>
+<p><strong>Hokuyo Lidar設定</strong></p>
+<ul>
+<li>TurtlebotパッケージではHokuyo Lidar (UTM-30LX)の設定がないので追加する。<br />
+/opt/ros/kinetic/share/turtlebot_description/urdf/turtlebot_properties.urdf.xacroに以下のコードを一番下の&lt;/robot&gt;の上に追加する。なお、コピペするとurdf の読み込みでエラーになるので、手で入力するか、以下のファイルを解凍してオリジナルのurdfディレクトリと置き換えてください。</p>
+<ul>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2019/08/urdf.zip">urdf.zip</a></li>
+</ul>
+</li>
+</ul>
+<pre class="brush:cpp;">&#60;!-- Urg Lidar --&#62;
+  &#60;joint name="laser" type="fixed"&#62;
+    &#60;origin xyz="0.13 0.00 0.1" rpy="0 0 0" /&#62;
+    &#60;parent link="base_link" /&#62;
+    &#60;child link="base_laser_link" /&#62;
+  &#60;/joint&#62;
+
+  &#60;link name="base_laser_link"&#62;
+    &#60;visual&#62;
+      &#60;geometry&#62;
+        &#60;box size="0.06 0.06 0.07" /&#62;
+      &#60;/geometry&#62;
+      &#60;material name="Black" /&#62;
+    &#60;/visual&#62;
+    &#60;inertial&#62;
+      &#60;mass value="0.000001" /&#62;
+      &#60;origin xyz="0 0 0" /&#62;
+      &#60;inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+        iyy="0.0001" iyz="0.0"
+        izz="0.0001" /&#62;
+    &#60;/inertial&#62;
+  &#60;/link&#62;</pre>
+<ul>
+<li style="text-align: justify;"> /opt/ros/kinetic/share/turtlebot_bringup/launch/3dsensor.launchの次の部分を変更する。<br />
+変更前：</p>
+<pre class="brush:cpp;"> &#60;arg name="scan_topic" default="scan"/&#62;</pre>
+<p>変更後:</p>
+<pre class="brush:cpp;"> &#60;arg name="scan_topic" default="kinect_scan"/&#62;
+ &#60;node name="laser_driver" pkg="urg_node" type="urg_node"&#62; &#60;param name="frame_id" value="base_laser_link" /&#62;&#60;/node&#62;</pre>
+</li>
+<li style="text-align: justify;">/opt/ros/kinetic/share/turtlebot_navigation/param/cosmap_common_params.yamlの31行目のmin_obstacle_heightを0.05,32行目のmax_obstacle_heightを1.2に変更する．Hokuyo Lidarを低い位置に取り付けるため．この設定をしないと障害物回避をしないので悩むことになる．この設定では高さ0.05[m]以上1.2[m]以下の障害物を回避する。それ以外は回避しない。ロボットの高さやセンサの取り付け位置でこの値を変更する。
+<pre class="brush:cpp;"> 
+ scan:
+    data_type: LaserScan
+    topic: scan
+    marking: true
+    clearing: true
+    min_obstacle_height: 0.05
+    max_obstacle_height: 1.2
+</pre>
+</li>
+<li>urg nodeをインストールする。
+<ul>
+<li>$ sudo apt-get install ros-kinetic-urg-node</li>
+</ul>
+</li>
+<li>udevの設定：一般ユーザはデフォルトではHokuyo Lidarのデバイスファイル/dev/ttyACM0にアクセスできないので以下のコマンドでアクセスできるようにできる。
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>$ sudo chmod u+rw /dev/ttyACM0</li>
+</ul>
+</li>
+<li>これを毎回実行するのは面倒なのでudevを設定する。</li>
+<li>udevデータベースからデバイスの情報を取得<br />
+$ udevadm info -n /dev/ttyACM0<br />
+各デバイスに固有な情報を探します。ここでは、idVendorとidProductを使います。lsusbコマンドでidを調べることができる。<br />
+/etc/udev/60-cdc_acm.rulesというファイルを作成します。<br />
+中身は次のとおりです。なお、cdc_acmはUSBのドライバ名です。ここではarduinoもコンピュータに接続されているとします。接続されていない場合はttyACM1が含まれている行を削除してください。コンピュータを再起動するとデバイス名が固定され、ファイルにアクセスできるはずです。</li>
+</ul>
+</li>
+</ul>
+<pre class="brush:cpp;"> 
+KERNEL=="ttyACM*", ATTRS{{idProduct}=="0000", SYMLINK+="ttyACM_URG", MODE="0666"
+KERNEL=="ttyACM*", ATTRS{idVendor}=="2a03", ATTRS{idProduct}=="0043", SYMLINK+="ttyACM_ARDUINO", MODE="0666"
+</pre>
+</li>
+</ul>
+<p><strong>Turtlebot2起動</strong></p>
+<ul>
+<li>以下のコマンドでTurtlebot2を起動する。うまくいったらピロピロピロと音がする。鳴らない場合はTurtlebot2とPCとの接続がうまくいっていないのでUSBケーブルなどを挿し直す。</li>
+<li>$ roslaunch turtlebot_bringup minimal.launch</li>
+</ul>
+<p><strong>キーボードによる遠隔操作</strong></p>
+<ul>
+<li>以下のコマンドでキーボードによりTurtlebot2を遠隔操作できる。iキーで前進、uキーで左折、oキーで右折、kで停止、jで左回転、lで右回転、,で行進。</li>
+<li>$ roslaunch turtlebot_teleop keyboard_teleop.launch</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/08/Screenshot_2019-08-04_16-35-25.png"><img class="aligncenter size-large wp-image-15972" src="{{ site.baseurl }}/assets/images/2019/12/Screenshot_2019-08-04_16-35-25-1024x756.png" alt="" width="1024" height="756" /></a></p>
+<p>コントローラによる遠隔操作</p>
+<ul>
+<li><code>$ roslaunch turtlebot_bringup minimal.launch</code></li>
+<li><code>$ roslaunch turtlebot_teleop  ps3_teleop.launch</code><code></code>
+<ul>
+<li>このコマンドでPS3, PS4のコントローラでどちらとも遠隔操作可能です。</li>
+</ul>
+</li>
+<li>操作方法
+<ul>
+<li>PSボタンを押しながら左ジョイスティックを動かす</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>

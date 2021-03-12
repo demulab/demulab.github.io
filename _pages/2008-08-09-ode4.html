@@ -1,0 +1,225 @@
+---
+layout: page
+title: 4. 3D グラフィクス
+date: 2008-08-09 13:16:07.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '18535'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode4"
+---
+<p>[caption id="attachment_1535" align="alignnone" width="500"]<a href="http://demura.net/wordpress/wp-content/uploads/2008/08/types22.jpg"><img src="{{ site.baseurl }}/assets/images/2008/08/types22.jpg" alt="drawstuffで描画可能な形状の一部：左から球，ボックス，円柱，カプセル，線" title="types22" width="500" height="275" class="size-full wp-image-1535" /></a> drawstuffで描画可能な形状の一部：左から球，ボックス，円柱，カプセル，線[/caption]</p>
+<p>&nbsp;</p>
+<p>夏休みに入り時間ができたので，ODE初級講座の４回目を開講します．今回はODE(Open Dynamics Engine)の3Dグラフィクスについて学びます．ODEのデモを実行すると棚引く雲や地面のテクスチャの質が良く，シミュレーションの見栄えが良いですね．これは，ODEにもれなく付いてくる3Dグラフィクスライブラリdrawstuffの仕業です．ODEではdrawstuffは単なるデモプログラム表示用という位置づけなので簡単な機能しかありませんし，ポリゴンの描画も遅いのでdrawstuffで不十分な場合は他のライブラリを使うと良いでしょう．Windowsの他にLinuxでも利用したいならirrlichtやOgre3Dが候補に上ると思います．</p>
+<p>drawstuffはOpenGLと呼ばれる3Dグラフィクスライブラリを使って書かれており，とてもシンプルなライブラリです．簡単なのでOpenGLの勉強にもピッタリです．なお，drawstuffに関するAPI（関数）は小文字のdsで始まり，ODEに関するAPIは小文字のdで始まります．</p>
+<p><!--more--></p>
+<p><strong>drawstuffの使い方</strong></p>
+<ul>
+<li>ヘッダファイルをインクルードする</li>
+</ul>
+<p>[code] #include ＜drawstuff/drawstuff.h＞ [/code]</p>
+<ul>
+<ul>
+<li>設　定</li>
+</ul>
+</ul>
+<p>drawstuffを使うためには下のdsFunctions構造体の各メンバを設定しなければなりません．</p>
+<pre class="brush:cpp">// drawstuffで使われるdsFunctions構造体の定義
+typedef struct dsFunctions
+{
+  int version;		/*  DS_VERSIONを入れる */
+  void (*start)();	/* シミュレーションループが始まる前に呼び出される */
+  void (*step) (int pause);	/* シミュレーションループ毎呼び出される */
+  void (*command) (int cmd);	/* キーが押されると呼び出される */
+  void (*stop)();		/* シミュレーションループの後に呼び出される */
+  const char *path_to_textures;	/* テクスチャへのパス */
+}
+dsFunctions;</pre>
+<ul>
+<li>
+<ul>
+<li>バージョン： DS_VERSIONを代入する
+<ul>
+<li>fn.version = DS_VERSION</li>
+</ul>
+</li>
+<li>前処理関数：　シミュレーションループが始まる前に呼び出されます．ここで，カメラの視点と視線を設定するのが一般的です．
+<ul>
+<li>fn.start = &amp;start;</li>
+<li>カメラの視点，視線<br />
+dsSetViewpoint(視点，視線);</li>
+</ul>
+</li>
+<li>シミュレーションループ関数：シミュレーションの各ループで毎回呼び出されます．この関数に動力学計算，衝突検出計算や描画に関する処理を書きます．サンプルプログラムでは描画に関する処理だけを書いています．
+<ul>
+<li>fn.step = &amp;simLoop;</li>
+<li>描画に関するAPIを書く</li>
+</ul>
+</li>
+<li>キー処理関数：　キーが押される度に呼び出されます．必要がない場合はNULL（ヌルポインタ）を代入します．NULLは０番地を指す特別なポインタでしたね．
+<ul>
+<li>fn.command = &amp;command;</li>
+</ul>
+</li>
+<li>後処理関数：　シミュレーションループが終わった後に呼び出されます．必要がない場合はNULL（ヌルポインタ）を代入します．
+<ul>
+<li>fn.stop = &amp;stop;</li>
+</ul>
+</li>
+<li>テクスチャのパス
+<ul>
+<li>fn.path_to_textures = "パス";</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>実　行
+<ul>
+<li>以下のAPIを一度だけ呼び出すと描画されます．内部はwhileループになっています．dsSimulationLoop(argc, argv, witdh, height, &amp;fn);
+<ul>
+<li>argc, argv: main関数の引数</li>
+<li>width: ウインドウの幅</li>
+<li>height: ウインドウの高さ</li>
+<li>fn: ドロースタッフ構造体dsFunctionsの変数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>サンプルプログラム</strong></p>
+<pre class="brush:cpp"> /* ODE tutorial  by Kosei Demura */
+/* Lesson 4 3D Graphics          */
+// 球，円柱，カプセル，ボックス，線を描画するプログラム
+// 衝突検出，動力学計算はしていません．
+#include &#60;ode/ode.h&#62;
+#include &#60;drawstuff/drawstuff.h&#62;
+#ifdef _MSC_VER
+#pragma warning(disable:4244 4305)  // VC++用警告を止める
+#endif
+#ifdef dDOUBLE
+#define dsDrawBox      dsDrawBoxD
+#define dsDrawSphere   dsDrawSphereD
+#define dsDrawCylinder dsDrawCylinderD
+#define dsDrawCapsule  dsDrawCapsuleD
+#define dsDrawLine     dsDrawLineD
+#endif
+
+#define DENSITY (5.0)	// 密度
+
+struct MyObject {
+  dBodyID body;		// ボディ（剛体）
+};
+
+dReal radius = 0.25; // 半径
+dReal length = 1.0;  // 長さ
+dReal sides&#91;3&#93; = {0.5,0.5,1.0}; // 辺の長さ
+static dWorldID world;  // 動力学計算ワールド
+static MyObject sphere, box, capsule, cylinder; // 物体
+
+// start simulation
+static void start()
+{
+  static float xyz&#91;3&#93; = {5,3,0.5};    // 視点&#91;m&#93;
+  static float hpr&#91;3&#93; = {-180, 0, 0}; // 視線&#91;°&#93;
+  dsSetViewpoint (xyz,hpr);           // 視点と視線の設定
+}
+
+// シミュレーションループ
+static void simLoop (int pause)
+{
+  const dReal *pos1,*R1,*pos2,*R2,*pos3,*R3;    //　球の描画
+  dsSetColor(1,0,0);      // 色の設定 (赤，緑，青）各成分は0から1
+  dsSetSphereQuality(3);  // 球の質を高める
+  pos1 = dBodyGetPosition(sphere.body); // 位置の取得
+  R1   = dBodyGetRotation(sphere.body); // 姿勢(回転行列）の取得
+  dsDrawSphere(pos1,R1,radius);         // 球の描画
+
+  // 円柱の描画
+  dsSetColorAlpha (0,1,0,1);
+  pos2 = dBodyGetPosition(cylinder.body);
+  R2   = dBodyGetRotation(cylinder.body);
+  dsDrawCylinder(pos2,R2,length,radius);  // 円柱の描画
+
+  // カプセルの描画
+  dsSetColorAlpha (1,1,1,1);
+  pos2 = dBodyGetPosition(capsule.body);
+  R2   = dBodyGetRotation(capsule.body);
+  dsDrawCapsule(pos2,R2,length,radius);  // カプセルの描画
+
+  // ボックスの描画
+  dsSetColorAlpha (0,0,1,1);
+  pos3 = dBodyGetPosition(box.body);
+  R3   = dBodyGetRotation(box.body);
+  dsDrawBox(pos3,R3,sides);             // ボックスの描画
+
+  // 線の描画
+  dReal posA&#91;3&#93; = {0, 5, 0}, posB&#91;3&#93;={0, 5, 1.9};
+  dsDrawLine(posA,posB); // 線の描画
+}
+
+int main (int argc, char **argv)
+{
+  // drawstuffの設定
+  dsFunctions fn;
+  fn.version = DS_VERSION;
+  fn.start   = &amp;start;
+  fn.step    = &amp;simLoop;
+  fn.command = NULL;
+  fn.stop    = NULL;
+  fn.path_to_textures = "../../drawstuff/textures";
+
+  dInitODE();              // ODEの初期化
+  world = dWorldCreate();  // 動力学計算用ワールドの生成
+
+  dMass m;                 // 質量パラメータ
+  dMassSetZero (&amp;m);  // 質量パラメータの設定
+
+  //　球
+  sphere.body = dBodyCreate (world);     // ボディの生成
+  dReal radius = 0.5;                    // 半径 &#91;m&#93;
+  dMassSetSphere (&amp;m,DENSITY,radius);
+
+  // 質量パラメータの計算
+  dBodySetMass (sphere.body,&amp;m);  // ボディに質量パラメータを設定する
+  dBodySetPosition (sphere.body,0,1, 1); // ボディの位置を設定
+
+  //　ボックス
+  box.body = dBodyCreate (world);
+  dMassSetBox (&amp;m,DENSITY,sides&#91;0&#93;,sides&#91;1&#93;,sides&#91;2&#93;);
+  dBodySetMass (box.body,&amp;m);   dBodySetPosition (box.body,0,2,1);
+
+  // カプセル   capsule.body = dBodyCreate (world);
+  dMassSetCapsule(&amp;m,DENSITY,3,radius,length);
+  dBodySetMass (capsule.body,&amp;m);
+  dBodySetPosition (capsule.body,0,4,1);
+
+  // 円柱
+  cylinder.body = dBodyCreate (world);
+  dMassSetCylinder(&amp;m,DENSITY,3,radius,length);
+  dBodySetMass (cylinder.body,&amp;m);
+  dBodySetPosition (cylinder.body,0,3,1);
+
+  // シミュレーションの実行
+  dsSimulationLoop (argc,argv,960,480,&amp;fn);
+  dWorldDestroy (world); // ワールドの破壊
+  dCloseODE();           // ODEの終了
+  return 0;
+}</pre>
+<p><strong>ダウンロード</strong></p>
+<p>次のサンプルプログラム４をダウンロードして実行しよう。</p>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2008/08/sample4-120904.zip">サンプルプログラム４</a></li>
+</ul>

@@ -1,0 +1,153 @@
+---
+layout: post
+title: Raspberry Pi4：ROS2 Dashingのインストール
+date: 2020-05-06 12:35:04.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '18029'
+  views: '438'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/17994.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/ros2-dashing-small.png"><img class="aligncenter size-full wp-image-18029" src="{{ site.baseurl }}/assets/images/2020/05/ros2-dashing-small.png" alt="" width="640" height="360" /></a>Raspberry Pi4 (以下、Pi4）にROS2 Dashing DIADEMATAを入れて、Roomba 606にPRLIDAR A1を搭載してPi4で動かすところまでがとりあえずの目標。まずは、ROS2をインストール。Pi4にUbuntu18.04をインストールしていない場合は以下のリンクを先に実施してください。</p>
+<p>なお、ROS2の公式ドキュメントは参考資料のROS2 Dcumentationです。本記事はそれをもとに作成し、一部補足しています。</p>
+<p><strong>事前準備</strong></p>
+<ul>
+<li><a href="https://demura.net/education/17957.html">Raspberry Pi4: Ubuntu18.04 + Xubuntu Desktopのインストールと設定</a></li>
+</ul>
+<p><strong>参考資料</strong></p>
+<ul>
+<li><a href="https://index.ros.org/doc/ros2/">ROS2 Documentation, ROS Index, Open Robotics</a></li>
+</ul>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Raspberry Pi4 Model B 4GB</li>
+<li>Ubuntu18.04 + Xubuntu desktop</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li><a href="https://index.ros.org/doc/ros2/Installation/Dashing/Linux-Install-Debians/">公式ウェブサイト</a>の説明に従いインストールする。以下の作業はそれに基づいた。</li>
+<li>ROS2関連のパッケージ(アプリ)をインストールするためリポジトリ(インストール先）の追加
+<ul>
+<li>$ <code>sudo apt update<code></code></code></li>
+<li>$ <code>sudo apt install curl gnupg2 lsb-release</code></li>
+<li>$ <code>curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -</code></li>
+<li>$ <code>sudo sh -c 'echo "deb http://packages.ros.org/ros2/ubuntu `lsb_release -cs` main" &gt; /etc/apt/sources.list.d/ros2-latest.list'</code></li>
+</ul>
+</li>
+<li>ROS2パッケージのインストール
+<ul>
+<li>リポジトリを追加したらそれを反映する次のコマンドを実行
+<ul>
+<li>$ sudo apt update</li>
+</ul>
+</li>
+<li>本記事ではROS2のデスクトップ版をインストールする。Pi4でまったくGUIを使わないならros-dashing-ros-baseをインストールするのもあり。
+<ul>
+<li>$ sudo apt install ros-dashing-desktop</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>初期設定</strong></p>
+<ul>
+<li>rosdepのインストールと初期化
+<ul>
+<li>rosdepはROSパッケージの実行やビルドに必要なソフトウェア達をインストールや管理するツール。</li>
+<li>インストール
+<ul>
+<li>$ sudo apt install python-rosdep2</li>
+</ul>
+</li>
+<li>初期化と更新
+<ul>
+<li>$ sudo rosdep init</li>
+<li>$ sudo rosdep update</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> 環境設定
+<ul>
+<li>に以下のコマンドが必要。これをしないとファイルが見つからないなどと怒られる。</li>
+<li>$ source /opt/ros/dashing/setup.bash</li>
+<li>毎回、上のコマンドを打つのは面倒なので以下の１行をエディタを使って~/.bashrcに一番下に追加する。
+<ul>
+<li>source /opt/ros/dashing/setup.bash</li>
+</ul>
+</li>
+<li>なお、どのエディタを使ってよくわからない場合は、XubuntuにはMousepadというWindows10のメモ帳に相当するアプリがある。画面上のメニューバーから以下で起動できる。使い方はメモ帳とほぼ同じなので説明の必要はないでしょう。
+<ul>
+<li>ねずみアイコン→アクセサリ→Mousepad</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>テスト</strong></p>
+<ul>
+<li>端末（ターミナルエミュレーター）を開き以下のコマンドを実行する。このコマンドは"Hello World: 一連番号"の文字列をパブリッシュ(配信)している。<br />
+端末の開き方は背景画面で右マウスクリックして"Open Terminal Here"を選択するか、画面上部バーのネズミアイコンをクリックして”ターミナルエミュレーター"を選択する。</p>
+<ul>
+<li>$ ros2 run demo_nodes_cpp talker</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/ros2-1.png"><img class="aligncenter size-full wp-image-17997" src="{{ site.baseurl }}/assets/images/2020/05/ros2-1.png" alt="" width="607" height="293" /></a></p>
+<ul>
+<li>もう１つ端末を開き以下のコマンドを実行する。こちらは配信されたものを受信して表示している。
+<ul>
+<li>$ ros2 run demo_nodes_py listener</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/ros2-2.png"><img class="aligncenter size-full wp-image-17998" src="{{ site.baseurl }}/assets/images/2020/05/ros2-2.png" alt="" width="607" height="338" /></a></p>
+<ul>
+<li>rviz2が起動するか試す。
+<ul>
+<li>$ rviz2</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/rviz2.png"><img class="aligncenter size-full wp-image-17999" src="{{ site.baseurl }}/assets/images/2020/05/rviz2.png" alt="" width="846" height="499" /></a></p>
+<ul>
+<li>Alpha版のrviz2も問題なく起動するようだ。上のように表示されればROS2のインストール成功！お疲れ様。</li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

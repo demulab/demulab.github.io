@@ -1,0 +1,93 @@
+---
+layout: post
+title: ODE 0.10 のインストール　(MSYS+MinGW)
+date: 2008-07-08 23:35:03.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2605'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/543.html"
+---
+<p>ODE0.10.0のinstall.txtを読むと，Visual Studio, Autotools (Linux, OS X), Code::Blocksでのビルドについての説明がありますが，今までdemura.netでメインに説明したMSYS+MinGWの説明はありません．</p>
+<p>ここでは，ODEに付属しているpremakeというプロジェクト管理ツールを使って，MSYS+MinGWをコンパイルする方法を説明します．</p>
+<ol>
+<li><strong>ODE 0.10のインストール </strong>
+<ul>
+<li>ode-0.10.0.zipのダウンロード．デスクトップへ保存．解凍．</li>
+<li>ode-0.10.0フォルダーをcドライブへコピー</li>
+<li>コマンドプロンプトを起動する．スタート→すべてのプログラム→アクセサリ→コマンドプロンプト</li>
+<li>以下のようにコマンドを打ち込む．カットアンドペースト の場合は以下の文字列を使用し，自分で打ち込む場合は２個の-(マイナス)文字がつながって見えるので，下画像を参照して注意深く打ち込んでください．
+<ul>
+<li>cd c:\ode-0.10.0\build<br />
+ 注：cdコマンドはディレクトリの移動</li>
+<li>premake --with-demos  --with-tests  --target 　gnu<br />
+ <strong><span style="color: #ff0000;">注：withとtargetの前は-（マイナス）が２個連続している．</span></strong></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>成功するとgnuというMSYS+MinGW用のディレクトリができる．</li>
+</ul>
+</li>
+<li><strong>ODEのmake </strong>
+<ul>
+<li>MSYSターミナルを起動とmake．<br />
+DebugDoubleLibはデバッグ向け，倍精度，静的ライブラリを生成します．これがＯＤＥでのお勧めです．単精度のライブラリを生成したいときはDebugSingleLib，動的ライブラリを生成したいときはDebugDoubleDLLを指定します．</p>
+<ul>
+<li>cd c:\ode-0.01\build\gnu</li>
+<li>make CONFIG=DebugDoubleLib </li>
+</ul>
+</li>
+<li>デモプログラムの実行ファイルはc:\ode-0.10.0\lib\DebugDoubleLibに生成される．
+<ul>
+<li>試しに，demo_basket.exeを実行できればODEのmakeが成功．</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ODE本サンプルプログラムのmake </strong>
+<ul>
+<li> <a href="../../dl">ダウンロードカテゴリー</a>からrobosimu******(******は日付）をダウンロードして，ダウンロードして，c:\ode-0.10.0にコピーし，そこに解凍する．解凍に成功するとc:\ode-0.10.0\roboSimuというディレクトリが生成される．その中にはsrc, texturesフォルダー, premake.exe, premake.lua, Readme.txt, roboSimu.luaファイルがある．srcフォルダーの中にはODE本のサンプルコードがある．</li>
+<li>ODEのインストールと同じように，premakeコマンドを使い，code::blocks用のプロジェクトを生成する．コマンドプロンプトを起動し，以下のコマンドを実行する．
+<ul>
+<li>
+<pre>cd c:\ode-0.10.0\roboSimu</pre>
+</li>
+<li>
+<pre>premake  --target  gnu</pre>
+<p><span style="color: #ff0000;"><strong>注：targetの前は-(マイナス）が２個連続．下画像参照．</strong></span></p>
+</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/command6.jpg" alt="command6.jpg" /></p>
+</li>
+<li>MSYSターミナルを起動とmake
+<ul>
+<li>
+<pre>cd c:\ode-0.10.0\src </pre>
+</li>
+<li>
+<pre>make　 CONFIG=DebugLib</pre>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>サンプルプログラムの実行ファイルはc:\ode-0.10.0\roboSimu\DebugLibに生成される．</li>
+<li> 試しに，arm1.exeを実行できれば成功．お疲れ様でした！</li>
+</ul>
+</li>
+</ol>

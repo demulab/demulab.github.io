@@ -1,0 +1,54 @@
+---
+layout: post
+title: ＰＤ実践：ジャイロセンサの使い方
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '21'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14991.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、以下の方法は西川教授の資料を参考にしています。</p>
+<p>本記事は、ジャイロセンサの使い方を学びます。</p>
+<ul>
+<li><strong>API</strong>
+<ul>
+<li>ポート1のジャイロセンサの角位置をリセットする。
+<ul>
+<li> ev3_gyro_sensor_reset(EV3_PORT_1);</li>
+</ul>
+</li>
+<li> ポート1のジャイロセンサで角速度を測定する。
+<ul>
+<li> int16_t rate = ev3_gyro_sensor_get_rate(EV3_PORT_1);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サンプルプログラム</strong>
+<ul>
+<li> /gyro_angle/app.c：ジャイロセンサーの角位置の計測値をLCDに表示する。</li>
+<li> /gyro_rate/app.c：ジャイロセンサーの角速度の計測値をLCDに表示する。</li>
+</ul>
+</li>
+<li> <strong>演習</strong>
+<ul>
+<li> ジャイロセンサーをEV3（ポート1）に接続した後、サンプルプログラムをEV3にアップロードし、動作を確認してください。</li>
+</ul>
+</li>
+</ul>
+<p style="text-align: right;">終了</p>

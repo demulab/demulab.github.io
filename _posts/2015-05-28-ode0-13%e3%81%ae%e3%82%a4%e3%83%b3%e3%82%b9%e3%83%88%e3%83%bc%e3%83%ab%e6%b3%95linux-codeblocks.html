@@ -1,0 +1,92 @@
+---
+layout: post
+title: ODE0.13のインストール法(Linux + Codeblocks)
+date: 2015-05-28 22:02:37.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2503'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/11818.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2009/06/odelogo3.jpg"><img src="{{ site.baseurl }}/assets/images/2015/05/odelogo3.jpg" alt="odelogo3" title="odelogo3" width="200" height="62" class="alignnone size-full wp-image-3908" /></a></p>
+<p>ODE0.13をLinux(Ubuntu14.04)、開発環境としてCodeBlocks13.12インストール法を説明します．</p>
+<p>OSはLinuxのUbuntu14.04を使います。Ubuntuを使うとWindowsと同様な操作でプログラムのビルドが可能です。</p>
+<ol>
+<ol>
+<li><strong>ODE 0.13のインストール </strong>
+<ul>
+<li><a href="http://sourceforge.net/projects/opende/files/ODE/0.13/ode-0.13.tar.gz/download">ode-0.13.tar.gz</a>をダウンロードし以下に保存します。
+<ul>
+<li>/home/ユーザ名/src</li>
+</ul>
+</li>
+<li>端末を開き、次のコマンドで展開します。
+<ul>
+<li>cd src</li>
+<li>tar xvzf ode-0.13.tar.gz</li>
+</ul>
+</li>
+<li>ビルドするためにはpremake4が必要なのでインストール。
+<ul>
+<li>sudo apt-get install premake4</li>
+</ul>
+</li>
+<li>ビルドをするためのワークスペースが必要です。以下のようにコマンドを打ち込む．カットアンドペースト の場合は以下の文字列を使用し，自分で打ち込む場合は２個の-(マイナス)文字がつながって見えるので，下画像を参照して注意深く打ち込んでください．
+<ul>
+<li>cd 　ode-0.13/build注：cdコマンドはディレクトリの移動</li>
+<li>
+<pre>premake4 --with-demos  --with-tests  codeblocks</pre>
+<p><strong><span style="color: #ff0000;">注：withの前は-（マイナス）が２個連続している．</span></strong></li>
+</ul>
+</li>
+<li>成功するとcodeblocksというcode::blocks用のフォルダができる．フォルダリ構成は以下となる．
+<ul>
+<li>/home/ユーザ名/src/ode-0.13/build/codeblocks</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ODEのビルド </strong>
+<ul>
+<li>code::blocksを起動</li>
+<li>code::blocksのメニューバーから「ファイル(F)」→「開く（O)」を選択
+<ul>
+<li>/home/ユーザ名/src/ode-0.13/build/codeblocks/ode.workspaceを選択</li>
+</ul>
+</li>
+<li>ビルドターゲットをDebugDoubleLibとする（下画像の赤丸箇所）．
+<ul>
+<li>これによりデバッグ向け，倍精度，静的なライブラリが作られます．ODEではDLL（Dynamic Link Library)より静的ライブラリ(Static Library)が推奨されています．静的ライブラリで作成した実行ファイルはサイズが大きくなりますが，配布時はその実行ファイルだけを配布すれば良く ライブラリを付属する必要はありません．自分が作成した実行ファイルを配布するときは静的ライブラリがお勧めです．<img src="{{ site.baseurl }}/assets/images/2015/05/targetdebuglib.jpg" alt="targetdebuglib.jpg" /></li>
+</ul>
+</li>
+<li>「ビルド(B)」→「ワークスペースをビルド(W)」を選択．ワークスペースはVisual C++のソリューションと同様なものです。ビルドするとODEのライブラリは成功しますが、デモプログラムでエラーになります。デモプログラムをビルドするために必要なライブラリX11とpthreadが指定されていないからです。</li>
+<li>デモプログラムをビルドするために、 ライブラリを設定します。今、例として、demo_basketをビルドしたいとします。CodeBlocksの左側にあるプロジェクトｄemo_basketを右マウスボタンをクリックして「build option」を 選択する（下図参照）。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/05/basket2.png"><img src="{{ site.baseurl }}/assets/images/2015/05/basket2-300x259.png" alt="basket2" width="300" height="259" class="aligncenter size-medium wp-image-11826" /></a><a href="http://demura.net/wordpress/wp-content/uploads/2015/05/basket3.png"><br />
+</a><a href="http://demura.net/wordpress/wp-content/uploads/2015/05/basket3.png"><br />
+</a></li>
+<li>「DebugDoubleLib]をクリックし、「Link setting」を以下の図のように変更する。 X11とpthreadを追加する。<a href="http://demura.net/wordpress/wp-content/uploads/2015/05/basket31.png"><img src="{{ site.baseurl }}/assets/images/2015/05/basket31.png" alt="basket3" width="733" height="449" class="aligncenter size-full wp-image-11825" /></a></li>
+<li>「ビルド(B)」→「ビルド」を選択
+<ul>
+<li>デモプログラムの実行ファイルは/home/ユーザ名/src/ode-0.13/lib/DebugDoubleLibに生成される．</li>
+<li>ファイル・ブラウザでそのフォルダを開く</li>
+<li>試しに，demo_basketをダブルクリックして起動すればODEのビルド成功．</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</ol>
+<p>終わり、お疲れ様！</p>

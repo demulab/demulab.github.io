@@ -1,0 +1,913 @@
+---
+layout: page
+title: API of ODE
+date: 2008-10-22 11:45:27.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  _aioseop_description: API of Open Dynamics Engine in Japanese
+  views: '16534'
+  _aioseop_title: API of ODE
+  _aioseop_keywords: Open Dynamics Engine,  API,  ODE, drawstuff
+  _wp_page_template: default
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/api"
+---
+<p><strong><span style="color: #ff0000;">注：ODEの単位系は統一が取れていれば何でもかまいません．ただし，角度はradianとなります．このサイトやODE本では標準的なSI単位系を使っています．なお、drawstuffのAPIであるdsSetViewpoint(float xyz[3], float hpr[3])の視線方向の角度を設定する配列hprの単位だけは度となります。</span></strong></p>
+<p>Open Dynamics EngineのAPI集です．２年前にODE本に付録で掲載しようとしましたがページ数の制約で断念しました．少し古く完全なAPI集ではありませんが，参考になることを願って掲載します．また，利便性のためにdrawstuffのAPIも入れています．drawstuffのAPIは小文字のdsで始まり，Sの項に入れています．時間を見つけてブラッシュアップしていきたいと思っています．</p>
+<hr />
+<p>A</p>
+<ul>
+<li><strong>int dAllocateODEDataForThread(unsigned AllocateFlags);</strong></li>
+</ul>
+<p>ODEを使う全てのスレッドから呼び出さなければならない．AllocateFlagsは０またはdAllocateFlagCollisinDateである．</p>
+<ul>
+<li><strong>int dAreConnected (dBodyID body1, dBodyID body2);</strong></li>
+</ul>
+<p>ボディbody1とbody2がジョイントで結合されていたら1 を返し，それ以外は0を返す．</p>
+<ul>
+<li> <strong>int dAreConnectedExcluding (dBodyID body1, dBodyID body2, int joint_type);</strong></li>
+</ul>
+<p>ボディ1とボディ2がjoint_typeを持たないジョイントで結合されていたら1 を返し，それ以外は0 をす．joint_typeはdJointTypeXXX定数である．この定数はdJointGetType()を参照．これは2 つのボディに接触ジョイントを追加するかどうか決めるときに役立つ．もし，すでに接触ジョイント以外のジョイントで結合されている場合に接触ジョイントを追加することは適切ではないが，接触ジョイントで結合されている場合に接触ジョイントを追加することは問題ない．</p>
+<p>B</p>
+<ul>
+<li> <strong>void dBodyAddForce(dBodyID, dReal fx, dReal fy, dReal fz);</strong></li>
+</ul>
+<ul>
+<li><strong> void dBodyAddTorque(dBodyID, dReal fx, dReal fy, dReal fz);</strong></li>
+</ul>
+<ul>
+<li><strong> void dBodyAddRelForce(dBodyID, dReal fx, dReal fy, dReal fz);</strong></li>
+</ul>
+<ul>
+<li><strong> void dBodyAddRelTorque(dBodyID, dReal fx, dReal fy, dReal fz);</strong></li>
+</ul>
+<ul>
+<li><strong> void dBodyAddForceAtPos(dBodyID, dReal fx, dReal fy, dReal fz, dReal px, dReal py, dReal pz);</strong></li>
+</ul>
+<ul>
+<li> <strong>void dBodyAddForceAtRelPos(dBodyID, dReal fx, dReal fy, dReal fz, dReal px, dReal py, dReal pz);</strong></li>
+</ul>
+<ul>
+<li><strong> void dBodyAddRelForceAtPos(dBodyID, dReal fx, dReal fy, dReal fz, dReal px, dReal py, dReal pz);</strong></li>
+</ul>
+<ul>
+<li><strong> void dBodyAddRelForceAtRelPos (dBodyID, dReal fx, dReal fy, dReal fz, dReal px, dReal py, dReal pz);</strong></li>
+</ul>
+<p>力をボディに絶対座標系または相対座標系で与える．力は各ボディに蓄積されるが，各時間ステップ毎に0 に初期化される．***RelForceと***RelTorque は物体の相対座標系での位置(x, y, z) に力またはトルクを作用する関数で，***ForceAtPos と***ForceAtRelPos は指定した位置ベクトルに力を作用する関数である．</p>
+<ul>
+<li> <strong>dBodyID dBodyCreate(dWorldID);</strong></li>
+</ul>
+<p>与えられたワールドにボディを絶対座標系での位置(0,0,0) に生成し，そのID 番号を返す.</p>
+<ul>
+<li> <strong>void dBodyDestroy(dBodyID);</strong></li>
+</ul>
+<p>dBodyID で指定されたボディを破壊する．ボディに接続されていたジョイントは機能しなくなるが破壊はされない．</p>
+<ul>
+<li> <strong>const dReal *dBodyGetForce(dBodyID);</strong></li>
+</ul>
+<ul>
+<li><strong> const dReal *dBodyGetTorque(dBodyID);</strong></li>
+</ul>
+<p>ボディに加えられている力、トルクを取得する．関節で結合されている複数のボディの力，トルクを取得したい場合は，dJointGetFeedback()を使うこと．</p>
+<ul>
+<li><strong>void dBodyGetPointVel (dBodyID b, dReal px, dReal py, dReal pz,   dVector3 result) </strong></li>
+</ul>
+<pre>絶対座標系で表されている位置(px, py, pz）の速度を絶対座標系で取得する。</pre>
+<ul>
+<li> <strong>const dReal *dBodyGetPosition(dBodyID);</strong></li>
+</ul>
+<p>ボディの位置を取得する．要素数３個の配列であるボディの位置(x, y, z) へのconst ポインタを返す．</p>
+<ul>
+<li><strong>void dBodyGetPosRelPoint (dBodyID b, dReal px, dReal py, dReal pz, dVector3 result) </strong></li>
+</ul>
+<p><br class="spacer_" /></p>
+<pre>絶対座標系の位置(px, py, pz)を相対座標系に変換する。dBodyGetRelPointPosの反対。</pre>
+<p><br class="spacer_" /></p>
+<ul>
+<li><strong>void dBodyGetRelPointVel (dBodyID b, dReal px, dReal py, dReal pz, dVector3 result) </strong></li>
+</ul>
+<pre>ボディ座標系で表されている位置(px, py, pz）の速度を絶対座標系で取得する。</pre>
+<ul>
+<li><strong>void dBodyGetRelPointPos (dBodyID b, dReal px, dReal py, dReal pz,　dVector3 result)</strong></li>
+</ul>
+<pre>相対座標系の位置(px, py, pz）を絶対座標系に変換する。</pre>
+<ul>
+<li> <strong>const dReal *dBodyGetRotation(dBodyID);</strong></li>
+</ul>
+<p>ボディの位置し，dBodyGetRotation は回転行列(４行３列）へのconstポインタを返す．</p>
+<ul>
+<li> <strong>const dReal * dBodyGetTorque(dBodyID);</strong></li>
+</ul>
+<p>ボディに加えられているトルクを取得する．</p>
+<ul>
+<li> <strong>void dBodySetMass(dBodyID, const dMass *mass);</strong></li>
+</ul>
+<p>質量パラメータをボディにセットする．</p>
+<ul>
+<li> <strong>void dBodySetPosition(dBodyID, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<p>dBodyID 番号のついたボディの位置を絶対座標系(x,y,z) に設定する.</p>
+<ul>
+<li> <strong>dBodySetQuaternion(dBodyID body, const dQuaternion q);</strong></li>
+</ul>
+<p>body にクオータニオンq を設定する．</p>
+<ul>
+<li> <strong>void dBodySetRotation(dBodyID, const dMatrix3 R);</strong></li>
+</ul>
+<p>ボディの姿勢を回転行列R に設定する.</p>
+<ul>
+<li><strong>void dBodyVectorToWorld(dBodyID body,  dReal px, dReal py, dReal pz, dVector3 result);</strong></li>
+</ul>
+<p>bodyの座標系（相対座標系）のベクトル(px, py, pz)を世界座標系（絶対座標系）へ変換し，結果をresultに格納する．</p>
+<ul>
+<li><strong>void dBodyVectorFromWorld(dBodyID body,   dReal px, dReal py, dReal pz, dVector3 result);</strong></li>
+</ul>
+<p>世界座標系（絶対座標系）のベクトル(px, py, pz)をbodyの座標系（相対座標系）へ変換し，結果をresultに格納する．</p>
+<p><br class="spacer_" /></p>
+<p>C</p>
+<ul>
+<li><strong>void dCleanupODEAllDataForThread();</strong></li>
+</ul>
+<p>ライブラリがdInitFlagManualThreadCleanupで初期化されたときだけ，ライブラリをクリーンアップするため（終了させる前のお掃除）に利用する．</p>
+<ul>
+<li><strong>void dCloseODE();</strong></li>
+</ul>
+<p>ライブラリを終了する．dInitODE2()またはdInitODE()が先に呼び出されていなければいけない．ODEをシングルスレッドから使う場合のみ使用すること．</p>
+<ul>
+<li><strong>int dCollide(dGeomID o1, dGeomID o2, int flags,　dContactGeom *contact, int skip);</strong></li>
+</ul>
+<p>与えられた２つのジオメトリo1 とo2 が交差する可能性があるときに，それらの接触情報を生成する．引数flags は現在のところジオメトリが接触した際の最大接触点数を指定する整数である．それが0 に設定された場合は, 接触点が１個あるものとして計算される．</p>
+<p>引数contact はdContactGeom 構造体配列へのポインタである．この構造体は少なくとも接触点の最大数分の情報を保持できなければならない．dContactGeom 構造体はある配列の中に大きな構造体として埋め込まれている.</p>
+<p>引数skip は配列中のあるdContactGeom 構造体から次のそれへのバイトオフセットである．skip のサイズがsizeof(dContact)ならば通常（C 言語スタイル）の配列であり，それより小さい場合はエラーとなる．もし，ジオメトリが交差したら（接触配列を更新して）接触点数を返す．交差しない場合は0 を返す．</p>
+<p>この関数はo1 とo2 が同じスペースだろうが違うスペースに所属してもかまわずに計算する．</p>
+<pre class="brush:cpp">struct dContact {
+    dSurfaceParameters &#60;strong&#62;surface&#60;/strong&#62;;
+    dContactGeom &#60;strong&#62;geom&#60;/strong&#62;;
+    dVector3 &#60;strong&#62;fdir1&#60;/strong&#62;;
+};
+
+struct dSurfaceParameters {
+    int &#60;strong&#62;mode&#60;/strong&#62;;　// 接触フラグ．以下の表を参照
+    dReal &#60;strong&#62;mu&#60;/strong&#62;; // 摩擦係数．これは必ず設定しなければならない．
+    // 以下のメンバを使うために対応するflagをmodeで設定しなければならない
+    dReal &#60;strong&#62;mu2&#60;/strong&#62;;　// muが摩擦方向１，mu2は摩擦方向２，　mu2が設定されない場合はmuが両方向に適用
+    dReal &#60;strong&#62;bounce&#60;/strong&#62;;　// 反発係数
+    dReal &#60;strong&#62;bounce_vel&#60;/strong&#62;; // 跳ね返るための最低速度．bounceを設定した場合これも設定しなければならない．
+    dReal &#60;strong&#62;soft_erp&#60;/strong&#62;;　// 接触点の法線方向のerp
+    dReal &#60;strong&#62;soft_cfm&#60;/strong&#62;;  // 接触点の法線方向のcfm
+    dReal &#60;strong&#62;motion1&#60;/strong&#62;, &#60;strong&#62;motion2&#60;/strong&#62;, &#60;strong&#62;motionN&#60;/strong&#62;;　// 摩擦方向1,2,法線方向の表面速度
+    dReal &#60;strong&#62;slip1&#60;/strong&#62;, &#60;strong&#62;slip2&#60;/strong&#62;;　// 摩擦方向1,2のスリップ(force-dependent slip)
+};
+</pre>
+<p>modeの表<br />
+<span style="border-collapse: separate; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 19px; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; font-family: -webkit-sans-serif; color: #000000;" /></p>
+<table style="background-color: white; font-size: 100%; color: black;" border="1" cellspacing="0" cellpadding="5" align="center">
+<tbody>
+<tr>
+<td><span style="color: red;">dContactMu2</span></td>
+<td>設定されない場合はmuが両方向の摩擦係数に適用．設定された場合はmuが摩擦方向１，mu2は摩擦方向２
+</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactFDir1</span></td>
+<td>設定された場合はfdir1が摩擦方向１となり，それ以外は接触点の法線方向と垂直になるように摩擦方向１が計算される．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactBounce</span></td>
+<td>設定された接触表面が反発性を持つ．反発係数はbounceで設定する．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactSoftERP</span></td>
+<td>設定された場合，接触点の接線方向にerpを設定する．表面をやわらかくする効果を持つ．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactSoftCFM</span></td>
+<td>設定された場合，接触点の接線方向にcfmを設定する．表面をやわらかくする効果を持つ．
+</td>
+</tr>
+<tr>
+<td><span style="color: red;">ContactMotion1</span></td>
+<td>設定された場合，摩擦表面はボディの運動に無関係に移動する．ベルトコンベアが摩擦表面にあることを想像して欲しい．このフラグはmotion1を摩擦方向１に設定する．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactMotion2</span></td>
+<td>同上．ただし，摩擦方向２</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactMotionN</span></td>
+<td>同上．ただし，法線方向</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactSlip1</span></td>
+<td>摩擦方向１の力依存性スリップ（Force-dependent-slip，FDS)</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactSlip2</span></td>
+<td>摩擦方向２のFDS
+</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactApprox1_1</span></td>
+<td>設定された場合は摩擦方向１に摩擦四角錐モデルを適用する．設定されない場合は力限界定数近似（constant-force-limit）が用いられる．この場合は，muは摩擦力の限界値となる．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactApprox1_2</span></td>
+<td>設定された場合は摩擦方向２に摩擦四角錐モデルを適用する．設定されない場合は力限界定数近似（constant-force-limit）が用いられる．この場合は，muは摩擦力の限界値となる．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dContactApprox1</span></td>
+<td>設定された場合は，摩擦方向１と２に摩擦四角錐モデルを適用する．</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li> <strong>dGeomID dCreateBox (dSpaceID space, dReal lx, dReal ly, dReal lz);</strong></li>
+</ul>
+<p>space で指定されたスペースにx,y,z 軸に沿った長さlx,ly,lz の直方体ジオメトリを生成し，そのID 番号を返す．直方体ジオメトリの参照点はその重心である．</p>
+<ul>
+<li> <strong>dGeomID dCreateCapsule(dSpaceID space, dReal r, dReal l);</strong></li>
+</ul>
+<p>space で指定されたスペースに半径r，長さl のカプセルジオメトリを生成し，そのID 番号を返す．カプセルは普通の円柱の両端に半球を被せたようなものである．この特徴は衝突検出の内部コードを拘束かつ正確にすることができる．引数l には半球のキャップを入れない．キャップの半径は円柱の半径r と同じである．</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li> <strong>dGeomID dCreateCylinder(dSpaceID space, dReal r, dReal l);</strong></li>
+</ul>
+<p>スペースspaceに半径r，長さl の円柱ジオメトリを生成し，そのID 番号を返す．‘</p>
+<ul>
+<li> <strong>dGeomID dCreateGeomTransform(dSpaceID space);</strong></li>
+</ul>
+<p>スペースspaceにジオメトリトランスフォームを生成し，そのID 番号を返す．</p>
+<ul>
+<li> <strong>dGeomID dCreateRay(dSpaceID space, dReal l);</strong></li>
+</ul>
+<p>スペースspace に，長さlの光線ジオメトリを作成し，そのID 番号を返す．</p>
+<ul>
+<li> <strong>dGeomID dCreateSphere(dSpaceID space, dReal r);</strong></li>
+</ul>
+<p>半径rの球ジオメトリを生成し，そのID 番号を返す．</p>
+<ul>
+<li> <strong>dGeomID dCreatePlane(dSpaceID space, dReal a, dReal b, dReal c, dReal d);</strong></li>
+</ul>
+<p>平面ジオメトリを与えられた引数により生成し，そのID 番号を返す．引数space が0 でなければ，そのspace に平面ジオメトリを挿入する．引数a,b,c,d は平面の方程式　ax+by+cz = d のパラメータである．平面の法線ベクトルは(a,b,c) であり長さは１でなければならない．平面ジオメトリは設置不可能(non-placeable)，つまり位置や姿勢を定義できない特別なジオメトリで常に絶対座標系で定義しなければならない．つまり，平面オブジェクトは常に静的な環境の一部として使われることを仮定している．</p>
+<ul>
+<li> <strong>dGeomID dCreateTriMesh(dSpaceID space, dTriMeshDataID Data,</strong> <strong>dTriCallback *Callback,dTriArrayCallback * ArrayCallback,　dTriRayCallback* RayCallback);</strong></li>
+</ul>
+<p>三角メッシュジオメトリを生成し，そのID 番号を返す．</p>
+<ul>
+<li><strong>void dCROSS(a,op,b,c)</strong></li>
+</ul>
+<p>外積の計算。a op b × cを計算する。ここで、opは=,  +=, または-=となり、 a, b, cは3次元ベクトル。</p>
+<p>D</p>
+<ul>
+<li> <strong>void dGeomTriMeshDataBuild (dTriMeshDataID g, const void* Vertices,　int VertexStride, int VertexCount,const void* Indices, int IndexCount,　int TriStride, const void* Normals);</strong></li>
+</ul>
+<p>dTriMeshData オブジェクトをデータで詰めるのに使われる．ここでは，データはコピーされないので，この関数を通過するポインターは有効でなければいけない．</p>
+<p>E</p>
+<p>F</p>
+<p>G</p>
+<ul>
+<li> <strong>dBodyID dGeomGetBody(dGeomID geom);</strong></li>
+</ul>
+<p>ジオメトリgeomに対応するボディID を取得する．</p>
+<ul>
+<li> <strong>void dGeomDestroy(dGeomID geom);</strong></li>
+</ul>
+<p>ジオメトリgeomを破壊しスペースから削除する．</p>
+<ul>
+<li> <strong>void dGeomDisable (dGeomID geom);</strong></li>
+</ul>
+<ul>
+<li><strong>void dGeomEnable (dGeomID geom);</strong></li>
+</ul>
+<p>ジオメトリgeomを無効または有効にする．無効にされたジオメトリはスペースには属しているがdSpaceCollide() とdSpaceCollide2() に無視される．</p>
+<ul>
+<li> <strong>int dGeomIsEnabled(dGeomID geom);</strong></li>
+</ul>
+<p>ジオメトリgeomが無効なら0 を返し，有効なら1 を返す．新しいジオメトリは有効な状態で作成される．</p>
+<ul>
+<li> <strong>int dGeomGetClass(dGeomID);</strong></li>
+</ul>
+<p>ジオメトリgeomのクラス番号を返す．クラスは以下のとおりである．</p>
+<ul>
+<li> dSphereClass: 球</li>
+<li> dBoxClass: 直方体</li>
+<li> dCapsuleClass: カプセル</li>
+<li> dCylinderClass: シリンダ</li>
+<li> dPlaneClass: 平面</li>
+<li> dGeomTransformClass: ジオメトリトランスフォーム(Geometry transform)</li>
+<li> dRayClass:　光線（Ray）</li>
+<li> dTriMeshClass: 三角メッシュ(Triangle mesh)</li>
+<li> dSimpleSpaceClass: 単純スペース</li>
+<li> dHashSpaceClass: ハッシュ表ベースのスペース</li>
+</ul>
+<ul>
+<li> <strong>const dReal *dGeomGetPosition(dGeomID　geom);</strong></li>
+<p>ジオメトリgeomの絶対座標系での位置へのポインタを返す．ジオメトリがボディに設定された場合は，ボディの位置へのポインタを返す．つまり，dBodyGetPosition() と同じである．</p>
+</ul>
+<ul>
+<li> <strong>void dGeomGetQuaternion(dGeomID geom, dQuaternion result);</strong></li>
+</ul>
+<p>ジオメトリgeomのクオータニオンを第2 引数のresultへコピーする．ジオメトリがボディに設定された場合は，dBodyGetQuaternion() と同じである．</p>
+<ul>
+<li> <strong>const dReal *dGeomGetRotation(dGeomID);</strong></li>
+</ul>
+<p>dGeomID で指定されたジオメトリの回転行列へのポインタを返す．ジオメトリがボディに設定された場合は，dBodyGetRotation() と同じである．</p>
+<ul>
+<li> <strong>dSpaceID dGeomGetSpace (dGeomID geom);</strong></li>
+</ul>
+<p>ジオメトリgeomを格納しているスペースID を返す．もし，どのスペースにも属していなければ0 を返す．</p>
+<ul>
+<li> <strong>void dGeomSetBody(dGeomID, dBodyID);</strong></li>
+</ul>
+<p>この関数はジオメトリとボディを関連付ける．ジオメトリにボディを設定することにより両者の位置ベクトルと回転行列は自動的に結び付けられる．つまり，位置と姿勢はボディかジオメトリだけに設定すればよい．ただし，設置不可能な平面ジオメトリは動力学計算の対象にならないのでこの関数を呼び出すとエラーが発生する．</p>
+<ul>
+<li> <strong>void dGeomTriMeshDataBuild (dTriMeshDataID g, const void* Vertices,</strong> <strong>int VertexStride, int VertexCount, const void* Indices, int IndexCount,　int TriStride, const void* Normals); </strong> </li>
+</ul>
+<p>三角メッシュオブジェクトをデータで埋める．ここではデータはコピーされない．ポインタがこの関数に渡される．</p>
+<ul>
+<li> <strong>void dGeomSetData (dGeomID, void *);</strong></li>
+</ul>
+<ul>
+<li><strong>void *dGeomGetData (dGeomID);</strong></li>
+</ul>
+<p>ユーザ定義データのポインタをジオメトリに設定あるいは取得する．</p>
+<ul>
+<li><strong>void dGeomSetOffsetPosition (dGeomID, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<ul>
+<li><strong>void dGeomSetOffsetRotation (dGeomID, const dMatrix3 R);</strong></li>
+</ul>
+<ul>
+<li><strong>void dGeomSetOffsetQuaternion (dGeomID, const dQuaternion);</strong></li>
+</ul>
+<p>位置ベクトル，回転行列，クオータニオンのオフセットを相対座標系で設定する．予めジオメトリはボディと関連付けられていなければならない．</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li> <strong>void dGeomSetPosition (dGeomID, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<ul>
+<li><strong>void dGeomSetRotation (dGeomID, const dMatrix3 R);</strong></li>
+</ul>
+<ul>
+<li><strong>void dGeomSetQuaternion (dGeomID, const dQuaternion);</strong></li>
+</ul>
+<p>位置ベクトル，回転行列，クオータニオンを設定する．ジオメトリがボディに設定された場は，dBodySetPosition(), dBodySetRotation(), dBodySetQuaternion() と同一となる</p>
+<ul>
+<li> <strong>void dGeomTriMeshDataBuildSimple (dTriMeshDataID g, const dVector3*Vertices, int VertexCount, const int* Indices,int IndexCount);</strong></li>
+</ul>
+<p>三角メッシュのデータを簡単に作成する関数．</p>
+<p>H</p>
+<ul>
+<li> <strong>dSpaceID dHashSpaceCreate (dSpaceID space);</strong></li>
+</ul>
+<p>高速に計算可能なハッシュテーブルを備えた衝突検出計算用スペースの生成し，そのID 番号を返す．</p>
+<p>I</p>
+<ul>
+<li>void dInitODE();</li>
+</ul>
+<p>ODEを初期化する．これを使う場合はdInitODE2()を呼び出す必要はない．内部でdInitODE2()を呼び出している．</p>
+<ul>
+<li>int dInitODE2(unsigned InitFlags);</li>
+</ul>
+<p>ライブラリを初めて使う場合にこれを呼び出さなければならない．InitFlagsは０またはdInitFlagManualThreadCleanupである．dCloseODE()が呼び出されるまで１度だけ呼び出さなければならない．</p>
+<p>J</p>
+<ul>
+<li> <strong>void dJointAttach(dJointID, dBodyID body1, dBodyID body2);</strong></li>
+</ul>
+<p>ジョイントを新しいボディに取り付ける．すでにそのジョイントが取り付けられていたら，まず古いボディから取り外される．ジョイントをボディ１個だけに取り付けるためには，引数body1 かbody2 を0 に設定する．ID 番号0 のボディは静的な環境を指す．両方のボディを0 に設定するとシミュレーション上では何の効果も持たない．</p>
+<ul>
+<li><strong>dJointID dJointCreateBall(dWorldID, dJointGroupID);</strong></li>
+</ul>
+<ul>
+<li><strong> dJointID dJointCreateHinge(dWorldID, dJointGroupID);</strong></li>
+</ul>
+<ul>
+<li><strong> dJointID dJointCreateSlider(dWorldID, dJointGroupID);</strong></li>
+</ul>
+<ul>
+<li><strong> dJointID dJointCreateContact(dWorldID,dJointGroupID,const dContact*);</strong></li>
+</ul>
+<ul>
+<li><strong> dJointID dJointCreateUniversal(dWorldID, dJointGroupID);</strong></li>
+</ul>
+<ul>
+<li><strong> dJointID dJointCreateHinge2(dWorldID, dJointGroupID);</strong></li>
+</ul>
+<ul>
+<li><strong> dJointID dJointCreateFixed(dWorldID, dJointGroupID);</strong></li>
+</ul>
+<ul>
+<li><strong> dJointID dJointCreateAMotor(dWorldID, dJointGroupID);</strong></li>
+</ul>
+<p>指定されたタイプの新しいジョイントを生成する．ボディにジョイントが結合されない限り，シミュレーションに効果を及ぼさない．dJointGroupID には通常0 を設定する．</p>
+<ul>
+<li> <strong>dJointID dJointCreateContact(dWorldID, dJointGroupID,const dContact *);</strong></li>
+</ul>
+<p>新しいジョイントを生成し，そのID 番号を返す．引数dJointGroupIDは通常は0 を設定する．それが0 でない場合は，すでに存在するジョイントグループに割り当てられる．接触ジョイントは既に作成されているdContact 構造体で初期化される．</p>
+<ul>
+<li> <strong>void dJointDestroy(dJointID);</strong></li>
+</ul>
+<p>ジョイントを破壊する．結合されているボディからそのジョイントを取り外し，ワールドからも削除する．</p>
+<ul>
+<li> <strong>void dJointGetHingeAnchor(dJointID, dVector3 result);</strong></li>
+</ul>
+<p>ヒンジジョイントの回転中心点を絶対座標で取得する．これはボディ1上の点を返す．ジョイントが完全な場合はボディ2 上の点と一致する．</p>
+<ul>
+<li> <strong>void dJointGetHingeAnchor2(dJointID, dVector3 result);</strong></li>
+</ul>
+<p>ヒンジジョイントの回転中心点を絶対座標で取得する．これはボディ2上の点を返す．ジョイントが完全な場合はボディ1 上の点と一致し，不完全な場合はずれがある．これを使いジョイントのずれを調べることができる．</p>
+<ul>
+<li> <strong>dReal dJointGetHingeAngle(dJointID);</strong></li>
+</ul>
+<p>ヒンジジョイントの角度[rad] を取得する．</p>
+<ul>
+<li> <strong>dReal dJointGetHingeAngleRate (dJointID);</strong></li>
+</ul>
+<p>ヒンジジョイントの角速度[rad/s] を取得する．</p>
+<ul>
+<li> <strong>void dJointGetHingeAxis (dJointID, dVector3 result);</strong></li>
+</ul>
+<p>ヒンジジョイントの回転軸ベクトルを取得する．</p>
+<ul>
+<li> <strong>dReal dJointGetHingeParam(dJointID, int parameter);</strong></li>
+</ul>
+<p>ヒンジジョイントのパラメータを取得する．</p>
+<ul>
+<li> <strong>dReal dJointGetHinge2Param(dJointID, int parameter);</strong></li>
+</ul>
+<p>ヒンジ2 ジョイントのパラメータを取得する．</p>
+<ul>
+<li> <strong>dReal dJointGetSliderParam(dJointID, int parameter);</strong></li>
+</ul>
+<p>スライダージョイントのパラメータを取得する．</p>
+<ul>
+<li><strong>int dJointGetType(dJointID);</strong></li>
+</ul>
+<div>ジョイントのタイプを取得する．以下のいずれかのタイプが返る．</div>
+<table border="1" cellspacing="0" cellpadding="5" align="center">
+<tbody>
+<tr>
+<td><span style="color: red;">dJointTypeBall</span></td>
+<td>ボールジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypeHinge</span></td>
+<td>ヒンジジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypeSlider</span></td>
+<td>スライダージョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypeContact</span></td>
+<td>接触ジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypeUniversal</span></td>
+<td>ユニバーサルジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypeHinge2</span></td>
+<td>ヒンジ２ジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypeFixed</span></td>
+<td>固定ジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypeAMotor</span></td>
+<td>角度モータジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypeLMotor</span></td>
+<td>リニアモータジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypePlane2D</span></td>
+<td>２次元平面ジョイント.</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypePR</span></td>
+<td>直動-Rotoide ジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypePU</span></td>
+<td>直動－ユニバーサルジョイント</td>
+</tr>
+<tr>
+<td><span style="color: red;">dJointTypePiston</span></td>
+<td>ピストンジョイント</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li> <strong>void dJointGetUniversalAnchor(dJointID, dVector3 result);</strong></li>
+</ul>
+<p>ユニバーサルジョイントの回転中心点を取得する．これはボディ1 上の点を返す．ジョイントが完全な場合はボディ2 上の点と一致する．</p>
+<ul>
+<li> <strong>void dJointGetUniversalAnchor2 (dJointID, dVector3 result);</strong></li>
+</ul>
+<p>ユニバーサルジョイントの回転中心点を絶対座標で取得する．これはボディ2 上の点を返す．ジョイントが完全な場合はボディ1 上の点と一致し，不完全な場合はずれがある．これを使いジョイントのずれを調べることができる．</p>
+<ul>
+<li> <strong>void dJointGetUniversalAxis1(dJointID, dVector3 result);</strong></li>
+</ul>
+<p>ユニバーサルジョイントの回転軸1 のベクトルを取得する．</p>
+<ul>
+<li> <strong>void dJointGetUniversalAxis2 (dJointID, dVector3 result);</strong></li>
+</ul>
+<p>ユニバーサルジョイントの回転軸2 のベクトルを取得する．</p>
+<ul>
+<li> <strong>dReal dJointGetUniversalAngle1(dJointID);</strong></li>
+</ul>
+<p>ユニバーサルジョイントの回転軸1 の角度[rad] を取得する．</p>
+<ul>
+<li> <strong>dReal dJointGetUniversalAngle2(dJointID);</strong></li>
+</ul>
+<p>ユニバーサルジョイントの回転軸2 の角度[rad] を取得する．</p>
+<ul>
+<li> <strong>dReal dJointGetUniversalAngle1Rate(dJointID);</strong></li>
+</ul>
+<p>ユニバーサルジョイントの回転軸1 の角速度[rad/s] を取得する．</p>
+<ul>
+<li> <strong>dReal dJointGetUniversalAngle2Rate(dJointID);</strong></li>
+</ul>
+<p>ユニバーサルジョイントの回転軸2 の角速度[rad/s] を取得する．</p>
+<ul>
+<li> <strong>dReal dJointGetUniversalParam(dJointID, int parameter);</strong></li>
+</ul>
+<p>ユニバーサルジョイントのパラメータを取得する．</p>
+<ul>
+<li> <strong>dJointGroupID dJointGroupCreate(0);</strong></li>
+</ul>
+<p>ジョイントグループの生成し，そのID 番号を返す．以前のバージョンでは確保する領域の大きさを確保していたが現在は使われておらず互換性を保つため0 を設定する.</p>
+<ul>
+<li> <strong>void dJointGroupDestroy (dJointGroupID);</strong></li>
+</ul>
+<p>ジョイントグループを破壊する．ジョイントグループ中の全てのジョイントは破壊される．</p>
+<ul>
+<li> <strong>void dJointGroupEmpty(dJointGroupID);</strong></li>
+</ul>
+<p>ジョイントグループを空にする．ジョイントグループ内の全てのジョイ<br />
+ ントは破壊されるが，ジョイントグループそのものは破壊されない．</p>
+<ul>
+<li> <strong>dReal dJointGetAMotorParam(dJointID, int parameter);</strong></li>
+</ul>
+<p>A モータのパラメータを取得する．</p>
+<ul>
+<li> <strong>void dJointSetFixed(dJointID joint);</strong></li>
+</ul>
+<p>ジョイントjointを固定ジョイントに設定する．</p>
+<ul>
+<li> <strong>void dJointSetHingeAnchor(dJointID joint, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<p>ジョイントjointの中心点(anchor) の座標(x; y; z) を設定する．</p>
+<ul>
+<li> <strong>void dJointSetHingeAxis(dJointID joint, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<p>ジョイントjointの回転軸ベクトル(x; y; z) を設定する．</p>
+<ul>
+<li> <strong>void dJointSetHinge2Anchor(dJointID, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<p>指定されたジョイントの中心点(anchor) の座標(x; y; z) を設定する．</p>
+<ul>
+<li> <strong>void dJointSetHinge2Axis1(dJointID, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<p>ジョイントの回転軸1 のベクトル(x; y; z) を設定する．</p>
+<ul>
+<li> <strong>void dJointSetHinge2Axis2(dJointID, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<p>ジョイントの回転軸2 のベクトル(x; y; z) を設定する．</p>
+<ul>
+<li> <strong>void dJointSetHingeParam(dJointID, int parameter, dReal value);</strong></li>
+</ul>
+<p>ヒンジジョイントのパラメータを設定する．</p>
+<ul>
+<li><strong> void dJointSetHinge2Param(dJointID, int parameter, dReal value);</strong></li>
+</ul>
+<p>ヒンジ2ジョイントのパラメータを設定する．</p>
+<ul>
+<li><strong> void dJointSetSliderAxis(dJointID, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<p>スライダジョイントの軸ベクトル(x, y, z)を設定する．</p>
+<ul>
+<li><strong>void dJointSetSliderParam(dJointID, int parameter, dReal value);<br />
+ </strong></li>
+</ul>
+<p>スライダジョイントのパラメータを設定する．</p>
+<ul>
+<li><strong> void dJointSetUniversalParam(dJointID, int parameter, dReal value);</strong></li>
+</ul>
+<p>ユニバーサルジョイントのパラメータを設定する．</p>
+<p><strong>ジョイントパラメータの種類</strong></p>
+<div>
+<table id="limit_motor_parameter" border="1" cellspacing="0" cellpadding="5" align="center">
+<tbody>
+<tr>
+<td><span style="color: red;">dParamLoStop</span></td>
+<td>ジョイントの可動域の下限値．デフォルト値は-dInfinityとなっており下限がない．回転ジョイントの場合は－πより大きくなければ有効にならない．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamHiStop</span></td>
+<td>ジョイントの可動域の上限値．デフォルト値はdInfinity となっており上限がない．回転ジョイントの場合はπより小さくなければ有効にならない．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamVel</span></td>
+<td>モータの目標速度（回転式ジョイントは角速度，スライダーは速度)</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamFMax</span></td>
+<td>モータが目標速度に達成するために与える最大力（回転式はトルク，スライダーは力）</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamFudgeFactor</span></td>
+<td>現在のジョイントの停止とモータの実装には若干問題がある．ジョイントが停止している時に，モータがそれを動かそうとすると非常に大きな力がかかってしまい．ジャンプする挙動が発生する．Fudge factor はこの過度な力を加減します．この値は０以上１以下であり，１がデフォルト値です．ジャンプする挙動が見られる場合はこの値を小さくすると良い．ただし，この値を小さくするとモータが動かなくなる</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamBounce</span></td>
+<td>反発係数．値は0 から1.0 は全く反発せず，1 は最大反発．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamCFM</span></td>
+<td>停止しないときに使用される拘束力混合パラメータ(CFM)．停止時はdParamStopCFM</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamStopERP</span></td>
+<td>停止時に使用される誤差削減パラメータ(ERP)．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamStopCFM</span></td>
+<td>停止時に使用される拘束力混合パラメータ(CFM).ERP と同時に使用するとスポンジのようなソフトな停止を実現できる．これはパワーが供給されていないジョイントに対して有効であることに注意．パワーのあるジョイントでは効果的に機能しない．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamSuspensionERP</span></td>
+<td>サスペンションERP パラメータ．現在，ヒンジ２にのみ実装している．</td>
+</tr>
+<tr>
+<td><span style="color: red;">dParamSuspensionCFM</span></td>
+<td>サスペンションCFM パラメータ．現在，ヒンジ２にのみ実装している．</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>K</p>
+<p>L</p>
+<p>M</p>
+<ul>
+<li> <strong>void dMassAdd(dMass *a, const dMass *b);</strong></li>
+</ul>
+<p>質量パラメータb を質量パラメータ a に加える．</p>
+<ul>
+<li> <strong>void dMassAdjust(dMass *, dReal newmass);</strong></li>
+</ul>
+<p>ある物体の質量パラメータが与えられたとき，全質量がnewmass になるように調整する．</p>
+<ul>
+<li> <strong>void dMassRotate(dMass *, const dMatrix3 R);</strong></li>
+</ul>
+<p>ある物体の質量パラメータが与えられたとき，物体の相対座標系でR回転したときの質量パラメータに調整する．</p>
+<ul>
+<li> <strong>void dMassSetBoxTotal(dMass *mass,dReal total_mass,dReal lx, dReal ly, dReal lz);</strong></li>
+</ul>
+<p>構造体mass に直方体の質量パラメータを設定</p>
+<ul>
+<li> <strong>void dMassSetCappedCylinder(dMass *mass,dReal density, int direction, dReal radius, dReal length);</strong></li>
+</ul>
+<p>構造体mass にキャップ付円柱の質量パラメータ(密度density，方向direction(x=1,y=2,z=3)，半径radius，長さlength）を設定する．</p>
+<ul>
+<li> <strong>void dMassSetCapsuleTotal(dMass *mass,dReal total_mass, int direction, dReal r, dReal l);</strong></li>
+</ul>
+<p>構造体mass にカプセルの質量パラメータ(全質量total_mass，方向direction(x=1,y=2,z=3)，半径r，長さl）を設定</p>
+<ul>
+<li> <strong>void dMassSetCylinder(dMass *mass,dReal density, int direction, dReal radius, dReal length);</strong></li>
+</ul>
+<p>構造体mass に円柱の質量パラメータ(密度density，方向direction(x=1,y=2,z=3)，半径radius，長さlength）を設定する．</p>
+<ul>
+<li> <strong>void dMassSetCylinderTotal(dMass *mass,dReal total_mass, int direction, dReal r, dReal l);</strong></li>
+</ul>
+<p>構造体mass に円柱の質量パラメータ(全質量total_mass，方向direction(x=1,y=2,z=3)，半径r，長さl）を設定</p>
+<ul>
+<li> <strong>void dMassSetSpherel(dMass *, dReal density, dReal radius);</strong></li>
+</ul>
+<p>与えられた半径radius と全質量total_mass に対する質量パラメータ(密度density, 半径radius) を設定する．このとき，重心はオブジェクトに対して(0,0,0）の位置となる．</p>
+<ul>
+<li> <strong>void dMassSetSphereTotal(dMass *, dReal total_mass, dReal r);</strong></li>
+</ul>
+<p>与えられた半径radius と全質量total_mass に対する質量パラメータ(全質量total_mass, 半径r) を設定する．このとき，重心はオブジェクトに対して(0,0,0）の位置となる．</p>
+<ul>
+<li><strong>void dMassSetZero(dMass *);</strong></li>
+</ul>
+<p>全ての質量パラメータ0 に設定する．</p>
+<ul>
+<li> <strong>void dMassTranslate(dMass *, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<p>ある物体の質量パラメータが与えられたとき，物体の相対座標系での位置(x,　y, z) に質量パラメータを調整する．重心を移動する場合などに使われる．</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li><strong>void dMultiply0_331 (dReal *A, const dReal *B, const dReal *C);<br />
+ </strong></li>
+<li><strong>void dMultiply1_331 (dReal *A, const dReal *B, const dReal *C);</strong></li>
+<li><strong>void dMultiply1_331 (dReal *A, const dReal *B, const dReal *C);<br />
+ </strong></li>
+</ul>
+<p><br class="spacer_" /></p>
+<p><br class="spacer_" /></p>
+<p>行列の掛け算。 dMultiply*の*は0, 1, 2の値であり次の意味を持つ。</p>
+<p>*   0:   A = B  * C  <br />
+ *   1:   A = B' * C  <br />
+ *   2:  A = B *  C'</p>
+<p>ここで、’は転置の意味。　Aは３行１列、Ｂは３行３列、Ｃは３行１列の行列。</p>
+<p><br class="spacer_" /></p>
+<p>N</p>
+<ul>
+<li> <strong>typedef void dNearCallback (void *data, dGeomID o1, dGeomID o2);</strong></li>
+</ul>
+<p>引数data はdSpaceCollide からdNearCallback へそのまま渡される．その意味はユーザにより定義される．引数o1 とo2 は近接しているジオメトリである．このコールバック関数はo1 とo2 に対して各ペア間の接触点を算出するためにdCollide() を呼び出すことができ，これらの接触点は接触ジョイントとしてシミュレーションに付け加えられる．</p>
+<p>dSpaceCollide() は全ての交差するジオメトリペアを通過させることを保障するが，交差しないジオメトリペアを誤って通過させる可能性もある．間違える数はスペースによって使われる内部のアルゴリズムに依存する．従って，dCollide が全てのペアについて接触点を返す保障はない．</p>
+<p><br class="spacer_" /></p>
+<p>O</p>
+<p><br class="spacer_" /></p>
+<p>P</p>
+<p><br class="spacer_" /></p>
+<p>Q</p>
+<ul>
+<li> <strong>void dQFromAxisAndAngle(dQuaternion q, dReal ax, dReal ay, dReal az,dReal angle); </strong></li>
+</ul>
+<p>回転軸ベクトル(ax; ay; az) を中心にangle 回転したときのクオータニオンq を取得する．</p>
+<ul>
+<li> <strong>void dQtoR(dQuaternion q, dMatrix3 R);</strong></li>
+</ul>
+<p>クオータニオンq を回転行列R に変換する．</p>
+<p><br class="spacer_" /></p>
+<p>R</p>
+<ul>
+<li> <strong>dRFromAxisAndAngle(dMatrix3 R, dReal ax, dReal ay, dReal az, dReal angle);</strong></li>
+</ul>
+<p>回転軸ベクトル(ax, ay, az) を中心にangle 回転したときの回転行列Rを取得する．</p>
+<p>S</p>
+<ul>
+<li><strong>void dsDrawBox(const float pos[3], const float R[12], const float sides[3]);</strong></li>
+</ul>
+<p>位置pos[3], 回転行列R[12], x,y,z 軸に沿った長さがそれぞれsides[0],sides[1],sides[2] のボックスを描画する．</p>
+<ul>
+<li><strong>void dsDrawSphere(const float pos[3], const float R[12], float r);</strong></li>
+</ul>
+<p>位置pos[3], 回転行列R[12], 　半径r の球を描画する．</p>
+<ul>
+<li><strong>void dsDrawTriangle(const float pos[3], const float R[12], const float *v0, const float *v1, const float *v2, int solid);</strong></li>
+</ul>
+<p>頂点座標(v0,v1,v2) の三角形を描画する．solid が0 の場合は三角形の線(ワイヤーフレーム）だけを表示, 1 の場合は三角形の面を表示する．</p>
+<ul>
+<li> <strong>void dsDrawCylinder(const float pos[3], const float R[12], float l,　float r);</strong></li>
+</ul>
+<p>z 軸に沿った長さl(エル)，半径r の円柱を描画する．<br class="spacer_" /></p>
+<ul>
+<li><strong>void dsDrawCapsule(const float pos[3], const float R[12],　float l, float r); </strong></li>
+</ul>
+<p>z 軸に沿った長さl，半径r のカプセルを描画します．</p>
+<ul>
+<li><strong>void dsDrawLine(const float pos1[3], const float pos2[3]); </strong></li>
+</ul>
+<p>点1(pos1[0],pos1[1],pos1[2]) と点2(pos2[0],pos2[1],pos2[2]) を結ぶ線を描画します．</p>
+<ul>
+<li> <strong>void dsDrawBoxD(const double pos[3], const double R[12],const double sides[3]);</strong></li>
+</ul>
+<p>dsDrawBox の倍精度版</p>
+<ul>
+<li><strong>void dsDrawSphereD(const double pos[3], const double R[12],const float r);</strong></li>
+</ul>
+<p>dsDrawSphere の倍精度版</p>
+<ul>
+<li><strong>void dsDrawTriangleD(const double pos[3], const double R[12], const double *v0, const double *v1, const double *v2, int solid);</strong></li>
+</ul>
+<p>dsDrawTriangle の倍精度版</p>
+<ul>
+<li><strong>void dsDrawCylinderD(const double pos[3], const double R[12],　float l, float r);</strong></li>
+</ul>
+<p>dsDrawCylinder の倍精度版</p>
+<ul>
+<li><strong>void dsDrawCapsuleD(const double pos[3], const double R[12],　float l, float r);</strong></li>
+</ul>
+<p>dsDrawCappedCylinder の倍精度版</p>
+<ul>
+<li><strong>void dsDrawLineD(const double pos1[3], const double pos2[3]);</strong></li>
+</ul>
+<p>dsDrawLine の倍精度版</p>
+<ul>
+<li><strong>void dsGetViewPoint(float xyz[3], float hpr[3]);</strong></li>
+</ul>
+<p>カメラの位置と視線を取得する．xyz はカメラの位置(x,y,z), hpr はカメラの視線heading(yow に相当), pitch, roll を表し単位は度である．heading=0 はx 軸に沿った方向，pitch=0 は水平線の方向，roll=0 はロールなし．</p>
+<ul>
+<li><strong>void dsStop();</strong></li>
+</ul>
+<p>シミュレーションループを停止する．dsSimulationLoop() の内部でこのAPI を呼び出すとexit し呼び出し側に戻り，exit コマンドを使うのと同じである．ループの外でこのAPI を呼び出しても効果はない．</p>
+<ul>
+<li><strong>void dsSetColor(float red, float green, float blue);</strong></li>
+</ul>
+<p>オブジェクトの色を設定する．red(赤), green(緑), blue(青) は0 から1まで値である．</p>
+<ul>
+<li><strong>void dsSetColorAlpha(float red, float green, float blue, float alpha);</strong></li>
+</ul>
+<p>オブジェクトの色と透明度を設定する．red, gree, blue, alpha(透明度)は0 から1 まで値である．</p>
+<ul>
+<li><strong>void dsSetSphereQuality(int n);</strong></li>
+</ul>
+<p>球の描画の質を設定する．大きな値になるほど質は向上するが速度は遅くなる．デフォール値の1 の場合は正20 面体(頂点数12, 正三角形の面数20) となり，n の値が大きくなると多角形を構成する3 角形を再帰的に分割する．</p>
+<ul>
+<li><strong>dsSetCappedCylinderQuality(int n);</strong></li>
+</ul>
+<p>円柱の描画の質を設定する．大きな値になるほど質は向上するが速度は遅くなる．円柱の断面は4n 多角形となる．デフォール値の3 は12 角形となる．</p>
+<ul>
+<li><strong>void dsSetTexture(int texture_number);</strong></li>
+</ul>
+<p>オブジェクトのテクスチャを設定する．texture_number はDS_WOOD(木目) やDS_NONE(テクスチャなし) などのテクスチャ定数でなければいけない．現在のテクスチャは現在の色で塗られる．</p>
+<ul>
+<li><strong>void dsSetViewPoint(float xyz[3], float hpr[3]);</strong></li>
+</ul>
+<p>カメラの位置と視線を設定する．xyz はカメラの位置(x,y,z), hpr はカメラの視線heading(yow に相当), pitch, roll を表し単位は[°]である．ODEのAPIは全て角度をradianで表すが，このdrawstuffのAPIは角度を[°]で表すので注意．heading=0 はx 軸に沿った方向，pitch=0 は水平線の方向，roll=0 はロールなし．</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li> <strong>dSpaceID dSimpleSpaceCreate(dSpaceID space);</strong></li>
+</ul>
+<p>単純な衝突検出計算用スペースを生成し，そのID 番号を返す．．</p>
+<ul>
+<li> <strong>void dSpaceCollide(dSpaceID space, void *data, dNearCallback *callback);</strong></li>
+</ul>
+<p>この関数は衝突しような２つのジオメトリペアの集団を探し，各ペアに3 番目の引数で指定するコールバック関数を呼び出す．そのコールバック関数はdNearCallback 型で次のように定義されている．</p>
+<ul>
+<li> <strong>void dSpaceDestroy(dSpaceID);</strong></li>
+</ul>
+<p>スペースを破壊する．クリーンアップモードが1 の場合（デフォールト)，スペースの中のジオメトリは自動的に破壊される．</p>
+<ul>
+<li><strong>void dSpaceCollide2(dGeomID o1, dGeomID o2, void *data, dNearCallback *callback);</strong></li>
+</ul>
+<p>あるスペースのジオメトリが別のスペースのジオメトリと衝突する可能性があるペアを計算しコールバック関数をよぶ．これは衝突検出を拘束にするためにスペースを階層状に構築している場合に役立つ．dSpaceCollide との違いはo1，o2 の2 つの引数をとることであり，コールバック関数を衝突する可能性のある全てのペアを呼ぶ．</p>
+<p><br class="spacer_" /></p>
+<p><br class="spacer_" /></p>
+<p><br class="spacer_" /></p>
+<p>T</p>
+<ul>
+<li> <strong>dTriMeshDataID dGeomTriMeshDataCreate();</strong></li>
+</ul>
+<p>メッシュデータを保存するdTriMeshData オブジェクトを生成する.</p>
+<p><br class="spacer_" /></p>
+<p>U</p>
+<p>V</p>
+<p>W</p>
+<ul>
+<li> <strong>WorldID dWorldCreate();</strong></li>
+</ul>
+<p>新しい動力学計算用ワールドを生成し，そのID 番号を返す．</p>
+<ul>
+<li><strong>void dWorldDestroy(dWorldID);</strong></li>
+</ul>
+<p>ワールドとその中にある全てを破壊する．これには，全てのボディとジョイントグループに含まれていない全ての関節が含まれる．ジョイントグループに含まれる全ての関節は例えば，dJointGroupEmpty などの関数呼び出しによって破壊される．</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li><strong>dReal　dWorldGetCFM (dWorldID);</strong> </li>
+</ul>
+<div>拘束力混合パラメータCFM (constraint force mixing) を取得する．</div>
+<ul>
+<li> <strong>dReal dWorldGetERP (dWorldID);</strong></li>
+</ul>
+<p>関節誤差修正パラメータERP を取得する.</p>
+<ul>
+<li><strong>void dWorldGetGravity(dWorldID, dVector3 gravity);</strong></li>
+</ul>
+<p>world の重力ベクトルを取得する．地球の重力ベクトルはz 軸の向きを上にとると(0,0,-9.81) となる．デフォルト値は無重力(0,0,0) となる．</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li> <strong>void dWorldSetGravity(dWorldID, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<p>ワールドの重力ベクトルを設定する．標準は(0,0,0) である．</p>
+<ul>
+<li><strong>void dWorldQuickStep(dWorldID, dReal stepsize);</strong></li>
+</ul>
+<p>ワールドを引数stepsize [s] だけ１ステップ進める．これは反復計算による方法であるためdWorldStep()より高速であるが，精度は高くない．計算量はO(mN)，mは制約の行数，Nは繰り返し回数である．なお，Nのデフォルト値は20である．この値はdWorldSetQuickStepNumIteration()で設定する．</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li><strong>void dWorldSetQuickStepNumIteration(dWorldID, int num);</strong></li>
+</ul>
+<div>dWorldQuickStep()の繰り返し計算の回数を設定する．numの値を大きくすると精度は高くなるが速度は遅くなる．これを呼び出さない場合，つまりnumのデフォルト値は20である．</div>
+<ul>
+<li> <strong>void dWorldStep(dWorldID, dReal stepsize);</strong></li>
+</ul>
+<p>ワールドを引数stepsize [s] だけ１ステップ進める．これは大きな行列を方法なので計算量はO(m<sup>3</sup>)，メモリはO(m<sup>2</sup>) 必要になる．ここで，m は制約の行数である．大きなシステムではメモリが非常に多く必要になりとても遅くなるが，現在最も正確な方法である．</p>
+<ul>
+<li> <strong>void dWorldSetGravity(dWorldID, dReal x, dReal y, dReal z);</strong></li>
+</ul>
+<div><strong><span style="font-weight: normal;">world の重力ベクトルを設定する．地球の重力ベクトルはz 軸の向きを上にとると(0,0,-9.81) となる．デフォルト値は無重力(0,0,0) となる．</span></strong></div>
+<ul>
+<li> <strong>void dWorldSetCFM(dWorldID, dReal cfm);</strong></li>
+</ul>
+<p>拘束力混合パラメータCFM (constraint force mixing) の設定及び取得する．典型的な値は10</p></p>

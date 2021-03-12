@@ -1,0 +1,57 @@
+---
+layout: post
+title: Step 6：　ロボットアーム（関節角とアーム先端位置との関係）
+date: 2007-06-12 12:05:17.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _edit_last: '2'
+  views: '6599'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/421.html"
+---
+<p><img title="ロボットシミュレーション　Open Dynamics Engine" src="{{ site.baseurl }}/assets/images/2007/06/step6.jpg" alt="Open Dynamics Engine" width="320" height="240" /></p>
+<p>ODE本　Step6 扉図のカラー画像</p>
+<p>ODE本「<a href="http://www.amazon.co.jp/gp/product/4627846916?ie=UTF8&amp;tag=demuranet-22&amp;linkCode=as2&amp;camp=247&amp;creative=1211&amp;creativeASIN=4627846916">簡単!実践!ロボットシミュレーション - Open Dynamics Engineによるロボットプログラミング</a><br />
+<img style="border: medium none  ! important; margin: 0px ! important" src="{{ site.baseurl }}/assets/images/2007/06/ir?t=demuranet-22&amp;l=as2&amp;o=9&amp;a=4627846916" alt="" width="1" height="1" />」のStep6です．</p>
+<p>ここでは，ロボット工学の最も基本である関節角と手先位置の関係を学びます．専門用語では運動学と逆運動学といい，難しいそうですがそれほどでもありません．ODE本では，運動学の計算にシンプルで美しい広瀬先生の方法を採用しています．DH記法に嫌気がさした方もこの方法なら大丈夫です．このステップをマスターすることで下のデモのようにロボットアーム先端を好きなところへ移動することができるようになります．詳しくはODE本で．．．</p>
+<p>以下にロボットシミュレータの動画とソースを掲載します．zipで圧縮されているソースコードは<a href="http://demura.net/archives/2007/05/sourceCode.html">ここを参考にして</a>解凍・コンパイル・実行してください．それ以外のソースコードはプログラムの一部なので，そのままではコンパイルできません．</p>
+<p>なお，本サンプルプログラムのコンパイル・実行は自己責任で行ってください．特に，本物のロボットに適用するための安全性などを全く考慮していませんの で，そのような用途には向きません．あくまで，教育目的とお 考えください．著者及び森北出版は本プログラムによって生じたあらゆる結果についての責任を負いかねます．ご了承した方だけダウンロードしてください．ま た，再配布はお止めください．</p>
+<hr /><object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="320" height="260" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/pro601.flv&amp;image=http://demura.net/archives/9ode/robotsimu/pro601.jpg" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed type="application/x-shockwave-flash" width="320" height="260" src="http://demura.net/flvplayer.swf" flashvars="file=http://demura.net/archives/ode/robotsimu/pro601.flv&amp;image=http://demura.net/archives/9ode/robotsimu/pro601.jpg"></embed></object></p>
+<ul>
+<li>プログラム6.1：　３自由度ロボットアーム　(P164)</li>
+</ul>
+<ul>
+<li>説明：上の動画ではキーボードの操作によりロボットを動かしています．このおしゃれな？ロボットアームに運動学，逆運動学を実装していきましょう．</li>
+<li>ソースコード：<a href="http://demura.net/archives/images/ode/robotsimu/pro6-1.zip">pro6-1.zip</a> (2007-5-19)</li>
+</ul>
+<hr />
+<ul>
+<li>プログラム6.3：　arm2.cpp ３自由度ロボットアーム，運動学実装 (P169)</li>
+</ul>
+<ul>
+<li><a href="http://demura.net/archives/images/ode/robotsimu/pro6-3.zip">pro6-3.zip</a> (2007-5-19)</li>
+</ul>
+<hr /><object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="320" height="260" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/pro604.flv&amp;image=http://demura.net/archives/9ode/robotsimu/pro604.jpg" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed type="application/x-shockwave-flash" width="320" height="260" src="http://demura.net/flvplayer.swf" flashvars="file=http://demura.net/archives/ode/robotsimu/pro604.flv&amp;image=http://demura.net/archives/9ode/robotsimu/pro604.jpg"></embed></object></p>
+<ul>
+<li>プログラム6.4：　３自由度ロボットアーム，逆運動学実装　(P180)</li>
+</ul>
+<ul>
+<li>説明：３自由度ロボットアームに逆運動学を実装しています．赤い球にアーム先端が<br />
+届くように制御しています．逆運動学の解は複数あり，上のデモでも途中で切り替えています．<br />
+数年前にこのシミュレータを作ったときは感動しました．</li>
+<li>ソースコード：<a href="http://demura.net/archives/images/ode/robotsimu/pro6-4.zip">pro6-4.zip</a> (2007-5-19)</li>
+</ul>
+<hr />

@@ -1,0 +1,207 @@
+---
+layout: post
+title: GAZEBO：車輪型ロボットを動かそう！
+date: 2014-11-27 12:50:52.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '4920'
+  _oembed_f8f272afae80be8d57575992efb6623b: "{{unknown}}"
+  _oembed_f7ad906472cfd899a8cb099835a33c64: "{{unknown}}"
+  _oembed_749d2b9a6853fa7d67bada2a017a65f2: "{{unknown}}"
+  _oembed_279c27035bcb2254b4ca614793c07175: "{{unknown}}"
+  _oembed_93cfa6017243e51ffe768e087efe0111: "{{unknown}}"
+  _oembed_ae0bc36bc2ed0eb43b3a3b57a676db94: "{{unknown}}"
+  _oembed_ad06d017ba82d63f4f35a18608879d4a: "{{unknown}}"
+  _oembed_ac05c78e80e203c6ea5c14443e4724eb: "{{unknown}}"
+  _oembed_493015482d8f3efa2250f4760e39e30f: "{{unknown}}"
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/11397.html"
+---
+<p>この記事が私が担当しているロボットプログラミングⅡの講義用です。</p>
+<p>今回は前回作成した車輪型ロボットモデルをプログラムで動かしましょう。<br />
+なお、本記事は以下のGAZEBO.orgのチュートリアルを改変しています。<br />
+http://wiki.gazebosim.org/wiki/Tutorials/1.2/control_robot/mobile_base<br />
+コードが古くgazebo4.0に対応していない部分を変更し、コメントを日本語化しています。それ以外のソースコードはほとんど同じものです。本ソースコードはgazebo4.0用なので、それ以前のバージョンでは動かないかもしれません。</p>
+<p>1. 作業ディレクトリの作成<br />
+端末を開き、以下のコマンドを実行する（$は打ち込まない）。ロボットプログラミングの演習では~/prog2ディレクトリ（フォルダ）の中にいろいろなプログラムを作っていく。<br />
+<code><br />
+$ mkdir -p ~/prog2/4wheel<br />
+$ cd ~/prog2/4wheel<br />
+$ gedit wheel.cc<br />
+</code></p>
+<p>2. ソースコードの作成<br />
+プラグインとなるC++言語のソースコード(拡張子cc)を作成する。</p>
+<p>以下のプログラムを「1.作業ディレクトリの作成」で開いたgedit（エディター）に次のソースコードをコピペしてwheel.ccを保存する。<br />
+<span style="color: #ff0000;">　注：コピペするときは、下プログラムの右上にあるプリンタアイコンの左にあるView Sourceアイコンをクリックして、ソースを表示して、それをコピペすること。そうしないと、コンパイルと時のエラーになやまされることになる。</span></p>
+<pre class="brush:cpp;">
+#include &#60;boost/bind.hpp&#62;
+#include &#60;gazebo/gazebo.hh&#62;
+#include &#60;gazebo/physics/physics.hh&#62;
+#include &#60;gazebo/common/common.hh&#62;
+#include &#60;stdio.h&#62;
+
+namespace gazebo
+{
+class MobileBasePlugin : public ModelPlugin
+{
+    public:
+    void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
+    {
+
+        // modelにポインタを保存
+        this-&#62;model = _parent;
+
+        // このプラグインにパラメータをロード
+        if (this-&#62;LoadParams(_sdf))
+        {
+            // 更新イベントを聞く。更新イベントは各シミュレーションループ時にブロードキャストされる。
+            this-&#62;updateConnection = event::Events::ConnectWorldUpdateBegin(
+                                         boost::bind(&MobileBasePlugin::OnUpdate, this));
+        }
+    }
+
+    public:
+    // model.sdfファイルからパラメータをロードする。
+    // "l
+    bool LoadParams(sdf::ElementPtr _sdf)
+    {
+        if (this-&#62;FindJointByParam(_sdf, this-&#62;leftWheelJoint,
+                                   "left_wheel_hinge") &&
+                this-&#62;FindJointByParam(_sdf, this-&#62;rightWheelJoint,
+                                       "right_wheel_hinge"))
+            return true;
+        else
+            return false;
+    }
+
+    public:
+    bool FindJointByParam(sdf::ElementPtr _sdf,
+        physics::JointPtr &_joint,std::string _param)
+    {
+        if (!_sdf-&#62;HasElement(_param))
+        {
+            gzerr &#60;&#60; "param &#91;" &#60;&#60; _param &#60;&#60; "&#93; not found\n";
+            return false;
+        }
+        else
+        {
+            _joint
+            = this-&#62;model-&#62;GetJoint(_sdf-&#62;Get&#60;std::string&#62;(_param));
+
+            if (!_joint)
+            {
+                gzerr &#60;&#60; "joint by name &#91;"
+                &#60;&#60; _sdf-&#62;Get&#60;std::string&#62;(_param)
+                &#60;&#60; "&#93; not found in model\n";
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // シミュレータが更新するごとに呼び出される
+    public:
+    void OnUpdate()
+    {
+        this-&#62;leftWheelJoint-&#62;SetForce(0, 0.2);
+        this-&#62;rightWheelJoint-&#62;SetForce(0, 0.2);
+    }
+
+    // モデルへのポインタ
+    private:
+    physics::ModelPtr model;
+
+    // 更新イベントへ接続するためのポインタ
+    private:
+    event::ConnectionPtr updateConnection;
+
+    // 車輪ジョイントへのポインタ
+    private:
+    physics::JointPtr leftWheelJoint;
+    private:
+    physics::JointPtr rightWheelJoint;
+};
+
+//　シミュレータにこのプラグインを登録
+GZ_REGISTER_MODEL_PLUGIN(MobileBasePlugin)
+}
+</pre>
+<p>コピペしたらgeditの「保存」ボタンをクリックして~/prog2/4hello/の中に保存し、geditメニューバーの「ファイル(F)」→「終了(Q)」でgeditを終了する。</p>
+<p>3. コンパイル設定ファイルの作成<br />
+gazeboではソースコードをコンパイル(ビルド）するのにcmakeというシステムを使う。先程から使っている端末で以下のコマンドを実行しgeditを起動する。<br />
+<code><br />
+$ gedit CMakeLists.txt<br />
+</code><br />
+CMakeLists.txtはcmakeの設定ファイル。次の<span style="color: #ff0000;">ソースコード（２番の注参照）</span>をgeditにコピペし、CMakeLists.txtを保存する。保存場所は今までと同じ~/prog2/4wheelディレクトリ。保存したらgeditを終了する。</p>
+<pre class="brush:cpp;">cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+
+find_package(Boost REQUIRED COMPONENTS system)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+
+include (FindPkgConfig)
+if (PKG_CONFIG_FOUND)
+  pkg_check_modules(GAZEBO gazebo)
+endif()
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+
+add_library(wheel SHARED wheel.cc)
+target_link_libraries(wheel ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+</pre>
+<p>4．コンパイル<br />
+以下のコマンドを実行し、ソースコードをメイクする。<br />
+<code><br />
+$ cd  ~/prog2/4wheel<br />
+$ mkdir build<br />
+$ cd build<br />
+$ cmake ../<br />
+$ make<br />
+</code></p>
+<p>5. モデルファイルのコピー<br />
+(1) 以下のコマンドを実行し、モデルファイルをコピーする。<br />
+<code><br />
+$ cd  ~/.gazebo/models<br />
+$ cp -r wheel_robot1 wheel_robot2<br />
+</code></p>
+<p>(2) model.configファイルの変更<br />
+model.configの３行目</p>
+<pre class="brush:cpp;">
+&#60;name&#62;Wheel Robot 1 &#60;/name&#62;
+</pre>
+<p>を</p>
+<pre class="brush:cpp;">
+&#60;name&#62;Wheel Robot 2 &#60;/name&#62;
+</pre>
+<p>に変更する。</p>
+<p>(3) model.sdfファイルへのプラグイン追加<br />
+model.sdfの下から2行目にある＜／ｍｏｄｅｌ＞の上に以下のプラグインに関するコードを追加する。追加しないとロボットが動きません。</p>
+<pre class="brush:cpp;">
+ &#60;plugin name='wheel' filename='libwheel.so'&#62;
+ &#60;left_wheel_hinge&#62;left_wheel_hinge&#60;/left_wheel_hinge&#62;
+ &#60;right_wheel_hinge&#62;right_wheel_hinge&#60;/right_wheel_hinge&#62;
+ &#60;/plugin&#62;
+</pre>
+<p>6. 実行<br />
+以下のコマンドを実行し、gazeboを立ち上げよう！<br />
+画面左側のinsert(挿入)タブから制作したwheel robot 2を選択して、ロボットが動き出したら成功。今回はここまで。<br />
+<code><br />
+$ export GAZEBO_PLUGIN_PATH=~/prog2/4wheel/build:$GAZEBO_PLUGIN_PATH<br />
+$ gazebo<br />
+</code></p>
+<p>○　演習<br />
+前回の演習で制作した家政婦ロボットを動かしてみましょう。ただ、直進させるだけでは面白くないので、半径２ｍ程度の円を描くようなプログラムを作ろう！</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2014/11/wheel.jpg"><img src="{{ site.baseurl }}/assets/images/2014/11/wheel-300x175.jpg" alt="gazebo wheel" width="300" height="175" class="aligncenter size-medium wp-image-11421" /></a></p>

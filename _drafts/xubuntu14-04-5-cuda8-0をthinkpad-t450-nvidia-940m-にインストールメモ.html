@@ -1,0 +1,87 @@
+---
+layout: post
+title: Xubuntu14.04.5, Cuda8.0をThinkPad T450(Nvidia 940m)にインストールメモ
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  _oembed_42801e7aedd2bd89041bd5d0d876d5cf: "{{unknown}}"
+  _oembed_12b7f79bab573fc57dc8539e191b1d8a: "{{unknown}}"
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>ThinkPad T450(Nvidia 940m+ Intel HD 5500)にXubuntu14.04.5, Cuda7.5rcインストールしたときのメモ。２週間ぐらいubuntu14.04とcuda7.0ではま8.0。具体的には再起動するとXが立ち上がらなくなったり、ログイン画面でログインしても、ログイン画面が再度出てログインできない減少で悩まされた。UnityとNvidiaの相性が悪い。Unityを使わないXubuntuとCuda8.0に変更したら、今ままでの苦労が嘘のように幸せになれた。</p>
+<p>なお、ThinkPad T450の構成は次のとおり。メモリ8GB，ハードディスクは５００GB. GPUはIntel HD Graphics 5500とNvidia 940m。</p>
+<p>インストールの種類は、必ず「それ以外」を選択する。間違うとWindowsが消える．<br />
+ パーティション<br />
+/dev/sda1 ntfs  1048MB<br />
+/dev/sda2 efi      272MB<br />
+/dev/sda3            134MB<br />
+/dev/sda4 ntfs   104857MB<br />
+/dev/sda6  ext2  /   364999MB   Xubuntu 14.04 LTS<br />
+/dev/sdas7  swap   16073MB<br />
+/dev/sda5   ntfs<br />
+ブートローダをインストールするデバイス：/dev/sda ATA WDC WD5000LPVX-0 (500.1GB)</p>
+<p>1. Nouveauのブラックリスト化<br />
+以下の内容の<br />
+/etc/modprobe.d/blacklist-nouveau.conf<br />
+を作成。</p>
+<p>blacklist nouveau<br />
+blacklist lbm-nouveau<br />
+alias nouveau off<br />
+alias lbm-nouveau off<br />
+options nouveau modeset=0</p>
+<p>update-initramfs -u<br />
+reboot</p>
+<p>2. ctrl-alt-F1でXを落とす<br />
+sudo service lightdm stop<br />
+sudo add-apt-repository ppa:xorg-edgers/ppa<br />
+sudo add-apt-repository ppa:graphics-drivers/ppa<br />
+sudo apt-get update<br />
+sudo apt-get install nvidia-375<br />
+sudo reboot</p>
+<p>Cuda8.0インストール<br />
+$ sudo apt-get update<br />
+$ lsmod | grep nvidia  # nvidiaがロードされていないことを確認<br />
+$ lsmod | grep nouveau # nouveauが利用されていることを確認<br />
+$ sudo dpkg --install cuda-repo-ubuntu1604-8-0-local_ga2_8.0.61-1_amd64.deb<br />
+$ sudo apt-get update<br />
+$ sudo apt-get install cuda<br />
+$ sudo shutdown -r now</p>
+<p>OpenCV-2.4.11のインストール</p>
+<p>https://github.com/opencv/opencv/pull/6510/filesの変更を<br />
+~/opencv-2.4.11/modules/gpu/src/graphcuts.cppの45行目に適用</p>
+<p>sudo add-apt-repository ppa:graphics-drivers/ppa<br />
+sudo apt-get update<br />
+Xubuntuインストール後の作業<br />
+sudo apt-get update && sudo apt-get upgrade<br />
+sudo add-apt-repository ppa:mamarley/nvidia<br />
+sudo apt-get install nvidia-352 nvidia-settings<br />
+sudo reboot</p>
+<p> Cuda7.5rcのインストール<br />
+Ubuntuをインストールした直後に実施した。rcのダウンロードはNvidiaのデベロッパーに登録する必要あり。<br />
+Ctrl+Alt+F1でコンソールモードにする<br />
+cuda-repo-ubuntu1404-7-5-rc_7.5-7_amd64.debをダウンロードする。<br />
+sudo dpkg -i cuda-repo-ubuntu1404-7-5-rc_7.5-7_amd64.deb<br />
+sudo apt-get update<br />
+sudo apt-get install cuda<br />
+ 各種ソフトインストール<br />
+emacsエディターのインストール<br />
+sudo apt-get install emacs<br />
+CtrlとCapsキーのスワップ<br />
+/etc/rc.localに以下の一行を入れる<br />
+setxkbmap -option ctrl:swapcaps<br />
+~/.bashrcに以下の一行を入れる<br />
+/etc/rc.local</p>

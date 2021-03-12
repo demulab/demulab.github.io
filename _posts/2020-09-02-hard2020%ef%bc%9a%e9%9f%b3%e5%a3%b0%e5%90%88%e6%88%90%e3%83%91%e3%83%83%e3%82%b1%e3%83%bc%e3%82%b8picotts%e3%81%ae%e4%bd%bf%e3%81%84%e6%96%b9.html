@@ -1,0 +1,197 @@
+---
+layout: post
+title: HARD2020：軽量ROSパッケージpicottsを使った音声合成
+date: 2020-09-02 22:59:54.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '15960'
+  views: '101'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19123.html"
+---
+<p>この記事はHARD2020（Home AI Robot Development)ワークショップ用です。オンライン、オフラインの色々な音声合成エンジンをサポートしているArnaud Rameyさんが開発したROSパッケージpicottsを紹介します。残念ながら日本語は対応していません。</p>
+<ul>
+<li><a href="https://github.com/arnaud-ramey/picotts">picotts: A lightweight ROS package for Text-to-Speech generation</a>　by Arnaud Ramey</li>
+</ul>
+<p><strong>サポートしているエンジン</strong></p>
+<ul>
+<li>オフライン：espeak, Festival, GNUstep, <a href="http://mary.dfki.de/">MaryTTS</a>, pico2wave, speech_dispatcher</li>
+<li>オンライン：AT&amp;T, Google TTS, Ivona, Microsoft</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>picottsの取得
+<ul>
+<li><code>$ cd ~/catkin_ws/src</code></li>
+<li><code>$ git clone https://github.com/arnaud-ramey/picotts.git</code></li>
+</ul>
+</li>
+<li> 各エンジン
+<ul>
+<li> MaryTTS（オフラインの中ではとてもクオリティが高い）
+<ul>
+<li><code>$ sudo apt install mplayer</code> (mplayerは他のエンジンでも使うので必須)</li>
+<li><code>$ cd ~/src</code> (~/srcがない場合はmkdir srcで作成してください)</li>
+<li><code>$ sudo apt install default-jre</code></li>
+<li><code>$ wget https://github.com/marytts/marytts/releases/download/v5.2/marytts-5.2.zip</code></li>
+<li><code>$ unzip marytts-5.2.zip</code></li>
+<li><code>$ cd marytts-5.2</code></li>
+<li><code>$ wget https://github.com/marytts/voice-upmc-pierre-hsmm/releases/download/v5.2/voice-upmc-pierre-hsmm-5.2.zip</code></li>
+<li><code>$ unzip voice-upmc-pierre-hsmm-5.2.zip</code></li>
+</ul>
+</li>
+<li>GNUstep
+<ul>
+<li><code>$ sudo apt install gnustep-gui-runtime</code></li>
+</ul>
+</li>
+<li>speech_dispatcher
+<ul>
+<li><code>$ sudo apt install speech-dispatcher</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>必要なファイルのインストール
+<ul>
+<li><code>$ source ~/.bashrc</code></li>
+<li><code>$ rosdep install picotts --ignore-src</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build picotts</code></li>
+</ul>
+</li>
+<li>エラーが出る場合
+<ul>
+<li>rosdepとビルドで以下のようなエラーが出る場合は、
+<ul>
+<li>ERROR: Rosdep cannot find all required resources to answer your query<br />
+Missing resource picotts<br />
+ROS path [0]=/opt/ros/melodic/share/ros</li>
+</ul>
+</li>
+<li>次のコマンドを実行してビルドを再実行する。
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ rosdep install --from-paths src --ignore-src -r -y<code /></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>実　行</strong></p>
+<ul>
+<li> WSLを使っている場合は、エクスプローラーで以下のファイルをダブルクリックしてPulseAudioサーバーを起動する。なお、ネイティブUbuntuは必要ない。
+<ul>
+<li>C:\WSL\pulseaudio-1.1\bin\pulseaudio.exe</li>
+</ul>
+</li>
+<li> MaryTTSを使う場合は以下のコマンドによりローカルでサーバーと設定用のクライアントを起動する。
+<ul>
+<li><code>$ cd ~/src/marytts-5.2/bin</code></li>
+<li><code>$ ./marytts-server</code></li>
+<li>別の端末を開き、同じディレクトリにあるクライアントプログラムを起動する。
+<ul>
+<li><code>$ cd ~/src/marytts-5.2/bin</code></li>
+<li><code>$ ./marytts-client</code></li>
+</ul>
+</li>
+<li>もう一つ、別の端末を開き、次のコマンドを実行してROSマスターを起動する。</li>
+<li><code>$ roscore</code></li>
+</ul>
+</li>
+<li>別の端末を開き、次のコマンドでpicottsを実行する。
+<ul>
+<li><code>$ rosrun picotts picotts.exe</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>テスト</strong></p>
+<ul>
+<li>別の端末を開き、次のコマンドを実行。音が聞こえたら成功！
+<ul>
+<li><code>$ rostopic pub /tts std_msgs/String "My name is Happy Robot"</code></li>
+</ul>
+</li>
+<li>エンジンの切り替え: 別の端末を開き、オフラインで使いたいときはMarryTTSがお勧め、ネットに接続しているときはMicroSoftの方がクオリティが高い。なお、標準ではpico2waveなのでクオリティが低い。
+<ul>
+<li>MarryTTS (オフライン)
+<ul>
+<li><code>$ rostopic pub /picotts/engine std_msgs/String "MarryTTS"</code></li>
+</ul>
+</li>
+<li>Microsoft (オンライン)
+<ul>
+<li><code>$ rostopic pub /picotts/engine std_msgs/String "microsoft"</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>トピック</strong></p>
+<ul>
+<li>/tts  [std_msgs/String] 　発話される文字列</li>
+<li>/picotts/engine  [std_msgs/String]  使用されるエンジン。picottsノード実行中に変更可能</li>
+</ul>
+<p><strong>その他</strong></p>
+<ul>
+<li>詳細についてはArnaudさんのサイトをご覧ください。
+<ul>
+<li><a href="https://github.com/arnaud-ramey/picotts">picotts: A lightweight ROS package for Text-to-Speech generation</a>　by Arnaud Ramey</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/08/Screenshot_2019-08-04_11-30-40.png"><img class="aligncenter size-large wp-image-15960" src="{{ site.baseurl }}/assets/images/2020/09/Screenshot_2019-08-04_11-30-40-1024x526.png" alt="" width="1024" height="526" /></a></p>
+<p><strong>ハンズオン</strong></p>
+<ul>
+<li>エンジンをMicrosoftに変えて、次の文章を発話させてみよう。
+<ul>
+<li>"Impossible is a word to be found only in the dictionary of fools."　- Napoleon Bonaparte</li>
+</ul>
+</li>
+<li>エンジンをMarryTTSに変えて、好きな英語の文章を発話させてみよう。</li>
+<li>rostopic pubコマンドを使って"My name is Happy Robot"と発話させましたが、これをpythonプログラムで実装しよう。</li>
+</ul>
+<p>&nbsp;</p>
+<p>以上</p>

@@ -1,0 +1,104 @@
+---
+layout: post
+title: Ubuntu 8.04 インストールメモ
+date: 2008-05-17 23:28:23.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '154'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/546.html"
+---
+<p>これはUbuntu 8.04のインストールのメモです．インストール法を説明する記事ではありません．</p>
+<ul>
+<li>Ubuntu インストールを選択</li>
+<li>日本語を選択し，「進む」をクリック</li>
+<li>どこで利用しますか？
+<ul>
+<li>Tokyoでいいので「進む」をクリック</li>
+</ul>
+</li>
+<li>キーボードレイアウト
+<ul>
+<li>Japanでいいので「進む」をクリック</li>
+</ul>
+</li>
+<li>ディスクの準備
+<ul>
+<li>Windowsを消さないため，「手動」にチェックを入れ「進む」をクリック</li>
+</ul>
+</li>
+<li>パーティションの準備中
+<ul>
+<li>ディスク構成
+<ul>
+<li>/dev/sda1 ntfs 2097MB</li>
+<li>/dev/sda2 ntfs 125829MB</li>
+<li>/dev/sda3 ext3 28303MB</li>
+<li>/dev/sda4 swap 3800MB</li>
+</ul>
+</li>
+<li>/dev/sda3にUbuntuを入れるので，それを選択し「パーティションを編集」をクリック</li>
+<li>パーティションを編集
+<ul>
+<li>利用方法： ext3 ジャーナリングファイルシステム</li>
+<li>パーティションの初期化：チェックを入れる</li>
+<li>マウントポイント：　/</li>
+<li>「OK」をクリック</li>
+</ul>
+</li>
+<li>パーティションの構成を確認して「進む」をクリック</li>
+</ul>
+</li>
+<li>インストール
+<ul>
+<li>あなたは誰ですか
+<ul>
+<li>必要な情報を入力する</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Documents and Settingsのインポート
+<ul>
+<li>何も選択できなかったので「進む」をクリック</li>
+</ul>
+</li>
+<li>インストール準備完了
+<ul>
+<li>説明をよく読んでから「インストール」をクリック．今回はパーティション３をext3に，パーティション４をswapに利用する</li>
+</ul>
+</li>
+<li>システムをインストール中
+<ul>
+<li>１８分２９秒でインストール完了</li>
+</ul>
+</li>
+<li>再起動
+<ul>
+<li>再起動をクリック</li>
+<li>DVDが自動的にイジェクトされので，DVDを取り出しEnterキーを押す</li>
+</ul>
+</li>
+<li>アプリケーションのインストール
+<ul>
+<li>thunderbird
+<ul>
+<li>sudo apt-get install thunderbird</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

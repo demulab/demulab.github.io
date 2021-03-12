@@ -1,0 +1,67 @@
+---
+layout: post
+title: 'Ubuntu16.04:  Kinect V2の設定'
+date: 2017-09-10 22:50:58.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  views: '3035'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/13560.html"
+---
+<p>Ubuntu16.04.2でKinect V2の設定したときのメモ</p>
+<p>libfreenect2のインストール</p>
+<ul>
+<li>cd</li>
+<li>mkdir src</li>
+<li>cd src</li>
+<li>git clone https://github.com/OpenKinect/libfreenect2.git</li>
+<li>cd libfreenect2</li>
+<li>sudo apt-get install build-essential cmake pkg-config libusb-1.0-0-dev libturbojpeg libjpeg-turbo8-dev libglfw3-dev</li>
+<li>mkdir build</li>
+<li>cd build</li>
+<li>cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/src/freenect2</li>
+<li>cmake .. -Dfreenect2_DIR=$HOME/src/freenect2/lib/cmake/freenect2</li>
+<li>make -j8</li>
+<li>sudo make install</li>
+<li>sudo cp ../platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/</li>
+<li>kinect v2をUSB3.0ポートに接続する</li>
+<li>./bin/Protonect</li>
+</ul>
+<p>iai_kinect2のインストール</p>
+<ul>
+<li>cd ~/catkin_ws/src/</li>
+<li>git clone https://github.com/code-iai/iai_kinect2.git</li>
+<li>cd iai_kinect2</li>
+<li>rosdep install -r --from-paths .</li>
+<li>cd ~/catkin_ws</li>
+<li>catkin_make -DCMAKE_BUILD_TYPE="Release"  -Dfreenect2_DIR=~/src/freenect2/lib/cmake/freenect2</li>
+</ul>
+<p>ROSで確認</p>
+<ul>
+<li>roslaunch kinect2_bridge kinect2_bridge.launch</li>
+<li>クラウドビュアーで表示
+<ul>
+<li>rosrun kinect2_viewer kinect2_viewer kinect2 sd cloud</li>
+</ul>
+</li>
+<li>イメージビュアーで表示
+<ul>
+<li>rosrun kinect2_viewer kinect2_viewer kinect2 sd image</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

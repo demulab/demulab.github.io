@@ -1,0 +1,110 @@
+---
+layout: post
+title: ODE講座６：衝突検出
+date: 2005-10-21 21:49:15.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1627'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/258.html"
+---
+<blockquote> <img title="sample2" src="{{ site.baseurl }}/assets/images/2005/10/sample2.jpg" border="0" alt="sample2" width="224" height="217" align="middle" /></p></blockquote>
+<p>ODE(Open Dynamics Engine)講座の第６回目です。衝突検出機能について勉強します。今日、テレビでかわいいお化けの映画キャスパーをやっていました。前回の赤玉はキャ スパーのように大地を突き抜けていったわけですが、今回はそれを止めてご覧にいれましょう。</p>
+<p>以下にソースコードを示します。 前回のプログラムと違うところだけコメントを入れています。APIについては概要しか説明しませんので、詳細についてはODEの本家ウェブサイトのドキュメントをご覧ください。</p>
+<p>なお、以下のコード上に<a href="http://www.muneo.gr.jp/" target="_self">（新党?)大地</a>が出てきます。 昔、党首の鈴木宗男に大きな会合でお会いしたことがあります。会場には数百人いましたが、全員に大きな声をかけながら握手をしたものすごいパワーを今でも覚えています。やっぱり国会議員は違うのだと。</p>
+<p>さて、ソースコードをさっそく読みましょう。なお、前回のsample1 と全く同じstart関数は掲載していません。</p>
+<p><!--more--></p>
+<p> // Sample2.cpp 　by 　でむ                     <br />
+ #include &lt;ode/ode.h&gt;<br />
+#include &lt;drawstuff/drawstuff.h&gt;</p>
+<p>static dWorldID world;<br />
+static dSpaceID space;  // 衝突検出用のスペース                                                   <br />
+static dGeomID  ground; // 　(新党?)大地                                                  <br />
+static dJointGroupID contactgroup; // コンタクトグループ　詳細はODEマニュアルを                                       <br />
+dsFunctions fn;<br />
+const dReal   radius = 0.2,  mass   = 1.0;</p>
+<p>// 前回は動力学計算用のbodyだけでしたが、今回は衝突検出用のgeomが加わったので</p>
+<p>// ボールオブジェクトを構造体で定義しました。<br />
+typedef struct {                                                             <br />
+  dBodyID body;    　　　　　　　　　　　　　                                                      <br />
+  dGeomID geom;     // 衝突検出用                                                      <br />
+} MyObject;                                                             <br />
+MyObject ball;      // 　ボールオブジェクト  </p>
+<p> // 　衝突検出のコールバック関数<br />
+static void nearCallback(void *data, dGeomID o1, dGeomID o2)<br />
+{<br />
+  static const int N = 4;　　　　// 接触点数の上限は4個  staticを忘れずにつけてください．</p>
+<p>  dContact contact[N];</p>
+<p>  int isGround = ((ground == o1) || (ground == o2));　// 衝突する２つのうちどちらかが大地なら大地の旗を立てます。<br />
+  int n =  dCollide(o1,o2,N,&amp;contact[0].geom,sizeof(dContact));　// nは衝突点数<br />
+  if (isGround)  {　// 大地の旗が立っていたら衝突検出機能を働かせる<br />
+    for (int i = 0; i &lt; n; i++) {<br />
+      contact[i].surface.mode = dContactBounce;　// 地面の反発係数を設定<br />
+      contact[i].surface.bounce = 0.0; // (0.0~1.0)   反発係数は0から1まで</p>
+<p>　 　// コンタクトジョイント生成                        <br />
+      dJointID c = dJointCreateContact(world,contactgroup,&amp;contact[i]);<br />
+    　 // 接触している２つのgeometryをコンタクトジョイントで拘束<br />
+　　dJointAttach (c,dGeomGetBody(contact[i].geom.g1),<br />
+                    dGeomGetBody(contact[i].geom.g2));<br />
+}} } </p>
+<p>static void simLoop (int pause)<br />
+{<br />
+  const dReal *pos,*R;</p>
+<p>  dSpaceCollide(space,0,&amp;nearCallback);  // 衝突判定、これは一番最初に書くこと。            <br />
+  dWorldStep(world,0.01);<br />
+  dJointGroupEmpty(contactgroup); // ジョイントグループを空に（詳細はODEマニュアルを）   <br />
+  dsSetColor(1.0,0.0,0.0);<br />
+  pos = dBodyGetPosition(ball.body);<br />
+  R   = dBodyGetRotation(ball.body);<br />
+  dsDrawSphereD(pos,R,radius);<br />
+}</p>
+<p>void  prepDrawStuff() {<br />
+  fn.version = DS_VERSION;<br />
+  fn.start   = &amp;start;<br />
+  fn.step    = &amp;simLoop;<br />
+  fn.command = NULL;<br />
+  fn.stop    = NULL;<br />
+  fn.path_to_textures = "../../drawstuff/textures";<br />
+}</p>
+<p>int main (int argc, char **argv)<br />
+{<br />
+  dReal x0 = 0.0, y0 = 0.0, z0 = 2.0;<br />
+  dMass m1;</p>
+<p>   prepDrawStuff();</p>
+<p>  world = dWorldCreate();<br />
+  space = dHashSpaceCreate(0);<br />
+  contactgroup = dJointGroupCreate(0); //　コンタクトグループの生成                                  </p>
+<p>  dWorldSetGravity(world,0,0,-0.5);</p>
+<p>  // Create a ground                                                           <br />
+  ground = dCreatePlane(space,0,0,1,0); //　(新党?)大地の結成                                </p>
+<p>  // Create a ball                                                             <br />
+  ball.body = dBodyCreate(world);                                   <br />
+  dMassSetZero(&amp;m1);<br />
+  dMassSetSphereTotal(&amp;m1,mass,radius);<br />
+  dBodySetMass(ball.body,&amp;m1);                                     <br />
+  dBodySetPosition(ball.body, x0, y0, z0);                        </p>
+<p>  ball.geom = dCreateSphere(space,radius); // 玉ジオメトリの生成                              <br />
+  dGeomSetBody(ball.geom,ball.body);       // 　bodyにgeomをセット                              </p>
+<p>  dsSimulationLoop (argc,argv,352,288,&amp;fn);</p>
+<p>  dWorldDestroy (world);<br />
+  return 0;<br />
+}</p>
+<p>  ODEでは動力学計算と衝突検出計算とは別々に実装されています。今回は衝突検出機能が必要なので、まず、衝突検出計算用の空間spaceを作らなければ なりません。オブジェクトも動力学計算用のbody(ボディ）の他に衝突検出計算用にgeom（ジオメトリ）を設定する必要があります。MyObject 構造体ではメンバをそのよ うに定義していますね。</p>
+<p>main関数の中で玉オブジェクトのgeomをdCreateSphere()で作り、dGeomSetBodyでbodyとgeomを関連付けていますのでオブジェクトの位置と姿勢はbodyだけで設定すればOKです。これをしないと幽体離脱現象に陥ってしまいます。</p>
+<p>衝 突検出関数dSpaceCollideはシミュレーションの各ステップで実行されるsimLoop関数の中で呼び出されています。注意する点としては、必 ずsimLoopの一番始めで呼び出してください。これを後のほうにもっていくと玉が大地を突き抜けてしまいますよ。dSpaceCollideではコー ルバックを呼び出しています。これを説明すると長くなりすぎるので今回はこの辺にします。</p>
+<p>では、<a href="http://demura.net/archives/images/ode/sample2.tgz" target="_self">ここからソースコード</a>をダウンロードして実行してください。今度は大地を突き抜けないはずです。　実行の仕方は前回とほぼ同じです。sample1をsample2と読み替えてください。</p>
+<p>課題を１つ出します。sample2を実行すると大地が好きなのかどうかよくわかりませんがボールがまったく弾みません<img src="{{ site.baseurl }}/assets/images/2005/10/smiley-cry.gif" border="0" alt="" />。 この呪縛を解いてください。</p>
+<p>では、また次回（目標１０月３０日）！</p>

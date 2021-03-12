@@ -1,0 +1,76 @@
+---
+layout: post
+title: シミュレータで学ぶＣ言語　[ミッション２：敵陣へドリブルせよ]
+date: 2011-04-22 02:23:36.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2604'
+  _wp_old_slug: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/8663.html"
+---
+<p>[caption id="attachment_8670" align="aligncenter" width="300" caption="ボールを黄色ゴールへ入れよう"]<a href="http://demura.net/wordpress/wp-content/uploads/2011/04/fig2.jpg"><img src="{{ site.baseurl }}/assets/images/2011/04/fig2-300x210.jpg" title="fig2" width="300" height="210" class="size-medium wp-image-8670" /></a>[/caption]</p>
+<p>ミッション２の指令は「敵陣へドリブルせよ」である．</p>
+<p>まずは，ミッション１の答えの一例．このプログラムはとても単純で，赤外線センサの値がある数値（閾値）より大きくなったら，赤外線ボールがあると判断し前進する．それ以外の場合は回転してボールを捜すというものである．<br />
+<!--more--></p>
+<pre class="brush:cpp;">// ボールを追う簡単なプログラム
+#include "dm.h"
+#include "stdio.h"
+void user_main()
+ {
+// CN1: ボールセンサ（赤外線）の値. 大きい値ほどボールが近い
+// ボールセンサは視野角が10度とほぼ正面しか見えない
+　　printf("ball sensor=%d \n", CN1);
+ 　　if(CN1 &#62; 1)
+ 　　{
+　　        motor(50,50); // 前進
+　    }
+     else
+　　 {
+  　　       motor(-10, 10); // 時計周り
+  }
+ }</pre>
+<ul>
+<li>ダウンロード：<a href="http://demura.net/wordpress/wp-content/uploads/2011/04/robocup2-12.zip">robocup2-1-110422.zip</a></li>
+<li>インストール：robocup2-1.zipを展開し，c:\ode-0.11.1\myprogの中に移動する</li>
+<li>タスクレベル１：このプログラムではロボットがうまく動かない．閾値（しきいち）を直し，ロボットの動作を改善せよ．</li>
+</ul>
+<p>次のタスクは，「北北西に針路を取れ」である．ある目標針路へ向かってロボットが進むプログラムを作りなさい．</p>
+<pre class="brush:cpp;">// 目標針路へ向かうプログラム
+#include "dm.h"
+#include "stdio.h"
+
+int target = 270; // 目標針路
+
+void user_main()
+{
+    // CN2: 地磁気センサの値　０～３６０度
+
+    printf("Dir=%d \n", CN2);
+    if((-5 &#60;= (target - CN2)) &amp;&amp; ((target - CN2) &#60; 5))
+    {
+        motor(50,50); // 前進
+    }
+    else {
+        motor(-10, 10); // 時計周り
+    }
+}</pre>
+<ul>
+<li>ダウンロード：<a href="http://demura.net/wordpress/wp-content/uploads/2011/04/robocup2-level2.zip">robocup2-level2.zip</a></li>
+<li>インストール：robocup2-2.zipを展開し，c:\ode-0.11.1\myprogの中に移動する</li>
+<li>タスクレベル2：このプログラムを改良して，ボールを黄色ゴールへドリブルで入れよ．</li>
+<li>タスクレベル3：<a href="http://demura.net/wordpress/wp-content/uploads/2011/04/robocup2-level3-110506.zip">robocup2-level3-110506.zip</a>のボール配置を使い，ボールをゴールへドリブルで入れよ．回り込みが必要となる．サンプルプログラムに問題があったので2011年5月6日に修正．</li>
+</ul>

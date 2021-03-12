@@ -1,0 +1,286 @@
+---
+layout: post
+title: 'CVAT: 追加コンポーネントのインストール'
+date: 2020-03-10 11:16:01.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16942'
+  views: '1667'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16938.html"
+---
+<p>OpenCVが開発しているCVAT(Computer Vision Annotation Tool)への追加コンポーネントのインストールメモ。コンポーネントを追加することで自動アノテーションが可能となる。以下のリンクにしたがって作業した。ただし、現時点(2020-3-10)では、OpenVINOを最新バージョンにすると自動アノテーションでエラーが出たのでOpenVINOのバージョンは2019R3.1にしている。</p>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/documentation/installation.md#advanced-topics">Quick Installation Guide: Advanced topics, CVAT</a></li>
+<li>Additional components
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/auto_annotation/README.md">Auto annotation using DL models in OpenVINO toolkit format</a></li>
+<li><a href="https://github.com/opencv/cvat/blob/develop/components/analytics/README.md">Analytics: management and monitoring of data annotation team</a></li>
+<li><a href="https://github.com/opencv/cvat/blob/develop/components/tf_annotation/README.md">TF Object Detection API: auto annotation</a></li>
+<li><a href="https://github.com/opencv/cvat/blob/develop/components/cuda/README.md">Support for NVIDIA GPUs</a></li>
+<li><a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/dextr_segmentation/README.md">Semi-automatic segmentation with Deep Extreme Cut</a></li>
+<li><a href="https://github.com/opencv/cvat/blob/develop/components/auto_segmentation/README.md">Auto segmentation: Keras+Tensorflow Mask R-CNN Segmentation</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>自動アノテーションに関する追加コンポーネント</strong></p>
+<ul>
+<li>自動アノテーションに関する追加コンポーネントは全部で５つあり、参考リンクにしたがって概要とインストール方法を説明している。使い方に関しては長くなるので別記事で作成予定。</li>
+</ul>
+<ol>
+<li>OpenVINOフォーマットの深層学習による自動アノテーション
+<ul>
+<li>参考リンク
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/auto_annotation/README.md">Auto annotation using DL models in OpenVINO toolkit format</a></li>
+</ul>
+</li>
+<li> 概要
+<ul>
+<li>OpenVINOフォーマットの深層学習を使って自動アノテーションが可能になる。OpenVINOフォーマットに対応している学習済みモデルは<a href="https://github.com/opencv/open_model_zoo">Open Model Zooリポジトリ</a>に多くあるし、さらに、自分で作成したモデルをOpenVINOフォーマットに変換するとそれを使って自動アノテーションできる驚くべき機能。</li>
+</ul>
+</li>
+<li>インストール
+<ul>
+<li>最新のOpenVINOツールキットの圧縮ファイル(.tgz)を以下のディレクトリに保存するだけ。ビルドする必要はない。とても簡単。いずれ改善されると思うが現時点では自動アノテーションで不具合がでるのでl_openvino_toolkit_p_2019.3.376.tgzを保存する。
+<ul>
+<li>~/src/cvat/components/openvino</li>
+</ul>
+</li>
+<li>以下のソフトウェア利用許諾契約を承認する。
+<ul>
+<li>~/src/cvat/components/openvino/eula.cfg</li>
+</ul>
+</li>
+<li>ビルド：CVATをDockerでインストールしたのでDockerイメージをビルドする。
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/openvino/docker-compose.openvino.yml build</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>Dockerでインストールしたので、Dockerコンテナの実行するとCVATを使える。
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/openvino/docker-compose.openvino.yml up -d</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>OpenVINO学習済みモデルのダウンロード
+<ul>
+<li>必要に応じて以下の記事を参照にダウンロードする。
+<ul>
+<li><a href="https://demura.net/misc/16892.html">OpenVINO:モデルのダウンロード、中間表現への変換、そして推論</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>使い方
+<ul>
+<li>別記事で作成予定。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Tensorflow物体検出
+<ul>
+<li>参考リンク
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/components/tf_annotation/README.md">TF Object Detection API: auto annotation</a></li>
+</ul>
+</li>
+<li> 概要
+<ul>
+<li>Tensorflowの以下のモデルを使った自動アノテーション機能。CPUまたはGPUで処理可能。詳細は参考リンクを参照。
+<ul>
+<li><a href="http://download.tensorflow.org/models/object_detection/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz" rel="nofollow">Faster RCNN Inception Resnet v2 Atrous Coco Model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/tf_annotation/docker-compose.tf_annotation.yml build</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/tf_annotation/docker-compose.tf_annotation.yml up -d</li>
+</ul>
+</li>
+<li>使い方
+<ul>
+<li>別記事で作成予定。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>NVIDIA GPUのサポート
+<ul>
+<li>参考リンク
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/components/cuda/README.md">Support for NVIDIA GPUs</a></li>
+</ul>
+</li>
+<li>NVIDIA Dockerのインストール
+<ul>
+<li>以下のリンクに従いインストールする。
+<ul>
+<li><a href="https://github.com/NVIDIA/nvidia-docker"> Nvidia-Docker</a></li>
+</ul>
+</li>
+<li>インストールに成功すると以下のコマンドでnvidiaと表示される。
+<ul>
+<li>$ docker info | grep 'Runtimes'</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/cuda/docker-compose.cuda.yml build</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/cuda/docker-compose.cuda.yml up -d</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Deep Extreme Cutによる半自動アノテーション
+<ul>
+<li>参考リンク
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/dextr_segmentation/README.md">Semi-Automatic Segmentation with Deep Extreme Cut</a></li>
+</ul>
+</li>
+<li>概要
+<ul>
+<li>Deep Extreme Cutを使ったセマンテックとインスタンスセグメンテーションの半自動アノテーション機能。アノテーションをかけたい領域の4点(またはもっと）を指定するとあとは自動でしてくれる。Deep Extreme Cutについては以下のリンクと論文を参照
+<ul>
+<li><a href="http://people.ee.ethz.ch/~cvlsegmentation/dextr/">Deep Extreme Cut (DEXTR):From Extreme Points to Object Segmentation</a></li>
+<li><a href="https://arxiv.org/pdf/1711.09081.pdf">K.K. Maninis, S. Caelles, J. Pont-Tuset, and L. Van Gool: Deep Extreme Cut: From Extreme Points to Object Segmentation, Computer Vision and Pattern Recognition (CVPR), 2018.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/openvino/docker-compose.openvino.yml -f cvat/apps/dextr_segmentation/docker-compose.dextr.yml build</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/openvino/docker-compose.openvino.yml -f cvat/apps/dextr_segmentation/docker-compose.dextr.yml up -d</li>
+</ul>
+</li>
+<li>使い方
+<ul>
+<li>別記事で作成予定。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>自動セグメンテーション：Keras+Tensorflow Mask R-CNN
+<ul>
+<li>参考リンク
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/components/auto_segmentation/README.md">Keras+Tensorflow Mask R-CNN Segmentation</a></li>
+</ul>
+</li>
+<li>概要
+<ul>
+<li>COCOデータセットで学習済みのMask R-CNN (バックボーン  FPNとResNet101)を使った自動アノテーション。サポートするクラスは参考リンクを参照。</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/auto_segmentation/docker-compose.auto_segmentation.yml build</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/auto_segmentation/docker-compose.auto_segmentation.yml up -d</li>
+</ul>
+</li>
+<li>使い方
+<ul>
+<li>別記事で作成予定。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>追加コンポーネントを全て使いたい場合</strong></p>
+<ul>
+<li>上の説明では各コンポーネントごとのDockerイメージの作成とコンテナの実行方法を説明している。追加コンポーネントを全て使いたい場合は以下のコマンドを実行する。</li>
+<li>Dockerイメージのビルド
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml  -f components/openvino/docker-compose.openvino.yml -f components/tf_annotation/docker-compose.tf_annotation.yml -f components/cuda/docker-compose.cuda.yml -f cvat/apps/dextr_segmentation/docker-compose.dextr.yml -f components/auto_segmentation/docker-compose.auto_segmentation.yml build</li>
+</ul>
+</li>
+<li>Dockerコンテナの実行
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose -f docker-compose.yml -f components/openvino/docker-compose.openvino.yml -f components/tf_annotation/docker-compose.tf_annotation.yml -f components/cuda/docker-compose.cuda.yml -f cvat/apps/dextr_segmentation/docker-compose.dextr.yml -f components/auto_segmentation/docker-compose.auto_segmentation.yml up -d</li>
+</ul>
+</li>
+<li>私の環境では全部入りするとcvatのイメージが8.86GBになった。docker imagesコマンドで確認できる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/docker1.png"><img class="alignleft size-full wp-image-16941" src="{{ site.baseurl }}/assets/images/2020/03/docker1.png" alt="" width="912" height="254" /></a></li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<ul>
+<li>CATのスクリーンショット。追加コンポーネントを入れるとModelsにRCNN Object DetectorとMask RCNN Object Detectorが追加される。Deep Extreme Cutのモデルはここには表示されない。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat2.png"><img class="alignleft size-large wp-image-16942" src="{{ site.baseurl }}/assets/images/2020/03/cvat2-1024x308.png" alt="" width="1024" height="308" /></a>終わり</li>
+</ul>

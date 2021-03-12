@@ -1,0 +1,470 @@
+---
+layout: post
+title: 'Raspberry Pi4 (8GB RAM): ROS MelodicでRoombaを動かそう！'
+date: 2020-08-15 10:40:20.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '18615'
+  views: '657'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _wp_old_date: '2020-08-05'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/18594.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/roomba-scaled.jpg"><img class="aligncenter size-large wp-image-18615" src="{{ site.baseurl }}/assets/images/2020/08/roomba-1024x768.jpg" alt="" width="1024" height="768" /></a><br />
+Raspberry Pi4 (8GB RAM)、ROS MelodicでRoombaを動かすまでの記事。</p>
+<p>更新：ソースコードの変更で間違と不足箇所があったので赤字で訂正しました。ご指摘頂いた玉川大学の岡田先生ありがとうございました(2020-9-6)。</p>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Raspberry Pi4 Model B, RAM 8GB</li>
+<li>Xubuntu18.04.４LTS
+<ul>
+<li><a href="https://demura.net/education/18564.html">インストール方法はこの記事を参照。</a>なお、<span style="color: #ff0000;"><strong>この方法（イメージファイル）を使わない場合は、以下の説明どおり実施してもうまく動かない場合があるかもしれません。</strong></span></li>
+</ul>
+</li>
+<li>ROS Melodic
+<ul>
+<li><a href="https://demura.net/education/18578.html">インストール方法はこの記事を参照。</a></li>
+</ul>
+</li>
+<li>Roomba 600シリーズ
+<ul>
+<li>本記事では3万円弱で購入できる606で実行した。本記事で使用するCreate_autonomyパッケージは800シリーズまで対応しているので、そのシリーズまで大丈夫だと思うが未検証。<span style="color: #ff0000;"><strong>なお、900シリーズ以上はRoombaからシリアルポートがなくなり、Create_autonomyパッケージも対応していないため使えないので注意。</strong></span></li>
+</ul>
+</li>
+<li>Roomba通信ケーブル
+<ul>
+<li>Pi4とRoombaを接続するケーブル。以下を参考に自作するか、ここから購入する。本記事では2011年に購入したルンバ研究開発キットに付属していた通信ケーブルを使っている。
+<ul>
+<li>自作：<a href="https://cvl-robot.hateblo.jp/entry/2017/08/28/173943">ルンバの制御用USBシリアルケーブルを綺麗に作りたいときのメモ、cvl-robogt's diary</a></li>
+<li>購入：<a href="https://www.amazon.co.jp/EZSync-USB-to-DIN%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%ABfor-Roomba%E3%80%81%E4%BD%9C%E6%88%902/dp/B06XDPMY4Z">USB to DINシリアルケーブルfor Roomba、作成2　(5431円)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>モバイルバッテリ
+<ul>
+<li>10000mAhだとPi4の負荷により変わるが数時間は持つ。今、Pi4でこのブログを書いているが電流は0.8Aほど。</li>
+</ul>
+</li>
+<li>SONY DualShock4 (DS4)コントローラ</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>準備
+<ul>
+<li>$ <code>sudo apt install python-catkin-tools</code></li>
+<li><code>$ sudo apt install -y libqt4-dev</code></li>
+</ul>
+</li>
+<li> ワークスペースの生成
+<ul>
+<li>$ <code>mkdir -p ~/catkin_ws/src</code></li>
+<li>$ <code>cd catkin_ws</code></li>
+<li>$ <code>catkin init</code></li>
+</ul>
+</li>
+<li> create_autonomy
+<ul>
+<li>カナダのSimon Fraser University, Autonomy Lab.のJacob PerronさんのフォークしたiRobot社のRoomba,　Create2用のROSドライバー create_autonomyを使う。
+<ul>
+<li><a href="https://github.com/RoboticaUtnFrba/create_autonomy">RoboticaUtnFrba/create_autonomy</a></li>
+</ul>
+</li>
+<li> ダウンロード
+<ul>
+<li><code>$ cd ~/catkin_ws/src</code></li>
+<li><code>$ git clone https://github.com/RoboticaUtnFrba/create_autonomy.git</code></li>
+<li><code>$ git clone https://github.com/RoboticaUtnFrba/libcreate.git</code></li>
+</ul>
+</li>
+<li>依存関係ファイルのインストール
+<ul>
+<li>RTIMULib (IMU用のリアルタイムライブラリ)のインストール
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ ./src/create_autonomy/sensors/ca_imu/scripts/install_rtimulib.sh</code></li>
+</ul>
+</li>
+<li>他のファイルのインストール
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ sudo apt install -y python3-vcstool</code></li>
+<li><code>$ vcs import src &lt; src/create_autonomy/dependencies.repos</code></li>
+<li><code>$ rosdep update</code></li>
+<li><code>$ rosdep install --from-paths src -yi</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ソースコードの変更
+<ul>
+<li>viso2(Visual Odometryライブラリ）関連のソースコードをそのまではビルドできないので次のように改変するか~/catkin_ws/src/viso2以下のディレクトリを削除する。なお、この改変作業はRaspberryPi4のARM CPU用なので、Intel CPUを搭載したPCにこの作業をしてはいけない。
+<ul>
+<li>~/catkin_ws/src/viso2/libviso2/CMakeLists.txtの10行目と<span style="color: #ff0000;">~/catkin_ws/src/viso2/viso2_ros/CMakeLists.txt の35行目</span>を次のように変更する。
+<ul>
+<li>変更前：<code> SET(CMAKE_CXX_FLAGS -mfpu=neon)</code></li>
+<li>変更後：<code> SET(CMAKE_CXX_FLAGS -march=armv8-a+simd)</code></li>
+</ul>
+</li>
+<li><span style="color: #ff0000;">~/catkin_ws/src/viso2/libviso2/libviso2/src/filter.h</span>の25行目とmatcher.hの30行目に#if defined(__ARM_NEON__)がある。その１行上に以下の行を挿入する。
+<ul>
+<li><code>#define  __ARM_NEON__</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> create_driver：ルンバを接続すると"[CREATE] Unknown mode detected"と大量のエラーメッセージが出るが動作には特に問題はない。心臓に悪いのこのエラーメッセージを吐かないようにする。なお、createでは問題はないようだ。
+<ul>
+<li>~/catkin_ws/src/create_autonomy/ca_driver/src/create_driver.cppの678行目を以下のように行の先頭に//をつけてコメントアウトする。
+<ul>
+<li><code>// ROS_ERROR("[CREATE] Unknown mode detected")</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> ワークスペースのビルド
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li>次のコマンドでビルドする。私の環境では約28分かかった。
+<ul>
+<li><code>$ catkin build -j $(nproc) -DCMAKE_BUILD_TYPE=Release -DARM_CROSS_COMPILATION=ON</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>セットアップ
+<ul>
+<li>~/.bashrcの最後に以下の２行があるか確認する。ない場合は追加する。<br />
+<code>source /opt/ros/melodic/setup.bash<br />
+source ~/catkin_ws/devel/setup.bash</code></li>
+<li>以下のコマンドを実行して設定を反映させる。
+<ul>
+<li><code>$  source ~/.bashrc</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>設　定</strong></p>
+<ul>
+<li>udev
+<ul>
+<li>Linuxはデバイスをファイルとして扱い、Pi4とRoombaを通信するときは/dev/ttyUSB0。USB-Serial変換ICでttyUSBではなくttyACMの場合もあるり、ttyUSBの後の番号は他の接続機器により0ではない場合もある。一般ユーザはデバイスファイルを扱えないのでパーミッションを変更する必要があるがUSBを接続する度に変更するのは面倒なのでudevを設定する。</li>
+<li>まず、Pi4とroombaを通信ケーブルで接続する。</li>
+<li>次に、以下のコマンドでデバイスを確認する。本記事で使用しているUSB-Serial変換用ICはFuture Technology Devices Internatinal社のFT232だとわかる。Future Technologyの左の数字0403はベンダーID、6001はプロダクトIDなのでメモしておく。
+<ul>
+<li>$ lsusb</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/udev1.png"><img class="aligncenter size-full wp-image-18041" src="{{ site.baseurl }}/assets/images/2020/08/udev1.png" alt="" width="579" height="188" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>/etc/udev/rules.d/77-roomba.rulesというファイルをつくり、以下を保存する。ここで、ベンダーIDは上でメモったベンダーID、プロダクトIDも同様な数字を入れる。この例では、ベンダーIDは0403、プロダクトIDは6001になる。
+<ul>
+<li><code>KERNEL=="ttyUSB*", ATTRS{idVendor}=="ベンダーID", ATTRS{idProduct}=="プロダクトID", GROUP="dialout", MODE="0666"</code></li>
+</ul>
+</li>
+<li>Room通信ケーブルを抜き差しするとudevの設定が反映される。確認はls -l デバイスファイル名でパーミッション設定を確認する。この例だと、上がケーブルを抜き差しする前で、下が後。すべてのユーザに対してrw（読み書き）可能となっていることがわかる。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/udev2.png"><img class="aligncenter size-full wp-image-18045" src="{{ site.baseurl }}/assets/images/2020/08/udev2.png" alt="" width="495" height="128" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>USBの設定
+<ul>
+<li>create_autonomyのサンプルではUSBのデバイス名を/dev/roombaにしているので、以下のコマンドとシェルスクリプトでその設定を行う。
+<ul>
+<li><code>$ sudo usermod -a -G dialout $USER</code></li>
+<li><code>$ source ~/catkin_ws/src/create_autonomy/ca_bringup/scripts/udev/create_rules.sh</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>では、次にいよいよRoombaを動かします。Pi4をシャットダウンして電源を外しましょう。</li>
+</ul>
+</li>
+</ul>
+<p><strong>Roombaを動かそう！</strong></p>
+<ul>
+<li>Roombaと通信ケーブルを接続してから、Roombaの電源を入れる。</li>
+<li>Roombaを動かすために次のlaunchファイルを起動する。
+<ul>
+<li><code>$  roslaunch ca_driver create_2.launch</code></li>
+</ul>
+</li>
+<li>前進
+<ul>
+<li>ROSではトピック/create1/cmd_velに速度指令値を設定して、配信(pub)するだけでロボットは動く。ここで、geometry_msgs/Twistは速度指令値の型、'{linear: {x: 0.2}, angular: {z: 0.0}}'が指令値で、linearは並進速度(x軸方向に0.2m/s)、angularは角速度(z軸まわりに0 rad/s)、オプション-rは配信する周期[Hz]デフォルトは10Hzなので動きがガタつくのでここでは100Hz、10ms周期にしている。
+<ul>
+<li>$ <code>rostopic pub /create1/cmd_vel geometry_msgs/Twist '{linear: {x: 0.2}, angular: {z: 0.0}}' -r 100</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Teleopで動かそう
+<ul>
+<li>いちいちコマンドを打っていてはRoombaをうまく制御できないので、キーボードを使って動かしてみる。</li>
+<li>キーボード用とコントローラ用の２つteleopパッケージをインストールする。
+<ul>
+<li><code>$ sudo apt install ros-melodic-teleop-twist-keyboard</code></li>
+<li><code>$ sudo apt install ros-melodic-teleop-twist-joy</code></li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>次のコマンドを実行する
+<ul>
+<li><code>$ rosrun teleop_twist_keyboard teleop_twist_keyboard.py cmd_vel:=/create1/cmd_vel</code></li>
+<li>以下の画面になる。キーボードのu i o j k l m, , . キーで操作できる。止めるときは'q'キーを押す。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/teleop.png"><img class="aligncenter size-full wp-image-18093" src="{{ site.baseurl }}/assets/images/2020/08/teleop.png" alt="" width="579" height="428" /></a></p>
+<p><strong>DS4コントローラのROSパッケージps4_rosの導入</strong></p>
+<ul>
+<li>サイト
+<ul>
+<li><a href="https://github.com/solbach/ps4-ros">https://github.com/solbach/ps4-ros</a></li>
+</ul>
+</li>
+<li> インストール
+<ul>
+<li><code>$ cd ~/catkin_ws/src</code></li>
+<li><code>$ git clone https://github.com/solbach/ps4-ros.git</code></li>
+</ul>
+</li>
+<li>launchファイルの変更
+<ul>
+<li>~/catkin_ws/src/ps4-ros/launch/ps4.launchの下から３~5行目を以下のように変更する。Roombaに合うように最大速度とTopic名を変更する。<br />
+&lt;param name="scale_linear" value="0.5"/&gt;<br />
+&lt;param name="scale_angular" value="0.25"/&gt;<br />
+&lt;param name="pub_topic" value="/create1/cmd_vel"/&gt;</li>
+</ul>
+</li>
+</ul>
+<p><strong>Bluetoothの設定</strong></p>
+<ul>
+<li>Pi4のUbuntu18.04の場合はそのままではBluetoothが使えないので必要なパッケージをインストールする。なお、Futaka TatsuyaさんのQiitaを参考にした。なお、RAM8GBで使用したJames Chamber氏の非公式版Xubuntu desktopのイメージではpi-bluetoothをインストールすろエラになるので省いた。
+<ul>
+<li><a href="https://qiita.com/fudekun/items/96ef164098c3c4e39b72">ARMのUbuntu Server 18.04でBluetoothを使う(for Raspberry Pi), Futaka Tatsuya</a></li>
+</ul>
+</li>
+<li>パッケージのインストール
+<ul>
+<li><code>$ sudo apt install bluetooth bluez</code></li>
+<li><code>$ sudo systemctl enable bluetooth</code></li>
+<li><code>$ sudo reboot</code></li>
+<li>再起動後に以下のコマンドを実行してコントローラが認識されていれば成功。
+<ul>
+<li><code>$ sudo  bluetoothctl</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/bluetooth.png"><img class="aligncenter size-full wp-image-18059" src="{{ site.baseurl }}/assets/images/2020/08/bluetooth.png" alt="" width="572" height="113" /></a></p>
+<p><strong>SONY DualShock4 (DS4)コントローラの設定( Bluetooth)</strong></p>
+<ul>
+<li>以下のサイトを参照した。
+<ul>
+<li><a href="https://github.com/chrippa/ds4drv">ds4drv</a></li>
+</ul>
+</li>
+<li>ds4drvドライバのインストール。ds4drvはLinuxのSONY DualShock 4 用ドライバ。
+<ul>
+<li>python2のパッケージ管理システムpipをインストールする。
+<ul>
+<li><code>$ sudo apt install python-pip</code></li>
+</ul>
+</li>
+<li>DS4のドライバをインストールする。
+<ul>
+<li><code>$ sudo pip install ds4drv</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DS4とPi4のペアリング
+<ul>
+<li> DS4をPi4の近くに置く。</li>
+<li> ds4drvの起動
+<ul>
+<li>$ sudo ds4drv</li>
+<li>以下のように表示される。<br />
+[info][controller 1] Created devices /dev/input/js0 (joystick) /dev/input/event8 (evdev)<br />
+[info][bluetooth] Scanning for devices</li>
+</ul>
+</li>
+<li>ペアリング
+<ul>
+<li>DS4左上のSHAREボタンとDSボタンを同時に5秒程度長押しする。LEDが白く点滅したらボタンから手を話す。</li>
+<li>LEDが青くなりds4drvを起動した端末で以下のように表示されたら成功。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/05/bluetooth2.png"><img class="aligncenter size-full wp-image-18060" src="{{ site.baseurl }}/assets/images/2020/08/bluetooth2.png" alt="" width="572" height="203" /></a></p>
+<p><strong>自動ログイン</strong></p>
+<ul>
+<li>Pi4をディスプレイなしで起動するので自動ログインの設定にする。
+<ul>
+<li>以下の内容の/etc/lightdm/lightdm.conf.d/1-autologin.confを作成してシャットダウンする。ユーザ名に自動ログインしたいユーザ名を入れる。
+<ul>
+<li>[SeatDefaults]<br />
+autologin-user=ユーザ名<br />
+autologin-user-timeout=0</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>DS4コントローラでRoombaを動かそう！</strong></p>
+<ul>
+<li>これで準備ができたので始めからDS4コントローラを使いロボットを動かすまでの一連の手順を説明する。</li>
+<li>Pi4とRoombaを通信ケーブルで接続する。</li>
+<li>Roombaの電源を入れる。</li>
+<li>Pi4とモバイルバッテリを接続する。Pi4が起動する。</li>
+<li>ノートパソコンを起動して端末(Windowsの場合はsshクライアント。rloginなどのアプリ)を３つ開き、各端末からPi4にssh接続する。上から順番に実行する。
+<ul>
+<li>１番目の端末
+<ul>
+<li> 以下のコマンドを実行する。
+<ul>
+<li><code>$ sudo ds4drv</code></li>
+</ul>
+</li>
+<li>DS4コントローラのShareとPSキーを長押しペアリングする。</li>
+</ul>
+</li>
+<li>２番目の端末
+<ul>
+<li> Roombaの制御パッケージを起動する。
+<ul>
+<li><code>$ roslaunch ca_driver create_2.launch</code></li>
+<li>成功すると「ピッ」と音がなり、以下のように表示される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/ca_driver.png"><img class="aligncenter size-full wp-image-18610" src="{{ site.baseurl }}/assets/images/2020/08/ca_driver.png" alt="" width="779" height="903" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>３番目の端末
+<ul>
+<li>以下のコマンドでリモートコントロールのアプリ(パッケージ)を起動する。
+<ul>
+<li><code>$ roslaunch ps4_ros ps4.launch</code></li>
+<li>以下のエラーが出る場合は次のコマンドを実行する。
+<pre>RLException: ERROR: could not contact master
+The traceback for the exception was written to the log file</pre>
+<ul>
+<li><code>$ source /home/ユーザ名/catkin_ws/devel/setup.bash<br />
+</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>上のコマンドを実行した直後にキャリブレーションが必要となる。L2とR2を同時に押すと以下のように表示される。Release L2 and R2と表示されたら指を話すとキャリブレーションが終了し、利用可能となる。<br />
+なお、[ERROR] [1589086134.806825552]: Couldn't open joystick force feedback!　[error][controller 1] Failed to create input device: "/dev/uinput" cannot be opened for writingとエラーが出るが無視する。[ WARN] [1562730896.630287264]: Press L2 and R2 to calibrate: 0%<br />
+[ WARN] [1562730896.731446432]: Press L2 and R2 to calibrate: 5%<br />
+[ WARN] [1562730896.832234176]: Press L2 and R2 to calibrate: 10%<br />
+[ WARN] [1562730896.933098464]: Press L2 and R2 to calibrate: 15%<br />
+[ WARN] [1562730897.034052928]: Press L2 and R2 to calibrate: 20%<br />
+[ WARN] [1562730897.135351008]: Press L2 and R2 to calibrate: 25%<br />
+[ WARN] [1562730897.236488864]: Press L2 and R2 to calibrate: 30%<br />
+[ WARN] [1562730897.337511264]: Press L2 and R2 to calibrate: 35%<br />
+[ WARN] [1562730897.438300640]: Press L2 and R2 to calibrate: 40%<br />
+[ WARN] [1562730897.539139328]: Press L2 and R2 to calibrate: 45%<br />
+[ WARN] [1562730897.640097056]: Press L2 and R2 to calibrate: 50%<br />
+[ WARN] [1562730897.741000544]: Press L2 and R2 to calibrate: 55%<br />
+[ WARN] [1562730897.842041696]: Press L2 and R2 to calibrate: 60%<br />
+[ WARN] [1562730897.943081120]: Press L2 and R2 to calibrate: 65%<br />
+[ WARN] [1562730898.044020896]: Press L2 and R2 to calibrate: 70%<br />
+[ WARN] [1562730898.144871008]: Press L2 and R2 to calibrate: 75%<br />
+[ WARN] [1562730898.245700928]: Press L2 and R2 to calibrate: 80%<br />
+[ WARN] [1562730898.346876544]: Press L2 and R2 to calibrate: 85%<br />
+[ WARN] [1562730898.447959104]: Press L2 and R2 to calibrate: 90%<br />
+[ WARN] [1562730898.548941536]: Press L2 and R2 to calibrate: 95%<br />
+[ WARN] [1562730898.649878528]: Press L2 and R2 to calibrate: 100%<br />
+[ WARN] [1562730898.750981568]: Release L2 and R2<br />
+[ INFO] [1562730900.952626016]: Calibrated - Ready to use</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DS4コントローラの操作方法は次のとおり。ルンバが動作したら成功。
+<ul>
+<li>L2ボタン：前進</li>
+<li>R2ボタン：後進</li>
+<li>左ジョイステック：回転</li>
+</ul>
+</li>
+</ul>
+<p><strong>終了方法</strong></p>
+<ul>
+<li>Pi4でUbuntuが動いているので電源を急に切るとファイルシステムが壊れて起動しなくなったり、ルンバもリセットをかけないと動作しなくなる恐れがあるので次の手順で終わりましょう。
+<ul>
+<li>ルンバを動かすために起動した端末（Windowsのsshクライアントアプリ含む)上で、Ctrl + C (コントロールキーとCキーを同時に押す）して実行中のプログラムを終了させる。</li>
+<li>どれか１つの端末で以下のコマンドを実行してPi4をシャットダウンする。
+<ul>
+<li><code>$ sudo shutdown -h now</code></li>
+</ul>
+</li>
+<li>Pi4に接続していたモバイルバッテリーは忘れずに外し、ルンバの電源も切りましょう。これで作業終了！</li>
+</ul>
+</li>
+</ul>
+<p>お疲れ様。</p>

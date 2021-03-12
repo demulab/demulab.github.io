@@ -1,0 +1,42 @@
+---
+layout: page
+title: 'STEP9: ヒューマノイドロボット'
+date: 2008-07-27 18:39:48.000000000 +09:00
+type: page
+parent_id: '1286'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '5005'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robotsimu/step9"
+---
+<p>ODE本「<a href="http://www.amazon.co.jp/gp/product/4627846916?ie=UTF8&amp;tag=demuranet-22&amp;linkCode=as2&amp;camp=247&amp;creative=1211&amp;creativeASIN=4627846916">簡単!実践!ロボットシミュレーション - Open Dynamics Engineによるロボットプログラミング</a><br />
+ <img style="border: medium none  ! important; margin: 0px ! important" src="{{ site.baseurl }}/assets/images/2008/07/ir?t=demuranet-22&amp;l=as2&amp;o=9&amp;a=4627846916" alt="" width="1" height="1" />」のStep9です．</p>
+<p>最終章です．ここでは，やんちゃでかわいい男の子をイメージしたヒューマノイドロボットモデル「けんせいちゃん：Kensei-Chan」の運動学，逆運動学を求め，足裏に圧力センサを取り付け，ZMPによる簡単な歩行制御により歩かせることが最終ミッションです．</p>
+<p>
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="320" height="260" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/kensei2.flv&amp;image=http://demura.net/archives/9ode/robotsimu/kensei2.jpg" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed type="application/x-shockwave-flash" width="320" height="260" src="http://demura.net/flvplayer.swf" flashvars="file=http://demura.net/archives/ode/robotsimu/kensei2.flv&amp;image=http://demura.net/archives/9ode/robotsimu/kensei2.jpg"></embed></object></p>
+<p>シミュレータの動画を上に掲載します．ソースコードは<a href="../../dl">このページの注意事項を読み，</a>ダウンロード，ビルドやコンパイルし実行してください．</p>
+<ul>
+<li><span style="color: #000099;"><strong>EX9.3：　ヒューマノイドモデル 「けんせいちゃん」 (P223)</strong></span></li>
+</ul>
+<ul>
+説明：Controlキーを押しながらpキーを押すと，kensei-chanがジャンプし着地します．ただし，ODE本では跳躍制御は全くふれていませんのでこれは単なるデモです．目標角度の時系列データを与えているだけです。「けんせいちゃん」に歩行制御を組み込み無事歩かせてください．
+</ul>
+<ul>
+<li><span style="color: #000099;"><strong>プログラム9.1：　力・トルクセンサ　(P227)</strong></span></li>
+</ul>
+<ul>
+説明：ヒューマノイドロボットには欠かせない圧力，トルクセンサの実装例です．ODE本P227のプログラム32行目に誤りがありましたので訂正しました．ねぶらさんご指摘ありがとうございました．
+</ul>
+<hr />
+（最終更新日　2008-7-27)</p>

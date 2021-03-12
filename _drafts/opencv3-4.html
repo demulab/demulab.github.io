@@ -1,0 +1,49 @@
+---
+layout: post
+title: OpenCV3.4
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- robocup@home
+tags: []
+meta:
+  classic-editor-remember: classic-editor
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<ul>
+<li> OpenCV3.4のビルド
+<ul>
+<li>JetsonHackの次の記事に従いビルドする
+<ul>
+<li><a href="https://www.jetsonhacks.com/2018/11/08/build-opencv-3-4-on-nvidia-jetson-agx-xavier-developer-kit/">Build OpenCV 3.4 on NVIDIA Jetson AGX Xavier Developer Kit</a></li>
+</ul>
+</li>
+<li>以下の作業は上の記事の要約</li>
+<li>OpenCVの他のバージョンとコンフリクトしないように既存のライブラリ等を削除する。
+<ul>
+<li>$ sudo apt purge libopencv*</li>
+</ul>
+</li>
+<li>ビルドとインストール
+<ul>
+<li>$ git clone https://github.com/jetsonhacks/buildOpenCVXavier.git</li>
+<li>$ cd buildOpenCVXavier</li>
+<li>$ git checkout v1.0</li>
+<li>$ ./buildAndPackageOpenCV.sh</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>

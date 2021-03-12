@@ -1,0 +1,131 @@
+---
+layout: post
+title: Razer Blade 15 環境設定メモ (Xubuntu16.04.2, Cuda9.2)
+date: 2018-08-10 13:45:28.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '884'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/14725.html"
+---
+<p><!-- wp:image --></p>
+<figure class="wp-block-image"><img src="{{ site.baseurl }}/assets/images/2018/08/f199d1c4-dfc2-495d-b1ff-13e0f8d44fb3" alt="" /></figure>
+<p><!-- /wp:image --></p>
+<p>現時点では、15インチのゲーミングノートPCでは世界最小といわれているRazer Blade 15 にxubuntu16.04.2, Cuda9.2をインストールしたときのメモ。Alienware  15と比較すると非常にコンパクト、スリムでライトウェイト（1kg以上も軽い）。これなら、モバイルできる。</p>
+<ul>
+<li>環境
+<ul>
+<li>Razer Blade 15<br />(CPU: Intel i7-8750H, Memory:16GB, GPU: Nvidia 1070 Max-Q Design, Memory: 8GB)</li>
+<li>xubuntu 16.04.2 (DVDメディアでインストールし、upgrade後は16.04.05)</li>
+<li>Kernel 4.15.0-30-generic</li>
+<li>gcc/g++ 5.4.0</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>CAPS LOCKとCTRLキーの入れ替え
+<ul>
+<li>/etc/default/keyboardのXKBOPTIONS="ctrl:nocaps"と変更する。</li>
+</ul>
+</li>
+<li> ホームディレクトリにある日本語ファイル名を英語に変換
+<ul>
+<li>次のコマンドを端末で実行
+<ul>
+<li><code>LANG=C xdg-user-dirs-gtk-update</code></li>
+</ul>
+</li>
+<li>ウインドウが開くので右下の[Update Names]をクリックして変更し、再起動する。</li>
+<li>再起動するとBluetooh関連のBluemanが"/home/ユーザー名/ダウンロード"というディレクトリがないとエラーを吐くので次のコマンドでBlueman mangerを起動する。
+<ul>
+<li><code>sudo blueman-manager</code></li>
+</ul>
+</li>
+<li>表示-&gt;ローカルサービス-&gt;転送-&gt;転送設定のIncoming FolderでDownloadsを選び、Applyをクリックし、closeをクリックしウインドウを閉じる。</li>
+</ul>
+</li>
+<li> すぐ使うソフトウェアのインストール
+<ul>
+<li>sudo apt install  emacs  git <code></code></li>
+</ul>
+</li>
+<li> 準備
+<ul>
+<li>NVIDIAのドライバをインストールしていないので、起動するとIntelのGPUでXが起動する。Ctlr+Alt+F1でXを落とす</li>
+<li>sudo apt update</li>
+<li>sudo apt upgrade</li>
+<li>sudo service lightdm stop</li>
+</ul>
+</li>
+<li> NVIDIAドライバのインストール
+<ul>
+<li>sudo add-apt-repository ppa:graphics-drivers/ppa</li>
+<li>sudo apt update</li>
+<li>sudo apt install nvidia-390  nvidia-settings</li>
+<li>sudo reboot</li>
+</ul>
+</li>
+<li> <a href="https://developer.nvidia.com/cuda-downloads">NVIDIAのウェブサイト</a>からCuda9.2のインストール
+<ul>
+<li>Linux-&gt;x86_64-&gt;ubuntu-&gt;16.04-&gt;dev(local)を選択</li>
+<li>Download (1.2GB)をクリックし、ダウンロードが完了するまで待つ。</li>
+<li>sudo dpkg -i cuda-repo-ubuntu1604-9-2-local_9.2.148-1_amd64.deb</li>
+<li>sudo apt-key add /var/cuda-repo-9-2-local/7fa2af80.pub</li>
+<li>sudo apt update</li>
+<li>sudo apt install cuda</li>
+<li>.bashrcに以下を追加し、CUDAのパスを通す
+<ul>
+<li><code>export PATH=/usr/local/cuda-9.2/bin${PATH:+:${PATH}}</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://developer.nvidia.com/cudnn">NVIDIAのウェブ</a>からcuDNNのインストール
+<ul>
+<li>nvidiaのdeveloperに登録しないとダウンロードできないので登録する。</li>
+<li>Download cuDNN v7.2.1 for CUDA9.2をクリック</li>
+<li>cuDNN v7.1.4 for Runtime Library for Ubuntu16.04 (Deb)とcuDNN v7.1.4 Developer Library for Ubuntu16.04 (Deb)をダウンロードする。</li>
+<li><code>sudo dpkg -i libcudnn7_7.2.1.38-1+cuda9.2_amd64.deb</code></li>
+<li><code>sudo dpkg -i libcudnn7-dev_7.2.138-1+cuda9.2_amd64.deb</code></li>
+</ul>
+</li>
+<li><a href="http://demura.net/misc/14118.html">OpenCV3.4.0のインストール</a></li>
+<li><a href="http://demura.net/lecture/13657.html">ROS Kineticのインストール</a></li>
+<li><a href="http://demura.net/athome/14694.html">YOLO V3のインストール</a></li>
+</ul>
+<p>終わり</p>

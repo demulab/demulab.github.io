@@ -1,0 +1,228 @@
+---
+layout: post
+title: 'HARD2020: ルンバをPythonで動かす'
+date: 2020-08-19 13:16:25.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '18797'
+  views: '284'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/18795.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Gazebo_2020-8-19_12-50-18_No-00.png"><img class="aligncenter size-large wp-image-18797" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_Gazebo_2020-8-19_12-50-18_No-00-1024x609.png" alt="" width="1024" height="609" /></a></p>
+<p>Pythonプログラムでルンバを動かしてみましょう！まず、ソースコードを見てみましょう。今回もたったの39行です。PythonプログラムはC++でコーディングする場合と比較して圧倒的に短くなるので初心者にもとっつきやすいと思います。</p>
+<p><strong>ソースコード</strong></p>
+<pre>#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import rospy
+from geometry_msgs.msg import Twist
+
+def set_vel(vel_msg, lv, av):
+    vel_msg.linear.x  = lv
+    vel_msg.linear.y  = 0
+    vel_msg.linear.z  = 0
+    vel_msg.angular.x = 0
+    vel_msg.angular.y = 0
+    vel_msg.angular.z = av
+
+def main_loop():
+    rospy.init_node('move')
+    vel_publisher = rospy.Publisher('/create1/cmd_vel', Twist, queue_size=10)
+    vel_msg = Twist()
+    set_vel(vel_msg, 0, 0)
+    print("Let's move your robot")
+    linear_vel  = input("Input linear velocity [m/s] :")
+    angular_vel = input("Input angular velocity [rad/s] :")
+    vel_msg.linear.x  = linear_vel
+    vel_msg.angular.z = angular_vel
+    rate = rospy.Rate(10)
+
+    while not rospy.is_shutdown():
+        vel_publisher.publish(vel_msg)
+        rospy.loginfo("Velocity: Linear=%s Angular=%s", vel_msg.linear.x, vel_msg.angular.z)
+        rate.sleep()
+
+if __name__ == '__main__':
+        main_loop()</pre>
+<p><strong>ソースコードの説明</strong></p>
+<p>このプログラムではROSの速度指令トピック/create1/cmd_velをmove_baseノードへパブリッシュ(配信)することによりロボットを動かしています。通常速度指令のトピックは/cmd_velですが、このcreate_autonomyパッケージでは複数台のロボットを識別するために/create1を前に付けています。２代目のロボットなら/create2になります。なお、速度指令トピックの型はTwist型で、3次元の並進速度ベクトルと角速度ベクトルがメンバーになっています。</p>
+<p>次に重要なことはROSではループの周期をrospy.Rate(周波数)で設定し、ループの中にrospy.sleep()を入れることで簡単に一定の周期でループを制御できることです。ロボットの制御においては一定周期でループを回して処理をすることがとても大切です。</p>
+<p>それ以外の詳細については、ソースコードに説明を加えたものを以下示しますので参照してください。</p>
+<pre>#!/usr/bin/env python
+# -*- coding: utf-8 -*- # 日本語を使うためのおまじない。
+import rospy  # ROSでpython使う場合に必要
+from geometry_msgs.msg import Twist # ロボットの速度を扱う場合は必要
+
+# set_vel関数：速度の設定。
+# １番目の引数は速度メッセージ、２番目の引数は並進速度、３番目の引数は角速度
+def set_vel(vel_msg, lv, av):
+    vel_msg.linear.x  = lv
+    vel_msg.linear.y  = 0
+    vel_msg.linear.z  = 0
+    vel_msg.angular.x = 0
+    vel_msg.angular.y = 0
+    vel_msg.angular.z = av
+
+# main関数
+def main():
+    #  ノードの初期化。引数はノード名。ROSでは同じノード名のノードを複数作ることはできない。
+    rospy.init_node('move')
+
+    # パブリッシャーの生成。一番目の引数はトピック名、２番目の引数はメッセージの型、
+    # 速度指令はTwist型。３番目の引数はメッセージバッファーのサイズ。
+    vel_publisher = rospy.Publisher('/create1/cmd_vel', Twist, queue_size=10)
+
+    vel_msg = Twist()       # vel_msgオブジェクトの生成    
+    set_vel(vel_msg, 0, 0)  # 速度の初期化。安全のために0に設定。
+
+    # キーボードからの入力
+    linear_vel  = input("Input linear velocity [m/s] :")
+    angular_vel = input("Input angular velocity [rad/s] :")
+
+    #　並進速度または角速度の設定rospy.is_shutdown():
+    #  ROS座標系は右手系、ロボットの前進方向がX軸、右方向がy軸、上方向がz軸
+    vel_msg.linear.x  = linear_vel
+    vel_msg.angular.z = angular_vel
+
+    # ループの周期を設定。10Hz。つまり、1ループ100ms。
+    # ロボットを一定の周期で動かすことはとても重要
+    rate = rospy.Rate(10)
+
+    # Ctrl-Cが押されるまで無限ループ
+    while not rospy.is_shutdown():        
+        vel_publisher.publish(vel_msg) # メッセージの配信。ロボットに速度指令を送る。        
+        rospy.loginfo("V: Linear=%s Angular=%s", vel_msg.linear.x, vel_msg.angular.z)  # 表示        
+        rospy.sleep() # rospy.Rate()で指定した時間になるように調整
+
+# このプログラムをモジュールとしてimportできるようにするおまじない。
+# なお、モジュールとは他のプログラムから再利用できるようにしたファイルのこと。
+if __name__ == '__main__':
+        main()</pre>
+<p><strong>パッケージの作成</strong></p>
+<ul>
+<li>パッケージは次のcatkin_create_pkgコマンドで作ります。依存パッケージはそのパッケージを作るために必要なパッケージです。
+<ul>
+<li>catkin_create_pkg &lt;パッケージ名&gt; [依存パッケージ1] [依存パッケージ2]　[依存パッケージ3]</li>
+</ul>
+</li>
+<li>では、次のコマンドでmoveパッケージを作りましょう！
+<ul>
+<li><code>$ cd ~/catkin_ws/src</code></li>
+<li><code>$ mkdir hard2020</code></li>
+<li><code>$ cd ~/catkin_ws/src/hard2020</code></li>
+<li><code>$ catkin_create_pkg move roscpp rospy std_msgs</code></li>
+</ul>
+</li>
+<li>上手く作成できたか確認します。
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2020/move</code></li>
+<li><code>$ ls</code></li>
+</ul>
+</li>
+<li><code></code>CMakeLIsts.txt, include, package.xml, srcができていれば成功。</li>
+</ul>
+<p><strong>ソースコードの作成</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>エディタを開き、上のソースコードをコピペしてセーブする。以下のコマンドはエディタにgeditを使う場合。
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2020/move/src</code></li>
+<li><code>$ gedit move.py</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>ビルド</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>Pythonはビルドする必要はないが、ROSで使用する場合は必要になる場合があるので、以下のコマンドを実行する。
+<ul>
+<li>$ cd ~/catkin_ws</li>
+<li>$ catkin build  move</li>
+</ul>
+</li>
+<li>作成したpythonプログラムに実行権を与える。実行権を与えないとrosrunコマンドで実行できない。
+<ul>
+<li>$ source ~/.bashrc</li>
+<li>$ roscd move/src</li>
+<li>$ chmod u+x  move.py</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>実行　</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>シミュレータの起動
+<ul>
+<li>端末を開き、以下のコマンドを実行してシミュレータGazeboを起動する。一番上図のルンバをベースにしたロボットが現れる。<br />
+$ roslaunch ca_gazebo create_empty_world.launch</li>
+</ul>
+</li>
+<li>move.pyノードの実行
+<ul>
+<li> 端末をもう一つ開き、以下のコマンドを実行する。
+<ul>
+<li>$ roscd move/src</li>
+<li>$ rosrun move  move.py</li>
+</ul>
+</li>
+<li>以下のように並進速度と角速度を聞かれるので入力する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_選択demulab@EARTH-_2020-8-19_13-14-38_No-00.png"><img class="aligncenter size-large wp-image-18798" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_&#36984;&#25246;demulab@EARTH-_2020-8-19_13-14-38_No-00-1024x335.png" alt="" width="1024" height="335" /></a></li>
+<li>ロボットが動いたら成功。止める場合は、まず、rosrunを実行した端末でCtrl+cキーを押してプロセスを止める。次にもう一度rosrun move move.pyを実行して速度を0にする。速度の負の値を入れると後進あるいは上からロボットを見て時計周りに回転する。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

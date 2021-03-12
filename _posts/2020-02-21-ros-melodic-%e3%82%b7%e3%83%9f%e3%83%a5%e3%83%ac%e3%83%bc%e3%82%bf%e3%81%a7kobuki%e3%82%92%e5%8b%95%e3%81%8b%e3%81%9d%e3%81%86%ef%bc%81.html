@@ -1,0 +1,72 @@
+---
+layout: post
+title: 'ROS Melodic: シミュレータでTutlebot2 (Kobuki)を動かそう！'
+date: 2020-02-21 23:08:59.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16768'
+  views: '769'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/16767.html"
+---
+<p>この記事はKobukiを使ったROS新人プログラム用の記事です。今回はシミュレータGAZEBOを使い、Kobuki(Turtlebot2)を動かします。</p>
+<p><strong>  Simulator GAZEBOを動かそう</strong></p>
+<p>次のコマンドでROSのシミュレータGazeboを起動する。</p>
+<p>$ <code>roslaunch turtlebot_gazebo turtlebot_world.launch</code></p>
+<p>初回はネットからモデルを取得するので、私の環境で5分程度かかった。しばらくすると次のようなウインドウが開く。下のロボットがTurtlebot2 (kobuki)。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/02/turtlebot.png"><img class="aligncenter size-large wp-image-16768" src="{{ site.baseurl }}/assets/images/2020/02/turtlebot-1024x677.png" alt="" width="1024" height="677" /></a></p>
+<p>別の端末を開き、次のコマンドを入力するとキーボードからロボットを操縦するためのlaunchファイルを起動。<br />
+$  <code>roslaunch turtlebot_teleop keyboard_teleop.launch</code></p>
+<p>端末に下のように表示される。以下のキーでロボットを操作できる。いずれかのキーを押してロボットを動かそう！なお、マウスのカーソルがturtlebot_teleop_key.launchを起動した端末上になければ動かないので注意。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/turtlebot2.png"><img class="aligncenter size-full wp-image-16769" src="{{ site.baseurl }}/assets/images/2020/02/turtlebot2.png" alt="" width="802" height="482" /></a></p>
+<ul>
+<li>キー
+<ul>
+<li>i： 前進</li>
+<li>j：その場、左回転</li>
+<li>k： 停止</li>
+<li>l：その場、右回転</li>
+<li>m：左後方へ回転</li>
+<li>o：右前方へ回転</li>
+<li>u：左前方へ回転</li>
+<li>,：後進</li>
+<li>.：右後方へ回転</li>
+</ul>
+</li>
+</ul>
+<p>お疲れ様！</p>

@@ -1,0 +1,378 @@
+---
+layout: post
+title: 'ODEで学ぶＣ言語　[Step7: まとめ]'
+date: 2009-07-20 23:38:09.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '3357'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/4449.html"
+---
+<p><br class="spacer_" /></p>
+<p>[caption id="attachment_4451" align="aligncenter" width="300" caption="Step7: 一本足ロボット"]<a href="http://demura.net/wordpress/wp-content/uploads/2009/07/step7.jpg"><img class="size-medium wp-image-4451" title="step7" src="{{ site.baseurl }}/assets/images/2009/07/step7-300x241.jpg" alt="Step7: 一本足ロボット" width="300" height="241" /></a>[/caption]</p>
+<p><br class="spacer_" /></p>
+<p>ODEで学ぶC言語のStep7です．Step6までで一通りC言語の項目が終わったので今回はまとめの演習です．プラス，ODEのジョイントの生成法と簡単な制御のサンプルプログラムを紹介します．</p>
+<p>ジョイントは我々の周りでは、折畳み携帯のヒンジやドアの蝶番に相当します。小難しくいうと、２つのボディの位置や姿勢をある一定の関係に保つ拘束がジョイントとなのです。ODEではジョイントと拘束を同じ意味で使っています。</p>
+<p>ODEのジョイント（関節）は２つのボディ(剛体，body)をつなげるものです。１つのジョイントで３個以上のボディをつなげることはできませんし，１個のボディだけをつなげることもできません．必ず２個のボディを１つのジョイントでつなげなければなりません．</p>
+<p>また，ODEのジョイントは摩擦がありませんし，可動域を設定しないと+dInfinity(+無限大)から-dInfinity（-無限大）まで回転または移動します．角度は[rad]です．</p>
+<p><br class="spacer_" /></p>
+<p><!--more--></p>
+<ul>
+<li><strong>ジョイントの使い方</strong></li>
+</ul>
+<ol>
+<li><span style="color: #cc0000;"><strong>***ジョイントの生成　　　　　　dJointCreate***()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントとボディの結合　 dJointAttach(dJointID, dBodyID, dBodyID)</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントの中心点を設定　dJointSet***Anchor()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントの回転軸を設定　dJointSet***Axis()</strong></span></li>
+</ol>
+<p>上で***にはジョイントのタイプが入ります。タイプにはHinge(ヒンジ）、Ball(ボール)、Slider(スライダー)、Universal(ユニバーサル)等があります。サンプルプログラムではヒンジジョイントと直動式のスライダージョイントを使います．</p>
+<ul>
+<li><strong>ジョイントのパラメータ設定</strong></li>
+</ul>
+<ol>
+<li><strong>可動域の設定</strong><br />
+ <strong><span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamLoStop, 可動域の下限）;</span></strong><br />
+ <strong><span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamHiStop, 可動域の上限）;</span></strong></li>
+<li><strong>目標角速度とそれを実現するための最大トルクの設定<br />
+ <span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamVel,  目標角速度）;</span></strong><strong><br />
+ <span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamFMax, 最大トルク）;</span></strong></li>
+</ol>
+<p>パラメータとしては、関節可動域の下限を示すdParamLoStop、上限を示すdParamHiStop、角速度（ヒンジジョイント）または速度(直動式関節）を示すdParamVel、最大トルクを示すdParaFMaxなどがあります。なお、ODEでは関節にモータが標準で組み込まれているので、dParamVelやdParaFMaxを指定すると関節が動きます。</p>
+<p><strong>ソースコード</strong> <br />
+ 少し長くなりますが，ソースコードを掲載します．このコードは今まで習った，キー操作関数，シミュレーションの再スタート，ボディへ力を加えるなどのほかに，ジョイントの生成と制御法など簡単なゲームやシミュレータを作るために必要なことは一通り入っています．</p>
+<pre class="brush:cpp">/* step7　*/
+#include "dm7.h"
+
+#define START_X 0.0　// 初期位置のｘ座標
+#define START_Y 0.0
+#define START_Z 1.5
+
+dWorldID world;  // 動力学の世界
+dSpaceID space;  // 衝突検出用スペース
+dGeomID  ground; // 地面
+dJointGroupID contactgroup; // コンタクトグループ
+
+typedef struct
+{
+    dBodyID body; // ボディのID
+    dGeomID geom; // ジオメトリのID
+    dJointID joint; // ジョイントのID
+    double pos&#91;3&#93;; // x, y, z　&#91;m&#93;
+    double *R;   // 回転行列 要素数4x3
+    double sides&#91;3&#93;; // ボックスのサイズ
+    double l, r, m; // 直径&#91;m&#93;, 半径 &#91;m&#93;, 質量 &#91;kg&#93;
+    float color&#91;3&#93;; // 色 r,g,b
+} MyObject;
+
+MyObject torso, leg&#91;2&#93;;　// 胴体，脚
+static int STEPS = 0;      // シミュレーションのステップ数
+double S_LENGTH = 0.0;     // スライダー長
+double H_ANGLE  = 0;       //ヒンジの角度
+
+// コールバック関数
+void nearCallback(void *data, dGeomID o1, dGeomID o2)
+{
+    static const int N = 10; // 接触点数の最大値
+    dContact contact&#91;N&#93;;     // 接触点
+
+    // 接触している物体のどちらかが地面ならisGroundに非0をセット
+    int isGround = ((ground == o1) || (ground == o2));
+
+    // 2つのボディがジョイントで結合されていたら衝突検出しない
+    dBodyID b1 = dGeomGetBody(o1);
+    dBodyID b2 = dGeomGetBody(o2);
+    if (b1 &amp;&amp; b2 &amp;&amp; dAreConnectedExcluding(b1,b2,dJointTypeContact)) return;
+
+    // 衝突情報の生成 nは衝突点数
+    int n = dCollide(o1,o2,N,&amp;contact&#91;0&#93;.geom,sizeof(dContact));
+    if (isGround)
+    {
+        for (int i = 0; i &#60; n; i++)
+        {
+            contact&#91;i&#93;.surface.mode = dContactBounce; // 接触面の反発性を設定
+            contact&#91;i&#93;.surface.mu   = dInfinity;      // 摩擦係数
+            contact&#91;i&#93;.surface.bounce = 0.5;          // 反発係数(0.0から1.0)
+            contact&#91;i&#93;.surface.bounce_vel = 0.0;      // 反発に必要な最低速度
+
+            // 接触ジョイントの生成
+            dJointID c = dJointCreateContact(world,contactgroup,
+                                             &amp;contact&#91;i&#93;);
+            // 接触している２つの剛体を接触ジョイントにより拘束
+            dJointAttach(c,dGeomGetBody(contact&#91;i&#93;.geom.g1),
+                         dGeomGetBody(contact&#91;i&#93;.geom.g2));
+        }
+    }
+}
+
+void dmDraw(MyObject obj) /*** 物体の描画 ***/
+{
+    const double *pos, *R;
+
+    pos = dGeomGetPosition(obj.geom); // 位置を取得
+    R   = dGeomGetRotation(obj.geom); // 姿勢を取得
+
+    dsSetColor(obj.color&#91;0&#93;,obj.color&#91;1&#93;,obj.color&#91;2&#93;);  // 色の設定(r,g,b)
+
+    int type = dGeomGetClass(obj.geom);
+
+    if (type == dBoxClass)
+    {
+        dsDrawBox(pos,R,obj.sides);
+    }
+    else if (type == dSphereClass)
+    {
+        dsDrawSphere(pos,R,obj.r);
+    }
+    else if (type == dCapsuleClass)
+    {
+        dsDrawCapsule(pos,R,obj.l,obj.r);
+    }
+    else if (type == dCylinderClass)
+    {
+        dsDrawCylinder(pos,R,obj.l,obj.r);
+    }
+}
+
+void dmSphereCreate(MyObject *obj,double p&#91;3&#93;, double R&#91;12&#93;,
+                    double m, double r, float color&#91;3&#93;)
+{
+    int i;
+
+    obj-&#62;m = m;
+    obj-&#62;r = r;
+    obj-&#62;R = R;
+
+    for (i = 0; i &#60; 3; i++)
+    {
+        obj-&#62;pos&#91;i&#93; = p&#91;i&#93;;
+        obj-&#62;color&#91;i&#93; = color&#91;i&#93;;
+    }
+
+    dRSetIdentity(obj-&#62;R);
+    obj-&#62;body = dBodyCreate(world);           // ボールの生成
+    dMass mass;                               // 構造体massの宣言
+    dMassSetZero(&amp;mass);                      // 構造体massの初期化
+    dMassSetSphereTotal(&amp;mass,obj-&#62;m,obj-&#62;r); // 構造体massに質量を設定
+    dBodySetMass(obj-&#62;body,&amp;mass);            // ボールにmassを設定
+    dBodySetPosition(obj-&#62;body,obj-&#62;pos&#91;0&#93;,obj-&#62;pos&#91;1&#93;,obj-&#62;pos&#91;2&#93;); // ボールの位置(x,y,z)を設定
+
+    obj-&#62;geom = dCreateSphere(space,obj-&#62;r); // 球ジオメトリの生成
+    dGeomSetBody(obj-&#62;geom, obj-&#62;body);      // ボディとジオメトリの関連付け
+}
+
+void dmCapsuleCreate(MyObject *obj,double p&#91;3&#93;, double R&#91;12&#93;,
+                     double m, double r, double l, float color&#91;3&#93;)
+{
+    int i;
+
+    obj-&#62;m = m;
+    obj-&#62;l = l;
+    obj-&#62;r = r;
+    obj-&#62;R = R;
+
+     for (i = 0; i &#60; 3; i++)
+    {
+        obj-&#62;pos&#91;i&#93;   = p&#91;i&#93;;
+        obj-&#62;color&#91;i&#93; = color&#91;i&#93;;
+    }
+
+    dRSetIdentity(obj-&#62;R);
+    obj-&#62;body = dBodyCreate(world);           // 剛体の生成
+    dMass mass;                               // 構造体massの宣言
+    dMassSetZero(&amp;mass);                      // 構造体massの初期化
+    dMassSetCapsuleTotal(&amp;mass,obj-&#62;m,
+                         3, obj-&#62;r, obj-&#62;l); // 構造体massに質量を設定
+    dBodySetMass(obj-&#62;body,&amp;mass);            // 剛体にmassを設定
+    dBodySetPosition(obj-&#62;body,obj-&#62;pos&#91;0&#93;,obj-&#62;pos&#91;1&#93;,obj-&#62;pos&#91;2&#93;); // 剛体の位置(x,y,z)を設定
+
+    obj-&#62;geom = dCreateCylinder(space,obj-&#62;r, obj-&#62;l); // ボックスジオメトリの生成
+    dGeomSetBody(obj-&#62;geom, obj-&#62;body);      // ボディとジオメトリの関連付け
+}
+
+// ロボットの生成
+void createMonoBot()
+{
+    int i;
+    double l_leg = 0.75; // 長さ
+		double m_leg = 1.0;  // 質量
+		double r_leg&#91;2&#93; = {0.05, 0.03}; // 半径
+    double m_torso = 10.0;
+    double r_torso = 0.25;
+		double p_torso&#91;3&#93; = {START_X, START_Y, START_Z};  // 位置
+    double p_leg&#91;2&#93;&#91;3&#93; = {{START_X, START_Y, START_Z-0.5*l_leg},
+			{START_X, START_Y, START_Z-0.5*l_leg-0.5}};
+    double p_anchor&#91;3&#93; = {START_X, START_Y, START_Z};
+    double R&#91;12&#93;;   // 回転行列
+
+    float  color_torso&#91;3&#93; = {1.0, 0.0, 0.0}; // 色
+    float  color_leg&#91;2&#93;&#91;3&#93; = {{0.0, 0.0, 1.0},{1.3, 1.3, 1.3}};
+
+    dRSetIdentity(R);  //回転行列を単位行列で初期化
+
+    dmSphereCreate(&amp;torso,p_torso,R,m_torso,r_torso,color_torso); // 胴体の生成
+
+    for (i = 0; i &#60; 2; i++)
+    {
+        dmCapsuleCreate(&amp;leg&#91;i&#93;,p_leg&#91;i&#93;,R,m_leg,r_leg&#91;i&#93;,l_leg,color_leg&#91;i&#93;); // 脚の生成
+    }
+
+    // ヒンジジョイント
+    leg&#91;0&#93;.joint = dJointCreateHinge(world, 0);　// ヒンジジョイントの生成
+    dJointAttach(leg&#91;0&#93;.joint, torso.body,leg&#91;0&#93;.body); // 2つのボディとの結合
+    dJointSetHingeAnchor(leg&#91;0&#93;.joint, p_anchor&#91;0&#93;,p_anchor&#91;1&#93;,p_anchor&#91;2&#93;);　// ジョイント中心の設定
+    dJointSetHingeAxis(leg&#91;0&#93;.joint, 1, 0, 0); // 回転軸ベクトルの設定
+
+    // スライダージョイント
+    leg&#91;1&#93;.joint = dJointCreateSlider(world, 0); // スライダジョイントの生成
+    dJointAttach(leg&#91;1&#93;.joint, leg&#91;0&#93;.body,leg&#91;1&#93;.body); // 2つのボディとの結合
+    dJointSetSliderAxis(leg&#91;1&#93;.joint, 0, 0, 1);　// スライダの軸ベクトルの設定
+    dJointSetSliderParam(leg&#91;1&#93;.joint, dParamLoStop, -0.25); // スライダの可動域　下限
+    dJointSetSliderParam(leg&#91;1&#93;.joint, dParamHiStop,  0.25); // スライダの可動域　上限
+}
+
+// ヒンジジョイントの制御
+static void controlHinge(dReal target)
+{
+    static dReal kp = 10.0, fmax = 1000;
+
+    dReal tmp   = dJointGetHingeAngle(leg&#91;0&#93;.joint);
+    dReal diff  = target - tmp;
+    if (diff &#62;=   M_PI) diff -= 2.0 * M_PI; // diffが2πより小さく
+    if (diff &#60;= - M_PI) diff += 2.0 * M_PI; // diffが-2πより大きく
+    dReal u     = kp * diff;
+
+    dJointSetHingeParam(leg&#91;0&#93;.joint, dParamVel,  u);
+    dJointSetHingeParam(leg&#91;0&#93;.joint, dParamFMax, fmax);
+}
+
+// スライダの制御 プログラム2.4
+static void controlSlider(dReal target)
+{
+    static dReal kp   = 25.0;                       // 比例定数
+    static dReal fmax = 1000;                        // 最大力&#91;N&#93;
+    double tmp, u;
+
+    tmp  = dJointGetSliderPosition(leg&#91;1&#93;.joint);  // スライダの現在位置
+    u    = kp * (target - tmp);                    // 残差
+    dJointSetSliderParam(leg&#91;1&#93;.joint, dParamVel,  u);
+    dJointSetSliderParam(leg&#91;1&#93;.joint, dParamFMax, fmax);
+}
+
+// ロボットの破壊
+void destroyMonoBot()
+{
+    int i;
+
+    dJointDestroy(leg&#91;0&#93;.joint);   // ヒンジ
+    dJointDestroy(leg&#91;1&#93;.joint);   // スライダー
+    dBodyDestroy(torso.body); // 胴体のボディを破壊
+    dGeomDestroy(torso.geom); // 胴体のジオメトリを破壊
+
+    for (i = 0; i &#60; 2; i++)
+    {
+        dBodyDestroy(leg&#91;i&#93;.body);  // 脚のボディを破壊
+        dGeomDestroy(leg&#91;i&#93;.geom);  // 脚のジオメトリを破壊
+    }
+}
+
+// シミュレーションの再スタート
+static void restart()
+{
+    STEPS    = 0;      // ステップ数の初期化
+    H_ANGLE  = 0.0;    // ヒンジ角度の初期化
+
+    destroyMonoBot();  // ロボットの破壊
+    dJointGroupDestroy(contactgroup);     // ジョイントグループの破壊
+    contactgroup = dJointGroupCreate(0);  // ジョイントグループの生成
+    createMonoBot();                      // ロボットの生成
+}
+
+// キー操作
+void command(int cmd)
+{
+    switch (cmd)
+    {
+    case 'j':
+        S_LENGTH =   0.25;        break;
+    case 'f':
+        S_LENGTH = - 0.25;        break;
+    case 'k':
+        H_ANGLE +=   0.25;
+        if (H_ANGLE  &#62;   M_PI) H_ANGLE  =  -M_PI;        break;
+    case 'd':
+        H_ANGLE -=   0.25;
+        if (H_ANGLE  &#60;  -M_PI) H_ANGLE  =   M_PI;        break;
+    case 'u':
+        dBodyAddForce(torso.body, 0, 0, 500);        break;
+    case 'r':
+        restart();        break;
+    default :
+        printf("key missed \n");        break;
+    }
+}
+
+void simLoop(int pause)           /***  シミュレーションループ　***/
+{
+    int i;
+    int s = 1000;                   // 跳躍する周期(ステップ)
+
+    if (!pause)
+    {
+				printf("STEPS=%d \n",STEPS++); //  ステップ数
+
+        // スライダーの伸縮
+        if ((0 &#60;= (STEPS%s)) &amp;&amp; ((STEPS%s) &#60;= 10)) S_LENGTH = 0.6;
+        else if ((11 &#60;= (STEPS%s)) &amp;&amp; ((STEPS%s) &#60;= 15)) S_LENGTH = 0.0;
+
+        controlSlider(S_LENGTH); // スライダージョイントの制御
+        controlHinge(H_ANGLE);   // ヒンジジョイントの制御
+
+        dSpaceCollide(space,0,&amp;nearCallback); // 衝突検出関数
+        dWorldStep(world,0.01); // シミュレーションを１ステップ進める
+        dJointGroupEmpty(contactgroup); // ジョイントグループを空にする
+    }
+
+    // ロボットの描画
+    dmDraw(torso);   // 胴体の描画
+    for (i = 0; i &#60; 2; i++)dmDraw(leg&#91;i&#93;); //脚の描画
+}
+
+int main()         /*** main関数 ***/
+{
+    dInitODE(); // ODEの初期化
+    world = dWorldCreate();               // 動力学用世界の創造
+    space = dHashSpaceCreate(0);          // 衝突用空間の創造
+    contactgroup = dJointGroupCreate(0);  // ジョイントグループの生成
+    ground = dCreatePlane(space,0,0,1,0); // 地面の生成
+    dWorldSetGravity(world,0,0,-9.8);     // 重力設定
+
+    createMonoBot();   // ロボットの生成
+
+    dmLoop(800, 600);  // シミュレーションループ ウインドウの幅，高
+
+    dSpaceDestroy(space); // 衝突用空間の破壊
+    dWorldDestroy(world); // 動力学用世界の破壊
+    dCloseODE();          // ODEの終了
+    return 0;
+}
+</pre>
+<p><strong>ホームワーク</strong></p>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2009/07/step7-090720.zip">step7-090720.zip</a>をダウンロードして実行してみましょう．</li>
+<li>サンプルプログラムのロボットを10台出現するようにプログラムを変更しましょう．</li>
+</ul>

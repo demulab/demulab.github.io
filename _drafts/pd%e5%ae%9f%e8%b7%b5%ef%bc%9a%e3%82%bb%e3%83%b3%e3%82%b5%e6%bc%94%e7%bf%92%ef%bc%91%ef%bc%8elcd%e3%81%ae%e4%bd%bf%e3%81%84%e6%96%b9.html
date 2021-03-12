@@ -1,0 +1,249 @@
+---
+layout: post
+title: PD実践：センサ演習１．LCDの使い方
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  views: '42'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19488'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19237.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_futurekreate-Edu_2020-9-22_10-25-48_No-00.png"><img class="aligncenter size-full wp-image-19505" src="{{ site.baseurl }}/assets/images/SnapCrab_futurekreate-Edu_2020-9-22_10-25-48_No-00.png" alt="" width="1302" height="793" /></a><br />
+リアルタイムOSであるEV3RTのC言語のAPIを学んでいきます。まずは、LCDのAPIを学びます。</p>
+<ul>
+<li><strong>LCDに関するAPI</strong>
+<ul>
+<li> デォルトのフォントを設定する。<span style="color: #ff0000;">シミュレータは標準フォントのみ対応。</span>
+<ul>
+<li> <b>ER ev3_lcd_set_font (lcdfont_t font)</b>
+<ul>
+<li>引数
+<ul>
+<li>font フォントの番号</li>
+<li>戻り値
+<ul>
+<li>E_OK 正常終了</li>
+<li>E_ID  不正ID番号</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>例
+<ul>
+<li>小さいフォントを設定する：ev3_lcd_set_font(EV3_FONT_SMALL);</li>
+<li>標準のフォントを設定する：ev3_lcd_set_font(EV3_FONT_MEDIUM);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>指定位置に文字列を表示する（x=0,y=10）に”HELLO”を表示する。なお、減点は画面の左隅、ｘ軸は右方向、y軸は下方向。
+<ul>
+<li><b>ER  ev3_lcd_draw_string (const char *str, int32_t x, int32_t y)</b>
+<ul>
+<li>引数
+<ul>
+<li>x 左上隅の水平方向の位置[ピクセル, px]</li>
+<li>y 左上隅の垂直方向の位置[ピクセル, px]</li>
+<li>str 文字列</li>
+</ul>
+</li>
+<li>戻り値
+<ul>
+<li>E_OK 正常終了</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>例
+<ul>
+<li>位置（x=0,y=10）に”HELLO”を表示する
+<ul>
+<li>ev3_lcd_draw_string(“HELLO”, 0, 10);</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>四角を描いて色を塗る
+<ul>
+<li><b>ER ev3_lcd_fill_rect (int32_t x, int32_t y, int32_t w, int32_t h, lcdcolor_t color)</b>
+<ul>
+<li>引数
+<ul>
+<li>x 左上隅の水平方向の位置[ピクセル]</li>
+<li>y 左上隅の垂直方向の位置[ピクセル]</li>
+<li>w 矩形の幅</li>
+<li>h 矩形の高さ</li>
+<li>color カラー</li>
+</ul>
+</li>
+<li>戻り値
+<ul>
+<li>E_OK 正常終了</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>例
+<ul>
+<li>指定した位置（x=20,y=30）を始点として、幅40、高さ50の矩形を描き、黒色を塗る
+<ul>
+<li> ev3_lcd_fill_rect(20, 30, 40, 50, EV3_LCD_BLACK);</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> LCD画面全体を白く塗り潰す（クリアする）
+<ul>
+<li>ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>サンプルプログラム</strong></p>
+<ul>
+<li>/lcd_1/app.c："hello, world"とLCDに表示するプログラム。
+<ul>
+<li>始めの２行はEV3RTのC言語に必要なインクルードファイル。これがないとビルドに失敗する。普通のC言語はmain関数から始まるが、EV3RTのC言語はmain関数の代わりにmain_task関数で始まり、戻り値はvoidでない。</li>
+<li>また、main関数の最後はreturn 0で終了するが、EV3RTのC言語はext_tsk()関数で終了する。リアタイムOSでは複数の処理を並列して実行させる機能があり、その処理単位をタスクとよぶ。この関数はタスクの終了処理を行うわけだ。</li>
+<li>LCDに文字列を表示するにはev3_lcd_draw_string関数を使う。始めの引数は文字列、２番目の引数はLCDの横方向の位置、３番目の引数はLCDの縦方向の位置で減点は画面左上隅。このサンプルではC言語バイブル「プログラング言語C」 (カーニハン&amp;リッチー著)の最初の例と同じ"hello, world"とLCDに表示する。</li>
+</ul>
+</li>
+</ul>
+<pre>#include "ev3api.h" 
+#include "app.h"    
+
+void main_task(intptr_t exinf) {
+    ev3_lcd_draw_string("hello, world", 0, 10); /* 指定位置に文字列を表示 */
+    ext_tsk();   /* タスク終了処理 */                                    
+}</pre>
+<ul>
+<li>/lcd_2/app.c：カウンタを表示するプログラム。
+<ul>
+<li>変数をLCDに表示する方法を学ぶ。ev3_lcd_draw_stringは文字列しか表示できないので、sprintf関数を使い、変数countを2番目の引数の書式で文字列strに書いている。<br />
+なお、シミュレータの制約で文字列のサイズは最大32で、浮動小数はfloat型しか使えない。</li>
+</ul>
+</li>
+</ul>
+<pre>#include "ev3api.h"
+#include "app.h"
+
+void main_task(intptr_t exinf) {
+    int count;
+    char str[16];                        /* カウントを表示するための文字列 */
+	
+    ev3_lcd_set_font(EV3_FONT_MEDIUM);   /* LCDに表示するフォントの設定 */
+    while(1){
+	sprintf(str, "COUNT:%d", count); /* カウントを表示用の文字列作成 */	
+        ev3_lcd_draw_string(str, 30, 60); /* 指定した位置にカウントを表示 */
+	tslp_tsk(10000);                 //　シミュレーションのみ必要
+	tslp_tsk(1000000);               /* 100000us(1000ms) 刻みで実行 */
+	count++;
+    }
+
+    /* LCD画面全体を白く塗り潰す（クリアする）*/
+    ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
+    tslp_tsk(5000000);	
+
+    ext_tsk();   /* タスク終了処理 */                                    
+}</pre>
+<ul>
+<li>/lcd_2/app.c：カウンタと矩形を表示するプログラム。
+<ul>
+<li>変数をLCDに表示する方法を学ぶ。ev3_lcd_draw_stringは文字列しか表示できないので、sprintf関数を使い、変数countを2番目の引数の書式で文字列strに書いている。</li>
+<li><span class="">なお、シミュレータの仕様で文字列のサイズは最大32で、浮動小数はfloat型しか使えない。複数の文字や図形を表示するときは各APIの後にtslp_tsk(10000); を挿入しないと文字や図形が正しく表示されない。</span></li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 40px;"><code>#include "ev3api.h"<br />
+#include "app.h"</code></p>
+<p style="padding-left: 40px;">void main_task(intptr_t exinf)<br />
+{<br />
+int count;<br />
+char str[32]; /* カウントを表示するための文字列 */<br />
+ev3_lcd_set_font(EV3_FONT_MEDIUM); /* LCDに表示するフォントの設定 */</p>
+<p style="padding-left: 40px;">    while (1)<br />
+{<br />
+sprintf(str, "COUNT:%d", count); /* カウントを表示用の文字列作成 */<br />
+ev3_lcd_draw_string(str, 30, 60); /* 指定した位置にカウントを表示 */<br />
+tslp_tsk(10000); //　シミュレーションのみ必要 10,000us);</p>
+<p style="padding-left: 40px;">         ev3_lcd_fill_rect(10, 10, 100, 20, EV3_LCD_BLACK); /* 指定した位置に矩形表示 */<br />
+tslp_tsk(10000); //　シミュレーションのみ必要 10,000us);    /* 100000us(1000ms) 刻みで実行 */<br />
+count++;<br />
+}</p>
+<p style="padding-left: 40px;">     /* LCD画面全体を白く塗り潰す（クリアする）*/<br />
+ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);<br />
+tslp_tsk(5000000);<br />
+ext_tsk(); /* タスク終了処理 */<br />
+}<code></code></p>
+<p><strong>演習</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>サンプルプログラムlcd_2を改造し、以下の機能を実現する。なお、サンプルプログラムは変数countが0に初期化されていないので、まず、0に初期化すること。
+<ul>
+<li>countが<b>100</b>になったら、LCDに“Game Over!”と表示してタスクを終了する。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>参考</strong>
+<ul>
+<li><a href="http://www.toppers.jp/ev3pf/EV3RT_C_API_Reference/group__ev3api-lcd.html">LCD API (EV3RT C API Reference)</a></li>
+<li> LCD画面の幅は178[px]、高さは128[px]である。</li>
+<li> LCD画面の左上隅が、座標（x=0,y=0）である。</li>
+<li> フォントサイズは以下の２通り。<span style="color: #ff0000;">シミュレータは普通サイズのフォントのみ使用可能。</span>
+<ul>
+<li>EV3_FONT_SMALL 小さいサイズのフォント：幅6[px]×高さ8[px]</li>
+<li>EV3_FONT_MEDIUM 普通サイズのフォント：幅10[px]×高さ16[px]</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

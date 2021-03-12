@@ -1,0 +1,72 @@
+---
+layout: post
+title: ロボットプログラミングⅡ-2019：Virtualbox6.0の設定
+date: 2019-10-11 20:28:15.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '12099'
+  views: '187'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/16208.html"
+---
+<p>この記事は私が金沢工業大学ロボティクス学科で担当している2019年後学期開講の講義ロボットプログラミングⅡ用です。<br />
+この記事では、快適に使うためにVirtualBox6.0の設定を行います。</p>
+<p>○　VirtualBoxの設定</p>
+<p>(1) VirtualBoxを起動し、左のツールの下にあるUbuntu-18.04を選択し「設定(P)」をクリック。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/8d8290babc4e6cce8a2783cbd4e5d5b4.png"><img class="aligncenter size-full wp-image-16211" src="{{ site.baseurl }}/assets/images/2019/10/8d8290babc4e6cce8a2783cbd4e5d5b4.png" alt="" width="962" height="572" /></a></p>
+<p>(2) 左欄の「システム」を選択し、「マザーボード」のタブをクリックし、下図のように設定する。メインメモリを実メモリの半分程度（私の場合は8192MB)にし、後の設定は変更しない。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/2029dd330c65e7ff2664fb77c3ec1239.png"><img class="aligncenter size-full wp-image-16212" src="{{ site.baseurl }}/assets/images/2019/10/2029dd330c65e7ff2664fb77c3ec1239.png" alt="" width="774" height="486" /></a></p>
+<p>(3) 「プロセッサー」のタブをクリックし、下図のようにCPUの個数を２、使用率制限を100%にする。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/2e631f359c5509852613c75968b7c115.png"><img class="aligncenter size-full wp-image-16213" src="{{ site.baseurl }}/assets/images/2019/10/2e631f359c5509852613c75968b7c115.png" alt="" width="774" height="486" /></a></p>
+<p>(5) 左欄の「ディスプレイ」を選択し、「ビデオメモリー」を最大の128MB、「3Dアクセラレーションの3Dを有効化」に&#x2714;を入れ、[OK]をクリック。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/e41ff0174fdbcb263d2678f8ca2399b0.png"><img class="aligncenter size-full wp-image-16214" src="{{ site.baseurl }}/assets/images/2019/10/e41ff0174fdbcb263d2678f8ca2399b0.png" alt="" width="774" height="486" /></a></p>
+<p>(7) 左欄の「USB」を選択し，USB3.0コントローラーに&#x2714;を入れ、[OK]をクリック。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/656c2649f85628ca35c07cbf22c6b639.png"><img class="aligncenter size-full wp-image-16215" src="{{ site.baseurl }}/assets/images/2019/10/656c2649f85628ca35c07cbf22c6b639.png" alt="" width="774" height="486" /></a></p>
+<p>(8) 「起動」をクリックしてUbuntuをスタートさせる。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/acda93b1e3adb4055a75cbd19cce469e.png"><img class="aligncenter size-full wp-image-16216" src="{{ site.baseurl }}/assets/images/2019/10/acda93b1e3adb4055a75cbd19cce469e.png" alt="" width="962" height="572" /></a></p>
+<p>(9) Ubuntuが起動したら「デバイス」-&gt;「Guest Additions CDイメージの挿入]を選択する。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/ddcfdf8a0dbe0e2f4c338d5f6f0b37e9.png"><img class="aligncenter size-full wp-image-16222" src="{{ site.baseurl }}/assets/images/2019/10/ddcfdf8a0dbe0e2f4c338d5f6f0b37e9.png" alt="" width="811" height="675" /></a></p>
+<p>(10) デスクトップ上にVBox_GAs_6.0.12のアイコンが現れるのでダブルクリックする。<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/68512042d30a15ecd7f741e2b07c42f2.png"><img class="aligncenter size-full wp-image-16223" src="{{ site.baseurl }}/assets/images/2019/10/68512042d30a15ecd7f741e2b07c42f2.png" alt="" width="835" height="680" /></a></p>
+<p>(11) 「ソフトウェアの実行」をクリックする。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/a4f406592449c6f0c51ac81980f8b6a9.png"><img class="aligncenter size-full wp-image-16224" src="{{ site.baseurl }}/assets/images/2019/10/a4f406592449c6f0c51ac81980f8b6a9.png" alt="" width="835" height="680" /></a></p>
+<p>(12) 「VBox....には自動する..実行しますか？」と聞かれるので「実行」をクリック。パスワードを聞かれるので入力する。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/d4086151bc6c645f9da2aa2324a36451.png"><img class="aligncenter size-full wp-image-16225" src="{{ site.baseurl }}/assets/images/2019/10/d4086151bc6c645f9da2aa2324a36451.png" alt="" width="835" height="680" /></a></p>
+<p>(13) 以下の画面になるのでキーボードのEnterキーを押す。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/5304b45a7152eefad12c6970836296c8.png"><img class="aligncenter size-full wp-image-16226" src="{{ site.baseurl }}/assets/images/2019/10/5304b45a7152eefad12c6970836296c8.png" alt="" width="835" height="680" /></a></p>
+<p>(14) 再起動するとExtension Packが有効になり少し幸せになれる。</p>
+<p>終わり。お疲れ様！</p>

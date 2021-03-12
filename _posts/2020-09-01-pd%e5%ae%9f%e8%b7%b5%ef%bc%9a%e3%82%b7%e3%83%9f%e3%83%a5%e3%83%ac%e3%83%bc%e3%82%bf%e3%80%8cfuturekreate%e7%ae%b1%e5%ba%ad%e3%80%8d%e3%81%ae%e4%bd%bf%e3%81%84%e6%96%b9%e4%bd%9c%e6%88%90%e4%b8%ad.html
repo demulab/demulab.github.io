@@ -1,0 +1,127 @@
+---
+layout: post
+title: PD実践：LEGO EV3RTシミュレータ「FutureKreate×箱庭」の設定
+date: 2020-09-01 10:25:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '19081'
+  views: '909'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19049.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_futurekreate-school_2020-9-1_16-14-16_No-00.png"><img class="aligncenter size-full wp-image-19081" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_futurekreate-school_2020-9-1_16-14-16_No-00.png" alt="" width="1000" height="623" /></a></p>
+<p>PD実践の授業で使うレゴEV3シミュレータ「FutureKreate×箱庭」の設定を説明する。箱庭とUnityを使う場合は参考サイトを参照されたい。</p>
+<p><strong>参考サイト</strong></p>
+<ul>
+<li><a href="https://toppers.github.io/hakoniwa/prototypes/single-robot/">TOPPERS/箱庭 単体ロボット向け</a></li>
+</ul>
+<p><strong>手　順</strong></p>
+<ol>
+<li>授業サンプルプログラムのダウンロード
+<ul>
+<li>以下のリンクをc:\edu\athrill-sample\ev3rt\ev3rt-beta7-release\asp3\sdkにダウンロードして解凍する。既にsdkディレクトリ下にworkspaceフォルダがあるが気にせず、エクスプローラを使い上書き保存する。
+<ul>
+<li><a href="https://kanazawa-it.box.com/s/yhrbire57e1wd8spz0z5wrj40pum39qo">workspace-kit200915.zip</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> ファイルのコピー
+<ul>
+<li>以下のファイルをエクスプローラを使いc:\eduにコピーする。
+<ul>
+<li>c:\edu\athrill-sample\ev3rt\ev3rt-beta7-release\asp3\sdk\workspace\toppers_conference\athrill_mmap.bin</li>
+<li>c:\edu\athrill-sample\ev3rt\ev3rt-beta7-release\asp3\sdk\workspace\toppers_conference\unity_mmap.bin</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> リンク（ショートカット）の作成
+<ul>
+<li>パスが長いのでworkspaceのリンク（ショートカット）を作っておく。これにより~/workspaceというフォルダを/mnt/c/edu/athrill-sample/ev3rt/ev3rt-beta7-release/asp3/sdk/workspace workspaceの代わりに使うことができる。ここではlnに-sのオプションを付けてシンボリックリンクとしているのでディスク容量はほとんど消費されない。
+<ul>
+<li><code>$ cd</code></li>
+<li><code>$ ln -s /mnt/c/edu/athrill-sample/ev3rt/ev3rt-beta7-release/asp3/sdk/workspace workspace</code></li>
+</ul>
+</li>
+<li>上のコマンドを実行してエラーが出る場合は、以下のコマンドを実行してディレクトリやファイルが表示されるか確認してください。ない場合は「<a href="https://demura.net/education/pd%e5%ae%9f%e8%b7%b5/19311.html">PD実践：講義第１回目(9/24)までの準備」」</a>の「3. Athrillのインストール」からやり直してください。
+<ul>
+<li><code>$ ls /mnt/c/edu/athrill-sample/ev3rt/ev3rt-beta7-release/asp3/sdk/workspace</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> エイリアス設定
+<ul>
+<li>athrill2の実行コマンドはとても長いので楽するために以下のファイルを~/.bashrcに追加する。これによりarunと入力するだけで済む。
+<ul>
+<li>次のコマンドでホームディレクトリに移動する。
+<ul>
+<li><code>$ cd</code></li>
+</ul>
+</li>
+<li>次のコマンドでエディタnanoを使い.bashrcファイルを開く。
+<ul>
+<li><code>$ nano ~/.bashrc</code></li>
+</ul>
+</li>
+<li>ファイルが開くので以下を.bashrcに挿入して保存する。この例では、#some more ls aliases(89行目)の下に追加している。
+<ul>
+<li><code>alias arun='athrill2 -c1 -t -1 -m config/memory_mmap.txt -d config/device_config_mmap.txt asp'</code><a href="https://demura.net/wordpress/wp-content/uploads/2020/09/alias.png"><img class="aligncenter wp-image-19565 size-full" src="{{ site.baseurl }}/assets/images/2020/09/alias.png" alt="" width="1318" height="749" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> mmapファイルの設定
+<ul>
+<li>Ubuntu上で実行しているathrillとWindows上で実行しているFutureKreateが通信してシミュレーションを実施する。通信には共有メモリを使っており、同じファイルにアクセスする必要がある。サンプルプログラムのフォルダの中に共有メモリファイルが入っているが、プログラム毎に設定を変更するのは面倒なのでここでは共有メモリファイルをc:\eduの中に配置する。この作業は１度だけすればよい。他のサンプルプログラムでは必要ない。ただし、この設定では２つのサンプルプログラムを同時に動かすことはできない。
+<ul>
+<li><code>$ cp ~/workspace/athrillsample/athrill_mmap.bin /mnt/c/edu</code></li>
+<li><code>$ cp ~/workspace/athrillsample/unity_mmap.bin  /mnt/c/edu</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>以上</p>
+<p>&nbsp;</p>

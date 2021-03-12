@@ -1,0 +1,163 @@
+---
+layout: post
+title: Docker Desktop for Windowsのインストール
+date: 2021-01-02 14:16:44.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19720'
+  views: '103'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/19717.html"
+---
+<p>Docker Desktop for Windowsのインストールメモ</p>
+<ul>
+<li>環境
+<ul>
+<li>エディション：Windows 10 Education</li>
+<li>バージョン：2004</li>
+<li>OSビルド：19041.685</li>
+</ul>
+</li>
+<li>準備
+<ul>
+<li>WSL2の有効化
+<ul>
+<li>ここではHyper-Vを利用できないWindows HomeにもインストールできるようにWSL2を使う。なお、他のHyper-Vを利用できるWindowsエディションでもWSL2ベースのエンジンの方がパフォーマンスが良い。</li>
+<li> 準備：Windows10のバージョンアップ
+<ul>
+<li>WSL2を使うためにはWindows10が次の条件を満足する必要がある。
+<ul>
+<li>バージョン2004</li>
+<li>ビルド19041以上</li>
+</ul>
+</li>
+<li>バージョンの確認方法
+<ul>
+<li>スタート→設定→バージョン情報→Windowsの仕様で確認する。</li>
+</ul>
+</li>
+<li>条件を満足していない場合は以下のリンクのWindows 10 May 2020 Update [今すぐアップデート]をクリックする。
+<ul>
+<li><a href="https://www.microsoft.com/ja-jp/software-download/windows10">Windows 10 のダウンロード</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> WSL2の有効化
+<ul>
+<li>スタート→Windows PowerShell→Windows PowerShell（右マウスボタンで「管理者として実行する」を選択して）を開き、次のコマンドを実行（コピペしてEnterキーを押す）する。１分ぐらいかかる。
+<ul>
+<li><code>dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart</code></li>
+</ul>
+</li>
+<li>次のコマンドも実行する。これも１分ぐらいかかる。
+<ul>
+<li><code>dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart</code></li>
+</ul>
+</li>
+<li> 再起動する。</li>
+</ul>
+</li>
+<li> WSL2の設定
+<ul>
+<li>管理者権限でPowerShellを開き、次のコマンドを実行する。
+<ul>
+<li><code>wsl --set-default-version 2</code></li>
+</ul>
+</li>
+<li>下図のように「WSL 2を実行するには、カーネルコンポーネントの更新が必要です」と怒られる場合は、以下のリンクの指示に従って「Linux カーネル更新プログラム パッケージ」をインストールする。x64マシン用のカーネル更新プログラムをダウンロード・インストールする。
+<ul>
+<li><a href="https://docs.microsoft.com/ja-jp/windows/wsl/wsl2-kernel">WSL 2 Linux カーネルの更新</a><img src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_%E7%AE%A1%E7%90%86%E8%80%85-Windows-PowerShell_2020-6-19_15-27-2_No-00.png" /></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Docker Desktop for Windowsのインストール
+<ul>
+<li>以下のサイトの「Get Docker」をクリックしてDocker Desktop Installer.exeをダウンロードする。
+<ul>
+<li><a href="https://hub.docker.com/editions/community/docker-ce-desktop-windows">Docker Desktop for Windows</a><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/docker1.png"><img class="aligncenter size-large wp-image-19720" src="{{ site.baseurl }}/assets/images/2021/01/docker1-1024x394.png" alt="" width="1024" height="394" /></a></li>
+</ul>
+</li>
+<li>ダウンロードしたInstallerをダブルクリックして起動する。「このアプリがデバイスに変更を与えることを許可しますか？」と聞かれるので「はい」をクリックする。</li>
+<li>「Configuration」のウインドウになるので下図のように「Install required Windows components for WSL2」と「Add shortcut to desktop」にチェックを入れて「OK」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/SnapCrab_Installing-Docker-Desktop-300-50684_2021-1-2_11-49-21_No-00.png"><img class="aligncenter size-full wp-image-19721" src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_Installing-Docker-Desktop-300-50684_2021-1-2_11-49-21_No-00.png" alt="" width="746" height="529" /></a></li>
+<li>ファイルが展開される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/SnapCrab_Installing-Docker-Desktop-300-50684_2021-1-2_11-53-30_No-00.png"><img class="aligncenter size-full wp-image-19722" src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_Installing-Docker-Desktop-300-50684_2021-1-2_11-53-30_No-00.png" alt="" width="746" height="528" /></a></li>
+<li>展開が無事おわると「Installation succeeded」のウインドウになるので「Close」をクリックして終了する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/SnapCrab_Installing-Docker-Desktop-300-50684_2021-1-2_11-55-29_No-00.png"><img class="aligncenter size-full wp-image-19723" src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_Installing-Docker-Desktop-300-50684_2021-1-2_11-55-29_No-00.png" alt="" width="746" height="528" /></a></li>
+<li>ダウンロードサイトでは自動的にDockerがスタートするとあるが、私の環境では起動しなかったので、デスクトップに「Docker Desktop」アイコンができているのでダブルクリックし起動する。起動すると以下のウインドウが開く。スタートをクリックすると使い方のチュートリアルの画面になる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/SnapCrab_Tutorial_2021-1-2_12-2-36_No-00.png"><img class="aligncenter size-large wp-image-19725" src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_Tutorial_2021-1-2_12-2-36_No-00-1024x615.png" alt="" width="1024" height="615" /></a></li>
+</ul>
+</li>
+<li>Docker Desktopの設定
+<ul>
+<li>チュートリアルを終えたら、以下のウインドウになるので歯車アイコンのSettingsをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/docker-settings.png"><img class="aligncenter size-large wp-image-19726" src="{{ site.baseurl }}/assets/images/2021/01/docker-settings-1024x603.png" alt="" width="1024" height="603" /></a></li>
+<li>「General」では以下のようにチェックがされていなかったらチェックを入れる。特に、Windows10 HomeはHyper-Vの機能が使えないのでWSL2ベースのエンジンを使う。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/SnapCrab_Settings_2021-1-2_13-30-38_No-00.png"><img class="aligncenter size-large wp-image-19729" src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_Settings_2021-1-2_13-30-38_No-00-1024x603.png" alt="" width="1024" height="603" /></a></li>
+<li>「Resources」→「WSL INTEGRATION」をクリックする。ここではWSLと統合する設定ができる。統合したいUbuntuディストリビューションを全て選択し、「Apply　&amp;　Restart」をクリックし、設定を反映させる。私のWSL2環境ではUbuntu (20.04)、Ubuntu-16.04、Ubuntu-18.04の3つのディストリビューションがインストールされているので下図のように表示される。読者の環境ではより少ないと思う。<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/SnapCrab_Settings_2021-1-2_13-41-44_No-00.png"><img class="aligncenter size-large wp-image-19730" src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_Settings_2021-1-2_13-41-44_No-00-1024x603.png" alt="" width="1024" height="603" /></a></li>
+</ul>
+</li>
+<li>Dockerの動作確認
+<ul>
+<li>まず、Dockerのバージョンをコマンドで確認しましょう。スタートの検索ボックスに「PowerShell」と入力すると「Windows PowerShell」が現れるのでクリックして起動する。あるいは、スタートの「Windows PowerShell」をクリックする。以下のように入力してエンターキーを押す。ここでPS&gt;はプロンプトなので入力しない。
+<ul>
+<li>PS&gt; docker -v</li>
+</ul>
+</li>
+<li>下図のようにDockerのバージョンがわかる。私の環境では20.10.0だった。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/SnapCrab_Windows-PowerShell_2021-1-2_14-5-39_No-00.png"><img class="aligncenter size-full wp-image-19731" src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_Windows-PowerShell_2021-1-2_14-5-39_No-00.png" alt="" width="946" height="221" /></a></li>
+<li>次に、docker runコマンドでhello-worldコンテナを実行してみよう。hello-worldコンテナはローカルにないので、リポジトリからイメージをダウンロードしている。以下のとコマンドを実行しよう。
+<ul>
+<li>PS&gt; docker run hello-world</li>
+</ul>
+</li>
+<li>下図のようにHello from Docker!と表示されていれば成功。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/SnapCrab_Windows-PowerShell_2021-1-2_14-13-48_No-00.png"><img class="aligncenter size-full wp-image-19732" src="{{ site.baseurl }}/assets/images/2021/01/SnapCrab_Windows-PowerShell_2021-1-2_14-13-48_No-00.png" alt="" width="806" height="591" /></a></li>
+<li>これで動作確認終わり。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

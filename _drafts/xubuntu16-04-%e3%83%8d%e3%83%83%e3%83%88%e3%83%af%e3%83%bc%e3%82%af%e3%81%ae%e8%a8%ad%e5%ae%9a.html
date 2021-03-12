@@ -1,0 +1,49 @@
+---
+layout: post
+title: Xubuntu16.04 ネットワークの設定
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '13'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>この記事は私が担当している講義ロボットプログラミングⅡ用です。</p>
+<p>VirtualBox5.1にインストールしたUbuntu16.04でのネットワーク設定を説明します。<span style="color: #ff0000;">自宅あるいは何もしないでネットワークに接続する場合は以下の作業は必要ありません。</span></p>
+<p>なお、大学はProxy経由でネットワークにアクセスするので以下の設定が必要です。自宅ではProxyの設定は必要ないので、Proxyをマニュアルで設定した場合は解除する必要があります。</p>
+<p>○　ネットワーク設定</p>
+<p>(1)　Proxyアドレスを設定する。詳細は授業中に説明する。</p>
+<p>&nbsp;</p>
+<p>ネットワーク設定終わり。</p>
+<div>○　Firefoxの設定<br />
+Google Chromeは標準で入っていないので、Firefoxを使用する。</div>
+<div>(1)  右マウスボタンクリック「アプリケーション」→「ウェブブラウザ」を選択</div>
+<div><a href="http://demura.net/lecture/13646.html/attachment/firefox1-2" rel="attachment wp-att-13649"><img src="{{ site.baseurl }}/assets/images/firefox1-300x242.jpg" alt="" width="300" height="242" class="aligncenter size-medium wp-image-13649" /></a></div>
+<div>(2) Firefoxの「Open menu」→「Preferences」を選択</div>
+<div></div>
+<div><a href="http://demura.net/lecture/13646.html/attachment/firefox2-2" rel="attachment wp-att-13650"><img src="{{ site.baseurl }}/assets/images/firefox2-300x225.jpg" alt="" width="300" height="225" class="aligncenter size-medium wp-image-13650" /></a></div>
+<div>(3)　 左メニューの帽子アイコン(advanced)をクリック(下図1)して、上のタブから「Network」をクリック(下図2)、Connectionの[Settings]をクリック(下図3)。</div>
+<div> <a href="http://demura.net/lecture/13646.html/attachment/firefox3-3" rel="attachment wp-att-13651"><img src="{{ site.baseurl }}/assets/images/firefox3-300x235.jpg" alt="" width="300" height="235" class="aligncenter size-medium wp-image-13651" /></a></div>
+<div>(4) 　Proxyの設定は自動検出と手動設定があり、自動検出がうなく働かない場合に手動設定をする。</div>
+<div>a. 自動検出設定</div>
+<div><a href="http://demura.net/lecture/13646.html/attachment/firefox5" rel="attachment wp-att-13654"><img src="{{ site.baseurl }}/assets/images/firefox5-300x184.jpg" alt="" width="300" height="184" class="aligncenter size-medium wp-image-13654" /></a></div>
+<div></div>
+<div>b. 手動設定</div>
+<div>「Manual proxy configuration」に選択し、HTTP Proxy、SSL Proxy、FTP Proxyに大学指定のプロキシアドレスを入力し、[OK]をクリックして終了。</div>
+<div></div>
+<div><a href="http://demura.net/lecture/13646.html/attachment/firefox4" rel="attachment wp-att-13652"><img src="{{ site.baseurl }}/assets/images/firefox4-300x182.jpg" alt="" width="300" height="182" class="aligncenter size-medium wp-image-13652" /></a></div>
+<div></div>
+<div>以上</div>

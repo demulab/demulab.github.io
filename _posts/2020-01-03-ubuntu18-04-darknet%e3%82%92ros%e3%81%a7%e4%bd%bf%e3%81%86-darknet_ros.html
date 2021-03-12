@@ -1,0 +1,212 @@
+---
+layout: post
+title: 'Ubuntu18.04: darknetをROSで使う (darknet_ros)'
+date: 2020-01-03 00:19:15.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16548'
+  views: '1236'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/16542.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/01/yolo.png"><img class="aligncenter size-full wp-image-16548" src="{{ site.baseurl }}/assets/images/2020/01/yolo.png" alt="" width="640" height="504" /></a></p>
+<p>YOLO V3をROSで使うためのパッケージ<a href="https://github.com/leggedrobotics/darknet_ros">darknet_ros</a>のインストール、設定法と使い方のメモ。</p>
+<ul>
+<li><strong>本家サイト</strong>
+<ul>
+<li><a href="https://github.com/leggedrobotics/darknet_ros">YOLO V3 for ROS: Real-Time Object Detection for ROS</a></li>
+</ul>
+</li>
+<li> <strong>SSH keyの設定 (Ubuntu)</strong>
+<ul>
+<li>SSH keyを設定しないとインストールできないので端末を開き、ssh-keygenコマンドでkeyを設定する。すでにUbunutとgithubに設定している場合はこの作業を飛ばす。</li>
+<li><code>$ ssh-keygen</code>
+<ul>
+<li>Enter file in which to save the key (/home/user_name/.ssh/id_rsa):
+<ul>
+<li>keyの保存先を聞かれる。デフォルトで良いのでエンターキーを押す。</li>
+</ul>
+</li>
+<li>Enter passphrase (empty for no passphrase):
+<ul>
+<li>passphrase（パスフレーズ）を聞かれるので設定したいパスフレーズを入力する。パスフレーズはパスワードの長いもの。</li>
+</ul>
+</li>
+<li>Enter same passphrase again:
+<ul>
+<li>同じパスフレーズを入力する。</li>
+</ul>
+</li>
+<li>Your identification has been saved in /home/user_name/.ssh/id_rsa.</li>
+<li>Your public key has been saved in /home/user_name/.ssh/id_rsa.pub.
+<ul>
+<li>プライベイトキー（秘密鍵） ~/.ssh/id_rsaとパブリックキー（公開鍵）~/.ssh/id_rsa.pubが生成される。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>パスフレーズの登録
+<ul>
+<li><code>$ eval 'ssh-agent'</code></li>
+<li><code>$ ssh-add ~/.ssh/id_rsa</code>
+<ul>
+<li>上で入力したパスフレーズを入力する。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>SSH Keyの設定（github)</strong>
+<ul>
+<li>githubにも公開鍵を設定する。</li>
+<li>githubのアカウントがなければ作成してサインインする。</li>
+<li>settings -&gt; personal setting -&gt; SSH and PGP keys を選択<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/01/github0.png"><img class="aligncenter size-large wp-image-16543" src="{{ site.baseurl }}/assets/images/2020/01/github0-1024x715.png" alt="" width="1024" height="715" /></a></li>
+<li>右上の[New SSH Key]をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/01/github1.png"><img class="aligncenter size-large wp-image-16544" src="{{ site.baseurl }}/assets/images/2020/01/github1-1024x715.png" alt="" width="1024" height="715" /></a></li>
+<li>Titleに公開鍵名id_rsa.pubを入力し、keyにはid_rsa.pubファイルの中身をコピペして、[Add SSH key]をクリックして鍵を追加する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/01/github2.png"><img class="aligncenter size-large wp-image-16545" src="{{ site.baseurl }}/assets/images/2020/01/github2-1024x715.png" alt="" width="1024" height="715" /></a></li>
+</ul>
+</li>
+<li> <strong>インストール</strong>
+<ul>
+<li><code>$ cd ~/catkin_ws/src</code></li>
+<li><code>$ git clone --recursive git@github.com:leggedrobotics/darknet_ros.git</code>
+<ul>
+<li><span style="color: #ff0000;">SSH keyを設定しないとクローンできない。できない場合はもう一度、上のSSH Key設定作業をする。</span></li>
+</ul>
+</li>
+<li><code>$ cd ..</code></li>
+</ul>
+</li>
+<li><strong>ビルド</strong>
+<ul>
+<li><code>$ catkin build -DCMAKE_BUILD_TYPE=Release</code>
+<ul>
+<li>重みファイルをダウンロードするので少し時間がかかる。私の環境では7分かかった。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>重みファイルのダウンロード</strong>
+<ul>
+<li>yolov2-tiny.weightsとyolov3.weightsはcatkin buildすると自動的にダウンロードする。その他のウェイトが欲しい場合は、以下のファイルを参照。
+<ul>
+<li> ~/catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights/how_to_download_weights.txt</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>実行方法</strong>
+<ul>
+<li> カメラの起動
+<ul>
+<li>USB Cameraの場合
+<ul>
+<li><code>$ roslaunch usb_cam usb_cam-test.launch</code></li>
+</ul>
+</li>
+<li>RealSense D435,D435iの場合
+<ul>
+<li><code>$ roslaunch realsense2_camera rs_camera.launch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>darknet_ros起動
+<ul>
+<li><code>$ roslaunch darknet_ros yolo_v3.launch</code>
+<ul>
+<li>一番上図のようなYOLO V3のウインドウが開き、物体が識別されていれば成功。私の環境では20フレーム/sの速度で物体識別できていた。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> 自分のオブジェクトを検出する方法
+<ul>
+<li>学習で作られた重みファイルwrs_10000.weightsと設定ファイルwrs_test.cfgを次のディレクトリに保存する。<a href="http://demura.net/misc/14458.html">これらのファイルは学習で使ったもの。</a>
+<ul>
+<li> 重みフアイル：~/catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights/</li>
+<li> 設定ファイル：~/catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/</li>
+</ul>
+</li>
+<li>次のROS用の設定ファイルを修正する。
+<ul>
+<li>catkin_ws/src/darknet_ros/darknet_ros/config/ros.yaml
+<ul>
+<li>ウェブカメラを使う場合は、サブスクライブするカメラ画像のトピック名の変更が必要。</li>
+<li>この例ではusb_cameraの場合は次のように変更。<br />
+camera_reading:<br />
+topic: /usb_cam/image_raw<br />
+queue_size: 1</li>
+<li>Realsense  D435の場合は次のように変更<br />
+camera_reading:<br />
+topic: /camera/color/image_raw<br />
+queue_size: 1</li>
+</ul>
+</li>
+<li>$ cd ~/catkin_ws/src/darknet_ros/darknet_ros/config</li>
+<li>$ cp yolov3.yaml  wrs.yaml</li>
+<li>wrs.yamlの内容を変更する。この例では以下にした。yolo_model:config_file:<br />
+name: wrs_test.cfg<br />
+weight_file:<br />
+name: wrs_10000_0415.weights<br />
+threshold:<br />
+value: 0.3<br />
+detection_classes:<br />
+names:<br />
+- onigiri<br />
+- sandwich</li>
+</ul>
+</li>
+<li>launchファイルを必要があれば修正する
+<ul>
+<li>$ cd ~/catkin_ws/src/darknet_ros/darknet_ros/launch</li>
+<li>yolo_v3.launchの13行目yolov3.yamlを先ほどコピーしたwrs.yamlに変更する。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

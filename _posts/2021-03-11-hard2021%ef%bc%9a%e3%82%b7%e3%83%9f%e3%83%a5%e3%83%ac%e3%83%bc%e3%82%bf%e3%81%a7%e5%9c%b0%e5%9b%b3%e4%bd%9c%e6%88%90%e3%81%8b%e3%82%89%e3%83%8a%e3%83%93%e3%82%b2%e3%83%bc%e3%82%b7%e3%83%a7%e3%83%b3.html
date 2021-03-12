@@ -1,0 +1,166 @@
+---
+layout: post
+title: HARD2021：シミュレータで地図作成からナビゲーションまでしよう！
+date: 2021-03-11 17:16:47.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- HARD
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-03-11 17:16:47'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18865'
+  views: '34'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/hard/20061.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_configrviz-RViz_2020-8-21_13-33-19_No-00.png"><img class="aligncenter size-large wp-image-18865" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_configrviz-RViz_2020-8-21_13-33-19_No-00-1024x656.png" alt="" width="1024" height="656" /></a></p>
+<p>シミュレータGazeboを使って地図を作り、自己位置を推定し、目的地までナビゲーションする自律移動ロボットに必要な一連のタスクをさせましょう！</p>
+<p>ここでは地図作成にgmappingパッケージ、自己位置推定にamclパッケージ、ナビゲーションにnavigationパッケージを使います。</p>
+<p><strong>参　考</strong></p>
+<ul>
+<li><a href="https://github.com/RoboticaUtnFrba/create_autonomy/wiki">https://github.com/RoboticaUtnFrba/create_autonomy/wiki</a></li>
+</ul>
+<p><strong>０．準　備</strong></p>
+<ul>
+<li>エディタを使って~/.bashrcに以下があるか確認しなければ追加する。ワークショップ第2回目の準備をしていればあるはず。ない場合は、[<a href="https://demura.net/robot/hard/19934.html">HARD2021: シミュレータでルンバを動かそう！</a>]を読んで作業を全部終えているか確認しよう。
+<pre> export LASER=rplidar
+ export NUM_ROBOTS=1
+ export RVIZ=true</pre>
+</li>
+</ul>
+<p><strong>１．　地図作成</strong></p>
+<p>地図を作るために端末を３つ開く。</p>
+<p>(1) <strong>GazeboとRvizの起動</strong><br />
+1番目の端末で次のコマンドを実行すると、gazeboシミュレータとROSの視覚化ツールrvizが起動する。初めて、このコマンドを実行するときは必要な3Dモデルファイルをネットからダウンロードしてくるので少し時間がかかる。私の環境では数分かかった。</p>
+<ul>
+<li><code>$ cd</code></li>
+<li><code>$ export LOCALIZATION=slam</code></li>
+<li><code>$ export RVIZ_CONFIG=navigation</code></li>
+<li><code>$ roslaunch ca_gazebo create_house.launch</code>
+<ul>
+<li>最後の引数にはシミュレーション環境を指定する。create_house.launchは家のシミュレーション環境である。~/catkin_ws/src/create_autonomy/ca_gazebo/launchにいろいろな環境がある。create_house.launchの代わりに、他のlaunchファイル（例えばcreate_restaurant.launch）などを指定すると違う環境でルンバを動かすことができる。</li>
+<li><span style="color: #ff0000;"><strong>エラーが出る場合</strong></span>
+<ul>
+<li><span style="color: #ff0000;">エラー1：Gazeboを起動しても以下のエラーで表示され画面が真っ暗らな場合</span><br />
+<span style="color: #ff0000;">[Err] [REST.cc:205] Error in REST request</span><br />
+<span style="color: #ff0000;">libcurl: (51) SSL: no alternative certificate subject name matches target host name ‘api.ignitionfuel.org’</span></p>
+<ul>
+<li><span style="color: #ff0000;">~/.ignition/fuel/config.yamlを次のように変更する。</span>
+<ul>
+<li><span style="color: #ff0000;">変更前：<code>url: https://api.ignitionfuel.org</code></span></li>
+<li><span style="color: #ff0000;">変更後：<code>url: https://api.ignitionrobotics.org</code></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span style="color: #ff0000;">エラー2：rvizがOpenGL関係のエラーで落ちる場合は、以下の１行を.bashrcの最後に付け加える。</span>
+<ul>
+<li><code>export LIBGL_ALWAYS_SOFTWARE=""</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>(2) <strong>地図作成</strong><br />
+次にロボットをキー操作し動かしながら地図を作っていこう。地図の作成にはルンバに搭載されているLIDARの情報を使う。初期の設定ではGazeboとRviz上の物体が180度ずれているので、Rvizの画面をマウスでドラッグして向きを揃えると作業がやりやすくなる。</p>
+<p>２番目の端末を開き、キー操作でロボットを動かすとrviz上で地図が生成されるのがわかる。ロボットを動かして各部屋の地図を作ろう。注意点としてはロボットを壁などに衝突させないこと。衝突するとロボットの位置がずれて、地図も不正確な地図になってしまう。</p>
+<ul>
+<li><code>$ roslaunch ca_tools keyboard_teleop.launch</code></li>
+</ul>
+<p>(3) <strong> 地図の保存</strong><br />
+地図は自動的に保存されないので、３番目の端末を開き、以下のコマンドを実行して保存する。ここで、mymapは保存する地図名なので適宜変更する。</p>
+<p>このコマンドを実行したディレクトリに画像ファイルのmymap.pgmと設定ファイルのmymap.yamlの２つのファイルが作られる。設定ファイルには画像ファイル名、解像度、占有領域はフリースペースなどの情報がテキスト形式で保存されている。通常、あまり変更しない。画像ファイルは、ノイズなどのない綺麗な地図にするため画像ファイルはGimpなどの画像編集ソフトで編集する場合が多い。</p>
+<ul>
+<li><code>$ rosrun map_server map_saver -f mymap</code></li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>２．　ナビゲーション</strong></p>
+<p>一度開いている端末を全部閉じ、実行中のノードを終了させる。新たに端末を２つ開く。本来なら上で作成した地図を使ってナビゲーションをするが、ここでは予めcreate_automyに用意されている地図を使う。~/catkin_ws/src/create_autonomy/ca_gazebo/launchに準備されている環境にはすべて地図がある。</p>
+<p>(1)1番目の端末で 以下のコマンドを実行してGazeboシミュレータとRvizを起動する。</p>
+<ul>
+<li><code>$ export LOCALIZATION=amcl</code></li>
+<li>最後の引数にはナビゲーションしたい環境のlaunchファイルを指定する。実行すると以下のGazeboとRvizが起動する。
+<ul>
+<li><code>$ roslaunch ca_gazebo create_house.launch<br />
+</code><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Gazebo_2020-8-21_13-5-58_No-00.png"><img class="aligncenter size-large wp-image-18862" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_Gazebo_2020-8-21_13-5-58_No-00-1024x556.png" alt="" width="1024" height="556" /></a><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_configrviz-RViz_2020-8-21_13-6-10_No-00.png"><img class="aligncenter size-large wp-image-18863" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_configrviz-RViz_2020-8-21_13-6-10_No-00-1024x629.png" alt="" width="1024" height="629" /></a></li>
+</ul>
+</li>
+</ul>
+<p>(2) ナビゲーションの実行</p>
+<ul>
+<li><strong>Launchファイルの実行</strong><br />
+２番目の端末で以下のコマンドを実行し、このナビゲーション用のsend_goal.launchファイルを起動する。</p>
+<ul>
+<li><code>$ roslaunch ca_move_base send_goal.launch</code></li>
+</ul>
+</li>
+<li><strong>ロボット初期位置の確認と設定</strong><br />
+次に、GazeboとRviz上でのロボットの位置が同じか確認する。ずれている場合は、起動したRvizメニューバー（下図）の緑枠で囲んだ"2D Pose Estimation"をクリックして選択し、ロボットの姿勢と位置が合うようにロボットの位置と向きを設定する。ロボットの位置にマウスのカーソールを持って行き、ロボットの向きにドラッグすると設定終わり。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/rviz_menu.png"><img class="aligncenter size-full wp-image-18866" src="{{ site.baseurl }}/assets/images/2021/03/rviz_menu.png" alt="" width="867" height="89" /></a></li>
+<li><strong>ゴール設定とナビゲーション</strong><br />
+最後に上図の赤枠で囲んだ"2D Nav Goal"をクリックして、初期位置を設定したのと同様に、ゴールの位置と向きを設定する。設定するとロボットがナビゲーションを開始し、途中に障害物があればそれを避けてゴールまで向かい、設定した位置と向きを向いて止まる。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Gazebo_2020-8-21_0-24-58_No-00.png"><img class="aligncenter size-large wp-image-18841" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_Gazebo_2020-8-21_0-24-58_No-00-1024x571.png" alt="" width="1024" height="571" /></a></p>
+<p><strong>３．ハンズオン</strong></p>
+<ul>
+<li>ベーシック
+<ul>
+<li>create_house.launch以外のシミュレーション環境を使って、地図生成とナビゲーションをやってみよう！</li>
+</ul>
+</li>
+<li>アドバンスト
+<ul>
+<li>この例ではマッピングにslam_gmappingパッケージを使いましたが、create_autonomyパッケージには次に示すいろいろなマッピング手法を使うことができます。
+<ul>
+<li>cartographer</li>
+<li>hector_slam</li>
+<li>octomap_mapping</li>
+<li>rtabmap_ros</li>
+<li>slam_gmapping</li>
+</ul>
+</li>
+<li> 各手法の概要を調べて、実施に動かして違いを体験してみよう！使い方は次のリンクです。
+<ul>
+<li><a href="https://github.com/RoboticaUtnFrba/create_autonomy/wiki/Mapping-and-Exploration">Mapping and Exploration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

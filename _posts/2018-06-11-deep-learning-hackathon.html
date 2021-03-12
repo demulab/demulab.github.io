@@ -1,0 +1,170 @@
+---
+layout: post
+title: Deep Learning Hackathon
+date: 2018-06-11 12:42:42.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '514'
+  _wp_old_date: '2018-06-10'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/14604.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/06/7ac5d30699ea169048079f656a9bd419.png"><img src="{{ site.baseurl }}/assets/images/2018/06/7ac5d30699ea169048079f656a9bd419-1024x785.png" alt="" width="800" height="613" class="aligncenter size-large wp-image-14610" /></a></p>
+<p>Deep Learning Hackathon in DemuLab</p>
+<ul>
+<li>Hands on
+<ul>
+<li>カメラの起動 (Start up camera)
+<ul>
+<li>$ roscore</li>
+<li>$ roslaunch usb_cam usb_cam-test.launch
+<ul>
+<li>usb_camがない場合は次のコマンドでインストールする。</li>
+<li>$ sudo apt install ros-kinetic-usb-cam</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>データの記録 (Record data)
+<ul>
+<li>$ rosbag record -a</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><a href="http://demura.net/misc/14340.html">ROS Bagデータから画像データの作成 (Extract image files form ROS bag)</a>
+<ul>
+<li><code>$  rosrun image_view extract_images _sec_per_frame:=0.05   _filename_format:=image%04d.jpg image:=/usb_cam/image_raw </code></li>
+<li>$ rosbag play bagfile_name</li>
+</ul>
+</li>
+<li><a href="http://demura.net/misc/14350.html">学習用データの作成 (Making data for Yolo)</a></li>
+<li><a href="http://demura.net/misc/14458.html">オリジナルデータの学習 (Yolo learning using original data)</a></li>
+</ul>
+</li>
+<li>Object recognition contest
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2018/06/d93476eb001d1b56c749418be8ff3037.pdf">RoboCup@Home2018 Rule Book</a>
+<ul>
+<li>Storing Groceries  P68</li>
+</ul>
+</li>
+<li>Objects</li>
+<li>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">No.</td>
+<td style="width: 35.2976%; height: 24px;">Name</td>
+<td style="width: 36.1904%; height: 24px;">Category</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">1</td>
+<td style="width: 35.2976%; height: 24px;">Doritos</td>
+<td style="width: 36.1904%; height: 24px;" rowspan="4">Snack</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">2</td>
+<td style="width: 35.2976%; height: 24px;">Pringles</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">3</td>
+<td style="width: 35.2976%; height: 24px;">Potato Chips</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">4</td>
+<td style="width: 35.2976%; height: 24px;">Lays</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">5</td>
+<td style="width: 35.2976%; height: 24px;">Milk Tea</td>
+<td style="width: 36.1904%; height: 24px;" rowspan="4">Drink</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">6</td>
+<td style="width: 35.2976%; height: 24px;">Pepsi</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">7</td>
+<td style="width: 35.2976%; height: 24px;">Apple Juice</td>
+</tr>
+<tr style="height: 25px;">
+<td style="width: 19.7619%; height: 25px;">8</td>
+<td style="width: 35.2976%; height: 25px;">Dr. Pepper</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">9</td>
+<td style="width: 35.2976%; height: 24px;">Cup Noodle</td>
+<td style="width: 36.1904%; height: 24px;" rowspan="3">Food</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">10</td>
+<td style="width: 35.2976%; height: 24px;">Meal Block</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">11</td>
+<td style="width: 35.2976%; height: 24px;">Sandwich</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 27px;">12</td>
+<td style="width: 35.2976%; height: 27px;">Lemon</td>
+<td style="width: 36.1904%; height: 27px;" rowspan="3">Fruit</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">13</td>
+<td style="width: 35.2976%; height: 24px;">Avocado</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">14</td>
+<td style="width: 35.2976%; height: 24px;">Paprika</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">15</td>
+<td style="width: 35.2976%; height: 24px;">Cascade Pod</td>
+<td style="width: 36.1904%; height: 24px;">Cleaning Stuff</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">16</td>
+<td style="width: 35.2976%; height: 24px;">Spoon</td>
+<td style="width: 36.1904%; height: 24px;" rowspan="2">Cutlery</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">17</td>
+<td style="width: 35.2976%; height: 24px;">Fork</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">18</td>
+<td style="width: 35.2976%; height: 24px;">Cup</td>
+<td style="width: 36.1904%; height: 24px;" rowspan="3">Container</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">19</td>
+<td style="width: 35.2976%; height: 24px;">Bowl</td>
+</tr>
+<tr style="height: 24px;">
+<td style="width: 19.7619%; height: 24px;">20</td>
+<td style="width: 35.2976%; height: 24px;">Dish</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/06/shelf.jpg"><img src="{{ site.baseurl }}/assets/images/2018/06/shelf.jpg" alt="" width="189" height="434" class="aligncenter size-full wp-image-14617" /></a></p>
+<ul>
+<li></li>
+</ul>

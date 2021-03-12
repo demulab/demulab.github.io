@@ -1,0 +1,149 @@
+---
+layout: post
+title: ODE講座８：関節（ジョイント）を動かそー！
+date: 2006-11-19 09:08:22.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '3204'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/338.html"
+---
+<p><img title="サンプルフォー" src="{{ site.baseurl }}/assets/images/2006/11/sample4.jpg" alt="サンプルフォー" width="224" height="217" align="middle" /></p>
+<p>一昨年，レーザーラモンHGさんは小学生に人気があったそうですが今はそのブームを過ぎテレビでもあまり姿を見かけなくなりした．原ゆたか先生の怪傑ゾロリも一昨年までの勢いは少し失速し，オヤジギャグをかます小学生はすっかり影を潜め，私のようなオヤジ達が愛好する本来の姿に戻りました．このように流行は廃れるのも早いですが，ODEはますますユーザを拡大しています．</p>
+<p>ゲーム開発やロボットの研究者にも使われているオープンソースの物理計算エンジンODE(Open Dynamics  Engine、オープン ダイナミクスエンジン）を学ぶODE講座の第８回目です。</p>
+<p>今回は関節（ジョイント）の動かし方を学びましょう。</p>
+<p>ジョイントは以下の手順とAPIを使って動かします。</p>
+<ol>
+<li><span style="color: #cc0000;"><strong><span style="color: #000066;">ジョイントの可動域を設定する</span><br />
+dJointSetHingeParam(dJointID　joint_no, dParamLoStop）;<br />
+dJointSetHingeParam(dJointID  joint_no,  dParamHiStop);</strong></span><br />
+joint_noにはジョイントのID番号、dParamLoStopは関節の可動域の下限[rad]、dParamHiStopは可動域の上限[rad]。</li>
+<li><span style="color: #cc0000;"><strong><span style="color: #000066;">ジョイントの目標角速度とそれを実現するための最大トルクを設定する</span><br />
+dJointSetHingeParam(dJointID, dParamVel);<br />
+dJointSetHingeParam(dJointID, dParamFMax)</strong></span><br />
+dParamVelは関節の目標角速度[rad]/s]（直動式関節の場合は速度[m/s]）、dParamFMaxはその速度を達成するために発揮するトルク[Nm]（直動式関節の場合は力[N])。</li>
+</ol>
+<p>な お，ODEでは関節の目標角度を直接指定するAPIがありませんので，目標角度に関節角をもっていくためには，現在の関節角を dJointGetHingeAngleで取得し，その角度になるまでdJointSetHingeParamを使って角速度を関節に与え，目標角度に なったら角速度を０にするという方法を使います．</p>
+<p>では，ソー スコードを以下に示します。前回との違いはオブジェクトを胴体(torso)、上腿、下腿をもつ１本足ロボットMonoBotに変更しています。自由度は 腰関節(hip joint）が１、膝関節(knee joint)が１の計２自由度となっていますが、今回は腰関節だけ動かします。</p>
+<p><!--more--></p>
+<p>[code]<br />
+//　sample4.c by  by でむ</p>
+<p>#ifdef  dDOUBLE<br />
+#define dsDrawSphere dsDrawSphereD   // 単精度と倍精度の描画関数に対応するおまじない<br />
+#define dsDrawCapsule  dsDrawCapsuleD<br />
+#endif</p>
+<p>myLink torso,leg[2];<br />
+dJointID joint[2];</p>
+<p>enum jointNo {<br />
+HIP,<br />
+KNEE<br />
+};</p>
+<p>// ジョイントの制御<br />
+void control()<br />
+{<br />
+double velCoeff = 1.0;　// 比例定数<br />
+double p; 現在の関節角度<br />
+static double angle = 0.5 * M_PI; // M_PIは円周率</p>
+<p>p =  dJointGetHingeAngle(joint[HIP]);　// 現在の関節角度の取得<br />
+dReal z = angle  -  p;　　　　　　　　　　　   // angleは目標角度[rad]<br />
+if (p &gt;   0.25 * M_PI)    angle  = - 0.25 * M_PI;  // 目標角度の下限<br />
+if (p &lt; - 0.25 * M_PI)    angle  =    0.25 * M_PI;　// 目標角度の上限</p>
+<p>dJointSetHingeParam(joint[HIP], dParamVel,  velCoeff*z);　// 目標角速度[rad/s]の設定<br />
+dJointSetHingeParam(joint[HIP], dParamFMax, 100);　      // 最大トルク[Nm]の設定<br />
+}</p>
+<p>static void simLoop (int pause)<br />
+{<br />
+const dReal *pos1,*R1,*pos2,*R2;</p>
+<p>time++;<br />
+control();  　　　　　　　　　　　　　　　　　　// ジョイントの制御<br />
+dSpaceCollide(space,0,&amp;nearCallback);  // 衝突検出計算<br />
+dWorldStep(world,0.01);　　　　　　　　　//  動力学計算<br />
+dJointGroupEmpty(contactgroup);　　　// 衝突検出計算の後始末（接触点グループの解放）</p>
+<p>// draw a torso   胴体を描画<br />
+dsSetColor(1.0,0.0,0.0);　　　　　　　　　　　　// 色の設定(r, g, b) ここでは赤<br />
+pos1 = dBodyGetPosition(torso.body);　　// 位置の取得<br />
+R1   = dBodyGetRotation(torso.body);　　 //  回転行列の取得<br />
+dsDrawSphere(pos1,R1,torso.radius);         // 球の描画</p>
+<p>// draw legs    脚を描画<br />
+for (int i = 0; i&lt; 2; i++) {<br />
+pos2 = dBodyGetPosition(leg[i].body);<br />
+R2   = dBodyGetRotation(leg[i].body);<br />
+dsDrawCapsule(pos2,R2,leg[i].length,leg[i].radius);　　// カプセルの描画<br />
+}<br />
+}</p>
+<p>// 　Create a monobot  一本足ロボットの生成<br />
+void createMonoBot()<br />
+{<br />
+dMass m1;<br />
+dReal x0 = 0.0, y0 = 0.0, z0 = 2.5;</p>
+<p>// torso   胴体<br />
+torso.radius = 0.2;　　　　//  半径[m]<br />
+torso.mass   = 10.0;        //  質量[kg]<br />
+torso.body = dBodyCreate(world);<br />
+dMassSetZero(&amp;m1);<br />
+dMassSetSphereTotal(&amp;m1,torso.mass,torso.radius);<br />
+dBodySetMass(torso.body,&amp;m1);<br />
+dBodySetPosition(torso.body, x0, y0, z0);<br />
+torso.geom = dCreateSphere(space,torso.radius);<br />
+dGeomSetBody(torso.geom,torso.body);</p>
+<p>// legs    上腿、下腿<br />
+for (int i = 0; i &lt; 2; i++) {<br />
+leg[i].radius = 0.025;    leg[i].length = 0.5;　 leg[i].mass   = 1.0;<br />
+leg[i].body = dBodyCreate(world);<br />
+dMassSetZero(&amp;m1);<br />
+dMassSetCapsuleTotal(&amp;m1,leg[i].mass,3,leg[i].radius,leg[i].length);<br />
+dBodySetMass(leg[i].body,&amp;m1);<br />
+dBodySetPosition(leg[i].body, x0, y0, z0 -torso.radius<br />
+- 0.5 * (2 * i + 1) *leg[i].length);<br />
+leg[i].geom = dCreateCapsule(space,leg[i].radius,leg[i].length);<br />
+dGeomSetBody(leg[i].geom,leg[i].body);<br />
+}</p>
+<p>// hip joint         腰関節<br />
+joint[HIP] = dJointCreateHinge(world, 0);<br />
+dJointAttach(joint[HIP], torso.body,leg[0].body);<br />
+dJointSetHingeAnchor(joint[HIP], x0, y0, z0 - torso.radius);<br />
+dJointSetHingeAxis(joint[HIP], 1, 0, 0);<br />
+dJointSetHingeParam(joint[HIP], dParamLoStop, -0.25 * M_PI);　// 可動域設定 下限<br />
+dJointSetHingeParam(joint[HIP], dParamHiStop,  0.25 * M_PI);　// 上限　単位はradian</p>
+<p>// knee joint    膝関節<br />
+joint[KNEE] = dJointCreateHinge(world, 0);<br />
+dJointAttach(joint[KNEE],leg[0].body,leg[1].body);<br />
+dJointSetHingeAnchor(joint[KNEE], x0, y0, z0 - torso.radius - leg[0].length);<br />
+dJointSetHingeAxis(joint[KNEE], 1, 0, 0);<br />
+dJointSetHingeParam(joint[KNEE], dParamLoStop, 0.0 * M_PI);　// 可動域<br />
+dJointSetHingeParam(joint[KNEE], dParamHiStop, 0.0 * M_PI);　// M_PIは円周率π（パイ）</p>
+<p>}</p>
+<p>int main (int argc, char **argv)<br />
+{<br />
+setDrawStuff();</p>
+<p>world = dWorldCreate();<br />
+space = dHashSpaceCreate(0);<br />
+contactgroup = dJointGroupCreate(0);</p>
+<p>dWorldSetGravity(world,0,0,-9.8);<br />
+ground = dCreatePlane(space,0,0,1,0);<br />
+createMonoBot();　// 一本足ロボットの生成<br />
+dsSimulationLoop (argc,argv,352,288,&amp;fn);<br />
+dWorldDestroy(world);<br />
+return 0;<br />
+}</p>
+<p>[/code]</p>
+<p>ジョ イントを動かしている関数controlは目標値と現在値の差に比例して制御するＰ制御と なっています。ジョイントのパラメータdParamVelは目標角速度で、dParamFMaxはその角速度を実現するためにジョイントが発揮できる最大 トルクです。この値を０に設定すると目標角速度を設定してもトルクが０なのでジョイントとは動いてくれません。</p>
+<p>ここから<a href="http://demura.net/archives/images/ode/sample4-2006.tgz">sample4.c</a>のソースコードをダウンロードして遊んでください。では、また次回。</p>
+<p><strong>更新履歴</strong></p>
+<ul>
+<li>2008-1-13: コードを整形した．</li>
+<li>2007-1-14: サンプルプログラムのコメントをより詳しくした。</li>
+</ul>

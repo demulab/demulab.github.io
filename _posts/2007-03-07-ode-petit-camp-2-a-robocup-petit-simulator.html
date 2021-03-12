@@ -1,0 +1,86 @@
+---
+layout: post
+title: 'ODE Petit Camp 2: A RoboCup Petit Simulator'
+date: 2007-03-07 09:28:04.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '733'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/379.html"
+---
+<div class="entry-body">
+<p>Most of this page was translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.<br />
+Sorry for  funny and strange English from "<a href="http://en.wikipedia.org/wiki/Chinese_room">the chinese room</a>" .</p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/title.jpg" alt="" width="480" height="130" /></p>
+<p>After Open Dynamics Engine petit camp debutting, 2  months passed, new RoboCon Magazine (No.48) was sold October  14th.</p>
+<p>This time time it becomes serialization 2nd.  Although serialization to turn and serve all 4 it does not  relate, glee D (greedy) the last time because it designates that the  petit simulator of 2 walking robots is made as goal, this time the  wheel type robot, the petit simulator of the robot arm keeps making  the next time steadily.</p>
+<p>Because with RoboCon Magazine the space is  limited, you cannot explain in detail. In order in this page to  supply that, the all source code and the luxurious supplement of the  sample program?</p>
+<ul>
+<li><strong><span style="font-size: small;">Free download sample programs !</span></strong></li>
+</ul>
+<ul>
+<li><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro1.lzh">Program 1 (free fall: There is no  collision detection)<br />
+</a><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro1.lzh"><br />
+<img src="{{ site.baseurl }}/assets/images/2007/03/fig3s.jpg" alt="" /></p>
+<p>F</a>alling down slowly. . .<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro1.lzh"><br />
+</a></li>
+<li><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro2.lzh">Program 2 (free fall: There is collision  detection)<br />
+</a><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro2.lzh"><br />
+<img src="{{ site.baseurl }}/assets/images/2007/03/pro2_s.jpg" alt="" /></p>
+<p></a>Landing to the ground<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro2.lzh"><br />
+</a></li>
+<li><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro3-061128.lzh">Program 3 (petit simulator)<br />
+</a><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro3.lzh"><br />
+<img title="Open Dynamics Engine, RoboCup Petit Simulator" src="{{ site.baseurl }}/assets/images/2007/03/shoot_s.jpg" alt="Open Dynamics Engine, RoboCup Petit Simulator" width="180" height="120" /></p>
+<p></a>Long Shoot !<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro3.lzh"><br />
+</a></li>
+<li>Note 1: These programs being something which you  write as the sample program for ODE education, are all the sample  programs which it has explained with the article of RoboCon Magazine. Downloading the program above freely,  please enjoy it. However, there is no warraty for these program. It is the mere sample, you can not enjoy it like a game. The program has bugs, so please do not redistribute them.</li>
+<li>Note 2: It corresponds to mingw, linux and cygwin.  OS X. For example makefile of your own environment (after  makefile.linux) copying in makefile, make please do.  Furthermore, as for original makefile being to become one for  mingw as for the one which mingw is utilized as for the necessity to  copy it is not.</li>
+</ul>
+<li><strong><span style="font-size: small;">Those who fail to make<br />
+</span></strong></li>
+<ul>
+<li>When executing make, [ cannot found -lode ] and  the like as for the person who is gotten angry to the computer the  library of ode is not installed to specified position. Please  open mingw and the cygwin terminal and execute the command below.</li>
+</ul>
+<ul>
+<li>cd   /home/ user name /src/ode-0.7</li>
+<li>make   install</li>
+</ul>
+<p>Please ask the person who is not understood be  possible in addition, to read serialization by all means in this page. Also thought and opinion etc. are large welcome.</p></div>
+<p><!-- ▼追記▼ --></p>
+<p><img title="Open Dynamics Engine, RoboCup Petit Simulator" src="{{ site.baseurl }}/assets/images/2007/03/field640.jpg" alt="Open Dynamics Engine, RoboCup Petit Simulator" width="640" height="454" /></p>
+<p><span style="font-size: x-small;">The latest eyeball is the petit simulator of the  RoboCup Middle-Size Robot Leargue (MSL) league which is on. The  black object where as for the red object where from the center of the  picture it is visible a little on the left with the ball, there is on  a center with the robot, has simulated the long chute of Fu Fighters.  As for method of playing and method of download please read the article of RoboCon Magazine No.48.</span></p>
+<ul>
+<li><strong><span style="font-size: small;">Sample programs</span></strong></li>
+</ul>
+<ul>
+<li><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro1.lzh">Program 1</a></li>
+<li><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro2.lzh">Program 2</a></li>
+<li><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fcamp2%2fpro3-061128.lzh">Program 3<br />
+</a>In order with setting when starting the execution  to set the camera distantly, the robot and the like is not visible  well.<br />
+The drug doing the corner of the window, when it enlarges the  window, or the mouse button (the left and the right) pushes and if the drug does the picture it can modify the gaze and size etc..</li>
+</ul>
+<li><strong><span style="font-size: small;">To the one which fails in make<br />
+</span></strong></li>
+<ul>
+<li>When executing make, [ -lode cannot found ] and  the like as for the person who is gotten angry the library of ode is  not installed to specified position. Please open mingw and the  cygwin terminal and execute the command below.</li>
+</ul>
+<ul>
+<li>cd   /home/ user name /src/ode-0.7</li>
+</ul>
+<ul>
+<li>make   install</li>
+</ul>

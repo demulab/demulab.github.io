@@ -1,0 +1,245 @@
+---
+layout: post
+title: HARD2021：USB Linux (Ubuntu18.04)の作り方
+date: 2021-03-06 09:49:28.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- HARD
+tags: []
+meta:
+  the_page_meta_keywords: ''
+  the_page_meta_description: ''
+  the_page_seo_title: ''
+  last_modified: '2021-03-11 18:25:46'
+  _edit_last: '2'
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  views: '372'
+  _thumbnail_id: '20060'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/hard/19917.html"
+---
+<p>&nbsp;</p>
+<p>USBメモリにUbuntu18.04をインストールする方法を紹介します。HARD2021ではこれをUSB Linuxとよぶことにします。この方法では、Windowsのハードデスクを消費しません。Linuxシステムと今後開発していくソフトウェアは全てこのUSBメモリの中に保存されます。</p>
+<p><span style="color: #ff0000;"><strong>注意：以下の作業でWindowsが消えたり、起動しなくなったり、ファイルが消えたりしても、私は一切責任を取れません。重要なファイルはバックアップを取ってから、自己責任で作業をしてください。</strong></span></p>
+<p><strong>準　備</strong></p>
+<ul>
+<li>Windows PC: 1台
+<ul>
+<li>BIOSモード：UEFI
+<ul>
+<li>BIOSモードの確認は検索バーに[msinfo32]と入力してEnterキーを押すと[システム情報]が開き確認できる。BIOSモードがLegacy BIOSのときは、Googleで調べてUEFIに変更してください。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>インストール用のUSBメモリ（以降、<strong>インストールUSB</strong>と表記 )：1個
+<ul>
+<li>Ubunutのイメージを入れるだけなので4GBもあれば十分。USB2.0でもOK。</li>
+<li>この例ではTOSHIBA USB2.0メモリ TNU-A016B (8GB)を使用した。</li>
+</ul>
+</li>
+<li>Ubunutuをインストールする<strong>USB3.0メモリ</strong>(以降、<strong>Ubuntu USB</strong>と表記)：1個
+<ul>
+<li>ワークショップだけなら64GBで十分。本格的に開発するのであれば128GBあるとうれしい。</li>
+<li>この例ではTranscend USB3.0メモリ JetFlash 710 (128GB)を使用した。</li>
+</ul>
+</li>
+<li><strong><span style="color: #0000ff;">作業を間違えるとWindowsが丸ごと消えるので、重要なファイルは必ずバックアップを取っておく。</span></strong></li>
+</ul>
+<p><strong>作業の流れ</strong></p>
+<ul>
+<li>作業１：Ubuntu 18.04 LTSイメージのダウンロード（所用時間：約5分）</li>
+<li>作業２：Rufus (USBメモリ等にイメージを書き込むソフト）でUbuntuイメージを<strong>インストールUSB</strong>に書き込む（所用時間：約10分）</li>
+<li>作業３：<strong>インストールUSB</strong>でPCを起動して、<strong>Ubuntu USB</strong>にUbuntuをインストールする。（所用時間：約1時間）</li>
+<li>作業４：動作確認（所用時間：約3分）</li>
+<li>注：所用時間は目安でありネットワーク環境によって大きく変わります。</li>
+</ul>
+<p><strong>作業１：Ubuntu 18.04 LTSイメージのダウンロード</strong></p>
+<ul>
+<li>以下のサイトからubuntu-18.04.5-desktop-amd64.iso (2GB)をダウンロードして保存する。<a href="https://releases.ubuntu.com/18.04/ubuntu-18.04.5-desktop-amd64.iso">探すのが面倒な場合はここをクリックする。</a>
+<ul>
+<li><a href="https://releases.ubuntu.com/18.04/">https://releases.ubuntu.com/18.04/</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>作業２：RufusでUbuntuイメージをインストールUSBに書き込む</strong></p>
+<ul>
+<li>以下のサイトからRufus 3.13 Portableをダウンロードして、Ubuntuイメージと同じ場所に保存する。<a href="https://github.com/pbatard/rufus/releases/download/v3.13/rufus-3.13p.exe">探すのが面倒な場合はここをクリックする。</a>
+<ul>
+<li><a href="https://rufus.ie/">https://rufus.ie/</a></li>
+</ul>
+</li>
+<li><strong>インストールUSB</strong>をPCに差し込む。</li>
+<li>ダウンロードしたRufusはポータブル版なのでインストール不要。rufus-3.13p.exeをダブルクリックすると起動する。</li>
+<li>起動したら以下のように設定して[スタート]をクリックする。途中でいくつか聞かれるがデフォルトのままでOK。Ubuntuのイメージの書き込みが終わったら[状態]の[準備完了]が全て緑色になるので[閉じる]をクリックして終了する。
+<ul>
+<li>デバイス：USBメモリを選択する。</li>
+<li>ブートの種類：[選択]をクリックして、ダウンロードしたファイルを選択し、[開く]をクリックすると、ブートの種類が下図のように[Ubuntu-18.04.5-desktop-amd.iso]となる。</li>
+<li>その他の項目は以下のようにデフォルトのままでOK。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/rufus1.png"><img class="aligncenter size-full wp-image-19923" src="{{ site.baseurl }}/assets/images/2021/03/rufus1.png" alt="" width="474" height="620" /></a></p>
+<p><strong>作業３：インストールUSBでPCを起動して、Ubuntu USBにUbuntuをインストールする。</strong></p>
+<ul>
+<li>イメージを書き込んだ<strong>インストールUSB</strong>をPCに差し込み、PCを再起動する。</li>
+<li>再起動したらすぐBIOS画面（私のRazerではF1、機種により違うので調べる）にして、USBからブートできるように設定する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/bios-scaled.jpg"><img class="aligncenter wp-image-19964" src="{{ site.baseurl }}/assets/images/2021/03/bios-1024x516.jpg" alt="" width="512" height="258" /></a></p>
+<ul>
+<li>[GNU GRUB]の画面になるので、[Install Ubuntu]を選択してEnterキーを押す。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/grub-scaled.jpg"><img class="aligncenter wp-image-19965" src="{{ site.baseurl }}/assets/images/2021/03/grub-1024x535.jpg" alt="" width="512" height="268" /></a></p>
+<ul>
+<li>[Welcome]の言語選択の画面になるので、一番下の[日本語]を選ぶと以降日本語でインストール作業ができる。日本語にして[続ける]をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/japanese-scaled.jpg"><img class="aligncenter wp-image-19966" src="{{ site.baseurl }}/assets/images/2021/03/japanese-1024x555.jpg" alt="" width="512" height="277" /></a></p>
+<ul>
+<li>[キーボードレイアウト]の画面になるので、自分のキーボードが選択されていることを確認して、[続ける]をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/keyboard-scaled.jpg"><img class="aligncenter wp-image-19967" src="{{ site.baseurl }}/assets/images/2021/03/keyboard-1024x529.jpg" alt="" width="512" height="265" /></a></p>
+<ul>
+<li>[アップデートと他のソフトウェア」の画面になるので、以下のように設定して[続ける]をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/update-scaled.jpg"><img class="aligncenter wp-image-19968" src="{{ site.baseurl }}/assets/images/2021/03/update-1024x503.jpg" alt="" width="512" height="251" /></a></p>
+<ul>
+<li><span style="color: #ff0000;"><strong>[インストールの種類]の画面になる。これからの作業を間違えるとWindowsが消えてしまうので、これからは最新の注意を払う。インストールの種類は[それ以外]を選択して[続ける]をクリック。</strong></span></li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/install1-scaled.jpg"><img class="aligncenter wp-image-19969" src="{{ site.baseurl }}/assets/images/2021/03/install1-1024x514.jpg" alt="" width="512" height="257" /></a></p>
+<ul>
+<li>Ubuntu USBに割り当てられている領域を選択する。[サイズ]を見るとどの領域に割り当てられているかわかる。私の場合は、USBメモリが128GBなので13065MBのサイズとなる。全部OSに認識されるわけではないので、それに近い[空き領域]のある120945MBのある[/dev/sdb]に割り当てられていることがわかる。もし、[空き領域]がなければ[/dev/sdb]を選択して、右下の[新しいパーティションテーブル...]をクリックして作成する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/install3-1-scaled.jpg"><img class="aligncenter wp-image-19973" src="{{ site.baseurl }}/assets/images/2021/03/install3-1-1024x843.jpg" alt="" width="512" height="422" /></a></p>
+<p>&nbsp;</p>
+<ul>
+<li>USBにはUbuntuのブートローダがインストールされる<strong>EFIシステムパーティション</strong>とUbuntuがインストールされる<strong>ルートパーティション</strong>を作る。まず、EFIシステムパーティション領域を作成する。上の図の[空き領域]になった箇所を選んで、左下の[+]をクリックすると次のウインドウが開くので、次のように設定して[OK]をクリックする。
+<ul>
+<li>サイズ：200MB</li>
+<li>新しいパーティションのタイプ：基本パーティション</li>
+<li>利用方法：EFIシステムパーティション</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/install4-scaled.jpg"><img class="aligncenter wp-image-19972" src="{{ site.baseurl }}/assets/images/2021/03/install4-1024x558.jpg" alt="" width="512" height="279" /></a></p>
+<ul>
+<li>次に、ルートパーティションを作る。同様にして空き領域を選び、左下の[+]をクリックして次のようにパーティションを作成する。マウントポイントを/にすることを忘れないように。
+<ul>
+<li>新しいパーティションのタイプ：基本パーティション</li>
+<li>利用方法：ext4ジャーナリングファイルシステム</li>
+<li>マウントポイント：/</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/install5-scaled.jpg"><img class="aligncenter wp-image-19974" src="{{ site.baseurl }}/assets/images/2021/03/install5-1024x626.jpg" alt="" width="512" height="313" /></a></p>
+<p>&nbsp;</p>
+<ul>
+<li><strong><span style="color: #ff0000;">次にUbuntuを起動するブートローダをインストールするデバイスを指定する。USBから起動したいのでUSBに割り当てられているデバイスを選ぶ。U</span></strong><span style="color: #ff0000;"><strong>SB以外のデバイスを選ぶとWindowsが起動しなくなるから注意。この作業も最新の注意を払う。</strong></span><br />
+この例の場合は、一番下の[ブートローダをインストールするデバイス]は/dev/sdb1となる。[インストール]をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/install_device-scaled.jpg"><img class="aligncenter wp-image-19991" src="{{ site.baseurl }}/assets/images/2021/03/install_device-1024x837.jpg" alt="" width="512" height="418" /></a></p>
+<ul>
+<li><span style="color: #ff0000;"><strong>[ディスクに書き込みますか？]が出てくるので、初期化されるパーティションに間違いがないか確認する。間違えるとWindowsが消えたり、起動しなくなるのでよく確認すること。問題がなければ[続ける]をクリックする。</strong><span style="color: #000000;">以下の写真例で、下から２行目に[パーティション１をESPに]とあるが、これはEFI System Partionのこと。電源を入れてコンピュータを起動すると、このESPからUbuntuはブートされる。</span></span></li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/install7-scaled.jpg"><img class="aligncenter wp-image-19976" src="{{ site.baseurl }}/assets/images/2021/03/install7-1024x399.jpg" alt="" width="512" height="200" /></a></p>
+<ul>
+<li>[どこに住んでいますか？]画面になるので、地方に住んでいても[Tokyo]のまま[続ける]をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/tokyo-scaled.jpg"><img class="aligncenter wp-image-19978" src="{{ site.baseurl }}/assets/images/2021/03/tokyo-1024x816.jpg" alt="" width="512" height="408" /></a></p>
+<ul>
+<li>[あなたの情報を入力してください]画面になるので、必要な情報を入力して[続ける]をクリックする。下図は例なので、自分の名前やユーザ名に変更する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/name.jpg"><img class="aligncenter wp-image-19979" src="{{ site.baseurl }}/assets/images/2021/03/name-1024x399.jpg" alt="" width="512" height="200" /></a></p>
+<ul>
+<li>[Ubuntuへようこそ]画面になり、システムがUSBメモリにインストールされる。終わるまでしばらく時間がかかる。私の環境では7分ぐらいで終了した。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/welcome.jpg"><img class="aligncenter wp-image-19980" src="{{ site.baseurl }}/assets/images/2021/03/welcome-1024x738.jpg" alt="" width="512" height="369" /></a></p>
+<ul>
+<li>[インストールが終了しました]画面になるので、[今すぐ再起動する]をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/end-scaled.jpg"><img class="aligncenter wp-image-19981" src="{{ site.baseurl }}/assets/images/2021/03/end-1024x162.jpg" alt="" width="512" height="81" /></a></p>
+<ul>
+<li><strong>インストールUSB</strong>を抜いてからEnterキーを押すと再起動する。間違って、<strong>Ubuntu USB</strong>を抜かないように注意！</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>作業４：動作確認</strong></p>
+<ul>
+<li>再起動するとGRUBの画面になるので10秒待つと自動起動する。GRUBはGNUプロジェクトで開発されているブートローダ。下図の場合、Windowsを起動したい場合は[Windows Boot Manager]を下矢印キーで選択してEnterキーを押すとWindowsが立ち上がる。もし、GRUBの画面が出ずにWindowsが立ち上がったらBIOSでUbuntu USBからブートするように設定する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/grub2.jpg"><img class="aligncenter wp-image-19985" src="{{ site.baseurl }}/assets/images/2021/03/grub2-1024x566.jpg" alt="" width="512" height="283" /></a></p>
+<ul>
+<li>以下の画面になれば成功。パスワードを入れてログインしよう！</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/login-scaled.jpg"><img class="aligncenter wp-image-19982" src="{{ site.baseurl }}/assets/images/2021/03/login-1024x586.jpg" alt="" width="512" height="293" /></a></p>
+<p>お疲れ様！</p>
+<p><strong>幸せになる設定（オプション）</strong></p>
+<ul>
+<li>私がUbunutuをインストールするときによく使う設定等を紹介しよう。</li>
+<li>設定
+<ul>
+<li>ホームディレクトリのフォルダ名を日本語から英語に変更する。Linuxはコマンドを打つ場合が多いので日本語のディレクトリは何かと困る。以下のコマンドを端末で実行する。端末は、下図の左下にある[アプリケーションを表示する]をクリックすると最上部に現れる[検索窓]に[terminal]と入力すると見つけることができる。なお、以下のコマンドで$はプロンプトなので打ち込まない。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/03/Screenshot-from-2021-03-08-09-43-32.png"><img class="aligncenter size-large wp-image-20029" src="{{ site.baseurl }}/assets/images/2021/03/Screenshot-from-2021-03-08-09-43-32-1024x576.png" alt="" width="1024" height="576" /></a></p>
+<ul>
+<li> <code>$ LANG=C xdg-user-dirs-gtk-update</code></li>
+</ul>
+</li>
+<li>CAPS LOCKとCTRLキーの入れ替える。CTRLキーを使う機会が多いので入れ替える。
+<ul>
+<li>エディタで/etc/default/keyboardファイルの中にあるXKBOPTIONS=”ctrl:nocaps”と変更する。エディタは何でも良いが、よくわからない場合はgeditが簡単なのでおすすめ。以下のコマンドでファイルを開いてWindowsのメモ帳のようにファイルを変更することができる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/03/capslock.png"><img class="aligncenter size-full wp-image-20031" src="{{ site.baseurl }}/assets/images/2021/03/capslock.png" alt="" width="767" height="303" /></a></p>
+<ul>
+<li><code>$ sudo gedit /etc/default/keyboard</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> アプリのインストール
+<ul>
+<li>端末を開き、以下のコマンドを実行してインストールする。
+<ul>
+<li><code>$ sudo apt install chromium-browser</code></li>
+<li><code>$ sudo apt install emacs vim htop</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>参考サイト</strong></p>
+<ul>
+<li>Ubuntuのバージョンが違いますが、記事の制作に以下のサイトを参考にさせて頂きました。ありがとうございます。
+<ul>
+<li><a href="https://note.com/dokkoi_mktg/n/n1768896de162">Windows10環境でのUbuntu20.04_USBメモリーインストール (どっこいしょうじ@note)　</a></li>
+<li><a href="https://www.youtube.com/watch?v=g4psL_aq3C8&amp;ab_channel=%E3%81%BE%E3%81%90%E3%81%AD%E3%81%A3%E3%81%A8%E3%81%AEPC%E9%83%A8%E5%B1%8B">【linux】Ubuntu 20.04LTSをUSBメモリにインストールしてみた「初心者向け」(Youtube まぐねっとのPC部屋)</a></li>
+</ul>
+</li>
+</ul>

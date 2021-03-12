@@ -1,0 +1,135 @@
+---
+layout: post
+title: demura.netのカスタマイズメモ
+date: 2020-03-22 01:29:56.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '112'
+  _thumbnail_id: '17321'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/17225.html"
+---
+<p>demura.netを全面的にリニューアルしました。そのカスタマイズのメモです。本サイトはオープンソースのブログ作成用ソフトウェアWordPressを使い、シンプルでカスタマイスがしやすい100%GPLの<a href="https://wp-cocoon.com/">Cocoon</a>を使用しています。</p>
+<ol>
+<li>目的
+<ul>
+<li>使いやすさの向上
+<ul>
+<li>現在、記事が1507件もあり、ウェブサイトがあまり構造化されていないので自分でも何がどこにあるかよくわかない状態です。先月のページビュー数は約31万、訪問者は約6万と多くの方に使って頂いているので、反省して改善します。</li>
+</ul>
+</li>
+<li>表示速度の向上
+<ul>
+<li>今まで本サイトの反応がとても遅く、自分でもイライラでした。多くの方にご迷惑をおかけしていたと思います。この状況を改善して、より多くの方に快適に使って頂くために<a href="https://developers.google.com/speed/pagespeed/insights/">PageSpeed Insights</a>のパソコン評価で90点以上を目指します。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>方法
+<ul>
+<li>使いやすさの向上
+<ul>
+<li>記事が多いので探すのは検索した方が効率的です。そのため、ヘッダーの一番目立つところに検索窓を設定しました。</li>
+<li>今までナビゲーションバーの構成を大幅に見直し、ユーザの興味がありそうな項目に変更。</li>
+<li>新たにカルーセルの設置。カルーセルは回転式の記事表示部位で最近のサイトでは良くみられます。ここに最も多くの方に参考になると思う記事を掲載します。</li>
+</ul>
+</li>
+<li>速度の向上
+<ul>
+<li>PageSpeed Insightsで定量的な指標とページ読み込み時間を短くするための方法がわかるので、それに基づいて変更しました。</li>
+<li>ブログの更新がすぐ反映されないので、今までキャッシュを有効にしていませんでしたが、速度向上のためにキャッシュを有効にしています。そのため、キャッシュをクリアしない限り6時間は更新が反映されません。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>カスタマイズ作業
+<ul>
+<li>Cocoonはユーザも多いの多くの方のブログを参考にさせて頂きました。</li>
+<li> 検索窓の位置変更：以下のブログのとおり実施。
+<ul>
+<li><a href="https://oiio.jp/entries/2010">Cocoonでヘッダー画像エリアの中にお知らせスペースを設ける方法</a></li>
+</ul>
+</li>
+<li>カルーセルの設置
+<ul>
+<li>WordPress ダッシュボード → Cocooの設定 → カルーセルから設置。</li>
+</ul>
+</li>
+<li> トップページの記事
+<ul>
+<li>最新記事３件と新着順に27件のサムネイルと抜粋(excerpt）を表示しています。最新記事３件のサムネイルは240x135px、残りは120x68pxと小さくして記事の一覧性を高めています。PHPの勉強がてら、WEMO.techさんらのコードを少し改変してショートコードを自作しました。以下のコードをダッシュボード → 外見→テーマエディター→functions.phpに記載。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/code.png"><img class="wp-image-17313 size-full aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/code.png" alt="" width="841" height="1513" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>固定ページに以下のショートコードを張り付けて、 そのページをサイトのトップページに指定すればOKです。<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/code2.png"><img class="alignleft size-full wp-image-17317" src="{{ site.baseurl }}/assets/images/2020/03/code2.png" alt="" width="891" height="509" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code></code> 記事一覧ページの設置
+<ul>
+<li>トップページの下に「<a href="https://demura.net/all-posts">記事一覧の表示</a>」のリンクがあり、全記事のサムネイルと記事の概要が表示されます。これには以下のプラグインを使いました。Display PostsだけだとページネーションをしないのでDisplay Posts - Paginationも合わせて入れる必要があります。
+<ul>
+<li><a href="https://github.com/billerickson/display-posts-shortcode">Display Posts</a></li>
+<li><a href="https://github.com/billerickson/Display-Posts-Pagination">Display Posts - Pagination</a></li>
+</ul>
+</li>
+<li>記事一覧ページ用の固定ページを新規作成し、以下のコードを記載するだけです。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/fixed_page-1.png"><img class="alignleft size-full wp-image-17298" src="{{ site.baseurl }}/assets/images/2020/03/fixed_page-1.png" alt="" width="898" height="679" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>評　価
+<ul>
+<li>使いやすさ：未実施。今後の課題です。</li>
+<li>表示速度の向上：<a href="https://developers.google.com/speed/pagespeed/insights/">PageSpeed Insights</a>のパソコン評価で100点を獲得したので目的は達成できました。今後は、コンテンツの充実に力を入れていきます。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/demuranet5.png"><img class="alignleft size-full wp-image-17321" src="{{ site.baseurl }}/assets/images/2020/03/demuranet5.png" alt="" width="865" height="620" /></a></p>
+<p>終わり</p>

@@ -1,0 +1,216 @@
+---
+layout: post
+title: ROS演習9-2019：ナビゲーションとアクションプログラム
+date: 2019-10-15 17:24:10.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '14042'
+  views: '198'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/16296.html"
+---
+<p><a href="http://demura.net/lecture/14011.html/attachment/goal" rel="attachment wp-att-14042"><img class="aligncenter size-full wp-image-14042" src="{{ site.baseurl }}/assets/images/2019/10/goal.png" alt="" width="485" height="400" /></a></p>
+<p>この記事は私が金沢工業大学ロボティクス学科で担当している2019年後学期開講の講義ロボットプログラミングⅡ用です。ROS演習で7はrvizを使いGUIでロボットを動かしましたが、今回はROSのActionLibを使ったアクションプログラムを学びます。以下のチュートリアルも参考にしてください。</p>
+<ul>
+<li><a href="http://wiki.ros.org/ja/navigation/Tutorials/SendingSimpleGoals">SendingSimpleGoals</a></li>
+</ul>
+<p>ソース</p>
+<pre class="brush:cpp;"> 
+// 本プログラムは
+// http://wiki.ros.org/ja/navigation/Tutorials/SendingSimpleGoals
+// を改変しています。
+#include &#60;ros/ros.h&#62;
+#include &#60;geometry_msgs/PoseWithCovarianceStamped.h&#62;
+#include &#60;move_base_msgs/MoveBaseAction.h&#62;
+#include &#60;actionlib/client/simple_action_client.h&#62;
+
+typedef actionlib::SimpleActionClient&#60;move_base_msgs::MoveBaseAction&#62; MoveBaseClient;
+
+struct MyPose {
+  double x;
+  double y;
+  double yaw;
+};
+
+int main(int argc, char** argv){
+  MyPose way_point&#91;&#93; = {{-0.15, -0.54, 0.0 * M_PI}, {1.6, -0.6, M_PI}, 
+	                {1.6, 1.5,  0.0 * M_PI},{999, 999, 999}};
+
+  ros::Publisher  pub;
+
+  ros::init(argc, argv, "simple_goal");
+
+  ros::NodeHandle nh;
+  pub= nh.advertise&#60;geometry_msgs::PoseWithCovarianceStamped&#62;("initialpose", 2, true);
+
+  // 時間の取得
+  ros::Time tmp_time = ros::Time::now();
+  //create msg
+  geometry_msgs::PoseWithCovarianceStamped initPose;
+
+  // 初期位置の設定 turtlebot3_worldの初期位置が(-2.0, -0.5)なのでそれに設定
+  initPose.header.stamp = tmp_time;  //  時間
+  initPose.header.frame_id = "map";  //  フレーム
+  initPose.pose.pose.position.x = -2.0;
+  initPose.pose.pose.position.y = -0.5;
+  initPose.pose.pose.position.z =  0;
+  initPose.pose.pose.orientation.w = 1.0;
+
+  // パブリッシュ amclパッケージに初期位置を送る
+  pub.publish(initPose);
+  
+  // アクションクライアンを作成。1番目の引数は接続するアクションサーバー名。
+  // アクションサーバーが立ち上がっていないとだめ。
+  // ２番目の引数はtrueならスレッドを自動的に回す(ros::spin()。
+  MoveBaseClient ac("move_base", true);
+  // アクションサーバーが起動するまで待つ。引数はタイムアウトする時間(秒）。
+  // この例では５秒間待つ(ブロックされる)
+  while(!ac.waitForServer(ros::Duration(5.0))){
+      ROS_INFO("Waiting for the move_base action server to come up");
+  }
+
+  ROS_INFO("The server comes up");
+  move_base_msgs::MoveBaseGoal goal;
+  // base_link座標系（ロボット座標系)
+  goal.target_pose.header.frame_id = "base_link";
+  // 現在時刻                                                                       
+  goal.target_pose.header.stamp = ros::Time::now();
+
+
+  int i = 0;
+  while (ros::ok()) {
+    // ROSではロボットの進行方向がx座標、左方向がy座標、上方向がz座標
+    goal.target_pose.pose.position.x =  way_point&#91;i&#93;.x;
+    goal.target_pose.pose.position.y =  way_point&#91;i&#93;.y;
+    goal.target_pose.pose.orientation.w = 1; 
+
+    ROS_INFO("Sending goal: No.%d", i+1);
+    // サーバーにgoalを送信
+    ac.sendGoal(goal);
+
+    // 結果が返ってくるまで30.0&#91;s&#93; 待つ。ここでブロックされる。
+    bool succeeded = ac.waitForResult(ros::Duration(30.0));
+
+    // 結果を見て、成功ならSucceeded、失敗ならFailedと表示
+    actionlib::SimpleClientGoalState state = ac.getState();
+
+    if(succeeded) {
+      ROS_INFO("Succeeded: No.%d (%s)",i+1, state.toString().c_str());
+    }
+    else {
+      ROS_INFO("Failed: No.%d (%s)",i+1, state.toString().c_str());
+    }
+    i++;  
+  }
+  return 0;
+}
+</pre>
+<ul>
+<li>packageのディレクトリ毎、圧縮したファイル
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2017/12/simple_goal.tar">simple_goal</a></li>
+</ul>
+</li>
+<li>展開・ビルド方法
+<ul>
+<li>$  cp  simple_goal.tar    ~/catkin_ws/src</li>
+<li>$  cd  ~/catkin_ws/src</li>
+<li>$  tar  xvf  simple_goal.tar</li>
+<li>$  cd  ~/catkin_ws</li>
+<li>$  catkin_make</li>
+</ul>
+</li>
+</ul>
+<p>ハンズオン</p>
+<ul>
+<li>上で展開したsimple_goalを次の要領で実行しよう。
+<ul>
+<li>まず、geditで~/.bashrcを開き、最後の行に以下を追加し保存する。これにより、毎回入力する手間がはぶける。
+<ul>
+<li> export TURTLEBOT3_MODEL=burger</li>
+</ul>
+</li>
+<li> まず、端末を開き次のコマンドを実行。
+<ul>
+<li>$ roslaunch turtlebot3_gazebo turtlebot3_world.launch</li>
+</ul>
+</li>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2017/12/maps.tar">この地図map.tarファイル</a>をダウンロードして、次のようにホームディレクトリで展開してください。
+<ul>
+<li>$ cd</li>
+<li>$ tar xvf maps.tar</li>
+<li>展開するとmapsディレクトリができ、その中に、mymap.pgmとmymap.yamlの２つのファイルがあります。pgmファイルは地図画像ファイルで、yamlファイルは設定ファイルです。mymap.yamlファイルの1行目に画像ファイルの場所を指定する必要があります。ダウンロードしたファイルは以下のようにimage: /home/demulab/maps/mymap.pgmになっています。demulabの部分を自分のユーザ名に変更、保存してください。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2017/12/yaml.png"><img class="aligncenter size-full wp-image-14053" src="{{ site.baseurl }}/assets/images/2019/10/yaml.png" alt="" width="674" height="299" /></a></li>
+</ul>
+</li>
+<li>２個目の端末を開き次のコマンドを実行。
+<ul>
+<li>$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/maps/mymap.yaml</li>
+</ul>
+</li>
+<li> ３個目の端末を開き、catkin_makeして生成したsimple_goalノードを起動する。
+<ul>
+<li>$ rosrun simple_goal simple_goal</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>演　習（レポート２）</strong></p>
+<p>&nbsp;</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/11/building.jpg"><img class="aligncenter size-full wp-image-15454" src="{{ site.baseurl }}/assets/images/2019/10/building.jpg" alt="" width="1200" height="723" /></a></p>
+<ul>
+<li>基本動作
+<ul>
+<li>Turtlebot3を指定の距離[m]だけ直進して停止するプログラムを作ろう</li>
+<li>Turtlebot3を指定の角度[°]だけ回転して停止するプログラムを作ろう</li>
+<li>Turtllebot3を矩形軌道を移動するプログラムを作ろう</li>
+</ul>
+</li>
+<li>ウェイポイントナビゲーション
+<ul>
+<li><a href="http://demura.net/lecture/15328.html">演習６</a>の建物環境（上図）を使いスタート地点からゴールまで進むプログラムを作ろう。</li>
+</ul>
+</li>
+<li>デッドレコニング
+<ul>
+<li>デッドレコニングをcbMyOdom関数に実装しよう。rvizの場合は/odomトピックと値を比較し、gazeboが動く場合はシミュレータ上の真の位置Real Posと比較しよう。</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>

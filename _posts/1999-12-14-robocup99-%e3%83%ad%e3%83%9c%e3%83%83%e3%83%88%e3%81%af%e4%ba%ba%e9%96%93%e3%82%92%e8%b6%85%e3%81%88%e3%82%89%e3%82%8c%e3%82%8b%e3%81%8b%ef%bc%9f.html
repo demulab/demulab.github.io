@@ -1,0 +1,577 @@
+---
+layout: post
+title: RoboCup99 ロボットは人間を超えられるか？
+date: 1999-12-14 13:04:14.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup
+tags: []
+meta:
+  _edit_last: '2'
+  views: '459'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/robocup/6.html"
+---
+<p>夢考房ＲｏｂｏＣｕｐ（ロボカップ）チームはストックホルムで開催されたロボットサッカーW杯に初参戦し、予選２勝を挙げ来年の世界大会へ向けて確かな手応えをつかんだ。工大チームの予選での活躍、決勝リーグの様子、世界的なプロジェクトＲｏｂｏＣｕｐについて報告する。</p>
+<p><strong>世界が注目するRoboCupとは</strong><br />
+１９９７年、人工知能を搭載したIBMのスーパーコンピューターDeep Blueが チェスの世界チャンピオン カスパロフを破った。 次に、研究者が人間をこえようと作っているのがサッカーロボットなのである。</p>
+<p>RoboCupとは、世界中の大学や研究機関が開発したサッカーロボットチームによるサッカーワールドカップである。研究という側面が強いため、ただ競技会を開くだけではなく学術会議や各種教育プログラム、技術情報の公開など一連の活動を行っている。RoboCupの最終目標は、「２０３０年までにFIFAの公式ルールで人間のワールドカップチャンピオンに勝つ」ことである。</p>
+<p>第１回大会は９７年に名古屋で開催され１６カ国から５０チームが参加し、第２回大会は９８年にはパリで人間のサッカーワールドカップの関連行事として開催され２２カ国から７０チームが参加した。今大会は３回目となり、人工知能関係の国際会議で最も権威のあるIJCAI99と共催され、世界中から９０チームが参加した。競技はシミュレーション部門、SONY脚式ロボット部門、小型機部門及び中型機部門の４部門に分かれて実施された。</p>
+<p>２０００年にメルボルン、２００１年にはシアトル、２００２年にはワールドカップサッカーと共に日本で開催され、ヒューマノイド（人間）型ロボットの試合も開催される予定である。</p>
+<p><strong>金沢工大チームについて</strong></p>
+<p>夢考房RoboCupチーム（チーム名MATTO、以下工大チーム）は最も大型ロボットを使用する中型機部門に参加した。参加メンバーは、筆者並びに システム工学設計専攻修士１年 三輪健二君と朝野貫行君、機械システム工学科学部４年 石原大稔君と五十嵐広希君の計５名である。</p>
+<p>ここで、工大チームについて簡単に説明する。人間情報システム研究所出村研が工学設計IIIの一環として昨年９月からRoboCupプロジェクトを立ち上げた。当初は、学生２名でスタートし、ロボットも市販のラジコンを改</p>
+<p><img src="{{ site.baseurl }}/assets/images/1999/12/image002.jpg" alt="工大チームロボット" /><br />
+工大チームのロボット：上からフォワード（賢聖）、バックス（ひかる、みのる）、キーパー（おやじ）</p>
+<p>造した簡単なものであった。本年４月から石原君と五十嵐君がプロジェクトに加わり、電子回路及びロボットボディを自主開発できるようになった。工大チームは５月に名古屋で開催されたJapan Openに初出場したが、試合成績は０勝４敗とさんたんたるものであった。その教訓を生かし、ロボットの設計を根本から変更し、画像識別プログラム（担当人間情報工学科４年 久保徳治君）、行動プログラム（担当 三輪、朝野君）を大幅に書き換えた。６月に入り、夢考房ロボットプロジェクトに取り込まれることになった。これにより、夢考房から各種支援を受けることが可能になり世界大会出場準備が整った。</p>
+<p>さて、参加した中型機部門のルールは５ｍ x ９ｍのフィールドを使い、各チーム約４５ｃｍ四方のロボット４台を使って競技する。競技時間は前半１０分、後半１０分であり、FIFAの公式ルールに準じて競技が運営される。現在のところ、ボールはオレンジ色、ゴールは青と黄色、ロボットは黒、壁は白、床は緑色のカーペットであり画像処理が比較的容易な環境で競技をしている。</p>
+<p>ロボットは完全自律でなければならず、試合中 人間がロボットを遠隔操作してはいけない。つまり、ロボットは自分に装備されているセンサーから外界の情報を得て、その情報を分析し、現在の状況にあったできるだけ最適な行動をする能力が要求される。これが、NHKロボコンなどとは大きく違う点であり、非常に高い技術レベルが要求されるゆえんである。</p>
+<p><strong>世界へ羽ばたく工大チーム！</strong><br />
+Japan Openでは１勝も挙げることができかったので、 世界大会での目標を予選１勝にした。 参加目的は、来年度以降上位進出を狙うために各国の技術及び戦術レベルの調査研究、並びに工大チームのコンセプトである スピード &amp; シュート力の妥当性を検証することであった。</p>
+<p>中型機部門は予選３グループに分かれ、各グループ（６又は７チーム） リーグ戦で上位２チームが決勝ラウンドへ進出できる。各グループ第３位のチームは、３位チーム同士でリーグ戦を再度行い、上位２チームが決勝ラウンドへ進出できる。 決勝ラウンドは合計８チームのトーナメントで行われた。</p>
+<p>工大チームはBグループで、通算成績２勝４敗 ５得点、１１失点、勝点６（勝３点、引分１点、負０点）を挙げて同グループ５位であった。以下 各試合について簡単に解説する。</p>
+<p><strong>a.シンガポール Ngee Ann大戦 ０対５ 負</strong><br />
+各ロボットの調整不足並びにロボット故障のため０対５と惨敗した。そのうち１点は自殺点であった。</p>
+<p><strong>悲願の初勝利とレッドﾞカード</strong></p>
+<p><strong>b.ポルトガル Porto大学 戦  １対０ 勝</strong><br />
+試合前に各チームを分析したところBグループで最も弱いチームであった。このチームに負けると予選全敗の可能性がある。この試合のため徹夜でプログラミングを変更し、ロボットの動作を調整した。</p>
+<p>試合開始直後の工大チーム フォワードロボットのシュートにより初得点。初めて自力で獲得した記念すべき得点である。その後、圧倒的に工大チーム 優勢で試合が進められた。しかし、フォワードロボの２度にわたるキーパーチャージのため、レッドカードをもらい退場になった。その後、工大チームは終始優勢で試合を進めるも残念ながら得点なし。結局１対０で初勝利を飾り、本年度の目標である予選１勝をクリアした。</p>
+<p><strong>c. フランス 大学連合チーム戦 ２対０ 勝</strong></p>
+<p>相手のトラブルにより不戦勝で２勝目をあげた。</p>
+<p><strong>善戦するもキーパーロボに泣く</strong></p>
+<p><strong>d. ドイツ Tuebingen 大学 戦  １対３ 負</strong><br />
+Tuebingen大チームは昨年の世界大会準優勝チームである。ロボットは大型（約２０kg）のため最大速度は１m/secである。一方、工大チームのロボットは軽量(8～10kg)のため俊敏(最大速度2m/sec)である。</p>
+<p>試合は、前評判とは違いほぼ互角の戦いであった。工大チームのロボットの方が俊敏だったのでボールの支配率は高かった。失点３点のうち、１点目は自陣ペナルティエリア内で相手のフォワードとこちらのキーパーとの押合いになり、力負けしてボールを押し込まれた。 ２点目は我がキーパーが床の段差に引っかかり動作不能の間に得点を入れられた。工大の１点は、フォワードによるものであるが、またレッドカードをもらい退場になった。キーパーの性能差により負けた試合であった。</p>
+<p><img src="{{ site.baseurl }}/assets/images/1999/12/image005.jpg" alt="Tuebingen戦" /><br />
+Ｔuebingen戦：ゲーム開始直前のシーン（手前が工大チーム）</p>
+<p><strong>Japan Openの雪辱なるか</strong></p>
+<p><strong>e. 奈良先端大学 戦 0対１ 負</strong><br />
+Japan Open準優勝チーム奈良先端大と２度目の対決である。 Japan Openのときは0対５と惨敗した。試合内容はまさに実力伯仲といったところであり、ボールの支配率もほぼ同じであった。 両チームともフォワードとキーパー以外は満足な動作をしていなかった。５試合目になりどちらとも数台のロボットが故障等により不調になった。失点１は、我がフォワードを場外で修理している間に、戦局が奈良に有利になったために入れられたものである。我がチームも何度かチャンスがあったが、決定力不足により得点するには至らなかった。この試合を負けたことにより、決勝ラウンド進出の夢は消えた。</p>
+<p><strong>奈良先端大も応援</strong></p>
+<p><strong>f. ドイツ Ulm大学 戦 １対２ 負</strong><br />
+決勝ラウンドへは進めないが、この試合に勝つと奈良 先端大がBグループ２位になり試合なしで決勝ラウ ンドへ進める。奈良先端大も全員が応援にきてくれて、非常に盛り上がった試合となった。</p>
+<p>この試合も均衡した状況が続いた。均衡を破ったのは我がフォワードである。ボールを挟んでディフェンスと押し合いになったが、相手の力をはるかに上回りディフェンスごとボールをゴールにねじ込んだ。しかし、残念なことにゴールを間違えた自殺点であった。</p>
+<p>その後、また膠着状態が続いた。またまた、均衡を破ったのが我がフォワードである。今度は相手のキーパーをかわして得点した。 これで１対１になり、奈良先端大の応援が俄然強くなったところでハーフタイムを迎えた。</p>
+<p>ハーフタイム終了直前、フォワードの動作が急に不調になりポジションをサイドに変更した。しかし、ポジションチェンジをしていなかったためゴールががら空きにあり、Ulm大のダースベーダーに似たロボットが試合直後放った強力なシュートにより２点目を入れた。その後は、工大有利のペースで試合を進めるも、相手も堅い守りを崩すことができなかった。</p>
+<p>工大チームは予選で敗れはしたものの善戦した試合が多く問題点も明らかになった。来年の世界大会に向けて大きな自信となった。結局Bグループからは、Nee Ann工科大, Ulm大, 奈良先端大の３チームが決勝ラウンドに進むこととなった。</p>
+<p><strong>日本の将来危うし</strong><br />
+決勝ラウンドは、Freiburg大, Munich工大, Ulm大（ドイツ３チーム）、 Nee Ann工大,  シンガポール工大(シンガポール２チーム)、 イタリア７大学連合チーム、Sharif 工大(イラン１チーム) 、奈良先端大(日本１チーム) の合計８チームで行われた。ここ で注目すべきは、国家プロジェクトになっているドイツ、イタリアチームである。ドイツは３チームも決勝ラウンドに進んでおり、連合チームのイタリアも確実に決勝に駒を進めた。また、シンガポールもロボカップに最近力を入れており２チームが進んだ。 一方、日本は昨年のパリ大会では３チーム（阪大、奈良先端大、理研－宇都宮大－東洋大連合チーム）決勝ラウンドへ進んだものの、今年は奈良先端大しか決勝ラウンドへ進出できなかった。 特に、日本では敵なしの阪大チームが予選敗退したことは日本にとって大きなショックであった。さらに奈良先端大がFreiburgに４対１で完敗した。</p>
+<p>ロボットはその国の総合的な科学技術力を示すものである。日本もイタリアやドイツのように今のうちから対策を講じないと日本の将来は危うくなるであろう。</p>
+<p>準決勝にはFreiburg大,  イタリア大学連合, シンガポール工大,  Sharif工大 の４チームが駒を進めた。 準決勝は非常に接戦であったが、結局 イタリア大学連合, Sharif 工大チームが決勝に残った。決勝戦はイランチームが優位に試合を進め３対１で初勝利を飾った。</p>
+<p>優勝したイランチームのロボットは、視覚センサーには家庭用ビデオカメラを使い、OSはMS-DOS、フロッピーでプログラムをロードし、制作費は１台１０００＄であることがわかり関係者を多いに驚かせた。</p>
+<p>しかし、イランチームはロボットにお金をあまりかけてはいないが、人と時間は十二分にかけていた。イランチームのストックホルム大会参加者は合計１０名であり工大チームの２倍であった。ロボットも各学科の学生がそれぞれの得意分野を生かしてタイヤから自主開発したものであった。</p>
+<p><strong>２０００年へ向けてキックオフ</strong><br />
+本大会の目標であった予選１勝を果たし、かつ試合内容もほぼ互角であり、来年の世界大会へ向けて大きな自身となった。チームコンセプトのスピード ＆ シュート力は正しかった。特に、スピードに関しては最高2m/secで移動でき、質量も軽いため参加ロボット中最高クラスの運動性能であった。 ただ、シュート力については開発の遅れから貧弱であった。</p>
+<p>決勝ラウンドへ進んだチームと工大チームを比較すると以下点が劣っていた。<br />
+<strong>a.       キーパーロボットの性能</strong><br />
+<strong>b.       チームプレーの欠如</strong><br />
+<strong>c.        シュート力不足</strong></p>
+<p>上記の問題点を解決するためには、ロボットとソフトウェアを新たに開発することが必要となる。特に現状では画像認識が弱く敵と味方を識別できていないためチームプレーがまったくできていない。画像認識能力の向上が急務である。さらに、強力なシュート装置も不可欠である。この点を克服できれば来年のメルボルン世界大会では決勝ラウンド進出の可能性が大きくなる。</p>
+<p>幸いRoboCupが夢考房プロジェクトとなった現在、優勝したイランチームと同様に各学科からそれぞれの得意分野を持つ学生が共同してロボットを開発する体制が整った。 世界大会終了後ロボットプロジェクトから独立し、情報系、人間系の２，３年生１０名が新たに加わった。現在、他学系の学生も募集しており、来年のRoboCup2000世界大会へ向けて新体制で始動した。</p>
+<p>今後は、１０月初めに日本チームの合同強化合宿、１０月２７，２８日に福井で開かれる機械学会主催FAN99 でロボットデモ展示を行う予定である。<br />
+<!--more--></p>
+<div class="Section5">
+<p class="MsoNormal" style="line-height:12.0pt;mso-line-height-rule:exactly"><strong style="mso-bidi-font-weight:normal"><br />
+<span style="font-size: 12pt; font-family: &quot;ＭＳ ゴシック&quot;;">予選ラウンド</span></strong><br />
+<strong style="mso-bidi-font-weight:normal"><br />
+<span style="font-size: 12pt; font-family: Verdana;"></span></strong></p>
+<p class="MsoNormal" style="line-height:14.0pt;mso-line-height-rule:exactly"><strong style="mso-bidi-font-weight:normal"><br />
+<span style="font-size: 14pt; font-family: Verdana;">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;</span></strong></p>
+<p class="MsoNormal" style="line-height:14.0pt;mso-line-height-rule:exactly"><strong style="mso-bidi-font-weight:normal"><br />
+<span style="font-size: 10.5pt; font-family: Verdana;">A</span></strong><strong><span style="font-size: 10.5pt;">グループ</span></strong><br />
+<span style="font-size:10.5pt;mso-bidi-font-size:10.0pt" lang="EN-US"></span></p>
+<table style="margin-left: 2.6pt;" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 90pt;" width="120">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">vs</span><br />
+<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1</span><br />
+<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">2</span><br />
+<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">3</span><br />
+<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">4</span><br />
+<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">5</span><br />
+<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">6</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 35pt;" width="47">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;"> </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">勝点</span><br />
+<span style="font-family: Verdana;"> </span><br />
+<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;"> </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">順位</span><br />
+<span style="font-family: Verdana;"> </span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 90pt;" width="120">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1 Freiburg</span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">大</span><span lang="EN-US&lt;br"> style='font-family:Verdana;mso-fareast-font-family:"ＭＳ Ｐゴシック";color:white'&gt;</span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="mso-spacerun: yes"> </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">ドイツ</span><span style="color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">5:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">6:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">6:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">6:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">4:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 35pt;" width="47">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">12</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 90pt;" width="120">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">2 I</span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">ＳＴ</span><span style="font-family: &quot;ＭＳ 明朝&quot;; color: white;">大</span><span style="font-family: Verdana; color: white;"> </span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="mso-spacerun: yes"> </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">ポルトガル</span><span style="color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:5</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">2:1</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1:2</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1:1</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 35pt;" width="47">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">7</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">3</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 90pt;" width="120">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">3 </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">ＲＭＩＴ大</span><span style="font-family: Verdana;"> </span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="mso-spacerun: yes"> </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">オーストラリア</span><span style="color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:6</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1:2</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:1</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:3</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 35pt;" width="47">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">3</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">6</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 90pt;" width="120">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">4 GMD</span><span style="font-family: &quot;ＭＳ 明朝&quot;; color: white;">研</span><span lang="EN-US&lt;br"> style='font-family:Verdana;mso-fareast-font-family:"ＭＳ Ｐゴシック";color:white'&gt;</span><span style="mso-spacerun: yes"> </span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="mso-spacerun: yes"> </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">ドイツ</span><span style="color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:6</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:1</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:1</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">5:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:4</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 35pt;" width="47">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">6</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">5</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 90pt;" width="120">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">5 </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">九州工業大学</span><span style="font-family: Verdana;"></span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="mso-spacerun: yes"> </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">日本</span><span style="color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:6</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">2:1</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:5</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1:1</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 35pt;" width="47">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">7</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">4</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 90pt;" width="120">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">6 </span><span style="font-size: 9pt;">シンガポール工大</span><span style="mso-spacerun: yes"> </span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="mso-spacerun: yes"> </span><span style="font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">シンガポール</span><span style="color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">0:4</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1:1</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">3:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">4:0</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 30pt;" width="40">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">1:1</span><span lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 35pt;" width="47">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">8</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 40pt;" width="53">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-family: Verdana;">2</span><span style="mso-fareast-font-family:" lang="EN-US"></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal"><span style="mso-fareast-font-family:" lang="EN-US">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;</span></p>
+<p class="MsoNormal" style="line-height:12.0pt;mso-line-height-rule:exactly"><strong style="mso-bidi-font-weight:normal"><br />
+</strong><br />
+<strong style="mso-bidi-font-weight:normal"><br />
+<span style="font-size: 10.5pt;">Bグループ</span></strong><br />
+<span style="font-size:10.5pt;mso-bidi-font-size:10.0pt" lang="EN-US"> </span></p>
+<table style="margin-left: 2.6pt;" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 92.35pt;" width="123">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">vs</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">1</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt; </span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 24.65pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">3</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">4</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">5</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 27.35pt;" width="36">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">6</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 27.65pt;" width="37">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">7</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 38.35pt;" width="51">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">勝</span><span style="font-size: 9pt; font-family: Verdana; color: white;"> </span><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">点</span><span style="font-size: 9pt; font-family: Verdana; color: white;"> </span><span style="font-size: 9pt;" lang="EN-US"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 36.65pt;" width="49">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;"> </span><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">順位</span><span style="font-size: 9pt; font-family: Verdana; color: white;"> </span><span style="font-size: 9pt;" lang="EN-US"></span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 92.35pt;" width="123">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">1 </span><span lang="EN-US&lt;br"> style='color:white'&gt;Tuebingen</span><span style="font-family: &quot;ＭＳ 明朝&quot;; color: white;">大</span><span style="font-size: 9pt; font-family: Verdana; color: white;"></span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span> </span><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">ドイツ</span><span style="font-size: 9pt; color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="font-size: 9pt; color: black;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:1</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24.65pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">2:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">2:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.35pt;" width="36">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">3:1</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.65pt;" width="37">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:1</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 38.35pt;" width="51">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">10</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 36.65pt;" width="49">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">4</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 92.35pt;" width="123">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">2 </span><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">奈良先端科学技術</span><span> </span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span> </span><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">大学院大学</span><span style="mso-spacerun: yes"><br />
+</span><span style="font-size: 9pt; color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">1:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="font-size: 9pt; color: black;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24.65pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:3</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">2:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">3:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.35pt;" width="36">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">1:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.65pt;" width="37">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:5</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 38.35pt;" width="51">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">12</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 36.65pt;" width="49">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">3</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 92.35pt;" width="123">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">3 Ulm </span><span style="font-family: &quot;ＭＳ 明朝&quot;; color: white;">大</span><span style="font-size: 9pt; font-family: Verdana;"></span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span> </span><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">ドイツ</span><span style="mso-spacerun: yes"> </span><span style="font-size: 9pt; color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">3:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24.65pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="font-size: 9pt; color: black;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">2:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">3:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.35pt;" width="36">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">2:1</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.65pt;" width="37">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:1</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 38.35pt;" width="51">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">13</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 36.65pt;" width="49">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 92.35pt;" width="123">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">4 </span><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">４大学連合</span><span style="font-size: 9pt; font-family: Verdana; color: white;"></span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span> </span><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">フランス</span><span style="font-size: 9pt; color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24.65pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="font-size: 9pt; color: black;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.35pt;" width="36">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.65pt;" width="37">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 38.35pt;" width="51">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">-</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 36.65pt;" width="49">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">7</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 92.35pt;" width="123">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">5 </span><span lang="EN-US&lt;br"> style='color:white'&gt;FEUP</span><span style="font-family: &quot;ＭＳ 明朝&quot;; color: white;">大</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;font-family:Verdana;<br />
+mso-fareast-font-family:"ＭＳ Ｐゴシック";color:white'&gt;</span></p>
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span> </span><span style="font-size: 9pt; font-family: &quot;ＭＳ Ｐゴシック&quot;; color: white;">ポルトガル</span><span style="font-size: 9pt; color: white;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24pt;" width="32">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:3</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 24.65pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:3</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">2:0</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 25pt;" width="33">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly">&lt; ![if !supportEmptyParas]&gt; &lt; ![endif]&gt;<span style="font-size: 9pt; color: black;"></span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.35pt;" width="36">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:1</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: white none repeat scroll 0% 0%; width: 27.65pt;" width="37">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: black;">0:2</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック";color:black'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 38.35pt;" width="51">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">3</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+<td style="padding: 0mm 2.6pt; background: gray none repeat scroll 0% 0%; width: 36.65pt;" width="49">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span style="font-size: 9pt; font-family: Verdana; color: white;">6</span><span lang="EN-US&lt;br"> style='font-size:9.0pt;mso-bidi-font-size:10.0pt;mso-fareast-font-family:<br />
+"ＭＳ Ｐゴシック"'&gt;</span></p>
+</td>
+</tr>
+<tr>
+<td style="padding: 0mm 2.6pt; background: teal none repeat scroll 0% 0%; width: 92.35pt;" width="123">
+<p class="MsoNormal" style="line-height:10.0pt;mso-line-height-rule:exactly"><span><br />
+lang=EN-US style='font-size:9.0pt;mso-bidi-</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>

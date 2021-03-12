@@ -1,0 +1,96 @@
+---
+layout: post
+title: OnlineJudge
+date: 2019-04-18 15:52:30.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '15736'
+  views: '134'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_toc_novisible: '0'
+  update_level: high
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/15735.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/04/DOJ-Home-Google-Chrome_2019-4-18_15-25-41_No-00.png"><img class="aligncenter size-full wp-image-15736" src="{{ site.baseurl }}/assets/images/2019/04/DOJ-Home-Google-Chrome_2019-4-18_15-25-41_No-00.png" alt="" width="1133" height="521" /></a></p>
+<p>プログラミングの授業でOnline Judgeサーバーを立てて運用しているのでメモ。Online Judgeは中国青島大学の<a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge2.0</a>を使用。１年ぶりに使ったらあまり覚えていなかったのでメモは重要。</p>
+<ul>
+<li>準備
+<ul>
+<li>サーバー用のLinux PC (ubuntu 16.04)を準備</li>
+<li>学内用の固定IPをもらう</li>
+</ul>
+</li>
+<li><a href="https://github.com/QingdaoU/OnlineJudgeDeploy/tree/2.0">インストール(Linux)</a>
+<ul>
+<li>依存関係のインストール
+<ul>
+<li>sudo apt-get update &amp;&amp; sudo apt-get install -y vim python-pip curl git<br />
+pip install docker-compose</li>
+</ul>
+</li>
+<li>Dockerのインストール
+<ul>
+<li>sudo curl -sSL get.docker.com | sh</li>
+</ul>
+</li>
+<li>OnlineJudgeのインストール
+<ul>
+<li>cd</li>
+<li>mkdir src</li>
+<li>cd src</li>
+<li>git clone -b 2.0 https://github.com/QingdaoU/OnlineJudgeDeploy.git &amp;&amp; cd OnlineJudgeDeploy</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>サービス開始
+<ul>
+<li>次のコマンドを実行するだけ。
+<ul>
+<li>docker-compose up -d</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://docs.onlinejudge.me/#/onlinejudge/guide/upgrade">アップデート</a>
+<ul>
+<li>cd  src/OnlineJudgeDeploy</li>
+<li>git pull</li>
+<li>docker-compose pull
+<ul>
+<li>一般的にはRedis、Postgresqlはイメージをアップデートする必要がないので以下のコマンドで別々にプルできる。ダウンロードに時間を減らすことができる。</li>
+<li>docker pull registry.cn-hangzhou.aliyuncs.com/onlinejudge/judge_server</li>
+<li>docker pull registry.cn-hangzhou.aliyuncs.com/onlinejudge/oj_backend</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p style="text-align: right;">終わり</p>

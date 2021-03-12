@@ -1,0 +1,37 @@
+---
+layout: post
+title: つくばチャレンジ2009：UbuntuでUrgViewerを使うには
+date: 2009-10-23 01:08:26.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '1053'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/4963.html"
+---
+<p>10月23日の試走会参加のために金沢から安全運転でつくば市に到着しました。</p>
+<p><!--more--></p>
+<p>[caption id="attachment_4964" align="aligncenter" width="470" caption="UrgViewer"]<a href="http://demura.net/wordpress/wp-content/uploads/2009/10/urgviewer.png"><img class="size-full wp-image-4964" title="urgviewer" src="{{ site.baseurl }}/assets/images/2009/10/urgviewer.png" alt="UrgViewer" width="470" height="515" /></a>[/caption]</p>
+<p>つくばチャレンジでは北陽電機のレーザスキャナTop-URGには大変お世話になっています。　ハードも素晴らしいですが、ソフトもsatofumiさんの開発されたライブラリやサンプルプログラムにより大変簡単に使わせて頂いています。</p>
+<p>さて、そのサンプルプログラムの中にUrgViewerなるものがあり、Urgのデータを可視化と記録、再生できちゃう超便利なソフトです。それを使おうと思いコンパイルをしたものの、Ubuntu9.04の環境では何故かデータを取ることができません。</p>
+<p>ソースコードをいろいろ読んでいるうちに、libs/connection/FindComPorts.cppの43行目にある行に次のように１行を追加し再コンパイルしたら見事データを取得できました。デバイス名が違っていただけでした。</p>
+<p>これでデータ取りできます。幸せになれそうです。</p>
+<p>#if defined(LINUX_OS)<br />
+    base_names_.push_back("/dev/ttyUSB");<br />
+    base_names_.push_back("/dev/usb/ttyUSB");<br />
+    base_names_.push_back("/dev/ttyACM");　　　// この行を追加<br />
+#endif</p>
+<p>でむ</p>

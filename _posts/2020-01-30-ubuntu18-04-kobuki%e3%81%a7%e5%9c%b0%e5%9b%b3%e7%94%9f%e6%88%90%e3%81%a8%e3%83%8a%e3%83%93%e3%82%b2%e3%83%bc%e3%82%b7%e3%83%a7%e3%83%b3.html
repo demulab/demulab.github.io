@@ -1,0 +1,96 @@
+---
+layout: post
+title: 'Ubuntu18.04: Kobukiで地図生成'
+date: 2020-01-30 19:56:59.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '430'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16642'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/16638.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/01/map.png"><img class="aligncenter size-large wp-image-16642" src="{{ site.baseurl }}/assets/images/2020/01/map-1024x560.png" alt="" width="1024" height="560" /></a></p>
+<p>この回ではKobukiでROSの地図生成パッケージgmappingを使い地図を生成しましょう。次回は、ここで作った地図を使いKobukiをナビゲーションのために保存します。</p>
+<ul>
+<li>端末を6個開き、各端末で以下のコマンドを実行する。
+<ul>
+<li>1. $ roslaunch turtlebot_bringup minimal.launch</li>
+<li>2. $ <code>rqt --force-discover -s kobuki_dashboard</code>
+<ul>
+<li>エラー処理
+<ul>
+<li>qt_gui_main() found no plugin matching "kobuki_dashboard"と怒られる場合
+<ul>
+<li>$ sudo apt install pyqt4-dev-tools</li>
+<li>$ sudo apt-get install pyqt5-dev-tools</li>
+<li>$ cd ~/catkin_ws/src</li>
+<li>$ git clone https://github.com/yujinrobot/kobuki_desktop.git</li>
+<li>$ git clone https://github.com/yujinrobot/kobuki.git</li>
+<li>$ cp ./kobuki/kobuki_testsuite .</li>
+<li>$ mkdir ~/tmp</li>
+<li>$ mv  ./kobuki  ~/tmp/.</li>
+<li>$ catkin build</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>3. $ roslaunch turtlebot_bringup 3dsensor.launch</li>
+<li>4. $ roslaunch turtlebot_teleop ps3_teleop.launch</li>
+<li>5. $ roslaunch turtlebot_navigation gmapping_demo.launch</li>
+<li>6. $ roslaunch turtlebot_rviz_launchers view_navigation.launch</li>
+</ul>
+</li>
+<li>コントローラを使ってロボットを遠隔操作し地図を生成する。移動に伴い地図が生成されるのをRvizで確認できる。</li>
+<li>地図は自動的に保存されないので、別の端末を開き次のコマンドを実行することで保存できる。
+<ul>
+<li> $ mkdir ~/map</li>
+<li>$ rosrun map_server map_saver -f ~/map/mymap
+<ul>
+<li>-f以降は好きな名前に変更できる。この例では、ホームディレクト(~)直下のmapディレクトリにmymap.yamlとmymap.pgmファイルが保存される。yamlが設定ファイル、pgmが画像ファイル。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;"></li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

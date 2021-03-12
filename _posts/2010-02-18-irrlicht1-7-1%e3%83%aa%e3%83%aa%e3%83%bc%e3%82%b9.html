@@ -1,0 +1,35 @@
+---
+layout: post
+title: Irrlicht1.7.1リリース
+date: 2010-02-18 16:38:13.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  views: '57'
+  image: http://demura.net/wordpress/wp-content/uploads/swift_default.jpg
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/6265.html"
+---
+<p>Irrlicht1.7がリリースされてから２週間しかたっていないのに1.7.1が２月１７日にリリースされました．バグフィクスだけです．<a href="http://irrlicht.sourceforge.net/changes.txt">http://irrlicht.sourceforge.net/changes.txt</a>から以下に転載します．</p>
+<p>Changes in 1.7.1</p>
+<ul>
+<li> Fix string::remove which got in an endless loop when remove was called with an empty string (found and fixed by Ulf) </li>
+<li> Correctly release the GLSL shaders   - Make sure we only release an X11 atom when it was actually created </li>
+<li> Fix aabbox collision test, which not only broke the collision test routines, but also frustum culling, octree tests, etc. </li>
+<li>Fix compilation problem under OSX due to wrong glProgramParameteri usage</li>
+<li> mem leak in OBJ loader fixed   - Removed some default parameters to reduce ambigious situations</li>
+</ul>
+<p>なお，irrDrawStuff0.02を本日しましたが1.7.1に対応していなかったので，すぐ次のバージョンを出さなければいけなくなりました．</p>
+<p style="text-align: right;">でむ</p>

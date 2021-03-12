@@ -1,0 +1,112 @@
+---
+layout: post
+title: ODE講座21：テクスチャを切り替えよう！（画像ライブラリ）
+date: 2007-10-27 17:25:55.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1841'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/458.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2007/10/texture.jpg" alt="ODE texture" width="250" height="205" /><br />
+<img src="{{ site.baseurl }}/assets/images/2007/10/texture2.jpg" alt="ODE texture" width="250" height="205" /></p>
+<p><span style="font-size: x-small;">テクスチャを切り替えるサンプルプログラム</span></p>
+<p>チップさんから「プログラムに関する質問なのですが、テクスチャをたくさん使うにはどうすればいいのでしょうか？LOOPの中でfn.path_to_texturesのパスを変えてもテクスチャが変わらなくて悩んでいます。というご質問を頂きました今回のODE講座で回答します。</p>
+<p>simloopの中でpath_to_texturesのパスを変えてもテクスチャは変わりません。<br />
+dsStartGraphics()を使う必要があります。ただし、drawstuff.hの95行目のdsSimulationLoop()の下に以下の一行を追加して、ode-0.9のフォルダでmake，make installし直してください。ode-0.8だとエラーが出るようです。</p>
+<p>DS_API void dsStartGraphics(int window_width, int window_height, struct dsFunctions *fn);</p>
+<p>なお、シミュレーション中の複数の物体に違ったテクスチャを割り当てるためには、dsStartGraphics()を各物体を描画する前に、各物体毎に呼び出さなければいけず、描画速度が遅くなります。drawstuffのソースコードに手を加えるか、他の３Dグラフィクスライブラリを使用することをお勧めします。</p>
+<p>そもそもdrawstuffはテストプログラムの表示用ライブラリなので凝ったことはできません。その代わりにソースも短くコードも複雑ではないのでOpenGLの勉強にもピッタリです。</p>
+<p>以下に't'キーと'u'キーを押すとテクスチャが切り替わるサンプルプログラムを紹介しますので参考にしてください。<a href="http://demura.net/archives/images/ode/texture071025.tgz">ここから</a>ダウンロード可能です。</p>
+<p><!--more--></p>
+<p>[code]<br />
+// texture.cpp: テクスチャの変更 by Kosei Demura (2007-10-25)<br />
+#include<br />
+#include</p>
+<p>#ifdef dDOUBLE<br />
+#define dsDrawBox      dsDrawBoxD<br />
+#define dsDrawSphere   dsDrawSphereD<br />
+#define dsDrawCylinder dsDrawCylinderD<br />
+#define dsDrawCapsule  dsDrawCapsuleD<br />
+#endif</p>
+<p>static dWorldID world;<br />
+static dSpaceID space;<br />
+static dGeomID  capsule;<br />
+static int texture_flag = 0;</p>
+<p>dsFunctions fn;</p>
+<p>static void simLoop(int pause)<br />
+{<br />
+const dReal *pos;<br />
+const dReal *R;<br />
+dReal r, l;</p>
+<p>pos   = dGeomGetPosition(capsule);<br />
+R     = dGeomGetRotation(capsule);</p>
+<p>if (texture_flag == 0) dsSetTexture(DS_NONE);<br />
+else                   dsSetTexture(DS_WOOD);</p>
+<p>fn.path_to_textures = "./textures";<br />
+dsSetColor(1.2, 1.2, 1.2);<br />
+dGeomCapsuleGetParams(capsule, &amp;r, &amp;l);<br />
+dsDrawCapsule(pos, R, l, r);<br />
+}</p>
+<p>void command(int cmd)<br />
+{<br />
+switch (cmd) {<br />
+case ‘t’:<br />
+fn.path_to_textures = "./textures";<br />
+dsStartGraphics(640,480,&amp;fn);<br />
+texture_flag = 1;<br />
+break;<br />
+case ‘u’:<br />
+fn.path_to_textures = "../../drawstuff/textures";<br />
+dsStartGraphics(640,480,&amp;fn);<br />
+texture_flag = 0;<br />
+break;<br />
+}<br />
+}</p>
+<p>void start()<br />
+{<br />
+static float xyz[3] = {   3.0, 0.0, 1.0};<br />
+static float hpr[3] = {-180.0, 0.0, 0.0};<br />
+dsSetViewpoint(xyz, hpr);<br />
+dsSetSphereQuality(3);<br />
+}</p>
+<p>void  setDrawStuff()<br />
+{<br />
+fn.version = DS_VERSION;<br />
+fn.start   = &amp;start;<br />
+fn.step    = &amp;simLoop;<br />
+fn.command = &amp;command;<br />
+fn.stop    = NULL;<br />
+fn.path_to_textures = "../../drawstuff/textures";<br />
+}</p>
+<p>// カプセルジオメトリの生成<br />
+void makeCapsule()<br />
+{<br />
+dReal r = 0.1, l = 1.0;</p>
+<p>capsule  =  dCreateCapsule(space, r, l);    // 直方体ジオメトリの生成<br />
+dGeomSetPosition(capsule,   0, 0, 1);       // 位置の設定<br />
+}</p>
+<p>int main(int argc, char *argv[])<br />
+{<br />
+setDrawStuff();<br />
+world = dWorldCreate();<br />
+space = dHashSpaceCreate(0);<br />
+makeCapsule();<br />
+dsSimulationLoop(argc,argv,640,480,&amp;fn);<br />
+dWorldDestroy(world);<br />
+return 0;<br />
+}</p>
+<p>[/code]</p>

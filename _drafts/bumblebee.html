@@ -1,0 +1,53 @@
+---
+layout: post
+title: Bumblebee
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<ul>
+<li>Bumblebeeのインストール
+<ul>
+<li>sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"</li>
+<li>sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"</li>
+<li>sudo add-apt-repository ppa:bumblebee/stable</li>
+<li>sudo apt-get install bumblebee bumblebee-nvidia primus linux-headers-generic</li>
+</ul>
+</li>
+<li>Nvidiaドライバのインストール
+<ul>
+<li>sudo add-apt-repository ppa:mamarley/nvidia</li>
+<li>sudo apt-get install nvidia-352 nvidia-352-dev nvidia-settings</li>
+<li>libGL error: failed to load driver: swrast
+<ul>
+<li>sudo ln -s /usr/lib/nvidia-352/libGL.so.352.21 /usr/local/lib/libGL.so.1</li>
+<li>sudo ln -s /usr/lib/nvidia-352/libGL.so.352.21 /usr/local/lib/libGL.so</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Cudaのインストール
+<ul>
+<li>sudo dpkg -i cuda-repo-ubuntu1404_7.0-28_amd64.deb</li>
+<li>sudo apt<span class="cmsy-10">-</span>get update</li>
+<li>sudo apt<span class="cmsy-10">-</span>get install cuda</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

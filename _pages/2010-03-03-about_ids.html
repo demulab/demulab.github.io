@@ -1,0 +1,44 @@
+---
+layout: page
+title: irrDrawStuff (iDS)の概要
+date: 2010-03-03 13:21:04.000000000 +09:00
+type: page
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '676'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/about_ids"
+---
+<p>[caption id="attachment_6504" align="aligncenter" width="600" caption="４脚歩行ロボットのスクリーンショット　(legged.cpp)"]<a href="http://demura.net/wordpress/wp-content/uploads/2010/03/legged1.jpg"><img class="size-full wp-image-6504" title="legged" src="{{ site.baseurl }}/assets/images/2010/03/legged1.jpg" alt="" width="600" height="399" /></a>[/caption]</p>
+<p><strong>概　要</strong></p>
+<ul>
+<li>irrDrawstuffはODE付属の3D描画ライブラリであるDrawstuffの上位互換ライブラリ． Drawstuffの機能を拡張するために3D描画ライブラリであるIrrlichtを使用している．</li>
+</ul>
+<p><strong>目　的</strong></p>
+<ul>
+<li>簡単に物理シミュレータを作ることができるライブラリの開発．具体的にはODE付属のdrawstuffでは文字表示ができない，３Dオブジェクトファイルを読み込めない，テクスチャを自由に扱えないなどの問題がある．それらを解決し，将来的には単なるODE用グラフィクスライブラリではなく，ODEのAPIを含有するミドルウェアを開発する．</li>
+</ul>
+<p><strong>ライセンス</strong></p>
+<ul>
+<li>ODEと同じLGPLまたは BSDのデュアルライセンス</li>
+</ul>
+<p><strong>特　徴</strong></p>
+<ul>
+<li>ODE用に特化した３次元グラフィクスライブラリ</li>
+<li>マルチプラットフォーム. Windows, Linuxで検証済み．Macについても動作可能と考えられるが未検証．</li>
+<li>drawstuff上位互換</li>
+<li>文字の表示 (bounce.cpp参照）</li>
+<li>３Dモデルファイルフォーマット(obj, 3ds, dae,  b3d, bsp, md2, X等）の読み込みとその衝突検出　(未完成)</li>
+<li>ODE本のサンプルプログラムが添付</li>
+</ul>

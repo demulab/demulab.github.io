@@ -1,0 +1,96 @@
+---
+layout: post
+title: 'Jasper : Ubuntu14.04でSiriライクなアプリ'
+date: 2015-03-12 00:07:43.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup
+tags: []
+meta:
+  _edit_last: '2'
+  views: '515'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/robocup/11693.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/03/jasper.png"><img src="{{ site.baseurl }}/assets/images/2015/03/jasper.png" alt="jasper" width="706" height="371" class="aligncenter size-full wp-image-11701" /></a></p>
+<p>JasperをRaspberry Piで動かした。Ubuntu14.04でも動くと便利なので、インストールし動作を確認した。以下は簡単な作業メモ。説明が詳しくないので、<a href="https://jasperproject.github.io/">Jasperのウェブサイ</a>トをご覧頂きたい。</p>
+<ul>
+<li>準備
+<ul>
+<li>sudo apt-get update</li>
+<li>sudo apt-get install vim git-core python-dev python-pip bison libasound2-dev libportaudio-dev python-pyaudio --yes</li>
+</ul>
+</li>
+<li>Jasperのインストール: ここではホームディレクトリ直下ではなく、srcディレクトリを作りその中にjapserを始め、各種プログラムをインストールする。
+<ul>
+<li>cd</li>
+<li>mkdir src</li>
+<li>cd src</li>
+<li>git clone https://github.com/jasperproject/jasper-client.git jasper</li>
+<li>sudo pip install --upgrade setuptools</li>
+<li>sudo pip install -r jasper/client/requirements.txt</li>
+<li>chmod +x jasper/jasper.py</li>
+</ul>
+</li>
+<li>関連ソフトのインストール
+<ul>
+<li>Ubuntuにインストールした先人の知見を見るとPocketSphinxはソースからビルドしないと問題があるようなので、ここでは関連ソフトはほとんどソースからインストールした。詳しくは<a href="http://jasperproject.github.io/documentation/installation/#installing-dependencies">このリンク</a>を参照。
+<ul>
+<li>PocketSphinx STT engine</li>
+<li>Julius STT engine</li>
+<li>eSpeak TTS engine</li>
+<li>Festival TTS engine</li>
+<li>Flite TTS engine</li>
+<li>SVOX Pico TTS engine</li>
+<li>Google TTS engine</li>
+</ul>
+</li>
+<li>Ubuntu14.04と上でインストールしたpipのバージョンが合わないのでうまく動かないので、削除してeasy_installコマンドでpipをインストールし直す。インストール後のバージョンはpip 6.0.8。
+<ul>
+<li>sudo apt-get remove python-pip</li>
+<li>sudo easy_install pip</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>関連モジュールのインストール
+<ul>
+<li>Siriのような機能を実現するためには、クラウド型のAIエンジンが必要。なんと、JasperにはWolframAlphaのモジュールがあるではないか。</li>
+<li>WolframAlphaのパッケージを次のコマンドでインストールする。
+<ul>
+<li>sudo easy_install wolframalpha</li>
+</ul>
+</li>
+<li>Jasperウェブサイトの<a href="http://jasperproject.github.io/documentation/modules/">Third party modules</a>のWolframAlphaからknowledged.pyを~/src/jasper/client/modulesの中にコピーする。</li>
+<li>~/.jasper/profile.ymlに以下を追加。なお、XXYYXXX-XXXXXVVVVはAPIキーで<a href="http://products.wolframalpha.com/developers/">Developer向けのページ</a>が制限はあるが無料で取得できる。
+<ul>
+<li>keys:<br />
+WOLFRAMALPHA: XXYXXX-XXXXXVVVV</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>~/src/jasper/jasper.py</li>
+<li>WolframAlphaを使い検索する場合は、以下の容量で会話する。ただし、英語。</li>
+<li>You: Jasper</li>
+<li>Jasper: beep</li>
+<li>You: Search</li>
+<li>Jasper: what are you looking for ?</li>
+<li>You: What is the hightest mountain in the world ?</li>
+<li>Jasper: Mount Everest (8848 meters)</li>
+</ul>
+</li>
+</ul>
+<p>以上です。</p>
+<p>これでRoboCup@HomeのBasic Function , What did you say ?は楽勝？</p>

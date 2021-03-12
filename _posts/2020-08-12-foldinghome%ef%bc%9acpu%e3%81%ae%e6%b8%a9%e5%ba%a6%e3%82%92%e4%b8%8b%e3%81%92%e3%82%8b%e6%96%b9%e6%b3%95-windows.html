@@ -1,0 +1,69 @@
+---
+layout: post
+title: Folding@home：CPUの温度を下げる方法 (Windows)
+date: 2020-08-12 12:33:42.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18735'
+  views: '341'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/18719.html"
+---
+<p>本記事ではWindows10でCPUの温度を下げる方法を説明します。80℃以下での運用を目指します。</p>
+<ul>
+<li>スタートの横の検索窓に「コントロールパネル」と入力して、コントロールパネルを起動する。</li>
+<li>「ハードウェアとサウンド」→「電源オプション」→「電源プランの作成」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/power1.png"><img class="aligncenter size-full wp-image-18724" src="{{ site.baseurl }}/assets/images/2020/08/power1.png" alt="" width="968" height="425" /></a></li>
+<li>バランス（推奨）にチェックを入れて、プラン名を好きな名前に設定して、「次へ」をクリックする。ここでは、Folding@homeにしました。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/power2.png"><img class="aligncenter size-full wp-image-18725" src="{{ site.baseurl }}/assets/images/2020/08/power2.png" alt="" width="841" height="466" /></a></li>
+<li>「プラン設定の変更」の画面になるので、ディスプレイの電源を切る時間やコンピューターをスリープ状態にする時間を好きな時間に変更して、「作成」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/power3.png"><img class="aligncenter size-full wp-image-18726" src="{{ site.baseurl }}/assets/images/2020/08/power3.png" alt="" width="865" height="417" /></a></li>
+<li>「電源プランの選択またはカスタマイズ」の画面になるので、Folding@homeにチェックが入っていることを確認して、「プラン設定の変更」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/power4.png"><img class="aligncenter size-full wp-image-18727" src="{{ site.baseurl }}/assets/images/2020/08/power4.png" alt="" width="865" height="417" /></a></li>
+<li>「プラン設定の変更」の画面になるので、「詳細な電源設定の変更(C)」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/power5.png"><img class="aligncenter size-full wp-image-18728" src="{{ site.baseurl }}/assets/images/2020/08/power5.png" alt="" width="865" height="417" /></a></li>
+<li>「詳細設定」の画面になるので、「プロセッサの電源管理」の左にある+をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/power6.png"><img class="aligncenter size-full wp-image-18729" src="{{ site.baseurl }}/assets/images/2020/08/power6.png" alt="" width="446" height="490" /></a></li>
+<li>「プロセッサの電源管理」の下に「最大のプロセッサの状態」の項目が出るので、バッテリ駆動、電源に接続がそれぞれ100％になっている。この数字をクリックして、値を下げて「適用」を押してから「OK」をクリックする。私のPCでは70%にするとCPUの温度が概ね80℃以下になった。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/power7.png"><img class="aligncenter size-full wp-image-18730" src="{{ site.baseurl }}/assets/images/2020/08/power7.png" alt="" width="446" height="490" /></a><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/power8-1.png"><img class="aligncenter size-full wp-image-18732" src="{{ site.baseurl }}/assets/images/2020/08/power8-1.png" alt="" width="446" height="490" /></a></li>
+<li>では、効果を確認してみましょう。Open Hardware Monitorを起動してCPUの温度をプロットした図を以下に示します。下図で横軸は時間、縦軸は温度です。この図で、4分過ぎの時点で新しい電源管理を適用しました。その途端、今まで84℃から88℃だったCPUコアの温度が概ね80℃以下に下がっていることがわかります。なお、79℃近辺でずっと一定なラインはGPUの温度を示しています。つまり、この設定はCPUにしか適応しません。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/power9-1.png"><img class="aligncenter size-full wp-image-18735" src="{{ site.baseurl }}/assets/images/2020/08/power9-1.png" alt="" width="866" height="388" /></a><br />
+終わり</li>
+</ul>

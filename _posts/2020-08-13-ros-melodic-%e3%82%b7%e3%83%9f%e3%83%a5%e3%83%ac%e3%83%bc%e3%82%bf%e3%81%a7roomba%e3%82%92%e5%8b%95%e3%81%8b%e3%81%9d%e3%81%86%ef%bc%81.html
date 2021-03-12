@@ -1,0 +1,263 @@
+---
+layout: post
+title: 'HARD2020: シミュレータでルンバを動かそう！'
+date: 2020-08-13 16:10:27.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18747'
+  views: '839'
+  last_modified: '2021-03-10 23:14:41'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/18745.html"
+---
+<p>Gazeboシミュレータを使い、Roombaを動かします。本記事ではカナダのSimon Fraser University, Autonomy Lab.のJacob PerronさんのフォークしたiRobot社のRoomba,　Create2用のROSドライバー create_autonomyを使います。gazebo用のlaunchファイルもあり、Raspberry Pi4でも動きます。ただし、ソースコードを少し改変する必要があります。</p>
+<ul>
+<li><strong>参考サイト</strong>
+<ul>
+<li><a href="https://github.com/RoboticaUtnFrba/create_autonomy">RoboticaUtnFrba/create_autonomy</a></li>
+</ul>
+</li>
+<li><strong> 環境</strong>
+<ul>
+<li>Roomba 500～800シリーズ（900, e, iシリーズなどの最近の機種は対応していません）</li>
+<li>試したのはIntel Core i7 -8750とRaspberry Pi4 (RAM 8GB)</li>
+<li>Ubuntu18.04</li>
+<li>ROS Melodic</li>
+<li>Gazebo 9 以上 (ROS Melodic標準Gazebo でOK）</li>
+</ul>
+</li>
+<li><strong>準備</strong>
+<ul>
+<li><code>$ sudo apt update</code></li>
+<li><code>$ sudo apt upgrade</code></li>
+<li><code>$ sudo apt install -y python-rosdep python-catkin-tools</code></li>
+<li><code>$ sudo apt install -y libqt4-dev</code><code></code></li>
+</ul>
+</li>
+<li><strong>インストール</strong>
+<ul>
+<li>ワークスペースの生成
+<ul>
+<li><code>$ mkdir -p ~/catkin_ws/src</code></li>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build</code></li>
+</ul>
+</li>
+<li>ダウンロード
+<ul>
+<li><code>$ cd ~/catkin_ws/src</code></li>
+<li><code>$ git clone https://github.com/RoboticaUtnFrba/create_autonomy.git</code></li>
+<li><code>$ git clone https://github.com/RoboticaUtnFrba/libcreate.git</code></li>
+</ul>
+</li>
+<li>依存関係ファイルのインストール
+<ul>
+<li>RTIMULib (IMU用のリアルタイムライブラリ)のインストール
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ ./src/create_autonomy/sensors/ca_imu/scripts/install_rtimulib.sh</code></li>
+</ul>
+</li>
+<li>他のファイルのインストール
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ sudo apt install -y python3-vcstool</code></li>
+<li><code>$ vcs import src &lt; src/create_autonomy/dependencies.repos</code></li>
+<li><code>$ rosdep update</code></li>
+<li><code>$ rosdep install --from-paths src -yi</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Raspberry Pi4のみの作業</strong>：Intel CPUの場合は必要ないので次のワークスペースのビルドへ進む。Raspberry Pi4というかARMのCPUでは、viso2(Visual Odometryライブラリ）関連のソースコードをそのままビルドできないので次のように改変するか~/catkin_ws/src/viso2以下のディレクトリを削除する。
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>~/catkin_ws/src/viso2/libviso2/CMakeLists.txtの7行目を次のように変更する。
+<ul>
+<li>変更前：<code> SET(CMAKE_CXX_FLAGS -mfpu=neon)</code></li>
+<li>変更後：<code> SET(CMAKE_CXX_FLAGS -march=armv8-a+simd)</code></li>
+</ul>
+</li>
+<li>~/catkin_ws/src/viso2/libviso2/src/filter.hの25行目とmatcher.hの30行目に#if defined(__ARM_NEON__)がある。その１行上に以下の行を挿入する。
+<ul>
+<li><code>#define  __ARM_NEON__</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> ワークスペースのビルド
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li>Intel CPUの場合。WSL+Ubuntu環境ではビルドに約6分、デュアルブートなどのネイティブなUbuntu環境では約3分だった。WSLは便利だが遅い。
+<ul>
+<li><code>$ catkin build -j $(nproc) -DCMAKE_BUILD_TYPE=Release</code></li>
+</ul>
+</li>
+<li>Raspberry Pi4の場合。私の環境では約17分かかった。
+<ul>
+<li><code>$ catkin build -j $(nproc) -DCMAKE_BUILD_TYPE=Release -DARM_CROSS_COMPILATION=ON</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>設定</strong>
+<ul>
+<li>このワークショップに使う以下の設定を以下のコマンドにより、エディタgeditで.bashrcファイルを開き、末尾にコピペする。geditが起動しない場合は、この記事の一番下のエラー処理を参照すること。なお、環境により違うので注意して欲しい。
+<ul>
+<li>$ gedit  ~/.bashrc</li>
+<li>WSL2のUbuntu18.04環境</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre style="padding-left: 120px;">export DISPLAY=$(grep -m 1 nameserver /etc/resolv.conf | awk '{print $2}'):0.0
+export LIBGL_ALWAYS_INDIRECT=""
+export GAZEBO_IP=127.0.0.1
+export LASER=rplidar
+export NUM_ROBOTS=1
+export RVIZ=true
+
+source /opt/ros/melodic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+</pre>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>ネイティブUbuntu18.04環境</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre style="padding-left: 120px;">export GAZEBO_IP=127.0.0.1
+export LASER=rplidar
+export NUM_ROBOTS=1
+export RVIZ=true
+
+source /opt/ros/melodic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+</pre>
+<ul>
+<li>以下のコマンドを実行して設定を反映させる。
+<ul>
+<li><code>$  source ~/.bashrc</code></li>
+</ul>
+</li>
+<li><strong>実行</strong>
+<ul>
+<li>端末を開き、以下のコマンドを実行してシミュレータGazeboを起動する。一番下図のルンバをベースにしたロボットが現れる。エラーが出てGazeboが起動しなかったり、画面が真っ暗な場合は一番下のエラー処理を参照する。
+<ul>
+<li><code>$ roslaunch ca_gazebo create_empty_world.launch</code></li>
+</ul>
+</li>
+<li>端末をもう一つ開き、以下のコマンドを実行してGazebo上のルンバを遠隔制御する。ルンバが無事動いたら成功。お疲れ様！
+<ul>
+<li><code>$ roslaunch ca_tools keyboard_teleop.launch</code></li>
+<li>以下の画面になる。以下のキー操作でロボットを動かすことができる。なお、マウスのカーソルが端末上にないとロボットは動かないので注意。
+<ul>
+<li><strong>i</strong>：　前進、<strong>u</strong>：左前進、<strong>o</strong>：右前進</li>
+<li><strong>j</strong>： 左回転、<strong>k</strong>：停止、　<strong>l</strong>：右回転</li>
+<li><strong>m</strong>：左後進、<strong>,</strong>：後進、　<strong>.</strong>：右後進</li>
+<li><strong>スペース</strong>：停止</li>
+<li><strong>w</strong>/<strong>x</strong>：並進速度増速/減速(10%)</li>
+<li><strong>e</strong>/<strong>c</strong>：角速度増速/減速(10%)<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_homedemulabcatkin_wssrccreate_autonomyca_toolslaunchkeyboard_teleoplaunch-httplocalhost11311_2020-8-20_18-30-59_No-00.png"><img class="aligncenter size-large wp-image-18829" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_homedemulabcatkin_wssrccreate_autonomyca_toolslaunchkeyboard_teleoplaunch-httplocalhost11311_2020-8-20_18-30-59_No-00-1024x690.png" alt="" width="1024" height="690" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Gazebo_2020-8-13_16-8-33_No-00.png"><img class="aligncenter size-large wp-image-18747" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_Gazebo_2020-8-13_16-8-33_No-00-1024x522.png" alt="" width="1024" height="522" /></a></p>
+<ul>
+<li><strong>エラー処理</strong>
+<ul>
+<li>geditが立ち上がらない場合
+<ul>
+<li>まず、以下のページに説明があるXサーバーを起動しているか確認する。記事に書いているように毎回設定するのは大変なのでconfig.xlaunchファイルをデスクトップに保存し、それをダブルクリックすると少し幸せになれる。なお、WSL2にはXサーバーが含まれていないので毎回起動する必要がある。
+<ul>
+<li><a href="https://demura.net/education/18192.html">WSL2：Ubuntu18.04のインストール</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>rvizを起動するとsegmentation faultというエラーが出て起動しません。
+<ul>
+<li>~/.bashrcに以下の１行を追加してください。
+<ul>
+<li><code>export GAZEBO_IP=127.0.0.1</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Gazeboを起動するとsegmentation faultというエラーが出て起動しません。
+<ul>
+<li>~/.bashrcに以下の１行を追加してください。
+<ul>
+<li><code>export LIBGL_ALWAYS_INDIRECT=""</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Gazeboを起動すると以下のエラーで画面が真っ暗らなままです。<br />
+[Err] [REST.cc:205] Error in REST request<br />
+libcurl: (51) SSL: no alternative certificate subject name matches target host name ‘api.ignitionfuel.org’</p>
+<ul>
+<li>~/.ignition/fuel/config.yamlを次のように変更してください。
+<ul>
+<li>変更前：<code>url: https://api.ignitionfuel.org</code></li>
+<li>変更後：<code>url: https://api.ignitionrobotics.org</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

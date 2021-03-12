@@ -1,0 +1,32 @@
+---
+layout: post
+title: ODE本サンプルプログラムの修正
+date: 2008-10-03 12:19:15.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _edit_last: '2'
+  views: '777'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/1942.html"
+---
+<p>[caption id="" align="alignnone" width="300" caption="4脚ロボットの歩行プログラム legged.cpp"]<img title="4脚ロボットの歩行プログラムlegged.cpp" src="{{ site.baseurl }}/assets/images/2008/10/kido31-300x225.jpg" alt="4脚ロボットの歩行プログラムlegged.cpp" width="300" height="225" />[/caption]</p>
+<p>Jeffさんからlegged.cppにODE LCP internal errorが出ると報告を受けたので、４脚ロボットの歩行プログラムlegged.cppにdWorldSetCFM, dWorldSetERPを追加しました。これによりエラーが出なくなったとのことです。</p>
+<ul>
+<li><a href="../../dl">http://demura.net/dl</a></li>
+</ul>
+<p>ちなみに、私の環境(Windows Vista, g++, ODE0.10.0, 倍精度インストール)ではそのようなエラーは出ていません。JeffさんはOS XでODEを単精度でインストールしたということでした。単精度インストールしたことにより数値計算誤差によりLCP Internal Errorが出たと思われます。単精度インストールは薦められません。</p>
+<p>また、海外進出？を睨みReadme.txtとInstall.txtに英語の文章も追加しました。右下のVistors Mapを変えたのですが、最近はヨーロッパからのアクセスも多いようですね。</p>
+<p style="text-align: right;">でむ</p>

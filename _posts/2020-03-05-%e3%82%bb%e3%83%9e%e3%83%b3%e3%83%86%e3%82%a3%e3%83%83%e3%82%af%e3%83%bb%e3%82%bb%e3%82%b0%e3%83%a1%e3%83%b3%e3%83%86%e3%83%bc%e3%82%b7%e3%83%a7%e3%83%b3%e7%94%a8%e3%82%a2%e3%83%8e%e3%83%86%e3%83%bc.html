@@ -1,0 +1,75 @@
+---
+layout: post
+title: セマンティック・セグメンテーション用アノテーションツール
+date: 2020-03-05 22:06:04.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16869'
+  views: '4960'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16868.html"
+---
+<p>セマンティック・セグメンテーション(semantic segmentation)をする機会が増えて、アノテーションツール(annotation tool)を探している。今使っているのは次のツール。シンプルで良いのだが少し自動化があればよい。</p>
+<ul>
+<li><a href="http://www.robots.ox.ac.uk/~vgg/software/via/">VIA (VGG Image Annotator ) by University of Oxford</a>
+<ul>
+<li>シンプルで軽量なツール。オートアノテーション機能はない。ライセンスはBSD2なので、研究用、商用とも使いやすい。クラスの指定ななどややわかりにくい。</li>
+</ul>
+</li>
+</ul>
+<p>探したところ、以下のツールが良さそうで試している。特に、CVATは深層学習を使った自動アノテーション機能が豊富であり、多くのアノテーションフォーマットにも対応している。</p>
+<ul>
+<li><a href="https://github.com/microsoft/VoTT">VoTT (Visual Object Tagging Tool)  by MicroSoft</a>
+<ul>
+<li>マイクロソフトが開発。インタフェースがわかりやすい。ライセンスは<a href="https://opensource.org/licenses/MIT">MIT License</a>。</li>
+</ul>
+</li>
+<li><a href="https://github.com/Hitachi-Automotive-And-Industry-Lab/semantic-segmentation-editor">Semantic Segmentation Editor by Hitachi Automotive And Industry Lab</a>
+<ul>
+<li>日立オートモティブ・インダストリ研究所が開発。自動運転分野の研究用。通常の画像の他にポイントクラウドエディターもある。</li>
+</ul>
+</li>
+<li><a href="https://github.com/opencv/cvat">CVAT (Computer Vision Annotation Tool) by OpenCV</a>
+<ul>
+<li>OpenCVが開発。Dockerを使うのでインストールは簡単。ライセンスは<a href="https://opensource.org/licenses/MIT">MIT License</a>。なので使いやすい。</li>
+<li>以下の画像は、MS COCOデータセットで訓練済みのMask R-CNN でリンゴの画像にオートアノテーションをかけたところ。すべてのリンゴを識別できているわけではないが、7個は識別できている。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/apple.png"><img class="alignleft size-large wp-image-16869" src="{{ site.baseurl }}/assets/images/2020/03/apple-1024x544.png" alt="" width="1024" height="544" /></a></p>
+<p>使い方の記事は、お楽しみに！</p>

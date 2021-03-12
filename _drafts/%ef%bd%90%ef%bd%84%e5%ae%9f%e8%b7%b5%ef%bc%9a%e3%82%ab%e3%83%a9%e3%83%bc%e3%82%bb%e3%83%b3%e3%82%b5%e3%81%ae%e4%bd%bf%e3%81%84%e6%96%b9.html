@@ -1,0 +1,72 @@
+---
+layout: post
+title: ＰＤ実践：カラーセンサの使い方
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '9'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14985.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、以下の方法は西川教授の資料を参考にしています。</p>
+<p>本記事は、カラーセンサの使い方を学びます。</p>
+<ul>
+<li><strong>API</strong>
+<ul>
+<li>ポート2のカラーセンサを初期化
+<ul>
+<li> ev3_sensor_config(EV3_PORT_2, COLOR_SENSOR);</li>
+<li>ポート2がカラーセンサであることを設定</li>
+</ul>
+</li>
+<li> ポート2のカラーセンサから明度（環境光）を取得
+<ul>
+<li> uint8_t light = ev3_color_sensor_get_ambient(EV3_PORT_2);</li>
+</ul>
+</li>
+<li> ポート2のカラーセンサから明度（反射光）を取得
+<ul>
+<li> uint8_t light = ev3_color_sensor_get_reflect(EV3_PORT_2);</li>
+</ul>
+</li>
+<li>ポート2のカラーセンサからカラー情報を取得
+<ul>
+<li> colorid_t color = ev3_color_sensor_get_color(EV3_PORT_2);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サンプルプログラム</strong>
+<ul>
+<li>/light/app.c：カラーセンサーから取得した環境光と反射光の計測値をLCDに表示する。</li>
+<li>/color/app.c<br />
+カラーセンサーから取得したカラーの種類をLCDに表示する。</li>
+</ul>
+</li>
+<li><strong>演習</strong>
+<ul>
+<li>カラーセンサーをEV3（ポート1）に接続した後、サンプルプログラム(/light/app.c)をEV3にアップロードし、動作を確認してください。</li>
+<li> サンプルプログラムを改造し、以下の機能を実現してください。<br />
+『カラーセンサー（環境光）の値が5以下になったら、「Finished!」を表示する。』</li>
+<li><span style="color: #ff0000;"><strong> [レポート課題1]</strong> </span>下のカラーセンサー（環境光と反射光）の組立例を組み立ててください。フタが開いたら好きな曲が流れ、閉じたら止まるプログラムを作成しよう！29_lightsensor.lxf：オープンセンサー。フタの開閉を感知する<br />
+フタが開くと明るくなる。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/29_lightsensor.png"><img src="{{ site.baseurl }}/assets/images/29_lightsensor-1024x454.png" alt="" width="800" height="355" class="aligncenter size-large wp-image-14986" /></a></li>
+<li>カラーセンサーをEV3（ポート1）に接続した後、サンプルプログラム(/color/app.c)をEV3にアップロードし、動作を確認してください。</li>
+</ul>
+</li>
+</ul>
+<p style="text-align: right;">終わり</p>

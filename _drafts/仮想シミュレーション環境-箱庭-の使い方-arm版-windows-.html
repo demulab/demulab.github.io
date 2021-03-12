@@ -1,0 +1,104 @@
+---
+layout: post
+title: 仮想シミュレーション環境「箱庭」の使い方(ARM版、Windows)
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- education
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18501'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>仮想シミュレーション環境「箱庭」の使い方を説明する。</p>
+<ul>
+<li>cfgフォルダの設置。これは初回だけ実施すればよい。
+<ul>
+<li>Ubuntuのターミナル（端末）を起動して以下のコマンドを実行する。
+<ul>
+<li><code>$ cd ~/src/ev3rt-athrill-ARMv7-A</code></li>
+<li><code>$ mkdir cfg/cfg</code></li>
+<li><code>$ cp cfg/cfg-linux-64  cfg/cfg/cfg</code></li>
+<li><code>$ chmod +x  cfg/cfg/cfg</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>EV3ロボット制御プログラムのビルド
+<ul>
+<li>端末で以下のコマンドを実行してビルドする。
+<ul>
+<li><code>$ cd ~/src/ev3rt-athrill-ARMv7-A/sdk/OBJ1.1</code></li>
+<li><code>$ make clean</code></li>
+<li><code>$ make "ATHRILL_BUILD_TARGET = ubuntu18"</code></li>
+</ul>
+</li>
+<li>ビルドが成功するとaspという実行可能ファイルが生成される。</li>
+</ul>
+</li>
+<li>Unityシミュレータの起動
+<ul>
+<li>Unityの&#x25b6;ボタン（下図参照）を押して、シミュレーションモードにする。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity7-1.png"><img class="aligncenter size-large wp-image-18501" src="{{ site.baseurl }}/assets/images/unity7-1-1024x578.png" alt="" width="1024" height="578" /></a></p>
+<ul>
+<li>Athrillの起動
+<ul>
+<li>端末で以下のコマンドを実行してathrillを起動する。
+<ul>
+<li><code>$ cd ~/src/ev3rt-athrill-ARMv7-A/sdk/OBJ1.1</code></li>
+<li>UDP版の場合
+<ul>
+<li><code>$ athrill2 -c1 -t -1 -m memory.txt -d device_config.txt ./asp</code></li>
+</ul>
+</li>
+<li>MMAP版の場合
+<ul>
+<li><code>$ athrill2 -c1 -t -1 -m memory_mmap.txt -d device_config_mmap.txt ./asp</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>

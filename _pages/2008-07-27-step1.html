@@ -1,0 +1,80 @@
+---
+layout: page
+title: 'STEP1: ODE初体験'
+date: 2008-07-27 14:52:51.000000000 +09:00
+type: page
+parent_id: '1286'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '5006'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robotsimu/step1"
+---
+<p><img title="Robot Simulation" src="{{ site.baseurl }}/assets/images/2008/07/step1.jpg" alt="Open Dynamics Engine" width="320" height="240" /></p>
+<p>ODE本　Step1  扉図のカラー画像</p>
+<hr />
+<p>ODE本「<a href="http://www.amazon.co.jp/gp/product/4627846916?ie=UTF8&amp;tag=demuranet-22&amp;linkCode=as2&amp;camp=247&amp;creative=1211&amp;creativeASIN=4627846916">簡単!実践!ロボットシミュレーション - Open Dynamics Engineによるロボットプログラミング</a>」のStep１では，ODE初体験ということで，リンゴの落下，ボールの跳ね返り，１本脚ロボットのシミュレータを作りながらODEの使い方をマスターします．</p>
+<p>以下にStep1のシミュレータの動画を掲載します．ソースコードは<a href="http://demura.net/dl">このページの注意事項を読み，ダウンロード，ビルドやコンパイルし実行してください．</a><br class="spacer_" /></p>
+<hr />
+<p>
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="290" height="240" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/pro101.flv&amp;autostart=true" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed type="application/x-shockwave-flash" width="290" height="240" src="http://demura.net/flvplayer.swf" flashvars="file=http://demura.net/archives/ode/robotsimu/pro101.flv&amp;autostart=true"></embed></object></p>
+<p><br class="spacer_" /></p>
+<ul>
+<li>プログラム1.1：　りんごの落下　(P7)</li>
+</ul>
+<ul>
+<li>説明：ニュートンさんの逸話でおなじみのリンゴの落下です．でも，衝突検出が組み込まれていないので...．以下のソースコードを見ればわかりますが，このようなプログラムならたった５０行です．上の動画は解像度を落としているので美しくありませんが，実際はたなびく雲が美しいですよ．</li>
+</ul>
+<hr />
+<p>
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="290" height="240" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/pro102.flv&amp;autostart=true" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed type="application/x-shockwave-flash" width="290" height="240" src="http://demura.net/flvplayer.swf" flashvars="file=http://demura.net/archives/ode/robotsimu/pro102.flv&amp;autostart=true"></embed></object><br />
+<br />
+ <br class="spacer_" /></p>
+<ul>
+<li>プログラム1.2：　ボールの跳ね返り (P15)</li>
+</ul>
+<ul>
+<li>説明：衝突検出を組み込み地面を突き抜けなくなりましたが，跳ね返ることはできません．反発係数を設定して跳ね返るようにしましょう．</li>
+</ul>
+<hr />
+<p>
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="290" height="240" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/pro103.flv&amp;autostart=true" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed type="application/x-shockwave-flash" width="290" height="240" src="http://demura.net/flvplayer.swf" flashvars="file=http://demura.net/archives/ode/robotsimu/pro103.flv&amp;autostart=true"></embed></object><br />
+<br />
+ <br class="spacer_" /></p>
+<ul>
+<li>プログラム1.3：　１本脚ロボット (P24)</li>
+</ul>
+<ul>
+<li>説明：球と円柱を関節で結合し，１本脚ロボットを作ります．Step1を学ぶことで関節のあるロボットを作ることができます．Step2では関節の動かし方を学びます．</li>
+</ul>
+<hr />
+<p><strong>エクササイズの補足説明</strong></p>
+<ul>
+<li> EX1.8 (P21)
+<ul>
+<li> 直方体を作るためには、その各辺の長さを格納する要素数３個の配列を準備すると便利です。P15の12行目と13行目の間に以下を挿入しましょう。<br />
+ static dReal side[3] = {0.2, 0.2, 0.2};<br />
+ なお、dsDrawBox()に引数として配列を渡すわけですが、Ｃ言語では配列そのものを渡すことができないので、そのアドレスを渡します。配列名（この例ではside）は配列が格納されている先頭のアドレスでしたね。</li>
+<li> 後は、P94のプログラム3.5に直方体を使った例があるので、参考にすると出来るでしょう。</li>
+</ul>
+</li>
+<li> EX1.11 (P27)
+<ul>
+<li> 可動域を変更して、そのまま実行しても変化を確かめることができません。<br />
+ 重量加速度を次のように変えてください。<br />
+ dWorldSetGravity(world, 0.0, 0.2, -9.8);</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>（最終更新日　2008-7-27)</p>

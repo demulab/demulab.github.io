@@ -1,0 +1,119 @@
+---
+layout: post
+title: 'CVAT: 起動とタスクの生成'
+date: 2020-03-10 15:05:36.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16954'
+  views: '622'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16949.html"
+---
+<p>OpenCVが開発しているCVAT(Computer Vision Annotation Tool)のタスク生成のメモ。CVATはドキュメントが充実している。英語が読める方は参考リンクを参照。</p>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li><a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/documentation/user_guide.md#creating-an-annotation-task">CVAT User's guide：Creating an annotation task</a></li>
+</ul>
+<p><strong>起　動</strong></p>
+<ul>
+<li>$ cd ~/src/cvat</li>
+<li>$ docker-compose up -d</li>
+</ul>
+<p><strong>タスク生成</strong></p>
+<ul>
+<li><a href="http://localhost:8080">http://localhost:8080</a>にアクセスして、ユーザ名とパスワードを入力して"Sign in"をクリックしてログインする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task1.png"><img class="alignleft size-large wp-image-16950" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task1-1024x640.png" alt="" width="1024" height="640" /></a></li>
+<li>画面右上の"Create new task"をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task2.png"><img class="alignleft size-large wp-image-16951" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task2-1024x575.png" alt="" width="1024" height="575" /></a></li>
+<li>"Create a new task" 画面になるので以下を入力する。
+<ul>
+<li>Name：タスクの名前
+<ul>
+<li>この例では、"fruits"とする。</li>
+</ul>
+</li>
+<li>Labels：ラベル名
+<ul>
+<li>"Add label"ボタンをクリックしてラベル名を追加する。続けて他のラベル名を追加する場合は"Continue"ボタンをクリックし、終了する場合は"Done"ボタンをクリックする。必要に応じて各ラベルに属性を追加できる。<a href="https://github.com/opencv/cvat/blob/develop/cvat/apps/documentation/user_guide.md#creating-an-annotation-task">詳細はこの参考リンクを参照</a>。</li>
+<li>この例では、"apple"と"orange"とする。</li>
+</ul>
+</li>
+<li>Select files：アノテーションするファイル群を選択して"Submit"をクリックする。
+<ul>
+<li>この例では、<a href="https://data.mendeley.com/datasets/rp73yg93n8/1">Fruits 360 データセット(version 1)</a>のtest-multiple_fruitsディレクトリにある45個のファイルを対象とする。次のリンクから~/Downloadsへダウンロードする。
+<ul>
+<li><a href="https://data.mendeley.com/datasets/rp73yg93n8/1/files/56487963-3773-495e-a4fc-c1862b6daf91">ダウンロード：fruits-360_dataset.zip</a></li>
+<li>ダウンロードしたfruits-360_dataset.zipを~/Downloadsに保存し、次のコマンドで展開する。
+<ul>
+<li>$ cd ~/Downloads</li>
+<li>$ mkdir ~/dataset</li>
+<li>$ cp  fruits-360_dataset.zip ~/dataset</li>
+<li>$ cd ~/dataset</li>
+<li>$ unzip fruits-360_dataset.zip</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ファイルの選択。"Click or drag files to this area"をクリックする。
+<ul>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task3.png"><img class="alignleft size-large wp-image-16953" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task3-1024x824.png" alt="" width="1024" height="824" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li></li>
+<li>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>ファイルを選択できるウインドウが開くので、以下のディレクトリにある全部のファイル(45個)を選択して[開く(O)]をクリックする。
+<ul>
+<li>~/src/dataset/fruits-360/test-multiple_fruits<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task1-1.png"><img class="alignleft size-full wp-image-17073" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task1-1.png" alt="" width="1024" height="749" /></a></li>
+</ul>
+</li>
+<li>成功すると45 files selectedと表示されるので[Submit]をクリックする。ファイルがサーバーにアップロードされる。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>では、タスクができたか確認しよう。画面左上のTasksをクリックすると下図のようにタスク#1:fruitsが生成されているのがわかる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cvat_task2-1.png"><img class="alignleft size-large wp-image-17074" src="{{ site.baseurl }}/assets/images/2020/03/cvat_task2-1-1024x311.png" alt="" width="1024" height="311" /></a></li>
+</ul>
+<p>終わり</p>

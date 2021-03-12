@@ -1,0 +1,33 @@
+---
+layout: post
+title: Key割り当ての変更(Ubuntu10.04)
+date: 2010-06-01 08:23:45.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '129'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/7193.html"
+---
+<div>
+<p>UbuntuでKeyのShiftとUpを交換したときの単なる防備録用のメモです。</p>
+<p>Panasonic Let’s note CF-Y7を愛用していますが、UpキーとShiftキーの並びが悪いためホームポジションからShiftキーが小指で届きません。そこで、Upキーと ShiftキーをWindowsで変更して使っています。LinuxのUbuntu8.04では既にーの割り当てを変更して使っていました。今回、バージョンをUbuntu9.04にアップしたので同じようにしましたが少しはまりました。</p>
+<p>なんとShiftのキーコード98から111に変わっていました。キーコードはxevで調べました。</p>
+<p>* 以下の内容の.xmodmapファイルをホームディレクトリの直下に作成する。</p>
+<p>keycode 62 = Up<br />
+keycode 111 = Shift_R<br />
+add shift = Shift_R</p>
+<p>xmodmap  .xmodmapを端末で実行すると設定が反映されます。</p>
+</div>

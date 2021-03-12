@@ -1,0 +1,99 @@
+---
+layout: post
+title: e-gadgetやTJ3で地磁気センサHMC5883Lを使う方法3/3（実際に使おう！）
+date: 2013-01-15 01:50:37.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup
+tags: []
+meta:
+  views: '5861'
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/robocup/10170.html"
+---
+<p>ロボカップジュニアで良く使われているダイセン電子工業のe-gadgetやTJ3でハネウエルの地磁気センサモジュールHMC5883Lを使えるようにしましたので紹介します。PICを始めて使ったので間違い等があるかもしれません。ご指摘頂ければありがたいです。なお、ご使用される場合は自己責任でお願いします。試合に負けたり、損害や被害があった場合など、私は保証できません。</p>
+<p>次の３ステップが必要です。<br />
+１． セルフテスト<br />
+２. キャリブレーション<br />
+３． 実際に使用する</p>
+<p>最後にHMC5883Lを実際に使ってみましょう。以下のget_dir_HMC5883L関数をc:\Daisen\C-Style for e-Gadget\Build\Build_V120911\D_I2C.cのUINT get_dir(BYTE dno)と置き換えて保存してください。もとのget_dir関数は消さないでget_dir_org()などと名前を変えると良いでしょう。</p>
+<p><!--more--></p>
+<p>また、数学関数atan2を使っているので以下をこのファイル(D_I2C.c)の28行目#include "D_I2C.hの下に次の１行を追加してください。<br />
+#include "../../../mcc18_v337/h/math.h"</p>
+<p>後は、C-styleを使いビルドし、ロボットへダウンロードして、STARTボタンを動かすとLCDにロボットの方位が表示されます。センサモニタを使い確かめても良いでしょう。</p>
+<pre class="brush:cpp">
+// ハネウェル社の３軸デジタルコンパスモジュール HMC5883L用の方位取得関数
+// コンパスモジュールのy軸がロボットの進行方向とし、地面と水平に取り付けられているとする。
+// dnoが0(dir)のときだけ方位を計算、ロール、ピッチは計算しないで999を返す。
+// atan2を使っているので以下をこのファイル(D_I2C.c)の28行目　#include "D_I2C.hの下の１行を追加すること
+// #include "../../../mcc18_v337/h/math.h" // add demu
+// 作成者：でむ
+#define PI	3.14159
+UINT get_dir_HMC5883L(BYTE dno) // get_dit_HMC5883L
+{
+	int dir; // 方位
+	U_UINT d, dx,dy,dz; // 地磁気センサ　x, y, z軸の値を記憶する変数
+	// 地磁気センサをz軸を中心に360°回転させたときx, y軸は軌跡は楕円となる。
+	// offset_x, offset_yは楕円の中心
+	U_UINT offset_x, offset_y;
+	BYTE adrs_write  = 0x3C;   // HMC5883L I2C address 8bit write
+	BYTE adrs_read   = 0x3D;   // HMC5993L I2C address 8bit read
+	static float counter = 0;  // この関数の呼び出される回数を数える変数
+
+	offset_x.W = 999, offset_y.W = 999; // 初期値　999はエラー
+
+	if ((dno == 1) || (dno == 2)) return 999; // ロール、ピッチは計算しません
+
+	// EEPROMから保存していたオフセット値を読み込む
+	if (counter == 0) {
+		offset_x.H = readEE(0x00); // x軸の値
+		offset_x.L = readEE(0x01); // x軸の値
+		offset_y.H = readEE(0x02); // y軸の値
+		offset_y.L = readEE(0x03); // y軸の値
+	}
+
+	// 初期化。連続計測モードに設定。他は標準設定。
+	if (counter++ &#60; 5) {
+		gI2C_Buf&#91;0&#93; = 0x02; // モードレジスタ
+		gI2C_Buf&#91;1&#93; = 0x00; // 連続計測モード
+		if (i2c_send(adrs_write, 2) == false) return 999;
+		Delay100TCYx(480);  // 6ms待ち
+	}
+
+	if (i2c_recv(adrs_read, 6) == false) return 999; // I2Cからデータ6バイトの読み込み
+
+	dx.H = gI2C_Buf&#91;0&#93;; // BYTE型、実はunsigned char. D_main.hで定義
+	dx.L = gI2C_Buf&#91;1&#93;; // x軸の値
+	dz.H = gI2C_Buf&#91;2&#93;; // z軸の値　上位バイト
+	dz.L = gI2C_Buf&#91;3&#93;; // z軸の値　下位バイト
+	dy.H = gI2C_Buf&#91;4&#93;; // y軸の値　上位バイト
+	dy.L = gI2C_Buf&#91;5&#93;; // y軸の値　下位バイト
+
+	// 方位計算
+	if ((offset_x.W == 999) || (offset_y.W == 999)) 
+		dir = (int) (atan2((int)dy.W, (int)dx.W) * (180.0/PI));
+	else 
+		dir = (int) (atan2((int)dy.W - (int) offset_y.W, 
+                           (int)dx.W - (int) offset_x.W) * (180.0/PI));
+
+	if (dir &#60;   0) dir += 360; // 角度を0°～359°にするための処理
+	if (dir &#62; 360) dir -= 360; // 角度を0°～359°にするための処理
+
+	gI2C_Buf&#91;0&#93; = 0x03; // 最初のデータが格納されているデータレジスタ03へ指す
+	if (i2c_send(adrs_write, 1) == false) return 999; // 999はエラー
+
+	Delay1KTCYx(536); //　67ms待つ。HMC5883Lは標準で毎秒15回データ取得
+
+	return (UINT) dir;
+}
+</pre>

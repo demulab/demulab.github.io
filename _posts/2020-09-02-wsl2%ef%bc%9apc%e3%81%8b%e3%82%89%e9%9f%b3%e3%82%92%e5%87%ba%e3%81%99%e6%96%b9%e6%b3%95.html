@@ -1,0 +1,157 @@
+---
+layout: post
+title: WSL2：PCから音を出す方法
+date: 2020-09-02 15:55:57.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  views: '1019'
+  _thumbnail_id: '19103'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19100.html"
+---
+<p>この記事ではWSL2のUbunutuで音を出す方法を説明する。WSL2では現状、PCのサウンドデバイスを直接扱えない。/devにサウンドデバイスが認識されていない。そのためWSL2のUbuntuだけでは音を出すことはできない。いろいろ調べた結果、以下の参考サイトが一番わかりやすかった。この記事はそれの意訳とささやかな説明を加えたもの。</p>
+<p><strong>参考サイト</strong></p>
+<ul>
+<li><a href="http://community.rhasspy.org/t/how-to-use-rhasspy-with-windows-subsystem-for-linux-wsl/984">How to use Rhasspy with Windows Subsystem for Linux (WSL)</a></li>
+</ul>
+<p><strong>環境</strong></p>
+<ul>
+<li>Windows10 バージョン2004</li>
+<li>WSL2</li>
+<li>Ubuntu 18.04.5</li>
+</ul>
+<p><strong>手法の概要</strong></p>
+<ul>
+<li>Linuxで良く使われるクロスプラットフォームのサウンドサーバー。WSLのUbuntuでサウンドデバイスにアクセスできないので、PulseAudioクライアントからTCPでデータをWindowsのPulseAudioサーバーへ送りPCからサウンドを奏でる。</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>Windowsでの作業
+<ul>
+<li>Cドライブ直下にWSLというフォルダを作成する。</li>
+<li> ビルド済みのWindows用PulseAudioを次のサイトから上で作成したWSLフォルダにダウンロードする。
+<ul>
+<li><a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Ports/Windows/Support/">PulseAudio on Windows</a>
+<ul>
+<li><a href="http://bosmans.ch/pulseaudio/pulseaudio-1.1.zip">zipfile containing preview binaries (これをダウンロードする)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ダウンロードしたファイルを解凍する。以下の２つのファイルを変更する。
+<ul>
+<li>C:\WSL\pulseaudio-1.1\etc\pulse\default.paの61行目
+<ul>
+<li>変更前　<code>#load-module module-native-protocol-tcp</code></li>
+<li>変更後　<code>load-module module-native-protocol-tcp auth-anonymous=1</code></li>
+</ul>
+</li>
+<li>c:\WSL\pulseaudio-1.1\etc\pulse\daemon.confの39行目
+<ul>
+<li>変更前　<code>; exit-idle-time = 20</code></li>
+<li>変更後　<code>　exit-idle-time = -1</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>エクスプローラーで以下のファイルをダブルクリックしてPulseAudioサーバーを起動する。
+<ul>
+<li>C:\WSL\pulseaudio-1.1\bin\pulseaudio.exe</li>
+</ul>
+</li>
+<li>以下のようなウインドウが表示される。一番下の行に "daemon/main.c: Failed to load directory."と表示されるが問題ない。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_CWSLpulseaudio-11binpulseaudioexe_2020-9-2_15-38-35_No-00.png"><img class="aligncenter size-full wp-image-19103" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_CWSLpulseaudio-11binpulseaudioexe_2020-9-2_15-38-35_No-00.png" alt="" width="1019" height="375" /></a></li>
+<li>Windows Defender ファイアウォールでアプリを許可
+<ul>
+<li>アプリpulseaudioに通信の許可を与える。これをしないとWSLとWindows間で通信できない。方法については以下のリンクを参照。
+<ul>
+<li><a href="https://faq.nec-lavie.jp/qasearch/1007/app/servlet/relatedqa?QID=018029">Windows 10でWindows Defenderファイアウォールの設定をアプリごとに許可する方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Ubuntuでの作業
+<ul>
+<li>Pulseaudioのコマンドラインツールをインストールする。
+<ul>
+<li><code>$ sudo apt install pulseaudio-utils</code></li>
+</ul>
+</li>
+<li>WindowsのPulseaudioサーバーを使うための設定。~/.bashrcに以下の１行を追加する。
+<ul>
+<li><code>$ export PULSE_SERVER=tcp:$(grep nameserver /etc/resolv.conf | awk '{print $2}');</code></li>
+</ul>
+</li>
+<li>Pulseaudioサーバーと通信できるか次のコマンドで確認する。
+<ul>
+<li><code>$ source ~/.bashrc</code></li>
+<li><code>$ nc -vz $(grep nameserver /etc/resolv.conf | awk '{print $2}') 4713</code>
+<ul>
+<li>成功すると次のように表示される。</li>
+<li>nc: connection to 4713 port [tcp/*] succeeded!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>実　行</strong></p>
+<ul>
+<li>Windowsでの作業
+<ul>
+<li>エクスプローラーで以下のファイルをダブルクリックしてPulseAudioサーバーを起動する。
+<ul>
+<li>C:\WSL\pulseaudio-1.1\bin\pulseaudio.exe</li>
+</ul>
+</li>
+<li>以下のようなウインドウが表示される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_CWSLpulseaudio-11binpulseaudioexe_2020-9-2_15-38-35_No-00.png"><img class="aligncenter size-full wp-image-19103" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_CWSLpulseaudio-11binpulseaudioexe_2020-9-2_15-38-35_No-00.png" alt="" width="1019" height="375" /></a></li>
+</ul>
+</li>
+<li>Ubunutでの作業
+<ul>
+<li>これで音がなるはず。ウェブブラウザchromeを開きYoutubeで素敵な音楽でも聴いてみよう！</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

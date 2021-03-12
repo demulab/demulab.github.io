@@ -1,0 +1,93 @@
+---
+layout: post
+title: UR5をGazeboで動かす
+date: 2018-07-28 16:59:11.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  _oembed_e43b02fd5d5b77984ad7c2e7f4c40a16: "{{unknown}}"
+  _thumbnail_id: '14711'
+  views: '2889'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/14710.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/07/ur5-red.png"><img src="{{ site.baseurl }}/assets/images/2018/07/ur5-red.png" alt="" width="1024" height="636" class="aligncenter size-full wp-image-14717" /></a></p>
+<p>UR5+Robotiq GripperをGazeboで動作させたときのメモ。<a href="https://bundle-archive.plex.tv/utecrobotics/ur5">https://bundle-archive.plex.tv/utecrobotics/ur5</a>を参考にした。</p>
+<ul>
+<li>ROS バージョン: Kinetic</li>
+<li>&nbsp;必要なパッケージのインストール
+<ul>
+<li>sudo apt install ros-kinetic-ros-control ros-kinetic-ros-controllers</li>
+<li>sudo apt-get install ros-kinetic-gazebo-ros-control</li>
+<li>sudo apt-get install ros-kinetic-moveit</li>
+</ul>
+</li>
+<li>UR5 Robot + a Robotiq gripperパッケージのインストール
+<ul>
+<li><a href="https://bundle-archive.plex.tv/utecrobotics/ur5">このウェブサイト(https://bundle-archive.plex.tv/utecrobotics/ur5)　</a>のインストラクションに従う。
+<ul>
+<li>$ cd ~/catkin_ws/src</li>
+<li>$ git clone https://github.com/utecrobotics/ur5</li>
+<li>$ git clone https://github.com/utecrobotics/robotiq</li>
+<li>$ cd ..</li>
+<li>$ catkin_make</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Rvisでの表示
+<ul>
+<li>$ roslaunch ur5_description display_with_gripper.launch</li>
+</ul>
+</li>
+<li>Gazeboでのシミュレーション
+<ul>
+<li>Gazebo起動
+<ul>
+<li>$ roslaunch ur5_gazebo ur5_cubes.launch</li>
+<li>なお、シミュレーションが停止している状態で起動するので、上図の赤丸の部分をクリックして実行させないと動かなくて悩むことになる。</li>
+</ul>
+</li>
+<li>rqtのjoint trajectory controllerでの操作
+<ul>
+<li>$ rqt</li>
+<li>rqtのウインドウが開いたら、Plugins-&gt;Robot tools-&gt;joint trajectory controllerを選択</li>
+<li>下のウインドウが開くのでスライドバーを移動させるとロボットの関節が動く<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/07/rqt.png"><br />
+<img src="{{ site.baseurl }}/assets/images/2018/07/rqt.png" alt="" width="602" height="797" class="aligncenter size-full wp-image-14712" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<li>コマンドでの実行
+<ul>
+<li>&nbsp;グリッパーの開閉（valueは0.8が閉、0が開）
+<ul>
+<li><code>rosrun ur5_gazebo send_gripper.py --value 0.5</code></li>
+</ul>
+</li>
+<li>関節。send_joints.pyの中で各関節の角度が指定されているので、それらを変更すると好きな姿勢に指定できる。
+<ul>
+<li>rosrun ur5_gazebo send_joints.py</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>
+<p>&nbsp;</p>

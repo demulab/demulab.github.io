@@ -1,0 +1,159 @@
+---
+layout: post
+title: 'ODE Tutorial 13: Let''s make a pressure sensor !'
+date: 2007-01-09 14:40:26.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '991'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/364.html"
+---
+<p>This page was maily translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.</p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/01/sensor2.jpg" alt="" width="360" height="179" /></p>
+<p>It continues to the last time, utilizes the dJointFeedback  structure. This time the joint (the joint) the sample cord/code  which acquires the power which catches is introduced.</p>
+<p>When this is applied, you attach to the sole of a humanoid robot, you can simulate the pressure  sensor which is utilized in the measurement of ZMP.</p>
+<p><!-- ▼追記▼ --></p>
+<ul>
+<li><span style="font-size: medium; color: #000066;"><strong>void dJointSetFeedback (dJointID and dJointFeedback *);</strong></span><br />
+The dJointFeedback structure is set to the joint JointID  which acquires the information of power and torque.<br />
+typedef struct dJointFeedback {<br />
+dVector3 f1;    // The power which the joint has  caused to body 1<br />
+dVector3 t1;    // The torque which the joint has  caused to body 1<br />
+dVector3 f2;    //  The power which the joint has  caused to body 2<br />
+dVector3 t2;    // The torque which the joint has  caused to body 2<br />
+} dJointFeedback;</li>
+<li><span style="font-size: medium; color: #000066;"><strong>dJointFeedback *dJointGetFeedback (dJointID);</strong></span><br />
+Information of power and torque of the joint which it is  designated with dJointID is acquired.</li>
+</ul>
+<p>Next, the sample program which used this API is  introduced. It is the program which indicates the power which  the fixed joint (Fixed Joint) with attaches two boxes, depends on  there. It meaning that weight of the box is each 1kg, z axial  direction (upper part direction) the power of 9.8N being applied, you  insert and it is according to theory. With my environment  according to theory it had started hitting the value of 9.8.</p>
+<p>Furthermore, in the program you regard among and under two boxes the pressure sensor. When the pressure sensor of the  humanoid robot''s  sole is simulated, size of the box under the  paragraph and number should have been increased small reason are.<br />
+<!--more--><br />
+[code]<br />
+// sensor.cpp  by Kosei Demura  2006-7-26<br />
+#include<br />
+#include</p>
+<p>static dWorldID world;<br />
+static dSpaceID space;<br />
+static dGeomID  ground;<br />
+static dJointID fixed;<br />
+static dJointGroupID contactgroup;<br />
+dJointFeedback *feedback = new dJointFeedback;<br />
+dsFunctions fn;</p>
+<p>typedef struct {<br />
+dBodyID body;<br />
+dGeomID geom;<br />
+dReal   radius,length,width,height,mass;<br />
+} myLink;<br />
+myLink box,sensor;</p>
+<p>static void nearCallback (void *data, dGeomID o1, dGeomID o2)<br />
+{<br />
+static int MAX_CONTACTS = 10;<br />
+int i;</p>
+<p>//  do not collide if two bodies are conneted by a joint<br />
+dBodyID b1 = dGeomGetBody(o1);<br />
+dBodyID b2 = dGeomGetBody(o2);<br />
+if (b1 &amp;&amp; b2 &amp;&amp; dAreConnected (b1,b2)) return;</p>
+<p>dContact contact[MAX_CONTACTS];   //<br />
+int numc = dCollide(o1,o2,MAX_CONTACTS,&amp;contact[0].geom,<br />
+sizeof(dContact));<br />
+if (numc &gt; 0) {<br />
+for (i=0; i<br />
+contact[i].surface.mode  =  dContactSoftCFM | dContactSoftERP;<br />
+contact[i].surface.mu       = dInfinity;　　//<br />
+contact[i].surface.soft_cfm = 1e-8;<br />
+contact[i].surface.soft_erp = 1.0;<br />
+dJointID c = dJointCreateContact(world,contactgroup,&amp;contact[i]);<br />
+dJointAttach (c,dGeomGetBody(contact[i].geom.g1),<br />
+dGeomGetBody(contact[i].geom.g2));<br />
+}<br />
+}<br />
+}</p>
+<p>static void simLoop (int pause)<br />
+{<br />
+static int steps = 0;</p>
+<p>dSpaceCollide(space,0,&amp;nearCallback);<br />
+dWorldStep(world,0.01);<br />
+dJointGroupEmpty(contactgroup);</p>
+<p>feedback = dJointGetFeedback(fixed);　//  get  force and torque information<br />
+printf("%5d Force fx=%6.2f ",steps++,feedback-&gt;f1[0]);　//  x coordinate<br />
+printf("fy=%6.2f ",feedback-&gt;f1[1]);　　　　　　　　　　　　　//  y coordinate<br />
+printf("fz=%6.2f \n",feedback-&gt;f1[2]);　　　　　　　　　　　　//  z coordinate</p>
+<p>//  draw a box<br />
+dsSetColor(1.0,0.0,0.0);<br />
+dReal sides1[] = {box.length,box.width,box.height};<br />
+dsDrawBoxD(dBodyGetPosition(box.body),<br />
+dBodyGetRotation(box.body),sides1);</p>
+<p>//  draw a sensor<br />
+dsSetColor(0.0,0.0,1.0);<br />
+dReal sides2[] = {sensor.length,sensor.width,sensor.height};<br />
+dsDrawBoxD(dBodyGetPosition(sensor.body),<br />
+dBodyGetRotation(sensor.body),sides2);<br />
+}</p>
+<p>void start()<br />
+{<br />
+static float xyz[3] = {0.0,-3.0,1.0};<br />
+static float hpr[3] = {90.0,0.0,0.0};<br />
+dsSetViewpoint (xyz,hpr);<br />
+}</p>
+<p>void  setDrawStuff() {<br />
+fn.version = DS_VERSION;<br />
+fn.start   = &amp;start;<br />
+fn.step    = &amp;simLoop;<br />
+fn.command = NULL;<br />
+fn.stop    = NULL;<br />
+fn.path_to_textures = "../../drawstuff/textures";<br />
+}</p>
+<p>int main (int argc, char **argv)<br />
+{<br />
+setDrawStuff();</p>
+<p>world = dWorldCreate();<br />
+space = dHashSpaceCreate(0);<br />
+contactgroup = dJointGroupCreate(0);<br />
+dWorldSetGravity(world,0,0,-9.8);</p>
+<p>ground = dCreatePlane(space,0,0,1,0);</p>
+<p>dMass m1;<br />
+dReal x0 = 0.0, y0 = 0.0, z0 = 0.0;</p>
+<p>//  a sensor  (blue box)<br />
+sensor.length = 0.2;  sensor.width  = 0.2;<br />
+sensor.height = 0.2;  sensor.mass   = 1.0;<br />
+sensor.body   = dBodyCreate(world);<br />
+dMassSetZero(&amp;m1);<br />
+dMassSetBoxTotal(&amp;m1,sensor.mass,sensor.length,sensor.width,sensor.height);<br />
+dBodySetMass(sensor.body,&amp;m1);<br />
+dBodySetPosition(sensor.body, x0, y0, 0.5 * sensor.height + z0);</p>
+<p>sensor.geom = dCreateBox(space,sensor.length,sensor.width,sensor.height);<br />
+dGeomSetBody(sensor.geom,sensor.body);</p>
+<p>//  a box   (red box）<br />
+box.length = 0.2;  box.width  = 0.2;<br />
+box.height = 0.2;  box.mass   = 1.0;<br />
+box.body   = dBodyCreate(world);<br />
+dMassSetZero(&amp;m1);<br />
+dMassSetBoxTotal(&amp;m1,box.mass,box.length,box.width,box.height);<br />
+dBodySetMass(box.body,&amp;m1);<br />
+dBodySetPosition(box.body, x0, y0, sensor.height + 0.5 * box.height + z0);</p>
+<p>box.geom = dCreateBox(space,box.length,box.width,box.height);<br />
+dGeomSetBody(box.geom,box.body);</p>
+<p>//  a fixed joint<br />
+fixed = dJointCreateFixed(world,0);<br />
+dJointAttach(fixed,box.body,sensor.body);<br />
+dJointSetFixed(fixed);</p>
+<p>//  Set a joint to retrieve force and torque information<br />
+dJointSetFeedback(fixed,feedback);</p>
+<p>dsSimulationLoop(argc,argv,352,288,&amp;fn);<br />
+dWorldDestroy(world);<br />
+return 0;<br />
+}</p>
+<p>[/code]</p>

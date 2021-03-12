@@ -1,0 +1,62 @@
+---
+layout: post
+title: Mecab (形態素解析エンジン）のインストールメモ
+date: 2016-03-22 15:09:11.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  views: '371'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/12628.html"
+---
+<p>@Homeのタスクで形態素解析する必要がでてきたので、MECABをUbunt14.04にパッケージでインストールしたときのメモ。ユーザ辞書の作成で少しはまった。</p>
+<p>以下のサイトを参照した。</p>
+<ul>
+<li>https://gist.github.com/YoshihitoAso/9048005</li>
+<li>https://gist.github.com/Haroperi/48dbd30b557c585ad287</li>
+</ul>
+<p>インストール</p>
+<ul>
+<li>$ sudo apt-get install mecab libmecab-dev mecab-ipadic</li>
+<li>$ sudo aptitude install mecab-ipadic-utf8</li>
+<li>$ sudo apt-get install python-mecab</li>
+</ul>
+<p>ユーザ辞書の作成</p>
+<ul>
+<li>ユーザ辞書の元になるcsvファイルを作成する。ここではファイル名をuser.dicとする。
+<ul>
+<li>グリーンティ,,,1,名詞,一般,*,*,*,*,グリーンティ,グリーンティ,グリーンティ</li>
+</ul>
+</li>
+<li>csvファイルのあるディレクトリへ移動
+<ul>
+<li>例： cd  ~/catkin_ws/src/restaurant_voice</li>
+</ul>
+</li>
+<li>辞書を作成する
+<ul>
+<li>$ `mecab-config --libexecdir`/mecab-dict-index -d /usr/share/mecab/dic/ipadic -u user.dic -f utf-8 -t utf-8 user.csv</li>
+</ul>
+</li>
+<li>mecabの設定ファイルを編集する
+<ul>
+<li>ユーザ辞書登録<br />
+/etc/mecabrcの9行目を以下のように設定<br />
+userdic = /home/user_name/catkin_ws/src/restaurant_voice/user.dic</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>
+<p style="padding-left: 30px;">

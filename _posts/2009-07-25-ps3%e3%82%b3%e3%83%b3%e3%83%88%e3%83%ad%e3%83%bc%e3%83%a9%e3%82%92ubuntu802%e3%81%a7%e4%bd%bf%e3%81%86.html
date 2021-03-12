@@ -1,0 +1,113 @@
+---
+layout: post
+title: つくばチャレンジ2009：PS3コントローラをUbuntu8.02で使う
+date: 2009-07-25 17:13:30.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+- ode
+- つくばチャレンジ
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '3316'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/4483.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2009/07/buggy.jpg"><img class="aligncenter size-medium wp-image-4489" title="PS３のコントローラでODEのデモを動かす" src="{{ site.baseurl }}/assets/images/2009/07/buggy-300x186.jpg" alt="PS３のコントローラでODEのデモを動かす" width="450" height="300" /></a></p>
+<p>PS3のワイヤレスコントローラをLinuxで使い、ODEのシミュレーションや本物のロボットを動かせるといろいろ便利ですね。  調べて見るとすでにその方法があり、比較的簡単にできましたので、ここにメモとして記録します。参考にしたページは次のページです。おまけに、ODEのデモプログラムdemo_buggyをコントローラで動かすサンプルプログラムを掲載します。</p>
+<ul>
+<li><a href="https://help.ubuntu.com/community/Sixaxis">Sixaxis - Community Ubuntu Documentations</a></li>
+</ul>
+<p><!--more--></p>
+<p><strong>作業手順</strong></p>
+<p><strong>準　備</strong></p>
+<ul>
+<li>Ubuntu 8.04のみを対象とします。</li>
+<li>libusb-devとlibusb-0.1-4がインストールされていること
+<ul>
+<li>sudo apt-get install libusb-dev libusb-0.1-4</li>
+</ul>
+</li>
+<li>/home/ユーザ名/src/ps3のディレクトリを作り、<a href="http://demura.net/wordpress/wp-content/uploads/2009/07/bluez.tgz">このbluez.tgz</a>をダウンロードして展開する。
+<ul>
+<li>tar xvzf  bluez.tgz</li>
+</ul>
+</li>
+</ul>
+<p><strong>USBのペアリング</strong></p>
+<ul>
+<li>コントローラをUSBポートに有線で接続する</li>
+<li><a href="https://help.ubuntu.com/community/Sixaxis?action=AttachFile&amp;do=get&amp;target=sixpair.c">sixpair.c</a>をダウンロードしてコンパイルする。同じファイルは先ほどダウンロードしたbluez.tgzの中にもある。
+<ul>
+<li>gcc -o sixpair sixpair.c -lusb</li>
+</ul>
+</li>
+<li>ペアリング
+<ul>
+<li>sudo ./sixpair</li>
+</ul>
+</li>
+<li>USBケーブルを抜く</li>
+</ul>
+<p><strong>Bluez-Utilのインストール</strong></p>
+<ul>
+<li>準備でダウンロードしたBluez-Utilをインストールします。これは、PS3コントローラを認識するためのパッチ済みです。</li>
+<li>インストール
+<ul>
+<li>sudo dpkg -i  bluez-utils_3.26-0ubuntu6_i386.deb</li>
+</ul>
+</li>
+<li>アップグレードの防止：Bluz-utilがシステムにより自動アップグレードされると、PS3コントローラは認識されなくなります。それを防止します。
+<ul>
+<li>echo bluez-utils hold | dpkg --set-selections</li>
+</ul>
+</li>
+</ul>
+<p><strong>Bluetoothの再起動</strong></p>
+<ul>
+<li>コントローラを認識させるためにデーモンを再起動します。</li>
+<li>サービスの停止
+<ul>
+<li>sudo /etc/init.d/bluetooth stop</li>
+</ul>
+</li>
+<li>hicdプロセスの停止
+<ul>
+<li>sudo killall hcid hidd</li>
+</ul>
+</li>
+<li>HIDPデーモンの起動
+<ul>
+<li>hidd --server --nocheck -n</li>
+<li>コントローラのPSボタンを押す。成功するとNew HID device ... とメッセージが表示される。</li>
+<li>コントロールキーを押しながらCキーを押すしてデーモンを終了させる。</li>
+</ul>
+</li>
+<li>サービスの開始
+<ul>
+<li>sudo /etc/init.d/bluetooth start</li>
+</ul>
+</li>
+</ul>
+<p><strong>テスト</strong></p>
+<ul>
+<li>ODE0.11.1をインストールしている方は、この<a href="http://demura.net/wordpress/wp-content/uploads/2009/07/joystickbuggy090725.tgz">joystickbuggy090725.tgz</a>をダウンロードして、/home/ユーザ名/src/ode-0.11.1/myprogの中で展開してください。codeblocksのプロジェクトファイルbuggy.cbpがあるのでそれを使いビルドしてください。</li>
+<li>設定がうまくできていると、左側のジョイスティックを引くと前進し、左に倒すと左折します。</li>
+</ul>
+<p><strong>次回からの利用</strong></p>
+<ul>
+<li>設定が一度済んでしまえば次回からは自動的にPSコントローラを認識し利用可能となります。</li>
+</ul>
+<p><br class="spacer_" /></p>
+<p>以上で終わりです。</p>

@@ -1,0 +1,46 @@
+---
+layout: post
+title: ODE0.9 リリース
+date: 2007-10-15 21:54:49.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '512'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/453.html"
+---
+<p> <br />
+<img src="{{ site.baseurl }}/assets/images/2007/10/fedora7.jpg" alt="ODE0.9の新しいデモ" width="512" height="384" /></p>
+<p><span style="font-size: x-small;">ODE0.9の新しいデモdemo_basket。ボールが斜面をころがりバスケットのリングに吸い込まれます。</span></p>
+<p>ODE0.9がリリースされました． </p>
+<p>ODEは初版の0.01が2001年4月9日にリリースされ，それからもう6年半も経ちかなり成熟したライブラリになりました． 私は0.01がリリースされた時点から使い始めました．当初はロボット学会では私の他には１研究室ぐらいしかODEを使用していませんでしたが，今日ではOpenHRPと並んでメジャーになっています．</p>
+<p>さて，sourceforgeを見ると0.9のタイムスタンプが2007-9-27になっていますが，ODEのmailing listでは10月12日のJasonのメールで”Okay, 0.9 is now released.”と言っています．テストしたところ問題なかったので日付がずれたのではないかと思います．</p>
+<p>今回の変更は当初バージョンナンバーが0.8.2となったぐらいのバグ取りがメインの些細な変更です．</p>
+<p>主な変更点　0.8 →　0.9</p>
+<p><!--more--></p>
+<p>==============================================</p>
+<ul>
+<li>ode-バージョン番号/ode/testの名前がode-バージョン番号/ode/demoに変更</li>
+<li>fixed and ball jointへのerp/cfm パラメータの追加</li>
+<li>contact bufferのチェック方法の変更</li>
+<li>trimesh-trimeshとtrimesh-boxが接触する場合に最も深い接触点が選択されないバク訂正</li>
+<li>GIMPACTライブラリのtrimesh-capsule, trimesh-trimesh, trimesh-plane, trimesh-sphereの最適化</li>
+<li>必要のないメモリ再割り当てや解放の削除</li>
+<li>ODE.NETを使用時に Richard Barringtonのmodel loader を追加</li>
+<li>OPCODEの trimesh-trimesh衝突判定にFrancisco Leonの方法を追加．デフォルトではオフになっているのでcollision_trimesh_trimesh.cpp で<br />
+#define dTRIMESH_OPCODE_USE_NEW_TRIMESH_TRIMESH_COLLIDER 1<br />
+と宣言するとアクティブになる．内容についてはメーリングリスト記事を参照のこと．</li>
+</ul>
+<p>なお，変更点の詳細については<a href="http://sourceforge.net/project/shownotes.php?release_id=542627&amp;group_id=24884">このリリースノートとログ変更</a>をご覧ください</p>

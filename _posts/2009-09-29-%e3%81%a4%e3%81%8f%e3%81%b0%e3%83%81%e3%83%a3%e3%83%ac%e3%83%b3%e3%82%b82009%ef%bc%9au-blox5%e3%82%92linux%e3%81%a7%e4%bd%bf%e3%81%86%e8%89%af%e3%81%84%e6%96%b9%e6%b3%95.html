@@ -1,0 +1,31 @@
+---
+layout: post
+title: つくばチャレンジ2009：U-blox5をLinuxで使う良い方法
+date: 2009-09-29 22:25:46.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '669'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/4890.html"
+---
+<p>demura.netチームはGPSとしてU-blox社のEVK-5Hを使っています。ＧＰＳのデータを読むためにNMEAのライブラリを使っていましたが、非常に不安定でデータを読むときと読めないときがあり問題でした。チェックサムエラーが出るなど困ったものです。さんざん悩みました。でも、U-blox社の資料を読むとgpsdを勧めているのですね。これは、裏を返すと他の方法では難しいということではないでかね。</p>
+<p>そこで、<a href="http://gpsd.berlios.de/">gpsd</a>を使うことにしました。gpsdはとても賢くubloxのバイナリを読むことができます。gpsdのパッケージにはgpsdクライアント用のプログラムもあり数時間で乗り換えることができました。</p>
+<p>ubloxをLinuxで使用する方はgpsdをお勧めします。他に何か良い方法があればコメント頂ければありがたいです。</p>
+<ul>
+<li><a href="http://gpsd.berlios.de/">gpsd - a gps service deamon</a></li>
+</ul>
+<p>でむ</p>

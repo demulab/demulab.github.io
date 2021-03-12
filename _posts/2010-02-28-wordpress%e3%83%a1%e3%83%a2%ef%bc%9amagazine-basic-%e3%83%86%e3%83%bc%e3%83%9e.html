@@ -1,0 +1,38 @@
+---
+layout: post
+title: WordPressメモ：Magazine Basic テーマ
+date: 2010-02-28 23:32:43.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '846'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/6413.html"
+---
+<p>demura.netがほぼ普及しました．ブログ作成システムWordPress，データベースMySQL，並びに外観のテーマ<a href="http://themes.bavotasan.com/our-themes/basic-themes/magazine-basic">Magazine Basic</a>のバージョンアップと多くの変更があり多少時間がかかり，多くの読者の方にご迷惑をおかけしたち思います．</p>
+<p>さて，作業記録としてMagazine Basicテーマのカスタマイズをメモします．Magazine Basicはbavotasan.comが作成したテーマで雑誌形式のブログ用，ただし，英語用なのでいくつか作業する必要があります．トップページに画像のサムネールを自動表示してくれ，フォーマットがシンプルなので比較的気に入っています．</p>
+<p><!--more--></p>
+<ul>
+<li>WP Multibyte Patchプラグインの導入：WordPress日本語版に同封されているので使用するだけ</li>
+<li>style.css：文字の大きさや色，余白などを変更．標準では見出しh1, h2のフォントが大きすぎる</li>
+<li>footer.php: copyrightの名前を変更</li>
+<li>header.php: 標準ではナビゲーションバー（背景青）に投稿記事のカテゴリ，サブナビゲーションバー（背景白）に固定ページが表示される．固定ページの方がアクセスが多いので，逆に設定した．設定方法は関連するコードを入れ替えるだけ．また，ヘッダーの左側にODEのデモ動画を挿入した．</li>
+<li>index.php: 最近の記事としてc2c_get_recent_posts関数を使い15件表示．ぺージビュー用のカウンター設置</li>
+<li>sidebar.php:  以前使っていたsidebarをベースに少し変更．</li>
+<li>page.php: ぺージビュー用のカウンター設置</li>
+<li>archive.php: 以前のバージョンのMagazine Basic-2.4.6ではcategory.phpがあったが，2.5.6ではarchive.phpに統合されたもよう．表示フォーマットを変更した．</li>
+<li>option3.php: Magazine BasicはWordPressの設定からもいろいろカスタマイズ可能．このブログではoptionの3を利用している．標準では全文表示か概要表示のどちらかしか選べない．このphpを変更してトップの記事だけ全文表示，あとは概要表示に変更した．</li>
+</ul>
+<p style="text-align: right;">でむ</p>

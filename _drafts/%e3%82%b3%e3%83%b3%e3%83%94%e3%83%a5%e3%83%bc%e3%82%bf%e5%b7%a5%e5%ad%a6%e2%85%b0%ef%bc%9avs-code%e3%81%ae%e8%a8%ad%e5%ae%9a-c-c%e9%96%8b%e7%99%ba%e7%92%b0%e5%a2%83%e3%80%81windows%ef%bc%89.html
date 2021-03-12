@@ -1,0 +1,91 @@
+---
+layout: post
+title: コンピュータ工学Ⅰ：VS Codeの設定 (C/C++開発環境、Windows）
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '17731'
+  views: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/17730.html"
+---
+<p>C言語の授業で使うのでC/C++の開発環境をWindows版のVS Codeにインストール・設定します。コンパイラーはGccを使います。</p>
+<p><strong>環　境</strong></p>
+<ul>
+<li style="text-align: justify;">Windows 10 Education 64 bit, バージョン：2004, OSビルド：190241.207</li>
+</ul>
+<p><strong>Microsoft C/C++拡張機能のインストール</strong></p>
+<ul>
+<li>VS Codeを起動して開く。</li>
+<li>左にあるサイドバーの拡張機能をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs3-1.png"><img class="aligncenter size-large wp-image-17731" src="{{ site.baseurl }}/assets/images/vs3-1-1024x654.png" alt="" width="1024" height="654" /></a></li>
+<li>１の検索窓に「C/C++」と入力すると、２に「C/C++拡張機能」が表示されるので「インストール」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs3-2.png"><img class="aligncenter size-large wp-image-17732" src="{{ site.baseurl }}/assets/images/vs3-2-1024x654.png" alt="" width="1024" height="654" /></a></li>
+<li>C/C++拡張機能がインストールされる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs3-3.png"><img class="aligncenter size-large wp-image-17733" src="{{ site.baseurl }}/assets/images/vs3-3-1024x654.png" alt="" width="1024" height="654" /></a></li>
+</ul>
+<p><strong>Mingw-w64のインストール</strong></p>
+<ul>
+<li>Mingw-w64はWindows上でLinuxで標準となっているgccコンパイラーをサポートしているインストールする。<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download">ここをクリックしてダウンロードする。</a></li>
+<li>ダウンロードしたmingw-w64-install.exeをダブルクリックしてインストーラーを起動する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs3-4.png"><img class="aligncenter size-full wp-image-17737" src="{{ site.baseurl }}/assets/images/vs3-4.png" alt="" width="919" height="343" /></a></li>
+<li>「この不明な発行元からのアプリがデバイスに変更を加えることを強化しますか？」と表示されるので「はい」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/mingw1.jpg"><img class="aligncenter size-medium wp-image-17738" src="{{ site.baseurl }}/assets/images/mingw1-300x202.jpg" alt="" width="300" height="202" /></a></li>
+<li>「Welcome to the MinGW-W64 Installation!」の画面になるので「Next &gt;」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs3-5.png"><img class="aligncenter wp-image-17739 size-full" src="{{ site.baseurl }}/assets/images/vs3-5.png" alt="" width="567" height="426" /></a></li>
+<li>「Settings」の画面になるの以下のように設定して「Next &gt;」をクリックする。デフォルトだと32ビット版のi686なのでWindows10が32ビット版以外（ほとんどの学生）はx86_64を選択する。
+<ul>
+<li>Version:8.1.0</li>
+<li><strong>Architecture:x86_64</strong>    (Windows10が32ビット版の場合はi686を選択）</li>
+<li>Threads: posix</li>
+<li>Exception: seh</li>
+<li>Build revision:0<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/ws3-6.png"><img class="aligncenter size-full wp-image-17741" src="{{ site.baseurl }}/assets/images/ws3-6.png" alt="" width="567" height="426" /></a></li>
+</ul>
+</li>
+<li>「Installation folder」の画面になるのでDestination folderを以下に変更（ディレクトリ名に空白があるとトラブルの元なので初めの"\Program Files"を消す）して、「Next &gt;」をクリックする。
+<ul>
+<li>C:\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs3-10.png"><img class="aligncenter size-full wp-image-17746" src="{{ site.baseurl }}/assets/images/vs3-10.png" alt="" width="567" height="426" /></a></li>
+</ul>
+</li>
+<li>「Installing Files」の画面になるのでしばらく待つ。私の環境（光回線）では数分かかった。緑色のバーが右端までいき「Click Next to continue the installation.」と表示されたら「Next &gt;」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs3-8.png"><img class="aligncenter size-full wp-image-17743" src="{{ site.baseurl }}/assets/images/vs3-8.png" alt="" width="567" height="426" /></a></li>
+<li>以下の画面になったらMinGW-W64のインストールは終了。「Finish」をクリックしてインストール作業をやめる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs3-9.png"><img class="aligncenter size-full wp-image-17744" src="{{ site.baseurl }}/assets/images/vs3-9.png" alt="" width="567" height="426" /></a></li>
+</ul>
+<p>&nbsp;</p>

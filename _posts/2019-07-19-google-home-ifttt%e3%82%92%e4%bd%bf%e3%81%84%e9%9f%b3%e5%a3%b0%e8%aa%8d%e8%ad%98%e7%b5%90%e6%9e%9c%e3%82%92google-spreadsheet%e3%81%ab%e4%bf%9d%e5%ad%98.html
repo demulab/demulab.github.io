@@ -1,0 +1,68 @@
+---
+layout: post
+title: 'Google Home: IFTTTを使い音声認識結果をGoogle SpreadSheetに保存'
+date: 2019-07-19 11:39:39.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_toc_novisible: '0'
+  update_level: high
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '15934'
+  views: '242'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/15914.html"
+---
+<p>IFTTTを使いGoogle Homeの音声認識結果をGoogle SpreadSheetに保存したときのメモ</p>
+<ul>
+<li>IFTTTの設定
+<ul>
+<li><a href="https://ifttt.com">IFTTTサイト</a>でアカウントの作成とログイン（説明は略）。gmailでアカウントを作ると作業が簡単。</li>
+<li>赤で囲んだMy Appletsをクリック<br />
+<img class="aligncenter size-large wp-image-15916" src="{{ site.baseurl }}/assets/images/2019/07/ifttt1-1-1024x894.png" alt="" width="1024" height="894" /></li>
+<li>赤で囲んだNew Appletをクリック<br />
+<img class="aligncenter size-large wp-image-15917" src="{{ site.baseurl }}/assets/images/2019/07/ifttt2-1024x894.png" alt="" width="1024" height="894" /></li>
+<li>赤で囲んだthisをクリック（以降、赤で囲んだは省略）<br />
+<img class="aligncenter size-large wp-image-15918" src="{{ site.baseurl }}/assets/images/2019/07/ifttt3-1024x894.png" alt="" width="1024" height="894" /></li>
+<li>検索窓にgooと入力するとgoogleのサービスが表示されるのでGoogle Assistantをクリック<img class="aligncenter size-large wp-image-15919" src="{{ site.baseurl }}/assets/images/2019/07/ifttt4-1024x894.png" alt="" width="1024" height="894" /></li>
+<li>Say a phrase with a text ingredientをクリック<br />
+<img class="aligncenter size-large wp-image-15921" src="{{ site.baseurl }}/assets/images/2019/07/ifttt5-1024x894.png" alt="" width="1024" height="894" /></li>
+<li>ここではcommandまたはrecognizeまたはhappy robotと発話したら、次のActionになるようにトリガー(trigger)となるフレーズ(phrase)を入力する。また、Google Assistantが音声認識したことがわかるように、認識結果をオウム返しに発話させる。なお、英語での利用を考えているのでLanguageにEnglishを選択した。日本語の場合は日本語のphraseを入力しJapaneseを選択すれば良い。なお、僕の発音が悪いのかcommandをよく認識されるが、recognizeは微妙、happy robotは全く認識されなかった。rの発音が問題かもしれない。Create triggerをクリックする。<br />
+<img class="aligncenter size-large wp-image-15922" src="{{ site.baseurl }}/assets/images/2019/07/ifttt6-957x1024.png" alt="" width="957" height="1024" /></li>
+<li>次の画面になるので、thatをクリックする。<img class="aligncenter size-large wp-image-15923" src="{{ site.baseurl }}/assets/images/2019/07/ifttt7-957x1024.png" alt="" width="957" height="1024" /></li>
+<li>検索窓にgoogle sheetsと入力し、GoogleSheetsをクリックする。<img class="aligncenter size-large wp-image-15925" src="{{ site.baseurl }}/assets/images/2019/07/ifttt8-957x1024.png" alt="" width="957" height="1024" /></li>
+<li>ここでは、認識結果の履歴をみたいので、Add row to spreadsheetをクリックする。<br />
+<img class="aligncenter size-large wp-image-15926" src="{{ site.baseurl }}/assets/images/2019/07/ifttt9-957x1024.png" alt="" width="957" height="1024" /></li>
+<li>スプレッドシートやGoogleDriveのフォルダー名を変更したい場合は変更する。ここでは、このままCreate actionをクリックする。<img class="aligncenter size-large wp-image-15927" src="{{ site.baseurl }}/assets/images/2019/07/ifttt10-957x1024.png" alt="" width="957" height="1024" /></li>
+<li>これで設定作業終了、Finishをクリックする。<img class="aligncenter size-large wp-image-15929" src="{{ site.baseurl }}/assets/images/2019/07/ifttt11-1-957x1024.png" alt="" width="957" height="1024" /></li>
+<li>うまく設定できたかテストする。ChecknowをクリックしてGoogle Homeに"OK Google Command"と話してからすぐ認識してもらいたい言葉を発話する。Google Homeが"You said ... "と発話したら成功。GoogleSheetに音声認識結果が記録されていることも確認する。<a href="https://demura.net/wordpress/wp-content/uploads/2019/07/ifttt12-2.png"><img class="aligncenter size-large wp-image-15934" src="{{ site.baseurl }}/assets/images/2019/07/ifttt12-2-874x1024.png" alt="" width="874" height="1024" /></a><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/07/ifttt13.png"><img class="aligncenter size-full wp-image-15933" src="{{ site.baseurl }}/assets/images/2019/07/ifttt13.png" alt="" width="581" height="260" /></a></li>
+</ul>
+</li>
+</ul>
+<p>終わり。</p>

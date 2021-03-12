@@ -1,0 +1,78 @@
+---
+layout: page
+title: 5. ボディ（剛体）とジオメトリ（形状）
+date: 2008-09-15 10:12:40.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '12887'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode5"
+---
+<p>[caption id="attachment_1767" align="alignnone" width="400" caption="物体の属性：ボディとジオメトリ"]<a href="http://demura.net/wordpress/wp-content/uploads/2008/09/bodygeom.jpg"><img class="size-full wp-image-1767" title="bodygeom" src="{{ site.baseurl }}/assets/images/2008/09/bodygeom.jpg" alt="物体の属性： ボディとジオメトリ" width="400" height="384" /></a>[/caption]</p>
+<p>ODE(Open Dynamics Engine)初級講座の５回目です。今回は，動力学計算の対象となるボディ(剛体，body)と衝突検出計算の対象となるジオメトリ(geometry)について説明します．<br class="spacer_" /></p>
+<p>ODEでは動力学計算と衝突検出計算が独立に実装されています。この利点は，色々な衝突検出計算ライブラリを簡単にODEに組み込むことができることです。　現在，ODEは衝突検出ライブラリとしてOPCODEが標準で，Gimpactも利用可能です。さらに，Bulletの衝突検出も組み込もうかという話もあります。OPCODEはOpenHRP3でも使われていますが，Gimpactの方が精度が高いといわれています。</p>
+<p>もう一つの利点としては，物体に対して動力学の計算だけ，あるいは衝突検出計算だけをできることです。例えば，つくばチャレンジのシミュレータを作るときに出入り口のコンクリートブロック，ビルや木などに関してはロボットとの衝突検出計算だけをしてくれれば良い場合が多いですね。</p>
+<p>このような利点を生かすために，ODEでは衝突検出機能を使用するには衝突検出用の<span style="color: #0000ff;"><strong>スペース</strong></span>(space）と動力学計算用の<span style="color: #0000ff;"><strong>ワールド</strong></span>(world)の２つを生成する必要があります。それに伴い，物体に２つの属性，つまり，動力学計算の対象となる<span style="color: #0000ff;"><strong>ボディ</strong></span>(剛体，body)と衝突検出計算の対象となる<span style="color: #0000ff;"><strong>ジオメトリ</strong></span>(geometry)を持たせています。なお，剛体のことを英語でRigid Bodyといい，Geometryとは幾何学的な形状という意味です。</p>
+<p>ボディとジオメトリが別々に実装され，別々のワールドやスペースに存在するために，両者を関連付ける必要があります．</p>
+<p>以下，物体の作り方を説明します．</p>
+<p><strong>(1) ボディの作り方</strong></p>
+<p>ボディは以下の順番に従って作ります．</p>
+<ol>
+<li><span style="color: #993300;"><strong>ボディの生成 dBodyID　dBodyCreate(dWorldID world);</strong></span><br />
+ ボディをワールドworld内に生成し，ボディのIDを返します．</li>
+<li><span style="color: #993300;"><strong>質量パラメータの初期化 void　dMassSetZero(dMass *mass);</strong></span><br />
+ 質量，重心位置，慣性モーメントなどが入っている質量パラメータmassを初期化します．</li>
+<li><span style="color: #993300;"><strong>質量パラメータの計算 void　dMassSet***Total(dMass *mass, dReal total_mass, ... );</strong></span><br />
+ ***にはボディの種類(Shpere, Box, Cylinder, Capsuleなど）が入ります．massは質量パラメータ，total_massはボディの全質量．なお，引き数はボディの種類によって違うので省略しています．詳細はAPI集をご覧ください．</li>
+<li><span style="color: #993300;"><strong>ボディに質量パラメータを設定 void　dBodySetMass(dBodyID body, const dMass *mass);</strong></span><br />
+ ボディbodyに質量パラメータmassを設定します．</li>
+<li><span style="color: #993300;"><strong>ボディの位置を設定 void dBodySetPosition(dBodyID body, dReal x, dReal y, dReal z);</strong></span><br />
+ ボディbodyを絶対座標系(x,y,z)に設定します．</li>
+<li><span style="color: #993300;"><strong>ボディの姿勢を設定　void dBodySetRotation(dBodyID, const dMatrix3 R);</strong></span><br />
+ ボディbodyの姿勢を回転行列Rに設定します．</li>
+</ol>
+<p><strong>(2) ジオメトリの作り方</strong></p>
+<p style="padding-left: 30px;">次にジオメトリの作り方を紹介します．ボディと比較すると簡単です．ジオメトリの種類に対応した以下のAPIを呼び出すだけです．</p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreateBox (dSpaceID space, dReal lx, dReal ly, dReal lz);</strong></span></li>
+</ul>
+<p style="padding-left: 30px;">space で指定されたスペースにx,y,z 軸に沿った長さlx,ly,lz の直方体ジオメトリを生成し，そのID 番号を返す．直方体ジオメトリの参照点はその重心である．</p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreateCapsule(dSpaceID space, dReal r, dReal l);</strong></span></li>
+</ul>
+<p style="padding-left: 30px;">space で指定されたスペースに半径r，長さl のカプセルジオメトリを生成し，そのID 番号を返す．カプセルは普通の円柱の両端に半球を被せたようなものである．この特徴は衝突検出の内部コードを拘束かつ正確にすることができる．引数のlength には半球のキャップを入れない．キャップの半径は円柱の半径radius と同じである．</p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreateCylinder(dSpaceID space, dReal r, dReal l);</strong></span></li>
+</ul>
+<p style="padding-left: 30px;">スペースspaceに半径r，長さl の円柱ジオメトリを生成し，そのID 番号を返す． <strong></strong></p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreateSphere(dSpaceID space, dReal r);</strong></span></li>
+</ul>
+<ul>
+</ul>
+<p style="padding-left: 30px;">半径rの球ジオメトリを生成し，そのID 番号を返す．</p>
+<ul>
+<li><span style="color: #993300;"><strong>dGeomID dCreatePlane(dSpaceID space, dReal a, dReal b, dReal c, dReal d);</strong></span></li>
+</ul>
+<p style="padding-left: 30px;">平面ジオメトリを与えられた引数により生成し，そのID 番号を返す．引数space が0 でなければ，そのspace に平面ジオメトリを挿入する．引数a,b,c,d は平面の方程式　ax+by+cz = d のパラメータである．平面の法線ベクトルは(a,b,c) であり長さは１でなければならない．平面ジオメトリは設置不可能(non-placeable)，つまり位置や姿勢を定義できない特別なジオメトリで常に絶対座標系で定義しなければならない．つまり，平面オブジェクトは常に静的な環境の一部として使われることを仮定している．</p>
+<p style="padding-left: 30px;"> </p>
+<p><strong>（３）　ボディとジオメトリの対応付け</strong></p>
+<ul>
+<li> <span style="color: #993300;"><strong>void dGeomSetBody(dGeomID geom, dBodyID body);</strong></span>
+<p>ジオメトリgeomをボディbodyに関連付けます．</p>
+</li>
+</ul>
+<p>今回，サンプルコードはありませんが，ODEを使いこなす上でとても重要な箇所でした。次回は，サンプルコードを使い，実際に衝突検出の方法について勉強します。</p>

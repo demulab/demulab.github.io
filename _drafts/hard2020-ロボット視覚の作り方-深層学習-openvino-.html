@@ -1,0 +1,171 @@
+---
+layout: post
+title: HARD2020：ロボット視覚の作り方（深層学習：OpenVino）
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- HARD
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>この記事はHARD2020（Home AI Robot Development)ワークショップ用です。今回は深層学習用のフレームワークIntelのOpenVinoを使います。この作業は時間がかかります。ダウンロードするファイルも大きくソースからビルドするので２時間は必要です。</p>
+<p><strong>OpenVinoのインストール</strong></p>
+<ul>
+<li>準備
+<ul>
+<li><code>$ sudo apt install python3-pip python3-networkx</code></li>
+<li><code>$ pip3 install numpy</code></li>
+</ul>
+</li>
+<li> ダウンロード
+<ul>
+<li> まず、OpenVinoを次のコマンドでダウンロードする。ファイルが約1.43GBととても大きいので時間がかかる。私の環境では約20分かかった。
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15078/l_openvino_toolkit_p_2018.5.455.tgz</code></li>
+<li><code>$ tar xvf l_openvino_toolkit_p_2018.5.455.tgz</code></li>
+<li><code>$ cd l_openvino_toolkit_p_2018.5.455</code></li>
+<li><code>$ sudo -E ./install_cv_sdk_dependencies.sh</code></li>
+<li>次のコマンドでインストールする。ディスクの空き容量が1.6GB必要。いろいろ聞かれるがすべてacceptで進む。ライセンスの項目はaccpetしないとインストールできない。
+<ul>
+<li><code>$ sudo ./install_GUI.sh</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>サンプルコードのビルド
+<ul>
+<li><code>$ source /opt/intel/computer_vision_sdk/bin/setupvars.sh</code></li>
+<li><code>$ cd /opt/intel/computer_vision_sdk/deployment_tools/inference_engine</code></li>
+<li><code>$ sudo chmod a+w samples</code></li>
+<li><code>$ cd samples</code></li>
+<li><code>$ mkdir build</code></li>
+<li><code>$ cd build</code></li>
+<li><code>$ cmake ..</code></li>
+<li><code>$ make -j $(nproc)</code></li>
+<li>intelの説明どおりするとldconfigできないので、邪魔しているファイルを消す。ldconfigコマンドは共有ライブラリを使えるようにするコマンド。
+<ul>
+<li><code>$ sudo rm libva-glx.so.2  libva.so.2 libva-drm.so.2 libigdgmm.so.1 libmfx.so.1 libva-x11.so.2 libmfxhw64.so.1</code></li>
+<li><code>$ sudo rm /opt/intel/common/mdf/lib64/igfxcmrt64.so</code></li>
+<li><code>$ sudo ldconfig</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>環境設定
+<ul>
+<li>次の２行を~/.bashrcに挿入して保存する。
+<ul>
+<li>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib</li>
+<li>source /opt/intel/computer_vision_sdk/bin/setupvars.sh</li>
+</ul>
+</li>
+<li><code>source ~/.bashrc</code>を実行すると次のように表示されると成功。
+<ul>
+<li>[setupvars.sh] OpenVINO environment initialized</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>ros_openvino_toolkitのインストール</p>
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/intel/ros_openvino_toolkit.git</code></li>
+<li>~/src/ros_openvino_toolkit/script/modules.confの中を次のように設定する。model_zooとdldtのバージョンをOpenVinoと合わせるために0にしておき、あとで手動でインストールする。
+<ul>
+<li>clean=1<br />
+ros_debian=0<br />
+opencv=0<br />
+opencl=1<br />
+dldt=0<br />
+model_zoo=0<br />
+openvino=1<br />
+librealsense=0<br />
+other_dependency=1</li>
+</ul>
+</li>
+<li><code>$ ./environment_setup.sh</code></li>
+<li>dldtのインストール
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/opencv/dldt.git</code></li>
+<li><code>$ cd dldt/inference-engine/</code></li>
+<li><code>$ git checkout 2018_R5</code></li>
+<li>ビルドエラーを避けるため追加
+<ul>
+<li><code>$ git submodule init</code></li>
+<li><code>$ git submodule update --recursive</code></li>
+</ul>
+</li>
+<li><code>$ ./install_dependencies.sh</code></li>
+<li><code>$ mkdir -p build &amp;&amp; cd build</code></li>
+<li><code>$ cmake -DCMAKE_BUILD_TYPE=Release ..</code></li>
+<li><code>$ make -j $(nproc)</code></li>
+<li><code>$ sudo mkdir -p /opt/openvino_toolkit</code></li>
+<li><code>$ sudo ln -s ~/src/dldt /opt/openvino_toolkit/dldt</code></li>
+</ul>
+</li>
+<li>model_zooのインストール
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/opencv/open_model_zoo.git</code></li>
+<li><code>$ cd open_model_zoo/demos/</code></li>
+<li><code>$ git checkout 2018_R5</code></li>
+<li><code>$ mkdir -p build &amp;&amp; cd build</code></li>
+<li><code>$ cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine</code></li>
+<li><code>$ make -j $(nproc)</code></li>
+<li><code>$ sudo mkdir -p /opt/openvino_toolkit</code></li>
+<li><code>$ sudo ln -s ~/src/open_model_zoo /opt/openvino_toolkit/open_model_zoo</code></li>
+</ul>
+</li>
+<li>環境設定
+<ul>
+<li>~/.bashrcに以下の３行を追加する。
+<ul>
+<li>export InferenceEngine_DIR=/opt/openvino_toolkit/dldt/inference-engine/build/</li>
+<li>export CPU_EXTENSION_LIB=/opt/openvino_toolkit/dldt/inference-engine/bin/intel64/Release/lib/libcpu_extension.so</li>
+<li>export GFLAGS_LIB=/opt/openvino_toolkit/dldt/inference-engine/bin/intel64/Release/lib/libgflags_nothreads.a</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

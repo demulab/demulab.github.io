@@ -1,0 +1,186 @@
+---
+layout: page
+title: 7. Joint
+date: 2008-10-11 14:48:46.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '3077'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode7"
+---
+<p>&nbsp;</p>
+<p style="margin: 0px 0px 15px;"><img src="{{ site.baseurl }}/assets/images/2008/10/sample3.jpg" alt="" width="240" height="231" style="border-style: none;" /></p>
+<p style="margin: 0px 0px 15px;">This is the 7th ODE (Open Dynamics Engine) tutorial.</p>
+<p style="margin: 0px 0px 15px;">This tutorial explains a joint.</p>
+<p style="margin: 0px 0px 15px;">There are a lot of joints around us. For example, a hinge of a cellular phone,  a hinge of a door, and so on.  A joint connect two bodies.  In other words, a joint is a constraint which restricts a movement of two bodies.  ODE uses a joint in the same meaning of a constraint.</p>
+<p>&nbsp;</p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>How to use a joint</strong></li>
+</ul>
+<ol style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="line-height: 100%;"><span style="color: #cc0000;"><strong>Create a joint</strong></span>
+<ul>
+<li style="line-height: 100%;"><span style="color: #cc0000;"><strong>dJointCreate***()</strong></span></li>
+</ul>
+</li>
+<li style="line-height: 100%;"><span style="color: #cc0000;"><strong>connect bodies with the joint</strong></span>
+<ul>
+<li style="line-height: 100%;"><span style="color: #cc0000;"><strong>dJointAttach ()</strong></span></li>
+</ul>
+</li>
+<li style="line-height: 100%;"><span style="color: #cc0000;"><strong>Set an anchor of the joint</strong></span>
+<ul>
+<li style="line-height: 100%;"><span style="color: #cc0000;"><strong>dJointSet*** Anchor()</strong></span></li>
+</ul>
+</li>
+<li style="line-height: 100%;"><span style="color: #cc0000;"><strong>Set an axis of the joint</strong></span>
+<ul>
+<li style="line-height: 100%;"><span style="color: #cc0000;"><strong>dJointSet***</strong></span></li>
+</ul>
+</li>
+</ol>
+<p style="margin: 0px 0px 15px;">*** means a type of joint, such as a Hinge, Ball, Slider, Universal, and so non. Please read the<a style="color: #990000; text-decoration: none;" href="http://opende.sourceforge.net/mediawiki-1.6.10/index.php/Manual_%28Introduction%29">User Manual of ODE.</a></p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>How to set parameters of the joint</strong></li>
+</ul>
+<ol style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="line-height: 100%;"><strong>Set range of motion</strong><br />
+<span style="color: #ff0000;"><strong>dJointSetHingeParam (dJointID, dParamLoStop, the minimum range of motion);</strong></span><br />
+<span style="color: #ff0000;"><strong>dJointSetHingeParam (dJointID, dParamHiStop, the maximum range of motion);</strong></span></li>
+<li style="line-height: 100%;"><strong>Set angular velocity and maximum torque</strong><strong><br />
+</strong><span style="color: #ff0000;"><strong>dJointSetHingeParam (dJointID, dParamVel, target angular velocity);</strong></span><strong><br />
+</strong><span style="color: #ff0000;"><strong>dJointSetHingeParam (dJointID, dParamFMax, maximum torque);</strong></span></li>
+</ol>
+<p style="margin: 0px 0px 15px;">You can set parameters of a joint. <strong>dParamLoStop</strong> is the minimum and <strong>dParamHiStop</strong> is the maximum range of motion. <strong>dParamVel </strong>is target speed and<strong> dParamFMax </strong>is maximum torque to apply the joint.</p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>Sample program 7<br />
+</strong></li>
+</ul>
+<p style="margin: 0px 0px 15px;">Now,  a sample program of a hopping robot (above the figure)  is shown as follows.</p>
+<pre class="brush:cpp">// sample7.cpp  by Kosei Demura 2006-2009
+#ifdef  dDOUBLE
+#define dsDrawSphere dsDrawSphereD
+#define dsDrawCapsule  dsDrawCapsuleD
+#endif
+
+typedef struct {
+  dBodyID body;   // a body
+  dGeomID geom;　//  a geometry
+  dReal   radius,　length,　mass;　// radius&#91;m&#93;, length&#91;m&#93;, mass&#91;kg&#93;
+} myLink;
+
+myLink ball, pole;
+
+static void simLoop (int pause)
+{
+  const dReal *pos1,*R1,*pos2,*R2;　    
+  dSpaceCollide(space,0,&amp;nearCallback); 　// Collision detection
+  dWorldStep(world,0.01);　// Step a world for 0.01 &#91;sec&#93;
+  dJointGroupEmpty(contactgroup);  // Empty the joint group
+
+  // Draw a ball
+  dsSetColor(1.0,0.0,0.0);   // Set red color
+  pos1 = dBodyGetPosition(ball.body);　// Get a position
+  R1   = dBodyGetRotation(ball.body);　// Get an orientation
+  dsDrawSphere(pos1,R1,ball.radius);　 // Draw a sphere
+
+ // Draw a capsule
+  pos2 = dBodyGetPosition(pole.body);　// Get a position
+  R2   = dBodyGetRotation(pole.body);　// Get an orientation
+  dsDrawCapsule(pos2,R2,pole.length,pole.radius);　// Draw a capsule
+}
+
+// Create an object
+void createBallPole()
+{
+  dMass m1, m2;
+  dReal x0 = 0.0, y0 = 0.0, z0 = 2.5;    // a ball
+  ball.radius = 0.2;
+  ball.mass   = 1.0;
+  ball.body = dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetSphereTotal(&amp;m1,ball.mass,ball.radius);
+  dBodySetMass(ball.body,&amp;m1);
+  dBodySetPosition(ball.body, x0, y0, z0);
+  ball.geom = dCreateSphere(space,ball.radius);
+  dGeomSetBody(ball.geom,ball.body);
+
+  // a capsule
+  pole.radius = 0.025;
+  pole.length = 1.0;
+  pole.mass   = 1.0;
+  pole.body =  dBodyCreate(world);
+  dMassSetZero(&amp;m2);
+  dMassSetCapsuleTotal(&amp;m2,pole.mass,3,pole.radius,pole.length);
+  dBodySetMass(pole.body,&amp;m2);
+  dBodySetPosition(pole.body, x0, y0, z0 - 0.5 * pole.length);
+  pole.geom =  dCreateCapsule(space,pole.radius,pole.length);
+  dGeomSetBody(pole.geom,pole.body);
+
+  // hinge joint
+  joint = dJointCreateHinge(world, 0);　// Create a hinge joint
+  dJointAttach(joint, ball.body,pole.body);　// Attach joint to bodies
+  dJointSetHingeAnchor(joint, x0, y0, z0 - ball.radius);　 // Set a joint anchor
+  dJointSetHingeAxis(joint, 1, 0, 0);　// Set a hinge axis(1,0,0)
+}
+
+int main (int argc, char **argv)
+{
+  setDrawStuff();　　// Set a draw function   
+  dInitODE();       // Initialize ODE
+  world = dWorldCreate();　// Create a world
+  space = dHashSpaceCreate(0);　// Create a collision space
+  contactgroup = dJointGroupCreate(0);　// Create a joint group
+  dWorldSetGravity(world,0,0,-9.8);  // Set gravity
+  ground = dCreatePlane(space,0,0,1,0); // Create a ground
+  createBallPole();　// Create ball and capsule
+
+  dsSimulationLoop (argc,argv,352,288,&amp;fn);  // Simulation loop
+
+  dWorldDestroy (world);　// Destroy the world 　
+  dCloseODE();  // Close ODE
+  return 0;
+}</pre>
+<p style="margin: 0px 0px 15px;">In this example, a robot is composed of a hinge joint which connects a torso and a leg.</p>
+<p style="margin: 0px 0px 15px;">Let's read the source code. <strong>createBallandPole </strong>function is to create a ball for a torso , and a cylinder for a leg, and create a joint by  <strong>dJointCreateHinge(). </strong>Bodies were connected  with the joint by  <strong>dJointAttach()</strong>.</p>
+<p style="margin: 0px 0px 15px;">Then, <strong>dSetHingeAnchor()</strong> sets an anchor of the joint and <strong>dJointSetHingeAxis(</strong>) sets an axis of the hinge joint. This example, the rotation axis vector is set to (1,0,0), i.e.,  the axis vector is the x-axis.</p>
+<p style="margin: 0px 0px 15px;">I did not set parameters of the joints  to simplify  the  source code. Usually, you can set many parameters about joints. Please see the ODE user manual in detail.</p>
+<p style="margin: 0px 0px 15px;"><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/sample7-090309.zip">You can download the sample program, sample7-090309.zip, from here</a>. Please download and enjoy it.</p>
+<p style="margin: 0px 0px 15px;">See you !</p>
+<p style="margin: 0px 0px 15px;">demu</p>
+<p style="margin: 0px 0px 15px;"><strong>APIs</strong></p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>void dJointAttach (dJointID joint, dBodyID body1, dBodyID dBody2)</strong><strong><br />
+</strong>Attach the joint between body1 and body2</li>
+</ul>
+</ul>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>dJointID dJointCreateHinge (dWorldID world, dJointGroupID)</strong><strong><br />
+</strong>Create a hinge Joint. dJointGroupID is set to zero.</li>
+</ul>
+</ul>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>void dJointSetHingeAnchor (dJointID joint, dReal x, dReal y, dReal z)</strong><strong><br />
+</strong>Set an anchor point (x, y, z) of the hinge joint.<strong></p>
+<p></strong></li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong style="line-height: 100%;">void dJointSetHingeAxis (dJointID joint, dReal x, dReal y, dReal z)</strong><span style="line-height: 100%;"><br />
+Set an axis vector (x, y, z) of the hinge joint.</span></li>
+</ul>
+</ul>
+<p>&nbsp;</p>

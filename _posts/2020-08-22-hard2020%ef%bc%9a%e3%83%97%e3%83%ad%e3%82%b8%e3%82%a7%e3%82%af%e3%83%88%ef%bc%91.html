@@ -1,0 +1,85 @@
+---
+layout: post
+title: HARD2020：プロジェクト１
+date: 2020-08-22 12:13:41.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18619'
+  views: '53'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/18915.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_NoName_2020-8-8_8-13-19_No-00.png"><img class="aligncenter size-large wp-image-18619" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_NoName_2020-8-8_8-13-19_No-00-1024x768.png" alt="" width="1024" height="768" /></a></p>
+<p>HARDサマーワークショップ第２回目で学んだことをベースにして次のプロジェクトを実施しよう。プロジェクトの達成に必要な知識はネットや書籍などで獲得してください。なお、ROSはいろいろなパッケージがありとても便利ですが、パッケージを使うだけでは力がつきません。ともすると、うまくナビゲーションするためにパラメータの調整だけで終わる場合もあります。ROSはノード間の通信方法やGazebo、Rvizなどのツールを使い、それ以外のノードはできるだけ自作することが大切です。ただ、中高生や学部１，２年生の場合は、自己推定に使われているAMCLやSLAMを理解して実装することは無理があると思います。まずは、自律移動ロボットを動かすナビゲーションの部分にチャレンジしましょう！</p>
+<p><strong>プロジェクト１</strong></p>
+<ul>
+<li>指定した時間[s]に指定した速度[m/s]と角速度[rad/s]で移動するプログラムを作ろう！</li>
+<li>指定した距離[m]/角度[rad]だけ移動するプログラムを作ろう！</li>
+<li>指定した位置(x, y)へ移動するプログラムを作成しよう。
+<ul>
+<li>指定した位置へ移動するためには、指定位置と現在位置を比較して、現在位置が指定位置に近づく（その差が０に近づく）ようにロボットの並進速度と角速度を制御する必要があります。</li>
+<li>ロボットの現在位置は/odomトピックからの情報を使ってください。</li>
+</ul>
+</li>
+<li>１辺がx[m]の正方形の軌跡を描くようにロボットを動かそう。</li>
+<li>半径x[m]の円の軌跡を描くようにロボットを動かそう。</li>
+<li> オドメトリ関数を自作しよう！
+<ul>
+<li>距離[m] = 並進速度[m/s]　×　時間[s]、回転角度[rad] = 角速度[rad/s]　×　時間[s]</li>
+<li>ロボットの姿勢を考慮して、三角関数を使い進んだ距離と角度を計算する。距離はx軸、y軸に分ける考える。計測時間が必要になるのでネットで調べよう。</li>
+<li>計算に必要な情報
+<ul>
+<li>ルンバの車輪間の距離</li>
+<li>車輪の直径</li>
+<li>車輪の回転量</li>
+</ul>
+</li>
+<li>プログラムができたら、/odomと比較して正しいか確認しよう。</li>
+</ul>
+</li>
+<li>ウェイポイントナビゲーションの実装
+<ul>
+<li>ROSのActionLibを使ったウェイポイントナビゲーションのPythonプログラムを説明しました。ActionLibを使わないで実装しよう。</li>
+<li>自己位置は自作オドメトリ関数をできれば使うおう。無理な場合は/odomトピックの情報を使ってもよい。</li>
+<li>LIDARなどのセンサ情報処理についてはまだ学んでいないので障害物回避はしなくてもよい。</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

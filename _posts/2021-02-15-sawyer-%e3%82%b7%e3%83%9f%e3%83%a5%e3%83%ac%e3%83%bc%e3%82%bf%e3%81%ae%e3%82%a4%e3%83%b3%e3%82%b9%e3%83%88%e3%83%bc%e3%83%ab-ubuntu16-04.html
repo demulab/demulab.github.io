@@ -1,0 +1,93 @@
+---
+layout: post
+title: 'Sawyer: シミュレータのインストール (Ubuntu16.04)'
+date: 2021-02-15 11:01:00.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-02-18 11:01:16'
+  _thumbnail_id: '19869'
+  views: '28'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _wp_old_date: '2021-02-18'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/19868.html"
+---
+<p><b>インストール</b></p>
+<ul>
+<li>Ubuntu端末を開き、以下のコマンドを実行してシミュレータをインストールする。手で打ち込まないでコピペしてください。
+<ul>
+<li><code>$ sudo apt-get install python-catkin-tools gazebo7 ros-kinetic-qt-build ros-kinetic-gazebo-ros-control ros-kinetic-gazebo-ros-pkgs ros-kinetic-ros-control ros-kinetic-control-toolbox ros-kinetic-realtime-tools ros-kinetic-ros-controllers ros-kinetic-xacro python-wstool ros-kinetic-tf-conversions ros-kinetic-kdl-parser ros-kinetic-sns-ik-lib</code></li>
+<li><code>$ cd</code></li>
+<li><code>$ mkdir -p ~/ros_ws/src</code></li>
+<li><code>$ cd ~/ros_ws/src/</code></li>
+<li><code>$ git clone https://github.com/RethinkRobotics/sawyer_simulator.git<br />
+</code></li>
+<li><code>$ wstool init .</code></li>
+<li><code>$ wstool merge sawyer_simulator/sawyer_simulator.rosinstall</code></li>
+<li><code>$ wstool update</code></li>
+<li><code>$ cd ..</code></li>
+<li>geditを使って~/ros_ws/src/intera_sdk/intera.shの30行目を以下のように変更する。
+<ul>
+<li><code>$ gedit ~/ros_ws/src/intera_sdk/intera.sh</code></li>
+<li>30行目： ros_version="kinetic"<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/02/intera1604.png"><img class="aligncenter size-large wp-image-19869" src="{{ site.baseurl }}/assets/images/2021/02/intera1604-1024x621.png" alt="" width="1024" height="621" /></a></li>
+</ul>
+</li>
+<li>intera.shを~/ros_ws下にコピーする。
+<ul>
+<li><code>$ cd ~/ros_ws</code></li>
+<li><code>$ cp ~/ros_ws/src/intera_sdk/intera.sh . </code></li>
+<li><code>$ source /opt/ros/kinetic/setup.bash</code></li>
+<li><code>$ catkin build</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><b>設　定</b></p>
+<p>&nbsp;</p>
+<ul>
+<li>ros_ws以下にインストールしたアプリを有効にするために、geditを使って~/.bashrcの最後に以下の1行を追加する。
+<ul>
+<li><code>source ~/ros_ws/devel/setup.bash</code></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

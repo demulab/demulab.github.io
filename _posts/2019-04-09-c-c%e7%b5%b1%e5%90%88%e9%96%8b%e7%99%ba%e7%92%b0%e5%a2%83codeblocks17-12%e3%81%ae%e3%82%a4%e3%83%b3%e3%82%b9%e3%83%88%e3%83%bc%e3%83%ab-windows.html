@@ -1,0 +1,90 @@
+---
+layout: post
+title: コンピュータ工学Ⅰ：C/C++統合開発環境Code::Blocks17.12のインストール (Windows)
+date: 2019-04-09 07:45:05.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '12720'
+  views: '933'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_toc_novisible: '0'
+  update_level: high
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/15704.html"
+---
+<p style="text-align: center;"><a href="https://demura.net/wordpress/wp-content/uploads/2019/04/SnapCrab_Start-here-CodeBlocks-1712_2019-4-9_7-58-45_No-00.png"><img class="aligncenter size-full wp-image-15709" src="{{ site.baseurl }}/assets/images/2019/04/SnapCrab_Start-here-CodeBlocks-1712_2019-4-9_7-58-45_No-00.png" alt="" width="1170" height="754" /></a></p>
+<p><a href="http://www.codeblocks.org/">CodeBlocks</a>(コードブロックス）というフリーでオープンソースなC/C++統合開発環境のインストール法を説明します．日本では，Codeblocksはあまり馴染みがないかもしれませんが，オープンソースであり、Windows, Mac, Linuxで使える優れものです。Visual Studioと比較して機能がシンプルで、ハードディスクの容量を食わないことが魅力です。</p>
+<p>では，これからCodeBlocks17.12のインストール方法をご説明します。</p>
+<p><span style="color: #ff0000;"><strong>注：以前のバージョンのCodeBlocksをインストール済みの方はアンインストールしてから以下の作業をしてください。</strong></span></p>
+<ul>
+<li>1. ダウンロード・インストール
+<ul>
+<li><a href="http://www.codeblocks.org/">Code::Blocksのウェブサイトからダウンロードする．</a></li>
+<li>左欄にあるMainのDownloadsをクリック</li>
+<li>Download the binary releaseをクリックし、すると以下の画面になるので，Windows XP/Vista/7/8.x/10をクリックする．</li>
+<li><span style="color: #ff0000;">codeblocks-17.12mingw-setup.exe</span>を選択する．<span style="color: #0000ff;"><span style="color: #0000ff;"><strong>これにはmingwからのgccやgdbが含まれています．必ずこちらをダウンロードしてください．重要！</strong></span></span></li>
+<li>デスクトップに保存し，codeblocks-17.12mingw-setup.exeをダブルクリックする．</li>
+<li>「この不明な発行元からのアプリがこのコンピュータの変更を求めています。許可しますか」と聞かれるので、「はい」をクリック</li>
+<li>CodeBlocks Installationの窓になるので，「Next&gt;」をクリック</li>
+<li>License Agreementの窓になり，読んでから「I Agree」をクリックする．同意しないとインストールできません．</li>
+<li>Choose Componentsの窓になり，全部チェック（レ印）が入っていることを確認する。チェックが入っていない場合は、空白のクリックしてチェックを入れる。チェックが入ると。四角にレ点が付く。「Next &gt;」をクリック。</li>
+<li>Choose Install Locationの窓になる．そのまま「Install」をクリック</li>
+<li>「Do you want to run Code::Blocks now?」と表示さるので、「いいえ(N)」をクリックする。</li>
+<li>Completedと表示されるので、「Next&gt;」をクリックする。</li>
+<li>Completing the CodeBlocks Setupの窓になるので、「Finish」をクリックしてインストールを終了する。</li>
+</ul>
+</li>
+<li>2. 日本語化
+<ul>
+<li><a href="http://algo13.net/codeblocks/">Code::Blocks非公式な日本語化</a>のウェブサイトに行き、「.moファイル」のファイル：<a href="http://algo13.net/_downloads/codeblocks20140303.zip">codeblocks.mo</a>をクリックしてデスクトップへcoldeblocks20140303.zipをダウンロードする。解凍するとCodeBlocksというフォルダができるので、次のフォルダの中へコピーする。
+<pre>c:\Program Files (x86)</pre>
+<p>成功すると次のファイルができる。</p>
+<pre>c:\Program Files(x86)\CodeBlocks\share\CodeBlocks\locale\ja_JP\codeblocks.mo
+
+</pre>
+</li>
+<li><a href="http://demura.net/lecture/12713.html/attachment/wxstd" rel="attachment wp-att-13378">wxstd.zip</a>をダウンロードして解凍すると。wxstd.moができる。それを以下のフォルダにコピーするが、<span style="color: #ff0000;">ja_JPフォルダの下にLC_MESSAGESがないので、そのフォルダを作ってからコピーする。</span>
+<pre>c:\Program Files(x86)\CodeBlocks\share\CodeBlocks\locale\ja_JP\LC_MESSAGES</pre>
+</li>
+<li>Code::Blocksを起動する．下図のようにGNU GCC Compilerが見つかるので[OK]をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/04/SnapCrab_Compilers-auto-detection_2019-4-9_7-53-43_No-00.png"><img class="aligncenter size-full wp-image-15706" src="{{ site.baseurl }}/assets/images/2019/04/SnapCrab_Compilers-auto-detection_2019-4-9_7-53-43_No-00.png" alt="" width="580" height="402" /></a></li>
+<li>C言語のプログラムとCode::Blocksを関連付けるために"Yes, associate Code::Blocks with C/C++ file types"にチェックを入れて[OK]をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/04/SnapCrab_NoName_2019-4-9_7-55-40_No-00.png"><img class="aligncenter size-full wp-image-15708" src="{{ site.baseurl }}/assets/images/2019/04/SnapCrab_NoName_2019-4-9_7-55-40_No-00.png" alt="" width="572" height="268" /></a></li>
+<li>日本語化の設定をしていないので，次のように英語表示される．<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/04/SnapCrab_Start-here-CodeBlocks-1712_2019-4-9_7-58-45_No-00-1.png"><img class="aligncenter size-full wp-image-15710" src="{{ site.baseurl }}/assets/images/2019/04/SnapCrab_Start-here-CodeBlocks-1712_2019-4-9_7-58-45_No-00-1.png" alt="" width="1170" height="754" /></a></li>
+<li>メニューバー（ウインドウのタイトルのすぐ下）の右から２番目にあるSettings -&gt; Environment...を選択</li>
+<li>「目玉」のアイコンのViewをクリック. Internationalizationにチェックを入れ，Japaneseを選択し，「OK」をクリック．日本語化するためには再起動が必要なので，メニューバーのFile→Quitを選択．<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2014/04/cb1312-3.jpg"><img class="aligncenter wp-image-10762" src="{{ site.baseurl }}/assets/images/2019/04/cb1312-3.jpg" alt="cb1312-3" width="622" height="432" /></a></li>
+<li>Layout Changedの画面が出て，"The layout 'Code::Blocks default' has changed. Do you want to save it?"と設定を保存するか聞いてくるので聞かれるので「Yes」をクッリクする．</li>
+<li>CodeBlocksを起動する．トップ画像のように日本語になっていればOK．おつかれさま．</li>
+</ul>
+</li>
+</ul>
+<p>以上です．</p>
+<p>&nbsp;</p>

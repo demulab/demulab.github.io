@@ -1,0 +1,56 @@
+---
+layout: post
+title: 'PCL: Kinect V2からのポイントクラウドを取得し保存するコードと方法'
+date: 2017-12-31 17:53:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '14157'
+  views: '948'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/14153.html"
+---
+<p><strong>Kinect からのポイントクラウドを取得し保存するコードと方法</strong></p>
+<p>Kinect V2を使い、ポイントクラウドと画像を表示、保存するコード。 <a href="http://pointclouds.org/documentation/tutorials/pcl_visualizer.php">PLCVisualizerのTutorial</a>と産総研の<a href="https://github.com/kanezaki/ssii2016_tutorial/blob/master/save_pcd.cpp">金崎さんのGithub</a>も考に作成した。</p>
+<ul>
+<li><a href="https://github.com/demulab/save_cloud">https://github.com/demulab/save_cloudを参照。</a></li>
+<li>インストール
+<ul>
+<li>cd ~/catkin_ws/src</li>
+<li>git clone https://github.com/demulab/save_cloud.git</li>
+</ul>
+</li>
+<li>コンパイル
+<ul>
+<li>$ cd ~/catkin_ws</li>
+<li>$ catkin_make</li>
+</ul>
+</li>
+<li>実行方法
+<ul>
+<li>$ roslaunch kinect2_bridge kinect2_bridge.launch publish_tf:=true</li>
+<li>$ rosrun save_cloud save_cloud</li>
+</ul>
+</li>
+<li>使いかた
+<ul>
+<li>マウスカーソルをポイントクラウドのウインドウにおく。</li>
+<li>sキーを押すたびにポイントクラウドのpcdファイルと画像のpngファイルが保存される。</li>
+<li>zキーで終了。</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2017/12/cloud.png"><img src="{{ site.baseurl }}/assets/images/2017/12/cloud-300x176.png" alt="" width="600" height="352" class="alignleft wp-image-14157" /></a></p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2017/12/0.png"><img src="{{ site.baseurl }}/assets/images/2017/12/0-300x169.png" alt="" width="600" height="338" class="alignleft wp-image-14156" /></a></p>

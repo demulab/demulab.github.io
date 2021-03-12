@@ -1,0 +1,84 @@
+---
+layout: post
+title: 'PCL: 3Dモデル(obj)からPCDフォーマットへの変換法'
+date: 2017-12-29 21:16:31.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2948'
+  _thumbnail_id: '14137'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/14130.html"
+---
+<p>meshlabを使った３DモデルからPCLで使うPCDフォーマットへの変換法メモ。</p>
+<p><strong>３Dモデルの準備</strong></p>
+<ul>
+<li>plyまたはobj形式の３Dモデルを用意する。次のサイトからコーラ缶の3Dモデルcolladaフォーマットでダウンロードし、meshlabでobjフォーマットに変換した。
+<ul>
+<li>http://shapenet.cs.stanford.edu/</li>
+</ul>
+</li>
+<li>meshlabでサイズを実物[m]に合わせる
+<ul>
+<li>Filters &gt; Normals,Curvatures and Orientation &gt; Transform : Scaleを選択し、実際のサイズ[m]になるようにScaleを設定する。</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2017/12/meshlab_coke.png"><img class="aligncenter size-medium wp-image-14137" src="{{ site.baseurl }}/assets/images/2017/12/meshlab_coke-283x300.png" alt="" width="283" height="300" /></a></p>
+<p><strong>点群データ(PCD:Point Cloud Data)への変換</strong></p>
+<ul>
+<li>objフォーマットからPCLライブラリで使われる点群データ形式PCDフォーマットへ変換する。pcl_mesh_samplingまたはpcl_mesh2pcdコマンドを使う。ファイルを保存するためには、ポイントクラウドが表示される画面にマウスのカーソル（ポインタ）をもっていき、wキーを押す。qキーでウインドウが閉じる。
+<ul>
+<li>pcl_mesh_sampling input.obj  output.pcd -leaf_size 0.001
+<ul>
+<li>オプション</li>
+<li>  -n_samples サンプル数（デフォルト100,000)</li>
+<li>-leaf_size X = the XYZ leaf size for the VoxelGrid -- for data reduction (デフォルト: 0.010000 m)</li>
+</ul>
+</li>
+<li>pcl_mesh2pcd  input.obj  output.pcd -leaf_size 0.001
+<ul>
+<li>オプション</li>
+<li>-level X = tesselated sphere level (default: 2)</li>
+<li>-resolution X = the sphere resolution in angle increments (デフォルト:100 deg)</li>
+<li>-leaf_size X = the XYZ leaf size for the VoxelGrid -- for data reduction (デフォルト: 0.010000 m)<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2017/12/coke_pcd.png"><img class="aligncenter size-medium wp-image-14138" src="{{ site.baseurl }}/assets/images/2017/12/coke_pcd-300x258.png" alt="" width="300" height="258" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>

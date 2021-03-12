@@ -1,0 +1,37 @@
+---
+layout: post
+title: ODE講座10:CFM(拘束力混合）パラメータ
+date: 2005-11-27 10:59:45.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '642'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/263.html"
+---
+<p>ＯＤＥ(Open Dynamics Engine)講座の１０回目です。先週は夢考房公開発表会等でバタバタして更新できませんでした。発表会ではRoboCup2005のレスキューリーグ で優勝した桐蔭横浜大学チームの監督さんも見にこられ勝つためのチーム運営などについてお話を聞くことができ大変有意義でした。</p>
+<p>さて、今回もＯＤＥに特有なパラメータの説明をします。ODEではERPの他にCFM（Contratint Force Mixing）というパラメータがあります。日本語には訳しづらいですが直訳すると拘束力混合パラメータとなります。</p>
+<p>  拘束には 大きく分けてハード(hard)拘束とソフト(soft)拘束の２種類あり、多くはハード拘束です。ハード拘束では拘束条件を必ず守らなければいけませ ん。ODEは拘束とジョイントを同じ意味で使う場合が多いのでジョイントを例に挙げると、ハード拘束ではジョイントの拘束条件を一切破ってはいけません。 つまり、ジョイントの回転軸の位置や向きが結合されている２つのリンクが少しもずれてはいけません。一方、ソフト拘束は多少のずれはＯＫなのです。</p>
+<p>これをうまく使うと生物の関節のように柔軟な関節をシミュレートできます。前回でてきたERPとこのCFMを 使うことによってバネ・ダンパシステムのシミュレートも可能です。詳しくは<a title="ODE Manual" href="http://ode.org/ode-latest-userguide.html" target="_self">ODEマニュアル</a>をご覧ください。</p>
+<p>次に、CFMの具体的な使い方を説明します。 </p>
+<p><!--more--><br />
+CFMを設定する場合は以下のAPIを使います。なお、これはグローバルに働き全てのジョイントに作用します。通常、CFMの値は10の-9乗(10E-9)から1の範囲で選びます。単精度の場合のデフォルトは10E-5、倍精度の場合は10E-10となります。</p>
+<ul>
+<li>dWorldSetCFM(dWorldID, dReal cfm)<br />
+ここで、dWorldIDはワールドのＩＤ番号、cfmはCFMの値。</li>
+</ul>
+<p>では、実習としてdWorldSetCFMを<a href="http://demura.net/archives/images/ode/sample4a.tgz" target="_self">sample4a</a>のWorldSetERP の下の行に挿入し、cfmの値をいろいろ変更して遊んでみてください。CFMの値を大きくするとジョイントが柔らかくなります。小さくする場合は０が最小 でこの場合はハード拘束となります。CFMが負の値はシステムが不安定になるので止めてください。</p>
+<p>なお、CFMにはシミュレーションを安定させる働きがありますので、物体の挙動がおかしな場合は値を少しずつ大きくすることをお勧めします。</p>
+<p>では、また次回。</p>

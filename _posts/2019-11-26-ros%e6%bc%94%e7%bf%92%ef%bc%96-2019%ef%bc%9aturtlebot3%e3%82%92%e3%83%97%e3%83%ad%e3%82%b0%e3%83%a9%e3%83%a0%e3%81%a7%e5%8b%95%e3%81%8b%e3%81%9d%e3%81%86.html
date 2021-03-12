@@ -1,0 +1,234 @@
+---
+layout: post
+title: ROS演習６-2019：Turtlebot3をプログラムで動かそう
+date: 2019-11-26 16:56:49.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16402'
+  views: '1171'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/16400.html"
+---
+<p>ROS演習４の知識を使いTurtlebot3をプログラムで動かします。この演習６は演習７を問題を解くためのヒントとなっています。</p>
+<p>まず、Robotクラスを作成し、次のメンバ関数を作成します。</p>
+<ul>
+<li>指定速度[m/s]で指定時間[s]だけ直進して停止するメンバ関数
+<ul>
+<li>void moveForSecond(double linear_vel, double second);</li>
+</ul>
+</li>
+<li>指定速度[m/s]で指定の距離[m]だけ直進して停止する以メンバ関数
+<ul>
+<li>void Robot::moveToDistance(double linear_vel, double dist);</li>
+</ul>
+</li>
+</ul>
+<pre class="brush:cpp;">// my_robot.cpp
+#include "ros/ros.h"  // rosで必要はヘッダーファイル
+#include &#60;geometry_msgs/Twist.h&#62; // ロボットを動かすために必要
+#include &#60;nav_msgs/Odometry.h&#62;
+#include &#60;tf/transform_broadcaster.h&#62;
+#include &#60;tf/transform_datatypes.h&#62;
+#include "unistd.h"
+
+using namespace std;
+
+struct Pose {
+    double x; // x座標&#91;m&#93; 進行方向
+    double y; // y座標&#91;m&#93;
+    double theta; // 姿勢 &#91;rad&#93;
+};
+
+class Robot {
+private:
+    Pose pos; // 位置と姿勢
+    geometry_msgs::Twist vel; // 速度
+    ros::NodeHandle nh; // ノードハンドラ
+    ros::Publisher  pub; // パブリッシャ
+    ros::Subscriber  sub_odom; //, sub_vel; // サブスクライバ
+public:
+    Robot();
+    void setLinearVel(double linear_vel); // 並進速度の設定
+    void setAngularVel(double angular_vel); // 回転速度の設定
+    void setVel(double linear_vel, double angular_vel);
+    void odomCallBack(const nav_msgs::Odometry::ConstPtr&amp; msg);
+    void moveForSecond(double linear_vel, double s); //　指定速度と時間で移動
+    void moveForSecond2(double linear_vel, double s); //　指定速度と時間で移動
+    void moveToDistance(double linear_vel, double dist); // 指定速度で指定距離を移動
+};
+
+
+Robot::Robot() {
+    pub = nh.advertise("/cmd_vel", 10,this);
+    sub_odom = nh.subscribe("/odom", 100, &amp;Robot::odomCallBack, this);
+    vel.linear.x  = vel.linear.y =vel.linear.z = 0.0; // 並進速度の初期化
+    vel.angular.z = vel.angular.y = vel.angular.x = 0.0; // 回転速度の初期化
+}
+
+// 並進速度の設定
+void Robot::setLinearVel(double linear_vel) {
+    vel.linear.x = linear_vel;
+    pub.publish(vel);
+}
+
+// 回転速度の設定
+void Robot::setAngularVel(double angular_vel) {
+    vel.angular.z = angular_vel;
+    pub.publish(vel);
+}
+
+void Robot::setVel(double linear_vel, double angular_vel = 0) {
+    vel.linear.x  = linear_vel;
+    vel.angular.z = angular_vel;
+    pub.publish(vel);
+}
+
+// /odomトピックから位置と姿勢、速度を表示
+void Robot::odomCallBack(const nav_msgs::Odometry::ConstPtr&amp; msg) {
+    //ROS_INFO("Seq: %d", msg-&#62;header.seq);
+    //ROS_INFO("/odom Pos (x:%f, y:%f, z:%f)", msg-&#62;pose.pose.position.x,msg-&#62;pose.pose.position.y, msg-&#62;pose.pose.position.z);
+    pos.x = msg-&#62;pose.pose.position.x;
+    pos.y = msg-&#62;pose.pose.position.y;
+    tf::Quaternion q(msg-&#62;pose.pose.orientation.x, msg-&#62;pose.pose.orientation.y, msg-&#62;pose.pose.orientation.z, msg-&#62;pose.pose.orientation.w);
+    tf::Matrix3x3 m(q);
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
+    pos.theta = yaw;
+
+    //ROS_INFO("/odom Pose (roll:%f, pitch:%f, yaw:%f) ", roll, pitch, yaw);
+    //ROS_INFO("Vel (Linear:%f, Angular:%f)", msg-&#62;twist.twist.linear.x,msg-&#62;twist.twist.angular.z);
+}
+
+void Robot::moveForSecond(double linear_vel, double s)
+{
+    setVel(linear_vel); //  指定速度で進む
+    ros::Duration(s).sleep(); // s秒間スリープ
+    setVel(0); // 停止
+}
+
+void Robot::moveForSecond2(double linear_vel, double s)
+{
+    static ros::Time begin = ros::Time::now();
+    static int step = 0;
+
+    ros::Duration diff(0,0); // diff.sec = diff.nsec = 0と同じ
+    setVel(linear_vel);
+
+    ros::Rate rate(50);  // ループの頻度を設定
+    rate.sleep();
+
+    while (diff &#60; ros::Duration(s)) {
+        ros::spinOnce();
+        if (step++ == 0) begin = ros::Time::now();
+
+        diff = ros::Time::now() - begin;
+        ROS_INFO("ROS diff: %u.%u",diff.sec,diff.nsec);
+        rate.sleep();
+    }
+    setVel(0);
+}
+
+void Robot::moveToDistance(double linear_vel, double dist)
+{
+    double d = 0;
+    Pose init_pos = pos;
+
+    setVel(linear_vel);
+
+    ros::Rate rate(50);  // ループの頻度を設定
+    while (d &#60; dist) {
+        ros::spinOnce();
+        d = sqrt((pos.x - init_pos.x) *  (pos.x - init_pos.x)
+                 + (pos.y - init_pos.y) *  (pos.y - init_pos.y));
+        ROS_INFO("distance=%.3f&#91;m&#93;",d);
+        rate.sleep();
+    }
+    setVel(0);
+}
+
+int main(int argc, char **argv)
+{
+    ros::init(argc, argv, "my_robot");
+
+    // ros::init()の前にノードハンドラーを生成するとエラーになるので、
+    // クラス化した場合はオブジェクトの生成はinitの後で行うこと。
+    Robot robot;
+
+    double v = 0.2; // 速度&#91;m/s&#93;
+    double t = 5.0; // 時間&#91;s&#93;
+
+    ROS_INFO("moveSecond:begin");
+    robot.moveForSecond2(v, t); // 指定した速度と時間で進む
+    ROS_INFO("moveSecond:end");
+
+    ros::Duration(3).sleep(); // 3秒間停止
+
+    double d = 3.0; // 距離&#91;m&#93;
+    ROS_INFO("moveToDistance:begin");
+    robot.moveToDistance(v, d); // 指定した速度で指定距離を進む
+    ROS_INFO("moveToDistance:end");
+
+    return 0;
+}
+
+</pre>
+<ul>
+<li>以下ファイルをダウンロードして~/catkin_ws/srcの下にコピーする。
+<ul>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2019/11/my_robot.tar">my_robot.tar</a></li>
+</ul>
+</li>
+<li>ビルドする
+<ul>
+<li><code>$ cd ~/catkin_ws/src</code></li>
+<li><code>$ tar xvf my_robot.tar</code></li>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build my_robot</code></li>
+</ul>
+</li>
+<li>gazeboでの実行
+<ul>
+<li>端末を2つ開き、各端末で以下のコマンドを実行する。</li>
+<li><code>$ roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch</code></li>
+<li><code>$ rosrun my_robot my_robot</code></li>
+<li>実行すると速度0.2[m/s]で5秒間直進し、3秒停止、速度0.2[m/s]で3[m]直進して停止する。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/11/Screenshot-from-2019-11-26-16-37-06.png"><img class="aligncenter size-full wp-image-16402" src="{{ site.baseurl }}/assets/images/2019/11/Screenshot-from-2019-11-26-16-37-06.png" alt="" width="999" height="546" /></a></p>
+<p>終わり。お疲れ様！</p>

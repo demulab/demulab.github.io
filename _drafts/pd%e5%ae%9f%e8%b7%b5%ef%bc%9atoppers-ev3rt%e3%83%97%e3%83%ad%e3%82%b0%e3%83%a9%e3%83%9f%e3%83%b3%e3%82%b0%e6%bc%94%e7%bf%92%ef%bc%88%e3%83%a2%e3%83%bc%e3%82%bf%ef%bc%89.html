@@ -1,0 +1,233 @@
+---
+layout: post
+title: PD実践：TOPPERS/EV3RTプログラミング演習（モータ）
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- lecture
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  views: '24'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<ul>
+<li><b>モータ関連API</b></li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li><b>モータのパワーを設定する。モータを無限回転するときはこのAPIを使う。</b>
+<ul>
+<li> ER <b>ev3_motor_set_power </b>(motor_port_t port, int power);</li>
+<li>引数
+<ul>
+<li>第1引数はmotor_port_t型。以下のポート番号を入れる。
+<ul>
+<li>EV3_PORT_A: ポートA</li>
+<li>EV3_PORT_B: ポートB</li>
+<li>EV3_PORT_C: ポートC</li>
+<li>EV3_PORT_D: ポートD</li>
+</ul>
+</li>
+<li>第2引数はint型。モータのパワー(-100～+100）を設定する。</li>
+</ul>
+</li>
+<li>戻り値： ER型は以下のエラーコードを示す
+<ul>
+<li>E_OK 正常終了</li>
+<li>E_ID 不正のモータポート番号</li>
+<li>E_OBJ モータ未接続</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><b> モータを止める</b>
+<ul>
+<li>ER <b>ev3_motor_stop </b>(motor_port_t port, bool_t  brake);</li>
+<li>引数
+<ul>
+<li>第1引数はポート番号</li>
+<li>第2引数はbool型。true(ブレーキモード), false(フロートモード)</li>
+</ul>
+</li>
+<li>戻り値
+<ul>
+<li>E_OK 正常終了</li>
+<li>E_ID 不正のモータポート番号</li>
+<li>E_OBJ モータ未接続</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><b>モータを指定した角度だけ回転させる</b>
+<ul>
+<li>ER<b> ev3_motor_rotate</b>(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking)</li>
+<li>引数
+<ul>
+<li>第1引数はポート番号</li>
+<li>第2引数は回転角度（マイナスの値で逆方向に回転）</li>
+<li>第3引数は回転速度（0～+100）</li>
+<li>第4引数はbool型。
+<ul>
+<li>true（回転完了してからリターン。完了するまでプログラムがブロックされる）</li>
+<li>false（回転操作を待たずにリターン）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>戻り値
+<ul>
+<li>E_OK 正常終了</li>
+<li>E_ID 不正のモータポート番号</li>
+<li>E_OBJ モータ未接続</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><b>モータ回転角をゼロにリセットする</b>
+<ul>
+<li>ER ev3_motor_reset_counts (motor_port_t  port);</li>
+<li>引数
+<ul>
+<li>port ポート番号</li>
+</ul>
+</li>
+<li>戻り値
+<ul>
+<li>E_OK 正常終了</li>
+<li>E_ID 不正のモータポート番号</li>
+<li>E_OBJ モータ未接続</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><b>モータ回転角[deg]を取得する。</b>戻り値はint型。
+<ul>
+<li> int32_t  ev3_motor_get_counts (motor_port_t port);</li>
+<li>引数
+<ul>
+<li>port ボート番号</li>
+</ul>
+</li>
+<li>戻り値。int32_tは32ビットの符号付き整数型
+<ul>
+<li>モータの回転角（単位は度），マイナスの値は逆方向に回転されたことを示す。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><b>サンプルプログラム</b>
+<ul>
+<li><a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43394/mod_page/content/21/app_motor_l_1.c"> /motor_l_1/app.c</a>
+<ul>
+<li>モーターLを1秒間正転→1秒間停止→1秒間反転→1秒間停止の後、終了する。</li>
+</ul>
+</li>
+<li><a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43394/mod_page/content/21/app_motor_m_1.c?time=1571560229859"> /motor_m_1/app.c</a>
+<ul>
+<li>モーターMを1秒間正転→1秒間反転→1秒間停止→1秒間正転の後、終了する。</li>
+</ul>
+</li>
+<li><a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43394/mod_page/content/21/app_motor_l_2.c">/motor_l_2/app.c</a> または<a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43394/mod_page/content/21/app_motor_m_2.c">/motor_m_2/app.c</a>
+<ul>
+<li>モーター（LまたはM）の回転角度（ロータリーエンコーダー値）をLCDに表示する。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><b>演習：2番と５番は全員が実施する。5番はレポート２となる。その他は班で協力して実施すること。</b></li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ol>
+<li> モータLまたはモータMをEV3（ポートA）に接続した後、サンプルプログラム(motor_m_1, motor_l_2)をEV3にアップロードし、動作を確認してください。</li>
+<li>下図のモータの組立例１～４を組立ててください。班として組立例１から４を全て実施する（班員が３名の場合は組立例１から３を実施する）。ただし、各組立例のうちどちらか一つを選ぶ。つまり、一人１個組立て、サンプルプログラム(motor_m_1, motor_l_1)で動作を確認してください。</li>
+<li>モータLをEV3（ポートA）に接続した後、サンプルプログラム(motor_l_2)をEV3にアップロードし、動作を確認してください。</li>
+<li> サンプルプログラムmotor_l_2を改造し、以下の機能を実現してください。<br />
+『モータを回転させ、360度回転したら、モータを停止する。』</li>
+<li>レポート２演習。<a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/mod/assign/view.php?id=14591">このリンクの演習を実施し、レポートを作成し、期日までに提出する。</a></li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>モータ組立例</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>組立例１
+<ul>
+<li>44_motor.lxf：簡単シンプルカー。モータとタイヤを直結した車。<br />
+<img class="img-responsive atto_image_button_text-bottom" role="presentation" src="{{ site.baseurl }}/assets/images/44_motor.png" alt="" width="601" height="277" /></li>
+<li>46_motor.lxf：ギア減速カー。一組のギアでスピードを落とし、トルクを大きくした車。<br />
+<img class="img-responsive atto_image_button_text-bottom" role="presentation" src="{{ site.baseurl }}/assets/images/46_motor.png" alt="" width="601" height="277" /></li>
+</ul>
+</li>
+<li>組立例２
+<ul>
+<li>48_motor.lxf：ウォームギア前方向回転タイプ<br />
+<img class="img-responsive atto_image_button_text-bottom" role="presentation" src="{{ site.baseurl }}/assets/images/48_motor.png" alt="" width="600" height="266" /></li>
+<li>49-1_motor.lxf：ウォームギア上方向回転タイプ<br />
+<img class="img-responsive atto_image_button_text-bottom" role="presentation" src="{{ site.baseurl }}/assets/images/49-1_motor.png" alt="" width="600" height="266" /></li>
+</ul>
+</li>
+<li>組立例３
+<ul>
+<li>50-2_motor.lxf：振れ幅調整のできる上下反復運動タイプ</li>
+<li><img class="img-responsive atto_image_button_text-bottom" role="presentation" src="{{ site.baseurl }}/assets/images/50-2_motor.png" alt="" width="600" height="266" /></li>
+</ul>
+</li>
+<li>組立例４
+<ul>
+<li>51_motor.lxf：水平往復運動タイプ<br />
+<img class="img-responsive atto_image_button_text-bottom" role="presentation" src="{{ site.baseurl }}/assets/images/51_motor.png" alt="" width="601" height="277" /></li>
+<li>51_1_motor.lxf：サーボモータMとウォームギアを用いた横方向回転タイプ<br />
+<img class="img-responsive atto_image_button_text-bottom" role="presentation" src="{{ site.baseurl }}/assets/images/51_1_motor.png" alt="" width="600" height="266" /></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

@@ -1,0 +1,32 @@
+---
+layout: post
+title: what do you say 実行手順メモ
+date: 2015-05-01 23:42:49.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup
+tags: []
+meta:
+  _edit_last: '2'
+  views: '133'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/robocup/11770.html"
+---
+<p>Basic functionalities: what do you sayの実行メモ</p>
+<p>1. ~/SIRIUS/sirius-application/run-scripts/start-asr-server.sh<br />
+2. ~/src/jasper/jasper.py<br />
+3. roslaunch turtlebot_bringup minimal.launch<br />
+4. roslaunch turtlebot_bringup 3dsensor.launch<br />
+5. roslaunch dfollow soundplay_node.launch<br />
+6. roslaunch dfollow voice_recog.launch<br />
+7. ~/myprog/devel/lib/whatsay/whatsay</p>
+<p>&nbsp;</p>

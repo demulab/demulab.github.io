@@ -1,0 +1,171 @@
+---
+layout: post
+title: 'Sawyer: GAZEBOチュートリアル'
+date: 2021-02-16 09:26:32.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-02-16 09:30:09'
+  views: '70'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19829'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/19826.html"
+---
+<p><b><img role="presentation" src="{{ site.baseurl }}/assets/images/2021/02/SnapCrab_Gazebo_2020-11-6_11-10-48_No-00.png" alt="" width="1080" /><br />
+</b></p>
+<p><b>Gazeboシミュレータの実行方法</b></p>
+<ul>
+<li>Ubuntu端末で以下のコマンドを実行する。
+<ul>
+<li>ディレクトリの移動
+<ul>
+<li><code>$ cd ~/ros_ws</code></li>
+</ul>
+</li>
+<li>シミュレーション環境への移行
+<ul>
+<li><code>$ ./intera.sh sim</code></li>
+</ul>
+</li>
+<li>シミュレータの起動
+<ul>
+<li><code>$ roslaunch sawyer_gazebo sawyer_world.launch electric_gripper:=true </code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><b>動作テスト</b></p>
+<ul>
+<li>別のUbuntu端末を開き、以下のコマンドを実行して動作を確認する。
+<ul>
+<li><code>$ cd ~/ros_ws</code></li>
+<li><code>$ ./intera.sh sim</code></li>
+<li><code>$ rosnode list</code>
+<ul>
+<li>このコマンドを実行すると次のように表示される。
+<pre>/base_to_world
+/camera_sim
+/gazebo
+/gazebo_gui
+/intera_camera_nodelets
+/io/internal_camera/head_camera/rectify_color
+/io/internal_camera/right_hand_camera/rectify_mono
+/io_robot
+/robot_state_publisher
+/rosout
+</pre>
+</li>
+</ul>
+</li>
+<li><code>$ rostopic list</code>
+<ul>
+<li>このコマンドを実行すると次のように表示される。
+<pre>/clock
+/gazebo/link_states
+/gazebo/model_states
+/gazebo/parameter_descriptions
+/gazebo/parameter_updates
+/gazebo/set_link_state
+/gazebo/set_model_state
+/head_camera/parameter_descriptions
+/head_camera/parameter_updates
+/io/internal_camera/config
+/io/internal_camera/head_camera/camera_info
+/io/internal_camera/head_camera/command
+/io/internal_camera/head_camera/config
+/io/internal_camera/head_camera/image_raw
+/io/internal_camera/head_camera/image_raw/compressed
+多いので省略
+/robot/state
+/rosout
+/rosout_agg
+/tf
+/tf_static
+</pre>
+</li>
+</ul>
+</li>
+<li><code>$ rostopic echo /robot/state</code>
+<ul>
+<li>このコマンドを実行すると次のように表示され続ける。 ^-C(コントロールキーを押しながらCキーを押す）で終了します。
+<pre>enabled: False
+stopped: False
+error: False
+estop_button: 0
+estop_source: 0
+---
+</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><b>サンプルプログラムの実行</b></p>
+<ul>
+<li>準備：サンプルプログラムの赤い立方体（ボックス）では把持に失敗するので以下の3次元モデルファイルと置き換える。立方体の辺長を45mmから40mmに小さくしている。
+<ul>
+<li>元のファイルmodel.urdfの名前をmodel.urdf.orgに変える。
+<ul>
+<li><code>$ cd ~/ros_ws/src/sawyer_simulator/sawyer_sim_examples/models/block</code></li>
+<li><code>$ mv model.urdf model.urdf.org</code></li>
+</ul>
+</li>
+<li>以下の新しいファイルmodel.urdf.txtをダウンローする。拡張子にtxtがついているのは、このウェブサイトからダウンロードするため。
+<ul>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/model.urdf_.txt">model.urdf.txt</a></li>
+</ul>
+</li>
+<li>ダウンロードしたファイルmodel.urdf.txtをmodel.urdfに名前を変えて移動する。この例では~/Downloadsにダウンロードしているとする。
+<ul>
+<li><code>$ mv ~/Downloads/model.urdf.txt ~/ros_ws/src/sawyer_simulator/sawyer_sim_examples/models/block/model.urdf</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ピック＆プレースのサンプルプログラム。上図のようにロボットがデモをすれば成功。
+<ul>
+<li><code>$ cd ~/ros_ws</code></li>
+<li><code>$ ./intera.sh sim</code></li>
+<li><code>$ roslaunch sawyer_sim_examples sawyer_pick_and_place_demo.launch</code></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

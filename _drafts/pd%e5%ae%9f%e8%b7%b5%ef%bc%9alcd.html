@@ -1,0 +1,83 @@
+---
+layout: post
+title: PD実践：LCDの使い方
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '15'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14965.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、以下の方法は西川教授の資料を参考にしています。</p>
+<p>本記事は、EV3の画面に文字や絵を表示することができるLCDのAPIを学びます。</p>
+<ul>
+<li><strong>API</strong>
+<ul>
+<li> 小さいサイズのフォントを設定する
+<ul>
+<li> ev3_lcd_set_font(EV3_FONT_SMALL);</li>
+</ul>
+</li>
+<li>指定した位置（x=0,y=10）に”HELLO”を表示する
+<ul>
+<li>ev3_lcd_draw_string("HELLO", 0, 10);</li>
+</ul>
+</li>
+<li> 指定した位置（x=20,y=30）を始点として、幅40、高さ50の矩形を描き、黒色を塗る
+<ul>
+<li> ev3_lcd_fill_rect(20, 30, 40, 50, EV3_LCD_BLACK);</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>LCD画面全体をクリアする
+<ul>
+<li>ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サンプルプログラム</strong>
+<ul>
+<li>/lcd/app.c：LCDにシステム時間とカウンタ、バッテリー残量を表示する。</li>
+</ul>
+</li>
+<li><strong>演習</strong>
+<ul>
+<li>サンプルプログラムを読んでどのように動作するかを考えてからEV3にアップロードし、実際の動作と比較する。</li>
+<li> サンプルプログラムを改造し、以下の機能を実現する。<br />
+「countが100になったら、LCDに“Game Over!”と表示する」</li>
+</ul>
+</li>
+<li><strong>参考</strong>
+<ul>
+<li> LCD画面の幅は178、高さは128である。</li>
+<li> LCD画面の左上隅が、座標（x=0,y=0）である。</li>
+<li> フォントサイズは以下の通り。
+<ul>
+<li>EV3_FONT_SMALL 小さいサイズのフォント：幅6×高さ8</li>
+<li>EV3_FONT_MEDIUM 普通サイズのフォント：幅10×高さ16</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 30px; text-align: right;">終わり</p>

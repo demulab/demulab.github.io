@@ -1,0 +1,30 @@
+---
+layout: post
+title: ODE0.9 バスケットのデモ
+date: 2007-10-17 07:56:25.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '827'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/454.html"
+---
+<p><img title="ODE0.9  バスケットのデモ" src="{{ site.baseurl }}/assets/images/2007/10/basket.jpg" alt="ODE0.9  バスケットのデモ" width="447" height="386" /></p>
+<p><span style="color: #cc0000;">注：ODE0.9をインストールする際、Windows Vistaではmake installをすると"Permission denied"などと怒られます。この場合はユーザーアカウント制御(UAC)を無効化してください。方法はインターネットを検索するとすぐ見つかります。</span></p>
+<p>ODE0.9がリリースされ、新しいデモとしてバスケットボールが斜面を転がり、リングに吸い込まれるものがあります。</p>
+<p>ポッターさんのご質問のように、このウェブサイトで紹介している(Windows XP or Windows Vista) +  mingw + msysの環境では"could not load accerelators"と怒られます。</p>
+<p><!--more--></p>
+<p>これはWindowsのリソースファイルode/drawstuff/src/resources.rcとode/drawstuff/src/resource.hがインクルードされていないからです。ODE　demoのmakefileの問題だと思いますが調べていません。</p>
+<p>このウェブサイトで使っているmakefileでは正常にコンパイルできました。basketデモ一式をフォルダごとまとめましたので、<a href="http://demura.net/archives/images/ode/basket.tgz">これを</a>ダウンロードして試してください。~/src/ode-0.9/myprogで展開し、basketフォルダーへ移動し、makeしてください。</p>

@@ -1,0 +1,108 @@
+---
+layout: post
+title: ODE講座２：インストール(Windows+MinGW編）
+date: 2005-09-26 18:10:55.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1357'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/250.html"
+---
+<p>ODE講座の２回目です。今回はＯＤＥ (Open Dynamics Engine)のインストールについて説明します。ODEはマルチプラットフォームなのでWindows、Linux、Mac OS Xでも利用可能です。</p>
+<p>今回はWindows環境でしかもインストールがもっとも簡単なMinGW環境を使った方法を説明します。私は普通はLinuxかWindowsのCygwin環境で開発をしていますが、ＯＤＥで作成したサンプルのバイナリを送る必要ができたためMinGWを最近初めて使用しました。CygwinのようにLinuxとの互換性は高くありませんが、150MBもディスクに空きがあればインストール可能ですし、バイナリを実行するときに特別なライブラリが必要なくGPLで配布する必要もない（注１）ので重宝します。</p>
+<p>注１：Cygwinで作成したバイナリはcygwin1.dllを使うので、これも同時に配布しなければならない。これはGPLなので自分の作成したプログラムもGPLで配布しなければいけないのです。</p>
+<p><strong>1. MinGWのダウンロード</strong>　<br />
+　　<a href="http://www.mingw.org/download.shtml">ここ</a>から<a href="http://prdownloads.sourceforge.net/mingw/MinGW-4.1.1.exe?download">MinGW-4.1.1.exe</a><br />
+をダウンロードする。日本のJAIST（北陸先端科学技術大学院大学、KITから車で３０分程度）サイトからダウンロードするのがよいでしょう。この際、間違ってJAISTのロゴをクリックするとJAISTのホームページへ飛んでしまいます。一番右の837kbと表示のあるアイコンをクリックしてデスクトップにでもダウンロードしてください。</p>
+<p><strong>2. MinGWのインストール</strong><br />
+デスクトップにあるMinGW-4.1.1.exeをダブルクリックすると以下のウインドウが現れます。setupをクリックして次に進む。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw1.jpg" alt="ODE" width="320" height="240" /><br />
+<!--more--><br />
+License　Agreementの画面が出ますのでよく読んでライセンスに同意するなら accept the agreementにチェックをいれnextをクリック。当然ですが、同意しない場合はインストールできません。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw2.jpg" alt="ODE" width="320" height="240" /><br />
+Informationの画面が出るのでnextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw3.jpg" alt="ODE" width="320" height="240" /></p>
+<p>Choose a mirrorではjaist(JP)を選びnextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw4.jpg" alt="ODE" width="320" height="240" /></p>
+<p>Select Destination Locationは標準のままで良いでしょう。Nextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw5.jpg" alt="ODE" width="320" height="240" /></p>
+<p>Select Componentsも変更せずにNextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw6.jpg" alt="ODE" width="320" height="240" /></p>
+<p>Select Additional Tasksも変更せずにNextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw7.jpg" alt="ODE" width="320" height="240" /></p>
+<p>Ready to Installの画面になるのでnextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw8.jpg" alt="ODE" width="320" height="240" /></p>
+<p>Informationの画面になります。読んでからnextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw9.jpg" alt="ODE" width="320" height="240" /></p>
+<p>以下の画面が出たらインストールが終わりです。次はMSYSをインストールしましょう。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/mingw10.jpg" alt="ODE" width="320" height="240" /></p>
+<p><strong>3. MSYSのインストール</strong><br />
+<a href="http://www.mingw.org/msys.shtml">MSYS</a>はMinimal Systemの略でUNIXでインストール時によく使われるconfigureスクリプトを実行するために必要な最小限のシステムです。MinGWと同様に<a href="http://prdownloads.sourceforge.net/mingw/MSYS-1.0.10.exe?download">ここ</a>からダウンロードしてデスクトップに置いてください。MSYS-1.0.10.exeをダブルクリックすると次のウインドウが開きます。「はい」をクリックして次へ進む。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys1.JPG" alt="ODE" /></p>
+<p>Welcome to the "Minimal System" Setup Wizardの画面が開くのでnextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys2.JPG" alt="ODE" width="320" height="240" /></p>
+<p>License agreementをよく読んでOKならYesをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys3.JPG" alt="ODE" width="320" height="240" /></p>
+<p>Informationを読んだらNextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys4.JPG" alt="ODE" width="320" height="240" /></p>
+<p>Setupの画面になるのでインストール先を変更するなら適宜変えてください。ただし、日本語のフォルダー名の中にインストールしてはいけません。MSYSは日本語に対応していないのです。よくわからない場合は標準のままが無難でしょう。Nextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys5.JPG" alt="ODE" width="320" height="240" /></p>
+<p>Select componetsの画面になるので何もせずにNextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys6.JPG" alt="ODE" width="320" height="240" /></p>
+<p>Select Start Menu Barの画面になります。なにもせずにNextをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys7.JPG" alt="ODE" width="320" height="240" /></p>
+<p>Ready to Installの画面になり、これからハードディスにインストールします。ハードディスクに10MBも空きがあれば問題ありません。私の場合は6.4MB使用しました。Installをクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys8.JPG" alt="ODE" width="320" height="240" /></p>
+<p>以下の画面のようにインストールが１００％になると２つ下の図のようなコマンドプロンプトウインドウが開きます。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys10.JPG" alt="ODE" width="320" height="240" /></p>
+<p>「続行するには何かキーを押してください。」とコマンドプロンプト上に表示されますので、コマンドプロンプトをマウスでクリックしてからEnterキーを押す。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys9.JPG" alt="ODE" width="320" height="240" /></p>
+<p>これでインストールが終わりです。Finishをクリックしましょう。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys11.JPG" alt="ODE" width="320" height="240" /></p>
+<p>インストールが正常に終わると。デスクトップ上にMSYSのアイコンが追加されます。それをダブルクリックすると以下のターミナルが開きます。　これで準備は終わりです。ODEをインストールしましょう。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/msys12.JPG" alt="ODE" width="320" height="240" /></p>
+<p><strong>4. ODEのダウンロード</strong><br />
+<a href="http://ode.org/">ODEのウェブサイト</a>の左メニューバーにあるdownloadをたどって<a href="http://prdownloads.sourceforge.net/opende/ode-0.5.tgz?download">ode-0.5.tgz</a>をダウンロードします。日本のミラーサイト（例えばJAIST）を選び、ダウンロード先はc:\msys\1.0\home\ユーザ名の下にしてください。</p>
+<p><strong>5. ODEのインストール</strong><br />
+これからの作業はUNIXのコマンドを知っていることを前提とします。UNIXやLinuxを今まで使ったことがない人は面食らうかもしれませんが指示通り入力してください。</p>
+<p>1. MSYSアイコンをダブルクリックしてMINGW32ターミナルを開きます。以下のコマンドはこのターミナルで実行してください。<br />
+2. ホームディレクトリへ移動　　　　　<br />
+　　$cd<br />
+3. ホームディレクトリにsrcディレクトリを作成<br />
+　　$ mkdir src<br />
+4. ode-0.5.tgzを展開（解凍）するとode-0.5ディレクトリが作成される<br />
+　　$ cd ~/src<br />
+　　$ tar xvzf ode-0.5.tgz<br />
+5. ode-0.5ディレクトリへ移動<br />
+　　$cd ode-0.5<br />
+6. configファイルの設定<br />
+/home/ユーザ名/src/ode-0.5/config/user-settingsの編集<br />
+　　$ cd config<br />
+メモ帳や秀丸などのエディターでuser-settingsの１４行目を以下のように変更しSAVEする。<br />
+　　PLATFORM=mingw<br />
+7. makeの実施(実行ファイルを作成）<br />
+$ cd ~/src/ode-0.5<br />
+　　$ make configure<br />
+　　$ make ode-lib<br />
+　　$ make drawstuff-lib<br />
+　　$ make ode-test<br />
+　　$ make drawstuff-test<br />
+8. テスト<br />
+　　$ cd ~/src/ode-0.5/ode/test<br />
+　　$ ./test_buggy.exe</p>
+<p>Simulation test environment v0.02のウインドウが開きバギーが表示されたら成功です。ごくろうさま！'a'キーを押すと前進、'z'キーで後進、','キーで左折、'.'キーで右折します。次回のODE講座はCygwin環境下でのODEのインストールを説明します。Cygwinの方がMinGWよりLinuxとの互換性が高いのでお勧めです。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/buggy.jpg" alt="ODE" width="320" height="300" /><br />
+ODE付属プログラムtest_buggy.exeのスクリーンショット</p>

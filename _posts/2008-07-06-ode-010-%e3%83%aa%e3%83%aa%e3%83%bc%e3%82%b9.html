@@ -1,0 +1,48 @@
+---
+layout: post
+title: ODE 0.10 の傾向と対策（重要）
+date: 2008-07-06 21:05:17.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1076'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/521.html"
+---
+<p> <img src="{{ site.baseurl }}/assets/images/2008/07/ode010.jpg" alt="ode010.jpg" /><br />
+ODE0.10で新しく導入されたピストンジョイントのデモ(demo_piston.exe)</p>
+<p>そろそろ梅雨が明けそうですね．昨年は北海道で熱中症になり地球温暖化を肌で感じました．今年も梅雨入りが遅く，梅雨開けが早くなりようで，猛暑が心配です．</p>
+<p>さて，Open Dynamics Engine 0.10が約９ヶ月ぶりの２００８年７月１日にリリースされました．1.0にメジャーアップグレードすると期待しましたが，デベロッパーはまだ機が熟していないと判断したようです．しかし，衝突検出やエラー処理に関してかなり改善した印象を受けました．例えば今まで，ODE internal errorエラーで落ちていたものが，問題なく動いています．ODEは着実に進化しています．1.0にアップグレードする日もそう遠くはないでしょう．</p>
+<p>主な変更点は次のとおりです．<a href="http://opende.sourceforge.net/mediawiki-1.6.10/index.php/Changelog">詳しくはode-0.10.0/CHANGELOG.txtをご覧ください</a>．</p>
+<ul>
+<li>dInitODE2(), dAllocateODEDataForThread(), dCleanupODEAllDataForThread(). これらのAPIはスレッド用の衝突検出に関するもの．<span style="color: #ff0000;"><strong><br />
+</strong></span></li>
+<li>GIMPACT の倍精度サポート</li>
+<li>Sweep and Prune　衝突検出スペースの追加</li>
+<li>新しいジョイント: Prismatic Universalジョイント, Pistonジョイント</li>
+<li>autotoolsの場合はデフォールトでshared libraryでビルドできない．つまり， ODEのような物理計算エンジン はstatic libraryとしてインストールすべき．</li>
+<li>最適化，多くのバグ修正，ソースコードの清掃</li>
+</ul>
+<p><span style="color: #ff0000;"><strong>なお，これらの変更に伴い，ODEのAPIを呼び出す時は，dInitODE()で初期化し，終了するときはdCloseODE()で後処理をしなければなりません．つまり，以前作成したソースコードの修正が必要になります．これに対応したODE本のサンプルプログラムは以下からダウンロードできます． </strong></span></p>
+<ul>
+<li> <a title="robosimu080707.zip" href="http://demura.net/wordpress/wp-content/uploads/2008/07/robosimu080707.zip">robosimu080707.zip</a></li>
+</ul>
+<p>また，ビルドのシステムも少し変更になり，demura.netで配布していたmakefileではコンパイルできなくなりました．ODE0.10のインストール方法並びにサンプルプログラムのコンパイル方法は以下をご覧ください．</p>
+<ul>
+<li><a title="View post ODE 0.10 のインストール　(Code::Blocks)" href="http://demura.net/9ode/524.html">ODE 0.10 のインストール　(Code::Blocks)</a></li>
+<li><a title="View post ODE 0.10 のインストール　(MSYS+MinGW)" href="http://demura.net/9ode/543.html">ODE 0.10 のインストール　(MSYS+MinGW)</a></li>
+<li><a title="View post ODE 0.10 のインストール　(Visual C++ 2008 EE）" href="http://demura.net/9ode/538.html">ODE 0.10 のインストール　(Visual C++ 2008 EE）</a></li>
+</ul>
+<hr />今回のバージョンアップでは動力学計算の積分器にルンゲクッタの導入は見送られましたが，ポリゴン(三角メッシュ）の衝突検出はずいぶん改善されました．これはODE-0.9から導入されインストールのオプションで選ぶものですが，OPCODEの新しい三角メッシュ同士の衝突検出を選ぶことができます．私は試したことがないので受け売りになりますが，これによりGimpactと競い合える能力になったようです．OPCODEはGimpactより数倍速いという報告もありますので期待が持てます．また，Gimpactも倍精度がサポートされましたので，計算精度が必要な方にはビッグニュースだと思います．でむ</p>

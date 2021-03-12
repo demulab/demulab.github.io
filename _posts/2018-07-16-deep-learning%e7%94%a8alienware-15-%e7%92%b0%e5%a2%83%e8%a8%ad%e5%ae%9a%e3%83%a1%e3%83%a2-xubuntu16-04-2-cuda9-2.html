@@ -1,0 +1,125 @@
+---
+layout: post
+title: Deep Learning用Alienware 15  環境設定メモ (Xubuntu16.04.2, Cuda9.2)
+date: 2018-07-16 00:26:44.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1722'
+  _wp_old_date: '2018-05-27'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/14561.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/05/alienware.jpg"><img src="{{ site.baseurl }}/assets/images/2018/07/alienware.jpg" alt="" width="960" height="746" class="aligncenter size-full wp-image-14579" /></a></p>
+<p>Deep Learning用に購入したAlienware 15 R4にxubuntu16.04.2, Cuda9.2をインストールしたときのメモ。RoboCup@Home Domestic Standard Platform LeagueでTOYOTO HSRロボットのオフィシャルラップトップとしてAlienwareが指定されているので購入した。性能が高くコストパフォーマンスも良いが、大きく重いのが難点。</p>
+<ul>
+<li>環境
+<ul>
+<li>DELL Alienware R4<br />
+(CPU: Intel i7-8750K, Memory:16GB, GPU: Nvidia 1070, Memory: 8GB)</li>
+<li>xubunut16.04.2</li>
+<li>Kernel 4.13.0-43-generic</li>
+<li>gcc/g++ 5.4.0</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>CAPS LOCKとCTRLキーの入れ替え
+<ul>
+<li>/etc/default/keyboardのXKBOPTIONS="ctrl:nocaps"と変更する。</li>
+</ul>
+</li>
+<li> ホームディレクトリにある日本語ファイル名を英語に変換
+<ul>
+<li>次のコマンドを端末で実行
+<ul>
+<li><code>LANG=C xdg-user-dirs-gtk-update</code></li>
+</ul>
+</li>
+<li>ウインドウが開くので右下の[Update Names]をクリックして変更し、再起動する。</li>
+<li>再起動するとBluetooh関連のBluemanが"/home/ユーザー名/ダウンロード"というディレクトリがないとエラーを吐くので次のコマンドでBlueman mangerを起動する。
+<ul>
+<li><code>sudo blueman-manager</code></li>
+</ul>
+</li>
+<li>表示-&gt;ローカルサービス-&gt;転送-&gt;転送設定のIncoming FolderでDownloadsを選び、Applyをクリックし、closeをクリックしウインドウを閉じる。。</li>
+</ul>
+</li>
+<li> すぐ使うソフトウェアのインストール
+<ul>
+<li>sudo apt install  emacs  git</li>
+</ul>
+</li>
+<li> 無線LANの設定
+<ul>
+<li>無線LANのデバイス(Killer 1550)を認識しないので以下を参考にドライバをインストールした。インストールの作業はカーネルをバージョンアップすると毎回必要になる。
+<ul>
+<li>https://askubuntu.com/questions/1016903/alienware-17-r4-ubuntu-16-04-wifi-driver</li>
+</ul>
+</li>
+<li><code>git clone https://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/backport-iwlwifi.git</code></li>
+<li><code>cd backport-iwlwifi</code></li>
+<li><code>make defconfig-iwlwifi-public</code></li>
+<li><code>sed -i 's/CPTCFG_IWLMVM_VENDOR_CMDS=y/# CPTCFG_IWLMVM_VENDOR_CMDS is not set/' .config</code></li>
+<li><code>make -j 6</code></li>
+<li><code>sudo make install</code></li>
+<li><code>sudo reboot</code></li>
+</ul>
+</li>
+<li> 準備
+<ul>
+<li>NVIDIAのドライバをインストールしていないので、起動するとIntelのGPUでXが起動しているので、Ctlr+Alt+F1でXを落とす</li>
+<li>sudo apt update</li>
+<li>sudo apt upgrade</li>
+<li>sudo service lightdm stop</li>
+</ul>
+</li>
+<li> NVIDIAドライバのインストール
+<ul>
+<li>sudo add-apt-repository ppa:graphics-drivers/ppa</li>
+<li>sudo apt update</li>
+<li>sudo apt install nvidia-396  nvidia-settings</li>
+<li>sudo reboot</li>
+</ul>
+</li>
+<li> <a href="https://developer.nvidia.com/cuda-downloads">NVIDIAのウェブサイト</a>からCuda9.2のインストール
+<ul>
+<li>Linux-&gt;x86_64-&gt;ubuntu-&gt;16.04-&gt;dev(local)を選択</li>
+<li>Download (1.2GB)をクリックし、ダウンドードが完了するまで待つ。</li>
+<li>sudo dpkg -i cuda-repo-ubuntu1604-9-2-local_9.2.148-1_amd64.deb</li>
+<li>sudo apt-key add /var/cuda-repo-9-2-local/7fa2af80.pub</li>
+<li>sudo apt-get update</li>
+<li>sudo apt-get install cuda</li>
+<li>.bashrcに以下を追加したCUDAのパスを通す
+<ul>
+<li><code>export PATH=/usr/local/cuda-9.2/bin${PATH:+:${PATH}}</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://developer.nvidia.com/cudnn">NVIDIAのウェブ</a>からcuDNNのインストール
+<ul>
+<li>nvidiaのdeveloperに登録しないとダウンロードできないので登録する。</li>
+<li>Download cuDNN v7.1.4 for CUDA9.2をクリック</li>
+<li>cuDNN v7.1.4 for Runtime Library for Ubuntu16.04 (Deb)とcuDNN v7.1.4 Developer Library for Ubuntu16.04 (Deb)をダウンロードする。</li>
+<li><code>sudo dpkg -i libcudnn7_7.1.4.18-11+cuda9.2_amd64.deb</code></li>
+<li><code>sudo dpkg -i libcudnn7-dev_7.1.4.18-1+cuda9.2_amd64.deb</code></li>
+</ul>
+</li>
+<li><a href="http://demura.net/misc/14118.html">OpenCV3.4.0のインストール</a></li>
+<li><a href="http://demura.net/lecture/13657.html">ROS Kineticのインストール</a></li>
+<li><a href="http://demura.net/athome/14694.html">YOLO V3のインストール</a></li>
+</ul>
+<p>終わり</p>

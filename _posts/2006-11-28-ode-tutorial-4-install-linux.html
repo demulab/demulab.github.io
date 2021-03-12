@@ -1,0 +1,91 @@
+---
+layout: post
+title: 'ODE Tutorial 4: Install (Linux)'
+date: 2006-11-28 21:49:25.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '898'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/345.html"
+---
+<p>This page is mainly translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.</p>
+<p><img style="width: 320px; height: 283px;" src="{{ site.baseurl }}/assets/images/2006/11/aibo1.jpg" alt="" /></p>
+<p>The AIBO simulator which was drawn up with ODE</p>
+<p>4th of ODE tutorial as for time the installation  with Linux will be explained.</p>
+<p>From ODE 0.6,  its build system changes and the method of installing mingw, Linux and OS X becomes basically same and it is simple. The compiling install it was possible from the source  as for my environment to be a little old it is as follows.</p>
+<p>Furthermore, if with the environment of OS X the version  of gcc was not increased 4.0 or more, it could not install. With my environment splash.</p>
+<p>Gcc 3.4.4<br />
+ Automake 1.9.2<br />
+ Autoconf   2.59</p>
+<p><strong>A. Download</strong></p>
+<p>Tracing download which tothe  left menu bar<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fode.org%2f">of the web sight of ODE</a>is, it downloads  ode-src-0.8.zip. <a href="http://downloads.sourceforge.net/opende/ode-src-0.8.zip?modtime=1171190744&amp;big_mirror=0">You can aloso download ode-src-0.8.zip from here.</a>In this tutorial, the file was downloaded into /tmp directrory.</p>
+<p><strong>B. Install</strong></p>
+<p>1. Please start a terminal soft, such as the gnome-terminal,  xterm, and so on.</p>
+<p>2. Move to the home directory<br />
+ $<span style="color: #000099;"> <strong>cd</strong></span></p>
+<p>3. Make the src directory and move there<br />
+ $<span style="color: #000099;"> <strong>mkdir src</strong></span><br />
+ $<span style="color: #000099;"> <strong>cd src</strong></span></p>
+<p>4. Copy the ode source code under the src directory<br />
+ $<span style="color: #000099;"> <strong>cp  /tmp/ode-src-0.8.zip </strong></span>.</p>
+<p>5. Unzip the source code<br />
+ $<span style="color: #000099;"> <strong>unzip ode-src-0.8.zip</strong></span></p>
+<p>6. Move to the ode-0.8 directory<br />
+ $<span style="color: #000099;"> <strong>cd ode-0.8</strong></span></p>
+<p>7. The execution of configure. I recommend to install ODE with double precision.<br />
+ $<span style="color: #000099;"> <strong>. /configure  --enable-double-precision</strong></span></p>
+<p>8. Compile the source code<br />
+ $  <span style="color: #000099;"> <strong>make</strong></span></p>
+<p>9.  Install the ODE library<br />
+ $ <span style="color: #000099;"><strong>su</strong></span><br />
+ $<span style="color: #000099;"><strong> make install</strong></span></p>
+<p><strong>C. Test</strong></p>
+<p>$ <span style="color: #000099;"><strong>cd  ode/test    (or ,   cd   /home/$USERNAME/src/ode-0.8/ode/test)</strong></span><br />
+ $<span style="color: #000099;"> <strong>. /test_buggy</strong></span><br />
+ <img src="{{ site.baseurl }}/assets/images/2006/11/buggy.jpg" alt="ODE" width="320" height="300" /></p>
+<p>Screen shot of ODE attachment program test_buggy.exe</p>
+<p>When the window of Simulation test environment  v0.02 opens and the buggy is indicated, it is success. You can manipulate the buggy as follows.</p>
+<table border="0">
+<tbody>
+<tr>
+<td style="border: 1px solid #000099">Key</td>
+<td style="border: 1px solid #000099">Function</td>
+</tr>
+<tr>
+<td style="border: 1px solid #000099">a</td>
+<td style="border: 1px solid #000099">Increase speed</td>
+</tr>
+<tr>
+<td style="border: 1px solid #000099">b</td>
+<td style="border: 1px solid #000099">Decrease speed</td>
+</tr>
+<tr>
+<td style="border: 1px solid #000099">,</td>
+<td style="border: 1px solid #000099">steer left</td>
+</tr>
+<tr>
+<td style="border: 1px solid #000099">.</td>
+<td style="border: 1px solid #000099">steer right</td>
+</tr>
+<tr>
+<td style="border: 1px solid #000099">space</td>
+<td style="border: 1px solid #000099">reset speed and steering</td>
+</tr>
+</tbody>
+</table>
+<p>To be continued.</p>
+<p>Update 2007-5-29</p>

@@ -1,0 +1,196 @@
+---
+layout: post
+title: ROS Melodic：トピック通信しよう！(python)
+date: 2020-02-22 00:49:56.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '2267'
+  _thumbnail_id: '16777'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/16773.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/turtlebot4.png"><img class="aligncenter size-large wp-image-16777" src="{{ site.baseurl }}/assets/images/2020/02/turtlebot4-1024x558.png" alt="" width="1024" height="558" /></a><br />
+この記事はTurtlebot2 (Kobuki)を使ったROS新人プログラム用の記事です。今回はROSの通信方式であるトピックを学びます。</p>
+<p><strong>1. Publisher</strong></p>
+<p>キーボードからロボットを操縦するmy_teleopパッケージを作ろう!<br />
+<a href="https://demura.net/lecture/16671.html">はじめてのROSプログラミング(python)</a>と同じ要領でmy_teleopパッケージを作ります。今回の例ではhelloをmy_teleopに置き換えます。このプログラムはメッセージの送リ手であるpublisher（配信者)プログラムの簡単な例にもなっています。プログラムの説明はソースコード内のコメントを参照してください。テキストエディタ(gedit)にコピペして名前を付けて保存します。ここではmy_teleop.pyとし、保存ディレクトリは~/catkin_ws/src/my_teleop/scriptsです。scriptsフォルダは自動で作られないので以下のコマンドで作成します。</p>
+<ul>
+<li><code>$ mkdir  ~/catkin_ws/src/my_teleop/scripts</code></li>
+</ul>
+<pre class="brush:cpp;">#!/usr/bin/env python 
+# -*- coding: utf-8 -*- 
+import rospy #  ROS pythonで必要なモジュール
+from geometry_msgs.msg import Twist
+
+def teleop():
+    # ノードの初期化。第1引数はノード名。第2引数はノード名がユニークになるように乱数をつける。
+    rospy.init_node('my_teleop', anonymous=True)  
+
+    #　パブリッシャーの生成。第1引数はトピック名、第2引数は型、第3引数はメッセージバッファのサイズ。
+    pub = rospy.Publisher('/cmd_vel_mux/input/teleop', Twist, queue_size=1)
+
+    # ループの周期。この場合は50Hz、1秒間に50回。
+    rate = rospy.Rate(50) 
+
+    vel = Twist()
+
+    print("f: forward, b: backward, r: right, l:left")
+
+    while not rospy.is_shutdown():
+        key  = input() # 標準入力からキーを読み込む
+        print(key)     # 読み込んだキーの値を標準出力へ出力
+
+        if key == 'f': # fキーが押されていたら
+            vel.linear.x  =  0.5
+        elif key == 'b':
+            vel.linear.x  = -0.5
+        elif key == 'l':
+            vel.angular.z =  1.0
+        elif key == 'r':
+            vel.angular.z = -1.0
+            # linear.xは前後方向の並進速度(m/s)。前方向が正。
+            # angular.zは回転速度(rad/s)。反時計回りが正。
+        else:
+            print("Input f, b, l, r")
+        
+        pub.publish(vel)    # 速度指令メッセージをパブリッシュ
+        vel.linear.x  = 0.0 # 並進速度の初期化
+        vel.angular.z = 0.0 # 回転速度の初期化
+        rate.sleep()        # 指定した周期でループするよう寝て待つ
+
+if __name__ == '__main__':
+    try:
+        teleop()
+    except rospy.ROSInterruptException:
+        pass
+
+</pre>
+<p><strong>コード解説</strong></p>
+<p>では、新人向け記事なので丁寧に説明をします。一部、コンピュータサイエンスの知識が必要な専門的な記述もありますのでよくわからない場合は読み飛ばすか調べてみるとよいでしょう。</p>
+<p>8行目でノードを初期化しています。ノードは実行中のプログラムのことで、ROSでは多くのノードがデータを通信することでシステム全体が実行されます。ROSの場合はROSマスターと通信するためにノードは固有(ユニーク）の名前をつける必要があり、同じノード名があると古いノードの接続が切られ、新しくできた同じ名前のノードが接続されます。それを避けるために、8行目の第2引数でanonymous=Trueにしています。こうすると、ノード名の後に乱数が付け加えられて同じ名前のノードは作られません。特に多くのノードが存在する場合やよく使われるノードは必要になります。</p>
+<p>11行目でデータ（メッセージ）を送るパブリッシャーを生成しています。第1引数は通信に使うトピック名。普通、速度指令用のトピックは/cmd_velが多いですがkoubkiのパッケージは少し変わっていて/cmd_vel_mux/input/teleopになっています。第2引数はトピックのデータ型、速度指令の型はgometry_msgs/Twist型です。ここでは、4行目で指定しているのでTwistだけで良いのですが、4行目がないとgeometry_msgs.msg.Twistとなります。Twist型は並進速度のメンバーlinearと角速度のメンバーangularがあり、各メンバーはさらにx, y, zのメンバーがあります。第3の引数は通信に使うバッファのサイズです。トピック通信は非同期通信でFIFO(First IN First Out) 、一度バッファに蓄えられてから送信されます。この送信バッファのサイズがqueue_sizeになります。データの受信側であるサブスクライバーが遅い場合、バッファが小さいとメッセージの一部（古いメッセージ）が失われてしまいます。ロボットのアプリケーションでは、最新のデータだけが欲しい場合が多いのでキューサイズは1で良いと思います。データの取りこぼしがあっては困る場合や時系列データ処理が必要な場合はキューサイズを大きくすると良いでしょう。以下のROS Wikiページにキューサイズの決め方に関する説明、Yukihiro SAITOさんのより詳しい日本語の解説があります。</p>
+<ul>
+<li><a href="http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers">rospyOverviewPublishers and Subscribers, ROS Wiki</a></li>
+<li><a href="https://qiita.com/yukkysaito/items/8ed1dc5e4ca242e47575">ROSのトピック通信におけるPublisherとSubscriberの内部動作（概要）, @yukkysaito</a></li>
+</ul>
+<p>14行目で実行周期を指定し、40行目でその周期になるよう動的にsleepを入れます。rospy.Rate(50)は50Hz、つまり、1秒間に50回、1ループ20msとなります。</p>
+<p>20行目のrospy.is_shutdown()は、ノードがexit()すべきがチェックしています。"CTRL+C"(コントロールキーを押しながらcキーを押す）キーが押された場合やエラーが起きた場合はこれがtrueになってwhileループから抜けます。</p>
+<p>43から45行目のtry- exceptionはpythonの例外処理です。 rospy.ROSInterruptException() が発生した場合、pass文を実行します。rospy.ROSInterruptException()は"CTRL+C"キーが押されると発生します。pass文は何もしない文です。C言語の場合は必要ないのですが、pythonでは文法上、条件分岐や例外処理で何もしない場合に必要になります。つまり、このコードではCTRL+Cキーが押されたときに例外処理が発生して何もしないで終了します。</p>
+<p><strong>実　行</strong></p>
+<p>my_teleop.pyを保存したら次のコマンドで実行権を与えましょう。</p>
+<ul>
+<li><code>$  chmod +x   my_teleop.py</code></li>
+</ul>
+<p>次に、以下のコマンドでビルドして実行しよう。pythonはスクリプト言語なのでビルドする必要はないのですが、ROSでは必要になります。</p>
+<ul>
+<li><code>$ cd ~/catkin_ws </code></li>
+<li><code>$ catkin build my_teleop</code></li>
+<li><code>$ roscore </code></li>
+<li><code>$ rosrun my_teleop my_teleop.py</code></li>
+</ul>
+<p><strong>2. Subscriber</strong></p>
+<p>次に、メッセージの受け手であるsubscriber（購読者)の簡単なプログラムを示します。このプログラムはmy_teleop_nodeがパブリッシュするトピック/cmd_vel_mux/input/teleopをサブスクライブして、並進速度(Linear Velocity)と角速度(Angular Velocity)を標準出力に出力する簡単なプログラムです。</p>
+<pre class="brush:cpp;">#!/usr/bin/env python 
+# -*- coding: utf-8 -*- 
+import rospy #  rosで必要はモジュール
+from geometry_msgs.msg import Twist
+
+
+def callback(vel):
+    rospy.loginfo("Liner:%f",vel.linear.x)
+    rospy.loginfo("Angular:%f",vel.angular.z)
+    
+    
+def subscriber():
+    rospy.init_node('my_subscriber', anonymous=True) # ノードの初期化
+
+    # subscriberの作成。トピック/cmd_vel_mux/input/teleopを購読する。    
+    rospy.Subscriber("/cmd_vel_mux/input/teleop", Twist, callback)
+
+    # コールバック関数を繰り返し呼び出す。
+    rospy.spin()
+        
+if __name__ == '__main__':
+    subscriber()</pre>
+<p><strong>コード解説</strong></p>
+<p>ここで、馴染みのないコールバック関数callbackが登場しています。コールバック関数はIT用語辞典によると「コールバック関数とは、プログラム中で、呼び出し先の関数の実行中に実行されるように、あらかじめ指定しておく関数。」と定義されています。</p>
+<p>通常はマウスで線を描くなどの処理を実装するような、あるイベントが起きた時に処理をするプログラムを実装する場合に使われます。通常は、マウスのイベント処理などの場合のようにマウスのボタンが押されたり、移動したときに自動的にコールバック関数が呼び出されますが、ROSではrospy.spin()で明示的に呼び出さなければいけません。rospy.spin()はノードが動いている間、コールバック関数を呼び続けます。ROSではメッセージの受け渡しにコールバック関数を使います。</p>
+<p><strong>実　行</strong></p>
+<p>では、今までパッケージを作った要領で、my_subscriberパッケージを作りましょう。<br />
+~/catkin_ws/src/my_subscriberディレクトリの下にCMakeLists.txt, package.xml, src<br />
+などを作ることになります。上のプログラムのファイル名はmy_subscriber.pyとなります。scriptsフォルダは自動で作られないので以下のコマンドで作成します。</p>
+<ul>
+<li><code>$ mkdir  ~/catkin_ws/src/my_subscriber/scripts</code></li>
+</ul>
+<p>my_subscriber.pyを保存したら次のコマンドで実行権を与えましょう。</p>
+<ul>
+<li><code>$  chmod +x   my_subscriber.py</code></li>
+</ul>
+<p>以下のコマンドでビルドして実行しよう。<br />
+<code>$ cd ~/catkin_ws </code><br />
+<code>$ catkin build my_subscriber</code><br />
+<code>$ rosrun my_subscriber my_subscriber.py</code></p>
+<p><strong>3. シミュレータでの確認</strong><br />
+turtlebot2シミュレータを起動し、my_teleopとmy_subscriberノードの動作を確認しましょう。シミュレータを次のコマンドで起動します。<br />
+<code>$ roslaunch turtlebot_gazebo turtlebot_world.launch</code></p>
+<p>次にmy_teleopノードを起動した端末にマウスカーソルを持って行いきます。<br />
+f, b, l, rキーでロボットが移動したら成功。キーを押した後はエンターキーを押す。<br />
+このシミュレータの場合は、/cmd_vel_mux/input/teleop_velをPublishするだけでロボットがその速度で移動します。</p>
+<p>次にSubscriberのプログラムが動作しているか確認するために、my_subscriberノードを起動した端末を見ましょう。速度が表示されていたら成功です。</p>
+<p>お疲れ様！</p>
+<p>終わり</p>
+<p><strong>4. ホームワーク</strong></p>
+<ul>
+<li>Publisherサンプルプログラムを実行して、rqt_graphでノード名を確認しましょう。次に8行目init_nodeの第2引数"anonuymous=True"を削除して、再度実行してノード名を確認して違いを調べよう。なお、rqt_graphはノードやトピックをグラフィカルに表示してくれるツールで以下のコマンドで実行します。
+<ul>
+<li>$ rqt_graph</li>
+</ul>
+</li>
+<li>キーsを押すと、turtlebot2が停止するようにmy_teleop.pyのソースコードを変更しよう！</li>
+<li>my_teleop.pyではキーボードのf, b, r, lを押した後にエンターキーを押すと、一定の速度でturtlebot2が動き出します。キーを押すたびに並進速度が0.01 [m/s]ずつ増減、回転角度が0.1 [rad/s]ずつ変化するようにソースコードを変更しよう！</li>
+<li>turtlebot2の移動する軌跡が正方形になるようプログラムを変更しよう！</li>
+<li>my_teleop.pyは、turtlebot_teleopとは違いf, b, r, lのキーを押した後にエンターキーが必要です。エンターキーを押さずに、f, b, r, lキーを押すとロボットが移動するようにソースコードを変更しよう。
+<ul>
+<li>ヒントmy_teleop.pyではinput()関数でキーボードから入力しますがEnterキーが入力されるまで待状態になります。これをブロックとよびます。Enterキーが入力されると次の処理に移ります。Linuxでブロックしないの入出力を実現する場合はselectシステムコールを使います。次のリンクが参考になります。
+<ul>
+<li><a href="https://answers.ros.org/question/63491/keyboard-key-pressed/">ROS Answer: Keyboard key pressed</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

@@ -1,0 +1,81 @@
+---
+layout: post
+title: 'ODEで学ぶＣ言語　[Step8: 配列とポインタ]'
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: pending
+categories:
+- ode
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>ODEで学ぶC言語のStep8です．Step7までで一通りC言語の項目が終わりましたが，講義での反応を見ると配列とポインタの違いでわからなくケースが多かったので今回は配列とポインタについて説明します．</p>
+<p><!--more--></p>
+<p><strong>配列とポインタ</strong></p>
+<p>配列は宣言と同時に記憶領域を確保してくれますが，ポインタは確保してくれないので自前でcalloc()やmalloc()を使って確保するか，配列で確保した記憶領域のアドレスを渡してあげなければなりません．</p>
+<pre class="brush:cpp">
+typedef struct
+{
+    dBodyID body; // ボディのID
+    dGeomID geom; // ジオメトリのID
+    dJointID joint; // ジョイントのID
+    double pos&#91;3&#93;; // x, y, z　&#91;m&#93;
+    double sides&#91;3&#93;; // ボックスのサイズ
+    double l, r, m; // 直径&#91;m&#93;, 半径 &#91;m&#93;, 質量 &#91;kg&#93;
+    float color&#91;3&#93;; // 色 r,g,b
+} MyObject;
+
+MyObject torso, leg&#91;2&#93;;
+
+void dmSphereCreate(MyObject *obj,double p&#91;3&#93;, double R&#91;12&#93;,
+                    double m, double r, float color&#91;3&#93;)
+{
+    int i;
+
+    obj-&#62;m = m;
+    obj-&#62;r = r;
+
+    for (i = 0; i &#60; 3; i++)
+    {
+        obj-&#62;pos&#91;i&#93; = p&#91;i&#93;;
+        obj-&#62;color&#91;i&#93; = color&#91;i&#93;;
+    }
+    // 略
+}
+</pre>
+<pre class="brush:cpp">
+typedef struct {
+	dBodyID body; // ボディのID
+	dGeomID geom; // ジオメトリのID
+	double *pos; // x, y, z　&#91;m&#93;
+	double r, m; // 半径 &#91;r&#93;, 質量 &#91;kg&#93;
+	float *color; // 色 r,g,b
+} MyObject;
+
+MyObject apple&#91;NUM&#93;;
+
+void dmSphereCreate(MyObject *obj,double p&#91;3&#93;, double R&#91;12&#93;,
+	double m, double r, float *color)
+{
+	obj-&#62;m = m;
+	obj-&#62;r = r;
+	obj-&#62;pos = p;
+	obj-&#62;R   = R;
+	obj-&#62;color = color;
+
+        // 略
+}
+</pre>

@@ -1,0 +1,223 @@
+---
+layout: post
+title: 'DNN: Detectron2  カスタムデータの学習2/2 (推論）'
+date: 2020-02-27 15:23:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16841'
+  views: '1293'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16834.html"
+---
+<p>Detectron2でカスタムデータセット学習メモの続き。長くなったので学習と推論に分けた。以下のDetectron2 Beginner's Tutorialをもとに説明を加えたもの。TutorialがGoogle ColabのJupyterノートブックを使っているのでローカルマシンで動くようにPythonスクリプトを少し変更している。</p>
+<ul>
+<li><a href="https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5#scrollTo=QHnVupBBn9eR">Detectron2 Beginner's Tutorial</a></li>
+</ul>
+<p><strong>学　習</strong></p>
+<ul>
+<li>カスタムデータで学習してない場合は以下のリンクでまず学習をする。
+<ul>
+<li><a href="https://demura.net/misc/16807.html">DNN: Detectron2 オリジナルデータの学習1/2 (学習)</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>推　論</strong></p>
+<ul>
+<li>以下のスクリプトを~/src/detectron2/myprog/balloon_inference.pyとして保存する。</li>
+</ul>
+<pre class="brush:cpp;"># balloon_inference.py
+import cv2
+import json
+import numpy as np
+import os
+import random
+from detectron2 import model_zoo
+from detectron2.utils.visualizer import ColorMode
+from detectron2.config import get_cfg
+from detectron2.engine import DefaultPredictor
+from detectron2.engine import DefaultTrainer
+from detectron2.structures import BoxMode
+from detectron2.utils.visualizer import Visualizer
+from detectron2.data import DatasetCatalog, MetadataCatalog
+from detectron2.evaluation import COCOEvaluator, inference_on_dataset
+from detectron2.data import build_detection_test_loader
+
+def get_balloon_dicts(img_dir):
+    json_file = os.path.join(img_dir, "via_region_data.json")
+    with open(json_file) as f:
+        imgs_anns = json.load(f)
+
+    dataset_dicts = []
+    for idx, v in enumerate(imgs_anns.values()):
+        record = {}
+        
+        filename = os.path.join(img_dir, v["filename"])
+        height, width = cv2.imread(filename).shape[:2]
+        
+        record["file_name"] = filename
+        record["image_id"] = idx
+        record["height"] = height
+        record["width"] = width
+      
+        annos = v["regions"]
+        objs = []
+        for _, anno in annos.items():
+            assert not anno["region_attributes"]
+            anno = anno["shape_attributes"]
+            px = anno["all_points_x"]
+            py = anno["all_points_y"]
+            poly = [(x + 0.5, y + 0.5) for x, y in zip(px, py)]
+            poly = [p for x in poly for p in x]
+
+            obj = {
+                "bbox": [np.min(px), np.min(py), np.max(px), np.max(py)],
+                "bbox_mode": BoxMode.XYXY_ABS,
+                "segmentation": [poly],
+                "category_id": 0,
+                "iscrowd": 0
+            }
+            objs.append(obj)
+        record["annotations"] = objs
+        dataset_dicts.append(record)
+    return dataset_dicts
+
+
+if __name__ == '__main__':
+    train_dataset_name     = "balloon_train"
+    val_dataset_name       = "balloon_val"
+    val_dicts_name         = "balloon/val"
+
+    for d in ["train", "val"]:
+        DatasetCatalog.register("balloon_" + d, lambda d=d: get_balloon_dicts("balloon/" + d))
+        MetadataCatalog.get("balloon_" + d).set(thing_classes=["balloon"])
+    balloon_metadata = MetadataCatalog.get(train_dataset_name)
+
+    cfg = get_cfg()
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
+    # Pretraied weights
+    # cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml") 
+
+    # Weights trained by a custom dataset
+    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") #
+
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
+    cfg.DATASETS.TRAIN= (train_dataset_name, )
+    cfg.DATASETS.TEST = (val_dataset_name, )
+
+    cfg.DATALOADER.NUM_WORKERS = 2
+    cfg.SOLVER.IMS_PER_BATCH   = 2
+    cfg.SOLVER.BASE_LR  = 0.00025  # pick a good LR
+    cfg.SOLVER.MAX_ITER = 300      # 300
+    # faster, and good enough for this toy dataset (default: 512)
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1  # only has one class (ballon)
+
+    os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+
+    trainer   = DefaultTrainer(cfg)  # trainer is used in evaluation
+    trainer.resume_or_load(resume=False)
+
+    # train is not need for the inference and evaluation phase
+    # trainer.train() 
+
+    # Inference
+    predictor = DefaultPredictor(cfg)
+
+    dataset_dicts = get_balloon_dicts(val_dicts_name)
+
+    for d in random.sample(dataset_dicts, 3):    
+        im = cv2.imread(d["file_name"])
+        outputs = predictor(im)
+        v = Visualizer(im[:, :, ::-1],
+                       metadata=balloon_metadata, 
+                       scale=0.8, 
+                       # remove the colors of unsegmented pixels
+                       instance_mode=ColorMode.IMAGE_BW )
+
+        v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+        cv2.imshow("Inference", v.get_image()[:, :, ::-1])
+        #cv2.waitKey(0)
+        cv2.waitKey(2000) # wait for 2000ms
+        cv2.destroyAllWindows()
+    
+    # Evaluation
+    evaluator = COCOEvaluator(val_dataset_name, cfg, False, output_dir="./output/")
+    val_loader = build_detection_test_loader(cfg, val_dataset_name)
+    inference_on_dataset(trainer.model, val_loader, evaluator)</pre>
+<p><strong>推　論</strong></p>
+<ul>
+<li>　次のコマンドを実行すると、写真のような風船が推論されたウインドウが開く。各ウインドウは2秒毎に切り替わり、全部で３枚表示される。その後、評価が始まる。
+<ul>
+<li><code>$ cd ~/src/detectron2/datasets</code></li>
+<li><code>$ python3  ../myprog/balloon_inference.py</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>エラーの対応</strong></p>
+<ul>
+<li>2020年2月27日時点では、coco APIの問題でnumpyのバージョンが1.18以上だとEvaluationすると次のエラーが出る。それを回避するためにnumpyのバージョンをダウンする。
+<ul>
+<li>object of type &lt;class 'numpy.float64'&gt; cannot be safely interpreted as an integer</li>
+</ul>
+</li>
+<li>numpy
+<ul>
+<li>バージョンの確認</li>
+<li><code>$ pip3 show numpy</code><br />
+Name: numpy<br />
+Version: 1.18.1<br />
+Summary: NumPy is the fundamental package for array computing with Python.<br />
+Home-page: https://www.numpy.org<br />
+Author: Travis E. Oliphant et al.<br />
+Author-email: None<br />
+License: BSD<br />
+Location: /home/demulab/.local/lib/python3.6/site-packages<br />
+Requires:</li>
+</ul>
+</li>
+<li> numpyのバージョンダウン
+<ul>
+<li><code>$ pip3 uninstall numpy</code></li>
+<li><code>$ pip3 install numpy==1.17.0</code></li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/inference2.png"><img class="size-full wp-image-16841 alignleft" src="{{ site.baseurl }}/assets/images/2020/02/inference2.png" alt="" width="546" height="891" /></a></p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/inference3.png"><img class="alignleft size-full wp-image-16842" src="{{ site.baseurl }}/assets/images/2020/02/inference3.png" alt="" width="546" height="891" /></a></p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/inference1.png"><img class="alignleft size-full wp-image-16843" src="{{ site.baseurl }}/assets/images/2020/02/inference1.png" alt="" width="819" height="616" /></a></p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/evaluation.png"><img class="alignright wp-image-16840 size-full" src="{{ site.baseurl }}/assets/images/2020/02/evaluation-e1582783898956.png" alt="" width="810" height="871" /></a></p>

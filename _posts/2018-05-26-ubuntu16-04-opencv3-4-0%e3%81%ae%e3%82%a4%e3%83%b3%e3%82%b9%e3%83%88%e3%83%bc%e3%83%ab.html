@@ -1,0 +1,114 @@
+---
+layout: post
+title: 'Ubuntu16.04: OpenCV3.4.0のインストール'
+date: 2018-05-26 23:05:46.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _oembed_23b481f5481508e70323462e6375c616: "{{unknown}}"
+  _edit_last: '2'
+  _oembed_c3a24d88c5e29adcadca08bff5227eba: "{{unknown}}"
+  views: '12342'
+  _wp_old_date: '2017-12-27'
+  _thumbnail_id: '14126'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/14118.html"
+---
+<p>Ubuntu16.04にOpenCV3.4.0をソースからビルドしインストールしたときのメモ。<span style="color: #ff0000;">OpenCV3.4.1がすでにリリースされており、ソースからビルドでき、サンプルプログラムは問題なく動いた。ただし、Yolo V3を実行するときにエラーが出る。3.4.1にバグがあるので、3.4.0をインストールした。</span></p>
+<p><a href="http://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html">http://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html</a></p>
+<p>環境</p>
+<ul>
+<li>Laptop
+<ul>
+<li>DELL Alienware 15 R4</li>
+<li>CPU: Intel i7-8750K, Memory:16GB, GPU: Nvidia 1070, Memory: 8GB)</li>
+<li>xubunut16.04.2</li>
+<li>Kernel 4.13.0-43-generic</li>
+<li>gcc/g++ 5.4.0</li>
+</ul>
+</li>
+<li> Desktop
+<ul>
+<li>CPU: Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz (6 core)</li>
+<li>GPU: NVIDIA GTX 1080Ti</li>
+<li>Memory: 32GB</li>
+</ul>
+</li>
+</ul>
+<p><strong>準備</strong></p>
+<ul>
+<li>sudo apt-get install build-essential</li>
+<li>sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libhdf5-dev libwebp-dev  libtiff-dev libjasper-dev</li>
+<li>sudo apt install checkinstall auto-apt ccache</li>
+</ul>
+<p><strong>ソースコードのダウンロード</strong></p>
+<ul>
+<li>cd</li>
+<li>mkdir src</li>
+<li>cd src</li>
+<li>以下をクリックしてopencv-3.4.0をダウンロードする。
+<ul>
+<li><a href="https://github.com/opencv/opencv/archive/3.4.0.tar.gz">opencv-3.4.0.tar.gz</a></li>
+</ul>
+</li>
+<li>tar xvzf opencv-3.4.0.tar.gz</li>
+<li>ln -s opencv-3.4.0  opencv</li>
+<li> 以下をクリックしてopencv_contrib-3.4.0をダウンロードする。
+<ul>
+<li><a href="https://github.com/opencv/opencv_contrib/archive/3.4.0.tar.gz">opencv_contrib-3.4.0.tar.gz</a></li>
+</ul>
+</li>
+<li>tar xvzf opencv_contrib-3.4.0.tar.gz</li>
+<li>ln -s opencv_contrib-3.4.0 opencv_contrib</li>
+</ul>
+<p><strong>ソースのビルド</strong></p>
+<ul>
+<li>cd ~/src/opencv</li>
+<li>mkdir build</li>
+<li>cd build</li>
+<li>cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=~/src/opencv_contrib/modules  -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D WITH_VTK=ON -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D ENABLE_FAST_MATH=1 -D CUDA_FAST_MATH=1 -D WITH_CUBLAS=1 -D WITH_OPENGL=ON -D WITH_CUDA=ON -D CUDA_ARCH_BIN="6.1" -D CUDA_ARCH_PTX="6.1" ..</li>
+<li>make -j 12
+<ul>
+<li>コンパイルが終わるまで３０分ぐらいかかりました。</li>
+</ul>
+</li>
+<li>sudo make install</li>
+<li><code>sudo /bin/bash -c 'echo "/usr/local/lib" &gt; /etc/ld.so.conf.d/opencv.conf'</code></li>
+<li>sudo  ldconfig</li>
+</ul>
+<p><strong>テスト</strong></p>
+<ul>
+<li>cd ~/src/opencv/samples/data</li>
+<li>~/src/opencv/build/bin/cpp-example-facedetect lena.jpg</li>
+<li>下のウインドウが表示されれば成功。お疲れ様！</li>
+</ul>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2017/12/face_detect-1.png"><img src="{{ site.baseurl }}/assets/images/2018/05/face_detect-1-287x300.png" alt="" width="287" height="300" class="aligncenter size-medium wp-image-14126" /></a></p>
+<ul>
+<li>以下のようなエラーが出る場合
+<ul>
+<li>error while loading shared libraries: libopencv_imgcodecs.so.3.4: cannot enable executable stack as shared object requires: Invalid argument</li>
+</ul>
+</li>
+<li>以下のコマンドを実行してから
+<ul>
+<li>sudo apt install execstack</li>
+<li>sudo execstack -c /usr/local/lib/*opencv*.so*</li>
+</ul>
+</li>
+<li>再度、テストプログラムを実行する。
+<ul>
+<li>~/src/opencv/build/bin/cpp-example-facedetect lena.jpg</li>
+</ul>
+</li>
+</ul>

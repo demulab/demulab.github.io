@@ -1,0 +1,37 @@
+---
+layout: post
+title: つくばチャレンジ2011まであと2日：トラブル続出2
+date: 2011-11-13 21:53:48.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  _edit_last: '2'
+  views: '167'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/9274.html"
+---
+<p>[caption id="attachment_9279" align="alignnone" width="300" caption="つくばチャレンジ第７回実験走行　demura.netチーム"]<a href="http://demura.net/wordpress/wp-content/uploads/2011/11/111113.jpg"><img src="{{ site.baseurl }}/assets/images/2011/11/111113-300x225.jpg" alt="" title="111113" width="300" height="225" class="size-medium wp-image-9279" /></a>[/caption]</p>
+<p>&nbsp;</p>
+<p>第７回実験走行。</p>
+<p>昨日、苦労したものの何とか地図を作成できたので、今日こそはトライアルコースを完走すると意気込む。</p>
+<p>昨日に引き続き、本日もトラブル。システムを起動するとLRF関連のエラー表示。今日の朝３時頃までは動いていたのに、何故、エキスポセンターで動かない。Subversionでバージョン管理をしているのでログをチェックして、ファイルを調べてもおかしいところはなし。いろいろ学生が調べ、地図を古いものに変更したところ動いた。どうやら、昨日苦労して作成した地図の形式に問題がある模様。ここまで２時間半費やす。</p>
+<p>その後、何とかトライアルコースを試す。地図が悪いので自己位置をロストする。そのため、部分的にしか走行できない。明日はデッドレコニングを重視するために次のパラメータを変更。</p>
+<ul>
+<li>amclパッケージ</li>
+<ul>
+<li>update_min_d: パーティクルフィルターがアップデートするために必要な移動距離（デフォルト0.2m)</li>
+<li>update_min_a：パーティクルフィルターがアップデートするために必要な回転角（デフォルトπ/6 rad)</li>
+<li>odom_alpah1~alpha5: デッドレコニングの誤差に関するパラメータ(デフォルト0.2)</li>
+</ul>
+</ul>

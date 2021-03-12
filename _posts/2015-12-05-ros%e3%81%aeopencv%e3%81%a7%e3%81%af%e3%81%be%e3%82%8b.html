@@ -1,0 +1,51 @@
+---
+layout: post
+title: ROSのOpenCVではまる
+date: 2015-12-05 21:15:55.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  views: '8353'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/12496.html"
+---
+<p>ROS Indigoでcatkin_makeしたときに以下のエラーではまったのでメモ</p>
+<p>CMake Error at /opt/ros/indigo/share/catkin/cmake/catkinConfig.cmake:75 (find_package):<br />
+Could not find a package configuration file provided by "OpenCV" with any<br />
+of the following names:</p>
+<p>OpenCVConfig.cmake<br />
+opencv-config.cmake</p>
+<p>Add the installation prefix of "OpenCV" to CMAKE_PREFIX_PATH or set<br />
+"OpenCV_DIR" to a directory containing one of the above files. If "OpenCV"<br />
+provides a separate development package or SDK, be sure it has been<br />
+installed.</p>
+<p>解決した手順</p>
+<p>１．OpenCVをインストール</p>
+<ul>
+<li>$ sudo apt-get install ros-indigo-vision-opencv libopencv-dev python-opencv</li>
+<li>$ rospack profile</li>
+</ul>
+<p>２．CMakeLists.txtに以下を追加</p>
+<ul>
+<li>find_package(OpenCV REQUIRED)</li>
+<li>include_directories(/usr/local/include ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS} )</li>
+<li>target_link_libraries(dfollow ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})</li>
+</ul>
+<p>３． package.xmlに以下を追加</p>
+<ul>
+<li>&lt;build_depend&gt;opencv2&lt;/build_depend&gt;</li>
+<li>&lt;run_depend&gt;opencv2&lt;/run_depend&gt;</li>
+</ul>
+<p>以上</p>

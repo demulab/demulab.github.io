@@ -1,0 +1,103 @@
+---
+layout: post
+title: ROS演習3-2019：シミュレータでTurtlebot3を動かそう！(WSL)
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '15442'
+  views: '5'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/16133.html"
+---
+<p>この記事は私が金沢工業大学ロボティクス学科で担当している2019年度後学期開講の講義ロボットプログラミングⅡ用です。シミュレータGAZEBOを使い、Turtlebot3を動かします。次のTurtleBot3 e-Manualを参考にしています。</p>
+<ul>
+<li><a href="http://emanual.robotis.com/docs/en/platform/turtlebot3/overview/">TurtleBot3 e-Manual</a></li>
+</ul>
+<p><strong>0.準備</strong></p>
+<p>(1) VirtualBoxの場合<br />
+3Dアクセラレーション無効化。<br />
+VirtualBox-&gt;設定-&gt;ディスプレイ-&gt;3Dアクセレーション有効化のチェックを外す。<br />
+<strong><span style="color: #ff0000;">この作業をしてからVirtualBoxを起動しないとシミュレータを起動できません。</span></strong></p>
+<p>(2)  WSL(Windows Subsystem for Linux)の場合<br />
+<a href="https://demura.net/education/16127.html">ROS演習1-2019</a>で実施したように、Xサーバーを起動する。</p>
+<p><strong>1. 設定</strong></p>
+<p>~/.bashrcの最後の7行をgeditなどを使って以下のように設定し保存する。</p>
+<p>(1) VirtualBoxの場合</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/11/Screenshot-from-2018-12-05-23-29-22.png"><img class="aligncenter size-full wp-image-15442" src="{{ site.baseurl }}/assets/images/Screenshot-from-2018-12-05-23-29-22.png" alt="" width="732" height="285" /></a>(2) WSLの場合</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/11/No-0117.png"><img class="aligncenter size-full wp-image-15267" src="{{ site.baseurl }}/assets/images/No-0117.png" alt="" width="658" height="322" /></a></p>
+<p><strong>2.  Turtlebot3 リモートPC用のパッケージインストール</strong><br />
+まず、Turtlebot用のパッケージをインストール。端末を開き、次のコマンドを実行。２番目は長いのでコピペする。$はコマンドプロンプトなので入力しない。</p>
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt upgrade</code></li>
+<li>$ <code>sudo apt-get install ros-melodic-joy ros-melodic-teleop-twist-joy ros-melodic-teleop-twist-keyboard ros-melodic-laser-proc ros-melodic-rgbd-launch ros-melodic-depthimage-to-laserscan ros-melodic-rosserial-arduino ros-melodic-rosserial-python ros-melodic-rosserial-server ros-melodic-rosserial-client ros-melodic-rosserial-msgs ros-melodic-amcl ros-melodic-map-server ros-melodic-move-base ros-melodic-urdf ros-melodic-xacro ros-melodic-compressed-image-transport ros-melodic-rqt-image-view ros-melodic-navigation<br />
+</code></li>
+<li>$ <code>cd ~/catkin_ws/src/</code></li>
+<li>$ <code>git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git</code></li>
+<li>$ <code>git clone https://github.com/ROBOTIS-GIT/turtlebot3.git</code></li>
+<li>$ <code>git clone https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git</code></li>
+<li>$ <code>git clone https://github.com/ROBOTIS-GIT/turtlebot3_gazebo_plugin.git</code></li>
+<li>$ <code>cd ~/catkin_ws</code></li>
+<li>$ <code>catkin_make</code></li>
+</ul>
+<p><code><br />
+</code></p>
+<p>&nbsp;</p>
+<p><strong>4. rvizの起動</strong></p>
+<p>端末を開き次のコマンドを実行<br />
+<code><br />
+$  export TURTLEBOT3_MODEL=burger<br />
+$  roslaunch turtlebot3_fake turtlebot3_fake.launch<br />
+</code><br />
+別の端末を開き、次のコマンドを実行<br />
+<code><br />
+$  export TURTLEBOT3_MODEL=burger<br />
+$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch<br />
+</code></p>
+<p>演習１で実施したようにキーボードでROSの視覚化ツールrviz上でturtlebot3を動かせます。動かしてみましょう！</p>
+<p>毎回、export TURTLEBOT3_MODEL=burgerと入力するのは手間がかかるので、geditで.bashrcの最後の行に以下を追加する。<br />
+<code>export TURTLEBOT3_MODEL=burger</code></p>
+<p><strong>5.  Simulator GAZEBOを動かそう</strong></p>
+<p>$ export TURTLEBOT3_MODEL=burger<br />
+$ roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch</p>
+<p>初回はネットからモデルを取得するので、私の環境で5分程度かかった。しばらくすると次のようなウインドウが開く。下のロボットがturtlebot3。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/11/No-0116.png"><img class="aligncenter size-full wp-image-15257" src="{{ site.baseurl }}/assets/images/No-0116.png" alt="" width="1477" height="749" /></a>別の端末を開き、次のコマンドを入力するとキーボードからロボットを操縦するためのlaunchファイルを起動。<br />
+$  roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch</p>
+<p>端末に下のように表示される。<span style="color: #ff0000;">w a s d x</span><span style="color: #ff0000;"> </span>キーでロボットを操作できる。いずれかのキーを押してロボットを動かそう！マウスのカーソルがturtlebot3_teleop_key.launchを起動した端末上になければ動かないので注意。</p>
+<p><a href="http://demura.net/lecture/13868.html/attachment/control" rel="attachment wp-att-13879"><img class="aligncenter size-full wp-image-13879" src="{{ site.baseurl }}/assets/images/control.png" alt="" width="814" height="510" /></a></p>
+<p>お疲れ様！</p>

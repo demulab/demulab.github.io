@@ -1,0 +1,116 @@
+---
+layout: post
+title: 'ODE Tutorial 7: Joint'
+date: 2006-11-28 22:08:45.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1050'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/348.html"
+---
+<p>This page was mainly translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.<br />
+<img src="{{ site.baseurl }}/assets/images/2006/11/sample3.jpg" alt="" width="240" height="231" /></p>
+<p>ODE (Open Dynamics Engine) lecture time it is 7th.  This time we speak concerning the joint the story whose  collision detection is detailed with afterwards. Previous topic  coming out, the て it was, but it is possible and increase is high?  As for answering, it is in nearCallback function<br />
+Contact [ i ] surface.bounce = 0.0; / (0.0 - 1.0)   as for coefficient of rebound from 0 up to 1<br />
+Being value should have been designated as the 1.0 or  less of 0.0 or more, it does. Don't you think? coefficient of  rebound was speed ratio before the colliding and after the collision.</p>
+<p>So, it explains concerning the joint. Around us, you fold up the joint and are suitable to the hinge of carrying and the  hinge of the door. Small speaking seriously, it meaning that  position of two bodies and the restraint which maintains attitude at a certain fixed relationship are with the joint, it does. With ODE the joint and restraint are used in the same sense.</p>
+<p>The source code where the object which connects the ball  and the cylinder which have shown right away in the upper figure with  the hinge joint bounces is shown below. Furthermore, it  abbreviates the same function to as the last time and declaration.</p>
+<p><!-- ▼追記▼ --></p>
+<div class="entry-more">
+<p>[code]<br />
+//  sample3.cpp by Kosei Demura</p>
+<p>#ifdef  dDOUBLE<br />
+#define dsDrawSphere   dsDrawSphereD<br />
+#define dsDrawCapsule  dsDrawCapsuleD<br />
+#endif</p>
+<p>typedef struct {<br />
+dBodyID body;<br />
+dGeomID geom;<br />
+dReal   radius, length, mass;<br />
+} MyLink;<br />
+MyLink ball,  pole;</p>
+<p>static void simLoop (int pause)<br />
+{<br />
+const dReal *pos1, *R1, *pos2, *R2;<br />
+dSpaceCollide (space,0, &amp;nearCallback);<br />
+dWorldStep (world,0.01);<br />
+dJointGroupEmpty (contactgroup);<br />
+dsSetColor (1.0,0.0,0.0);<br />
+// Drawing of ball<br />
+pos1 = dBodyGetPosition (ball.body);<br />
+R1   = dBodyGetRotation (ball.body);<br />
+dsDrawSphere (pos1, R1, ball.radius);<br />
+// Drawing of cylinder<br />
+pos2 = dBodyGetPosition (pole.body);<br />
+R2    = dBodyGetRotation (pole.body);<br />
+dsDrawCapsule (pos2, R2, pole.length, pole.radius);<br />
+}</p>
+<p>// Compilation of object<br />
+void createBallandPole ()<br />
+{<br />
+dMass m1;<br />
+dReal x0 = 0.0, y0 = 0.0, z0 = 2.5;</p>
+<p>// Ball<br />
+ball.radius = 0.2;  Ball.mass   = 1.0;<br />
+ball.body = dBodyCreate (world);<br />
+dMassSetZero (&amp;m1);<br />
+dMassSetSphereTotal (&amp;m1, ball.mass, ball.radius);<br />
+dBodySetMass (ball.body, &amp;m1);<br />
+dBodySetPosition (ball.body, x0, y0, z0);<br />
+ball.geom = dCreateSphere (space, ball.radius);<br />
+dGeomSetBody (ball.geom, ball.body);</p>
+<p>// Cylinder<br />
+pole.radius = 0.025;  pole.length = 1.0;  pole.mass   = 1.0;<br />
+pole.body = dBodyCreate (world);<br />
+dMassSetZero (&amp;m1);<br />
+dMassSetCapsuleTotal (&amp;m1, pole.mass,3, pole.radius, pole.length);<br />
+dBodySetMass (pole.body, &amp;m1);<br />
+dBodySetPosition (pole.body, x0, y0, z0 - 0.5 * pole.length);<br />
+pole.geom = dCreateCapsule (space, pole.radius, pole.length);<br />
+dGeomSetBody (pole.geom, pole.body);</p>
+<p>// Hinge joint<br />
+joint = dJointCreateHinge (world, 0);  // Creation of hinge joint<br />
+dJointAttach (joint, ball.body, pole.body);  // Connecting the body of the ball and the body of the cylinder with the joint<br />
+dJointSetHingeAnchor (joint, x0, y0, z0 - ball.radius);  // The anchor of the hinge joint (the central point) it sets<br />
+dJointSetHingeAxis (joint, 1, 0, 0); // Axis of rotation vector of hinge joint setting (1,0,0)<br />
+}</p>
+<p>int main (int argc, char **argv)<br />
+{<br />
+setDrawStuff ();<br />
+world = dWorldCreate ();<br />
+space = dHashSpaceCreate (0);<br />
+contactgroup = dJointGroupCreate (0);<br />
+dWorldSetGravity(world,0,0,-9.8);                                                                    ground=dCreatePlane(space,0,0,1,0);<br />
+createBallandPole ();<br />
+dsSimulationLoop (argc and argv,352,288, &amp;fn);<br />
+dWorldDestroy (world);<br />
+return 0;<br />
+}<br />
+[/code]</p>
+<p>With this example the body of the ball and the  cylinder is tied with the hinge joint.<br />
+Method of using the joint becomes like below.</p>
+<ol>
+<li>Creation of a Joint:       <span style="font-weight: bold; color: #000099;">dJointCreate***()</span></li>
+<li>Connection:                 <span style="font-weight: bold; color: #000099;">dJointAttach()</span></li>
+<li>Set an anchor of a joint:<span style="font-weight: bold; color: #000099;">dJointSet***Anchor ()</span></li>
+<li>Set an axis of a joint:    <span style="font-weight: bold; color: #000099;">dJointSet***Axis ()</span></li>
+</ol>
+<p>*** denotes a type of joint, i.e., Hinge, Ball, Slider, Universal, and so on.</p>
+<p>Let's read the source code. With createBallandPall  function the ball is made first, after that, the cylinder is made,  then dJointCreateHinge () with it forms the hinge joint, dJointAttach  () with two bodies is connected with the hinge joint. After that dSetHingeAnchor () while turning of the joint position of the heart  point is set, dJointSetHingeAxis () with axis of rotation vector is  set. With this example as for axis of rotation vector (1,0,0)  being to be, it becomes x axial direction. Referring to details  the manual.</p>
+<p>Formation of the joint is end with this. This time  parameter of the joint was not set for simplicity, but also the  movable limits and largest torque and setting etc. of maximum angular  velocity are possible. <a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fsample3-2006.tgz">Clicking here,</a>downloading the sample program, please play.</div>
+<div class="entry-more">The next time explains the method of moving the joint and  the setting method of parameter.</div>
+<div class="entry-more"></div>
+<div class="entry-more">To be continued.</div>

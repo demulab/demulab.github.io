@@ -1,0 +1,53 @@
+---
+layout: post
+title: アンドロイドスマホからTurtlebotを動かそう！
+date: 2015-10-18 16:09:18.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1307'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/12293.html"
+---
+<p>アンドロイド端末（スマホやタブレット）からTurtlebotを動してみよう！</p>
+<p>(1) 準備<br />
+アンドロイドスマホからロボットを操縦する。まず、PlayストアからRocon Remocon (Indigo)をインストールする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/ad-playstore.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/ad-playstore-169x300.jpg" alt="ad-playstore" width="169" height="300" class="aligncenter size-medium wp-image-12260" /></a></p>
+<p>(2) .bashrcの設定<br />
+geditで.bashrcを開く。<br />
+<code>$ gedit .bashrc </code></p>
+<p>下図のようにROS_MASTER_URl(小文字のエル）とROS_HOSTNAMEを設定する。ROS_MASTER_URlは図と同じ、ROS_HOST_NAMEはubuntuの無線LANのIPアドレスを入力する(この例では192.168.33.33)。IPアドレスはifconfigコマンドで調べる。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/bashrc1.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/bashrc1.jpg" alt="bashrc" width="577" height="278" class="aligncenter size-full wp-image-12254" /></a></p>
+<p>(3) 各パッケージ起動<br />
+端末を３個起動し、各端末で以下のコマンドを実行。<br />
+<code>$ roscore</code><br />
+<code>$ roslaunch kobuki_gazebo kobuki_playground.launch</code><br />
+<code>$ roslaunch turtlebot_bringup minimal.launch </code></p>
+<p>(4) アンドロイドアプリ起動<br />
+a. Rocon Remoconを起動<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/ad-icon.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/ad-icon-169x300.jpg" alt="ad-icon" width="169" height="300" class="aligncenter size-medium wp-image-12264" /></a><br />
+b. "SCAN THE LOCAL NETWORK"をタップ<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/ad-master1.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/ad-master1-169x300.jpg" alt="ad-master" width="169" height="300" class="aligncenter size-medium wp-image-12265" /></a><br />
+c. ネットワーク設定に問題がなければTurtlebotが見つかる。✔を入れて、"SELECT"をタップ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/ad-scan1.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/ad-scan1-169x300.jpg" alt="ad-scan" width="169" height="300" class="aligncenter size-medium wp-image-12281" /></a><br />
+d. "Turtlebot"をタップ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/ad-find.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/ad-find-169x300.jpg" alt="ad-find" width="169" height="300" class="aligncenter size-medium wp-image-12266" /></a><br />
+e. "Teleop"をタップ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/ad-teleop1.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/ad-teleop1-169x300.jpg" alt="ad-teleop1" width="169" height="300" class="aligncenter size-medium wp-image-12268" /></a><br />
+f. "Launch"をタップ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/ad-teleop2.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/ad-teleop2-169x300.jpg" alt="ad-teleop2" width="169" height="300" class="aligncenter size-medium wp-image-12269" /></a><br />
+g. 右側の円から進みたい方向に指で画面をなぞるとその方向に進む。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/10/ad-teleop3.jpg"><img src="{{ site.baseurl }}/assets/images/2015/10/ad-teleop3-300x169.jpg" alt="ad-teleop3" width="300" height="169" class="aligncenter size-medium wp-image-12270" /></a><br />
+終わり</p>

@@ -1,0 +1,132 @@
+---
+layout: post
+title: 'ROS: Roomba 800 インストールと設定'
+date: 2018-10-01 18:52:29.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  views: '986'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/15154.html"
+---
+<p>Roomba 800シリーズにHokuyo Lidar(UTM-30 LX)を積んでROSで動かした時のメモ。Roomba 800でも動くパッケージはいくつかあるが、この記事ではcreate_autonomyを使用した。他にもっと適切なパッケージがあればコメント頂きたい。</p>
+<p><strong>環境</strong></p>
+<ul>
+<li>Ubuntu 16.04</li>
+<li>ROS Kinetic</li>
+</ul>
+<p><strong>Install</strong></p>
+<ul>
+<li>Navigation &amp; SLAM
+<ul>
+<li><code>$ sudo apt install ros-kinetic-navigation</code></li>
+<li><code>$ sudo apt install ros-kinetic-slam-gmapping</code></li>
+</ul>
+</li>
+<li>Hokuyo Lidar (urg_node)
+<ul>
+<li>launchファイルが欲しかったのでgitからcloneして、ソースからビルドする。</li>
+<li><code>$ cd  ~/catkin_ws/src</code></li>
+<li><code>$ git clone https://github.com/ros-drivers/urg_node.git</code></li>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin_make</code></li>
+<li>launchファイル（~/catkin_ws/src/urg_node/launch/urg_lidar.launch)の13行目
+<ul>
+<li>&lt;param name="frame_id" value="laser"/&gt;<br />
+を</li>
+<li>&lt;param name="frame_id" value="base_laser_link"/&gt;に変更する。</li>
+<li>LIDARの取り付け位置などにより計測範囲(角度）が異なる場合は、angle_min、angle_maxのvalueを変更する。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Roomba 800 (create_autonomy)
+<ul>
+<li>これからの作業は以下のリンクに従って実施したものをまとめたものに過ぎない。詳細については以下の参考リンクを参照されたい。
+<ul>
+<li><a href="https://github.com/AutonomyLab/create_autonomy">https://github.com/AutonomyLab/create_autonomy</a></li>
+</ul>
+</li>
+<li>Preparation
+<ul>
+<li><code>$ sudo apt-get install python-rosdep python-catkin-tools</code></li>
+<li>catkin workspaceの作成。catkin_wsなど既存のワークスペースにインストールすると、catkin_makeが通らなかったのでリンクサイトの通り作業すると良いだろう。
+<ul>
+<li><code>$ cd ~</code></li>
+<li><code>$ mkdir -p  create_ws/src</code></li>
+<li><code>$ cd create_ws</code></li>
+<li><code>$ catkin init</code></li>
+</ul>
+</li>
+<li>レポジトリのクローン
+<ul>
+<li><code>$ cd ~/create_ws/src</code></li>
+<li><code>$ git clone https://github.com/AutonomyLab/create_autonomy.git</code></li>
+</ul>
+</li>
+<li>依存関係のインストール
+<ul>
+<li><code>$</code> cd ~/create_ws<code></code></li>
+<li><code>$ rosdep update</code></li>
+<li><code>$ rosdep install --from-paths src -i</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ cd ~/create_ws</code></li>
+<li><code>$ catkin  build</code></li>
+</ul>
+</li>
+<li>USBパーミッション
+<ul>
+<li><code>$ sudo usermod -a -G dialout $USER</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>URDFの変更
+<ul>
+<li>LIDARを搭載するのでURDFを変更する。~/create_ws/src/create_autonomy/ca_description/urdf/create_base.urdf.xacroの下から7行目　&lt;!-- Simulation sensors --&gt;の上に以下を追加する。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2018/10/urg.png"><img src="{{ site.baseurl }}/assets/images/2018/10/urg.png" alt="" width="722" height="586" class="aligncenter size-full wp-image-15158" /></a></li>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<li>costmap_common_params.yamlの以下の行のsensor_frameがbase_laser_linkになっているか確認し、違うIDだったらbase_laser_linkに変更する。</li>
+</ul>
+<p><strong>実　行</strong></p>
+<ul>
+<li>セットアップ
+<ul>
+<li><code>$ source ~/create_ws/devel/setup.bash</code></li>
+<li>毎回これを実施するのは面倒なので、.bashrcの最後に上のコマンドを記載する。</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li><code>$ roslaunch ca_driver create_2.launch</code></li>
+</ul>
+</li>
+<li>ジョイスティックによる操作（テレオペ）
+<ul>
+<li>Xbox360の有線コントローラー用と参考リンクに記載されているが、PS3コントローラーを有線接続しても問題なく動作した。</li>
+<li><code>$ roslaunch ca_tools joy_teleop.launch</code></li>
+</ul>
+</li>
+</ul>
+<p style="text-align: right;">終わり</p>

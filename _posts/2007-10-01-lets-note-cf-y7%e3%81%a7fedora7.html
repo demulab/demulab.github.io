@@ -1,0 +1,91 @@
+---
+layout: post
+title: Let's note CF-Y7でFedora7
+date: 2007-10-01 22:33:02.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '790'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/448.html"
+---
+<p><img title="Fedora 7   ODE 0.9 rc1" src="{{ site.baseurl }}/assets/images/2007/10/fedora7.jpg" alt="Fedora7上でのODE0.9rc1の新しいデモdemo_basket。ボールが斜面をころがりバスケットのリングに吸い込まれます。" width="512" height="384" /></p>
+<p><span style="font-size: x-small;">Fedora7上でのODE0.9rc1の新しいデモdemo_basket。ボールが斜面をころがりバスケットのリングに吸い込まれます。それにしてもfedoaのバックグラウンドは美しいですね。fedora8が楽しみです。</span></p>
+<p>個人的なメモなので正確ではありません。</p>
+<p>Let's note CF-Y7も発売から約５ヶ月経ち、そろそろLinuxも動くようになったかなと思い、Fedora７をインストールしました。<a href="http://fedoraproject.org/">fedoraのウェブサイト</a>からDVDのイメージF-7-i386-DVD.isoをダウンロードし、DVDに焼きます。</p>
+<p>そのDVDでCF-Y7を起動し、指示に従ってインストールすると比較的簡単に終わります。詳しいインストール方法はgoogleで簡単に見つけることができるのでここでは省略します。</p>
+<p>LAN、サウンドカードなども簡単に認識し、X Windowも無事に起動しました。ただし、画面が少しぼやけた感じがすることと、system-config-displayで解像度が1024x768しかでません。CF-Y7は最大1400x1050の解像度なのでこれでは物足りません。</p>
+<p>調べて見るとfedora7ではCF-Y7のIntelの統合化チップ965GMに完全に対応できていません。そこでXF86-Video-Intel-2.1.1.tgzをダウンロードし、インストールするとめでたく解像度1400x1050で使えるようになりました。ただし、ODEのシミュレーションをするためにはハードウェア3Dアクセレレータが使えないと話になりません。いろいろ試しましたがDRIモジュールを読み込み、ODEのシミュレーションを実行すると画面が固まります。<a href="http://www.intellinuxgraphics.org/">Linuxのドライバに関してはIntelが提供しています</a>ので頑張ればハードウェアアクセレレータが使えるはずですが、10月4日にFedora8 test3がリリースされ、11月８日にはFedora8が公開される予定です。Fedora8では965GMがサポートされるそうなので、それまで待つことにします。</p>
+<p>参考までにxorg.confを以下に掲載します。ハードウェア3Dアクセレレータは使えませんが、フル解像度を利用できるので通常の使用には問題ありません。</p>
+<p><!--more--></p>
+<hr />
+<p>#Xorg configuration created by system-config-display</p>
+<p><br class="spacer_" /></p>
+<p>Section "ServerLayout"<br />
+ Identifier     "single head configuration"<br />
+ Screen      0  "Screen0" 0 0<br />
+ InputDevice    "Keyboard0" "CoreKeyboard"<br />
+ InputDevice    "Synaptics" "CorePointer"<br />
+ #        Option         "AIGLX" "false"<br />
+ EndSection</p>
+<p>Section "Module"<br />
+ Load  "extmod"<br />
+ Load  "glx"<br />
+ #    Load  "dri" #       driを使うときはコメント外す<br />
+ EndSection</p>
+<p>Section "InputDevice"<br />
+ Identifier  "Keyboard0"<br />
+ Driver      "kbd"<br />
+ Option        "XkbModel" "jp106"<br />
+ Option        "XkbLayout" "jp"<br />
+ EndSection</p>
+<p>Section "InputDevice"<br />
+ Identifier  "Synaptics"<br />
+ Driver      "synaptics"<br />
+ Option        "Device" "/dev/input/mice"<br />
+ Option        "Protocol" "auto-dev"<br />
+ Option        "Emulate3Buttons" "yes"<br />
+ EndSection</p>
+<p>Section "Monitor"<br />
+ Identifier   "TVOutput"<br />
+ Option        "Disable" "true"<br />
+ EndSection</p>
+<p>Section "Device"<br />
+ Identifier  "Videocard0"<br />
+ Driver      "intel"<br />
+ Option        "monitor-TV" "TVOutput"<br />
+ EndSection</p>
+<p>Section "Screen"<br />
+ Identifier "Screen0"<br />
+ Device     "Videocard0"<br />
+ DefaultDepth     16<br />
+ SubSection "Display"<br />
+ Viewport   0 0<br />
+ Depth     24<br />
+ Modes    "800x600"<br />
+ EndSubSection<br />
+ SubSection "Display"<br />
+ Viewport   0 0<br />
+ Depth     16<br />
+ EndSubSection<br />
+ EndSection</p>
+<p>Section "DRI"<br />
+ Group        0<br />
+ Mode         0666<br />
+ EndSection</p>
+<p>Section "Extensions"<br />
+ Option "Composite" "true" # driを使うときはtrueをfalseにする<br />
+ EndSection</p>

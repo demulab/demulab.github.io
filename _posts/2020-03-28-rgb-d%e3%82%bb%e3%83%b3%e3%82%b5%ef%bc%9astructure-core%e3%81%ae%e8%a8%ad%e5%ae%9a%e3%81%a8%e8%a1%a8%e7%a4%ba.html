@@ -1,0 +1,169 @@
+---
+layout: post
+title: RGB-Dセンサ：Structure Coreの設定と表示
+date: 2020-03-28 20:23:14.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '17429'
+  views: '324'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/17411.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/coreplayground5.png"><img class="alignleft size-full wp-image-17429" src="{{ site.baseurl }}/assets/images/2020/03/coreplayground5.png" alt="" width="800" height="624" /></a></p>
+<p><a href="https://occipital.com/">Occipita</a>l社のRGB-Dセンサ<a href="https://occipital.com/#product_module_b">Structure Core (color)</a>の設定と表示のメモ。インストールや仕様は以下のリンクを参照。</p>
+<ul>
+<li><a href="https://demura.net/robot/17336.html">RGB-Dセンサ：Structure Coreを試す</a></li>
+<li><a href="https://demura.net/robot/17369.html">RGB-Dセンサ：Structure CoreとRealSense 仕様比較</a></li>
+</ul>
+<p><strong>起　動</strong></p>
+<ul>
+<li>まず、Structure CoreとPCを接続する。次に、設定もできるビューワソフトが以下にあるので起動する。ない場合は、上の１番目のリンクに従ってインストール・ビルドする。
+<ul>
+<li>$ cd ~/src/StructureSDK-CrossPlatform-0.7.3-ROS/Apps/CorePlayground</li>
+<li>$ ./CorePlayground</li>
+</ul>
+</li>
+<li>起動すると下図のCorePlaygroundのGUIが表示される。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/coreplayground1.png"><img class="size-large wp-image-17413 aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/coreplayground1-653x1024.png" alt="" width="653" height="1024" /></a></p>
+<p><strong>設　定</strong></p>
+<ul>
+<li>デフォルトでは上の設定。各項目を上から説明する。</li>
+<li>→ボタン：クリックすると画像が表示される。
+<ul>
+<li>Load config: 設定ファイルのロード</li>
+<li>Save config: 設定の保存</li>
+<li>Default: デフォルト値へ設定</li>
+</ul>
+</li>
+<li>Stream depth: 深度画像のON/OFF
+<ul>
+<li>SXGA (1280 x 960) : 小さな物体も検出したい場合は解像度を高くする。デォルト値はVGA(640 x 480)。</li>
+</ul>
+</li>
+<li>Depth range mode: 深度距離は細かく次のモードを選べるので自分のアプリケーションに適したものを選択する。Libraries/Structure/Headers/ST/CaptureSessionSettings.h参照。
+<ul>
+<li>VeryShort： 0.35m 〜 0.92m</li>
+<li>Short:  0.41m 〜 1.36m</li>
+<li>Medium:  0.52m 〜 5.23m</li>
+<li>Long: 0.58m 〜 8.0m</li>
+<li>VeryLong: 0.58m 〜 10.0m</li>
+<li>Hybird: 0.35m 〜 10.0m</li>
+<li>Default: これは選ばない。自分のアプリケーションに適したものを上から選択する。</li>
+<li>参考：GUIにはないが人体スキャン用にBodyScanningというモードがある。</li>
+</ul>
+</li>
+<li>Depth correction: 深度補正。ONがお勧め。</li>
+<li>Dynamic calibration mode: 動的キャリブレーションモード
+<ul>
+<li>Off: 動的キャリブレーションをしない。ステレオ赤外線カメラのアライメントが0.1mm以上ずれた場合は、深度データの質が悪くなる。</li>
+<li>One-shot: 深度画像データが取得できたときに１度だけ動的キャリブレーションを行う。センサを装置に取り付けるなどセンサ筐体に静的な機械的応力がかかる場合に十分にミスアライメントを修正できる。キャリブレーションデータはセンサに保存される。</li>
+<li>Continuous: センサが深度データを取得しているときは常に動的キャリブレーションを行うモード。振動や温度変化などがある環境ではこのモードを選択する。キャリブレーションデータはセンサに保存されない。移動ロボットやロボットのハンドアイシステムなどの場合はこれを選択すればよいでしょう。</li>
+</ul>
+</li>
+<li>Stream visible: 可視カメラのON/OFF
+<ul>
+<li>Framerate: フレームレート</li>
+<li>Exposure:露出量時間[s]</li>
+<li>Gain: ゲイン</li>
+</ul>
+</li>
+<li>Stream infrared: 赤外線カメラ（深度用）のON/OFF
+<ul>
+<li>Framerate: フレームレート</li>
+<li>Exposure:露出時間[s]</li>
+<li>Gain: ゲイン</li>
+<li>Autoexposure: 自動露出</li>
+<li>Disable intensity balance：</li>
+<li>Active camera:
+<ul>
+<li>Left:</li>
+<li>Right:</li>
+<li>Left + Right</li>
+</ul>
+</li>
+<li>Frame sync</li>
+</ul>
+</li>
+<li>Stream accelerometer:　３軸加速度センサのデータ取得 ON/OFF</li>
+<li>Stream gyroscope: ３軸ジャイロセンサのデータ取得 ON/OFF</li>
+<li>IMU sample rate: IMU(加速度センサ、ジャイロセンサ）のサンプリングレート
+<ul>
+<li>100 Hz</li>
+<li>200 Hz</li>
+<li>400 Hz</li>
+<li>1000 Hz</li>
+</ul>
+</li>
+<li>設定例：1m離れた地点でも平面を計測するために以下の設定にした。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/coreplayground2-2.png"><img class="size-large wp-image-17421 aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/coreplayground2-2-653x1024.png" alt="" width="653" height="1024" /></a></li>
+</ul>
+<p><strong>表　示</strong></p>
+<ul>
+<li>ウインドウの左上にある緑に→ボタンをクリックすると以下のようなウインドウが表示される。左下の"Save Images &amp; PLY"をクリックすると、可視画像、深度画像、ポイントクラウドが次のディレクトリに日時のディレクトリ下に保存される。
+<ul>
+<li>~/Documents/occ/2020-03-28_13-01-02
+<ul>
+<li>depthFrame.png：深度画像</li>
+<li>depthPointCould.ply：ポイントクラウド</li>
+<li>visibleFrame.png：可視画像</li>
+<li>depthFrameIntrinsics.csv：深度画像の設定値</li>
+<li>infraredFrame.png：赤外線画像</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/coreplayground3.png"><img class="alignleft size-full wp-image-17425" src="{{ site.baseurl }}/assets/images/2020/03/coreplayground3.png" alt="" width="1020" height="928" /></a></p>
+<ul>
+<li>では、ポイントクラウドが保存されているdepthPointCould.plyをオープンソースの3Dデータ編集・変換ソフトmeshlabで見てみましょう。
+<ul>
+<li>meshがインストールされていない場合は次のコマンドでインストールして実行しょう。
+<ul>
+<li>$ sudo apt install  meshlab</li>
+<li>$ meshlab</li>
+</ul>
+</li>
+<li>meshlabを起動して、当該ファイルを開くと次のようなウインドウが開くので、ポイントクラウドを確認できる。1m離れた壁を計測したデータ。かなりきれいに取れている。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/pointcloud.png"><img class="alignleft size-large wp-image-17426" src="{{ site.baseurl }}/assets/images/2020/03/pointcloud-1024x825.png" alt="" width="1024" height="825" /></a></p>
+<ul>
+<li>平面だけだとわかりづらいので、最後にレゴブロックを床に置いたときの画像を本記事のトップに示す。いかがだろうか。次の記事では定量的に評価してみたい。</li>
+</ul>
+<p>終わり</p>

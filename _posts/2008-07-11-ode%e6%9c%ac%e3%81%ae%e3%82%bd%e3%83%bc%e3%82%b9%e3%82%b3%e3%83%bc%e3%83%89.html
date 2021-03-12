@@ -1,0 +1,89 @@
+---
+layout: post
+title: ODE本のソースコード
+date: 2008-07-11 18:20:29.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _edit_last: '2'
+  views: '3474'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/405.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/odeCover.jpg" alt=" " width="226" height="320" /></p>
+<p><span style="color: #ff0000;"><strong>ODE0.10.0に対応しました．</strong></span></p>
+<p>ODE本「簡単！実践！ロボットシミュレーション」に掲載されているソースコードを以下のリンクからダウンロード可能です．</p>
+<p>なお，本サンプルプログラムのコンパイル及び実行は自己責任で行ってください．特に，本物のロボットに適用するための安全性などを全く考慮していませんので，そのような用途には向きません．また，教育目的のシミュレータであるため，精度を必要とするような研究の用途にも向きません．あくまで，教育目的とお考えください．著者及び森北出版は本プログラムによって生じたあらゆる結果についての責任を負いかねます．ご了承した方だけダウンロードしてください．まだ十分にテストしきれていないので再配布はお止めください．</p>
+<p>また，コンパイルできない，バグがある，あるいは要望などをコメントして頂けるとできる限り対処します．</p>
+<hr />ODE0.10.0からビルドの方法が少し変更になり，それに伴いStep1からStep9までの全ソースコードをまとめて１つのファイルにしました．上のダウンロード(download)メニューまたは以下のダウンロードからソースコードを入手し，ビルドしてください．コメントは日本語で書いています．</p>
+<p><strong>ODE0.10.0用</strong></p>
+<ul>
+<li><strong> <a href="http://demura.net/dl">ダウンロード</a></strong></li>
+</ul>
+<hr /><strong>ODE0.9と0.8用</strong></p>
+<ul>
+<li><strong>ソースコード</strong>
+<ul>
+<li>ODE0.9用は１つのファイルにまとまっていません．<a href="http://demura.net/category/9ode/robotsimu">ここをクリックしてODE本カテゴリ</a>から各Step(章）のソースコードをダウンロードしてください．</li>
+</ul>
+</li>
+<li><strong>コンパイル・実行方法</strong>
+<ul>
+<li>pro1-1.zipを例にWindowsユーザとLinux, Mac OS X ユーザに分けて説明します．</li>
+</ul>
+</li>
+<li><strong>Windowsユーザ</strong>
+<ul>
+<li>pro1-1.zipをデスクトップにダウンロードして解凍する．</li>
+<li>pro1-1というフォルダーがデスクトップにできるので，フォルダーごと<br />
+C:￥msys￥1.0￥home￥ユーザ名￥src￥ode-0.9￥roboSimuの中に移動する．roboSimuフォルダがない場合は作る．</li>
+<li>デスクトップのmsysアイコンをダブルクリックしてターミナルソフトを起動する．これからはターミナルソフト（Windowsのコマンドプロン プトに相当）で以下のコマンドを打ち込んで実行する．$はプロンプト（コマンドを打ち込める状態であることを示す記号）なので，自分では打ち込まない．</li>
+<li>作業フォルダへ移動<br />
+$<span style="color: #000099;"><strong> cd 　src/ode-0.9/roboSimu/pro1-1 </strong></span>Enterキーを押す<br />
+cdはフォルダを移動するコマンド．</li>
+<li>コンパイル（実行形式ファイルを作成）<br />
+$<span style="color: #000099;"> <strong>make</strong></span> Enterキーを押す<br />
+makeはコンパイルを自動化した便利なコマンド．</li>
+<li>実行可能ファイルの確認<br />
+$ <span style="color: #000099;"><strong>ls</strong></span> Enterキーを押す　(lsは小文字のエルエス）<br />
+lsはフォルダーにあるファイルを表示するコマンド．コンパイルに成功すると拡張子がexeの実行可能ファイルが作成される．</li>
+<li>実　行<br />
+$<span style="color: #000099;"> <strong>実行可能ファイル名</strong></span> Enterキーを押す<br />
+pro1-1の場合はコンパイルに成功するとhello.exeという実行可能なファイルが作成されるので，実行可能ファイル名はhelloとなる．なお，拡張子のexeは付けてもよい．<br />
+当然のことながら，エクスプローラなどでexeファイルをダブルクリックしても起動する．慣れるとコマンドを打ち込んだ方が時間の節約になるので，コマンドを打ち込む方がお勧め．</li>
+</ul>
+</li>
+<li><strong>Linux、Mac OS X ユーザ</strong>
+<ul>
+<li><strong>p</strong>ro1-1.zipを/home/ユーザ名/src/ode-0.9/roboSimuの下にダウンロードする．roboSimuのディレクトリがない場合は作る．</li>
+<li>ターミナルを起動して以下のコマンドを実行する．</li>
+<li>作業ディレクトリ（フォルダ）へ移動<br />
+$<span style="color: #000099;"> <strong>cd 　/home/ユーザ名/src/ode-0.9/roboSimu</strong></span> Enterキーを押す</li>
+<li> 解　凍<br />
+$<span style="color: #000099;"><strong> unzip 　pro1-1.zip</strong></span> Enterキーを押す</li>
+<li> 実行するディレクトリへ移動<br />
+$<span style="color: #000099;"> <strong>cd pro1-1</strong></span> Enterキーを押す</li>
+<li> 自分のシステムにあったmakefileをコピーする．<br />
+$<span style="color: #000099;"> <strong>cp 　makefile.linux　 makefile</strong></span> Enterキーを押す (Linuxな方）<br />
+$<span style="color: #000099;"> <strong>cp 　makefile.osx　 makefile</strong></span> Enterキーを押す(Macな方）</li>
+<li> コンパイル<br />
+$<span style="color: #000099;"> <strong>make</strong></span> Enterキーを押す</li>
+<li> 実　行<br />
+$<span style="color: #000099;"> <strong>./実行可能ファイル名</strong></span> Enterキーを押す<br />
+pro1-1の場合,実行可能ファイル名はhelloとなる．</li>
+</ul>
+</li>
+</ul>
+<hr />でむ</p>

@@ -1,0 +1,197 @@
+---
+layout: post
+title: HARD2021：AIロボットのつくり方（第１回）
+date: 2021-03-06 00:30:28.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- HARD
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-03-08 00:08:42'
+  _thumbnail_id: '19906'
+  views: '764'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/hard/19952.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/SnapCrab_NoName_2021-2-23_9-29-26_No-00.png"><img class="aligncenter size-large wp-image-19906" src="{{ site.baseurl }}/assets/images/2021/03/SnapCrab_NoName_2021-2-23_9-29-26_No-00-1024x783.png" alt="" width="1024" height="783" /></a></p>
+<p>HARD2021スプリングワークショップ「第１回AIロボットのつくり方」のサポートページ。HARD2021は日本ロボット学会インテリジェントホームロボティクス研究専門委員会主催の「知能ホームロボティクス入門講習会2021」の基礎編として実施します。</p>
+<ul>
+<li><strong>スライド</strong>
+<ul>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2021/03/公開用HARDスプリング1-210306-1.pdf">公開用HARDスプリング1-210306</a></li>
+</ul>
+</li>
+<li><strong>次回までのハンズオン</strong>
+<ul>
+<li>Linux（はじめての方）
+<ul>
+<li>研究開発やサーバーなどの用途では広く使われているOS（オペレーティングシステム）。知能ロボットでは標準的に使われています。</li>
+<li> 勉強方法
+<ul>
+<li>オンライン教材：ざっと観て概要を知ろう。無料レッスンだけでOK
+<ul>
+<li><a href="https://paiza.jp/works/linux/primer">Linux入門編 (全5レッスン)、Paizaラーニング</a>　(無料レッスンだけでよい）</li>
+</ul>
+</li>
+<li>教科書（無料)
+<ul>
+<li><a href="https://linuc.org/textbooks/linux/">Linux標準教科書、LPI-Japan</a>　(次回までに1章と3章、後は必要に応じて)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>開発環境のインストール
+<ul>
+<li>次回のワークショップで使いますので必ずインストールを済ませておいてください。</li>
+<li><span style="color: #ff0000;"><strong>注意：必ず、Ubuntuのバージョンは18.04、ROSのバージョンはMelodicにしてください。他のバージョンでは本ワークショップのソフトウェアは動きません。</strong></span></li>
+<li>対象機器
+<ul>
+<li>PC（Windows10 または Ubuntu 18.04)　または Raspberry Pi4 (RAM  8GB)</li>
+</ul>
+</li>
+<li>シミュレータのみの場合
+<ul>
+<li><a href="https://demura.net/robot/hard/19917.html">HARD2021：USB Linux (Ubuntu18.04)の作り方</a></li>
+<li><a href="https://demura.net/robot/16518.html">Ubuntu18.04: ROS Melodicのインストール</a></li>
+</ul>
+</li>
+<li> ルンバを用意できる場合
+<ul>
+<li>ノートPCで動かす場合
+<ul>
+<li>「シミュレータのみの場合」と同じものをインストールしてください。</li>
+</ul>
+</li>
+<li>Raspberry Pi4（RAM8GB版)で動かす場合
+<ul>
+<li>RAM 8GB版
+<ul>
+<li><a href="https://demura.net/education/18564.html">Raspberry Pi4 (8GB RAM): Xubuntu18.04 のインストールと設定</a></li>
+<li><a href="https://demura.net/education/18578.html">Raspberry Pi4 (8GB RAM)：ROS Melodicのインストール</a></li>
+<li><a href="https://demura.net/education/lecture/18594.html">Raspberry Pi4 (8GB RAM): ROS MelodicでRoombaを動かそう！</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>シミュレータのインストール
+<ul>
+<li>次リンクのシミュレータもインストールしておいてください。ハンズオンですぐ使います。
+<ul>
+<li><a href="https://demura.net/robot/hard/19934.html">HARD2021: ミュレータでRoombaを動かそう！</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ワークショップに必要な知識とスキルの勉強法</strong>
+<ul>
+<li> ROS
+<ul>
+<li>以下のROS Tutorialを３月中に終える
+<ul>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials">ROS Tutorial (日本語）</a></li>
+<li><a href="http://wiki.ros.org/ROS/Tutorials">ROS Tutorial (最新版、英語）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> タッチタイプ
+<ul>
+<li>習得に要する期間：一ヶ月〜二ヶ月</li>
+<li> プログラミングする前に必要な技能です。マスターしていない方は１日30分程度とレーニングしてできるだけ早く身に付けよう。いろいろ練習するソフトはあり好きなものを使ってください。ここでは、参考までに以下を紹介します。私の妻と息子は特打でマスターしました。ゲーム感覚で楽しめます。
+<ul>
+<li>無料：<a href="https://www.asahi-net.or.jp/~bg8j-immr/">美佳のタイプトレーナ</a></li>
+<li>有料：<a href="https://www.sourcenext.com/product/pc/tok/pc_tok_001998/">特打 (1980円)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Python
+<ul>
+<li>習得に要する期間：数カ月〜半年（他の言語をマスターしていれば早い）</li>
+<li>AIやデータ処理で標準的なコンピュータ言語です。知能ロボットには必須です。米国のコンピュータサイエンス系学科では、初年度にPython言語を学んでいる大学が多いです。HARD2021ではPython言語を使います。</li>
+<li>勉強方法
+<ul>
+<li>オンライン教材：ざっと観て概要を知ろう。無料レッスンだけでOK
+<ul>
+<li><a href="https://paiza.jp/works/python3/primer">Python3入門編（全１１レッスン）Paizaラーニング</a></li>
+</ul>
+</li>
+<li>教科書：７章の関数までは８月中に終え、それ以降は必要に応じて勉強しよう。
+<ul>
+<li><a href="https://amzn.to/3cuQb6W">やさしいPython、高橋麻奈著、SBクリエイティブ, 2828円</a></li>
+</ul>
+</li>
+<li>オンラインジャッジ：問題を解くことにより理解が深まります。以下のリンクのIntroduction to Programming Iを解ければ初級は卒業です。こういうことが好きなら競技プログラミングの世界もあります。
+<ul>
+<li><a href="http://judge.u-aizu.ac.jp/onlinejudge/finder.jsp?course=ITP1">AIZU ONLINE JUDGE, Introduction to Programming 1</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>質問と回答</strong>
+<ul>
+<li>ワークショップにはノートPCが必ず必要ですか？
+<ul>
+<li>Raspberry Pi4でも可能です。ノートPCかRaspberry Pi4のどちらかが必要です。</li>
+</ul>
+</li>
+<li>Macでもできますか？
+<ul>
+<li>すみませんが、Macを持っていないので対応できません。</li>
+</ul>
+</li>
+<li>Raspberry Pi4 RAM 2GBでは、このサイトの説明どおり実施してもインストールできません。
+<ul>
+<li>HARD2021では、Raspberry Pi4 8GBを対象とします。2GBだとメモリが少なく実用的でないと思います。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>

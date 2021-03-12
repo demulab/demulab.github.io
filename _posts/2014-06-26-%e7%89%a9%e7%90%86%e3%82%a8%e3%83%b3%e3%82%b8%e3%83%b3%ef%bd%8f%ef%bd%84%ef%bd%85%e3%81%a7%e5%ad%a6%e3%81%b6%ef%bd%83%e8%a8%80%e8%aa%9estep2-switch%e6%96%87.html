@@ -1,0 +1,133 @@
+---
+layout: post
+title: '物理エンジンＯＤＥで学ぶＣ言語[Step2: Switch文]'
+date: 2014-06-26 07:15:47.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1251'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/10893.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2014/06/step2.jpg"><img src="{{ site.baseurl }}/assets/images/2014/06/step2-300x242.jpg" alt="step2" width="300" height="242" class="aligncenter size-medium wp-image-10901" /></a></p>
+<p>物理エンジンODEを使い，ゲームを作りながらＣ言語をマスターすることを目指して連載します。ODEのバージョンは0.13に対応しています。落ち物系パズルゲームの２回目です．</p>
+<p>今回はswtich文を使ったブロックのキーボードによる移動，壁を表示します．<br />
+<!--more--><br />
+該当するソースコードは次のとおりです．</p>
+<pre class="brush:cpp;">/* step2　*/
+#include "dm2.h"
+#include &#60;time.h&#62;
+#include &#60;stdlib.h&#62;
+
+double R&#91;12&#93; = {1,0,0,0, 0,1,0,0, 0,0,1,0}; // 回転行列が格納される配列, 位置(x,y,z)&#91;m&#93;
+double wall_p&#91;3&#93; = {0.0, 0.0, 0.5};   // 位置(x,y,z)&#91;m&#93;
+double block&#91;100&#93;&#91;3&#93; ; // ブロックの位置
+double sides&#91;3&#93; = {1.0, 1.0, 1.0}; // 直方体のサイズ(x, y, z)&#91;m&#93;
+double start_x = 0.0, start_y = 0.5, start_z = 0.0; // 初期位置
+int       now = 0; // 現在、操作可能なブロック番号
+
+void command(int cmd)
+{
+    float xyz;
+    unsigned char key;
+
+    switch (cmd)
+    {
+    case 'a':
+        block&#91;now&#93;&#91;0&#93; -= 1.0;
+        break;
+    case 'd':
+        block&#91;now&#93;&#91;0&#93; += 1.0;
+        break;
+    case 'x':
+        block&#91;now&#93;&#91;1&#93; -= 1.0;
+        break;
+   case 'w':
+        block&#91;now&#93;&#91;1&#93; += 1.0;
+        break;
+   case 32: // blank
+        block&#91;now&#93;&#91;1&#93;  = -8.5;
+        break;
+    default:
+        printf("Input %c (%d)\n",(char)cmd, cmd);
+    }
+}
+
+void drawWall()
+{
+    int i, j, num =20;
+    for (i = 0; i &#60; num; i++)
+    {
+        for (j = 0; j &#60; num; j++)
+        {
+            if ((i==0) || (i==num-1) || (j==0) || (j==num-1))
+            {
+                dsSetColor(1.0, 0.0, 0.0); // 色の設定
+                wall_p&#91;0&#93; = i  + start_x - num/2.0;       // 位置のx成分
+                wall_p&#91;1&#93; = j  + start_y - num/2.0;       // 位置のx成分
+                wall_p&#91;2&#93; = 0.5;                 // 位置のz成分
+                dsDrawBox(wall_p,R,sides); // 直方体の表示
+            }
+        }
+    }
+}
+
+void simLoop(int pause)        /***  シミュレーションループ　***/
+{
+    int i;
+    float red = 1.0, green = 0.0, blue = 0.0; // 赤，緑，青成分
+    static int dir =1;
+
+    // ブロックの表示
+    dsSetColor(1.0, 1.0, 0.0);   // 黄色
+
+    for (i=0; i &#60; now + 1;i++) {
+        dsDrawSphere(block&#91;i&#93;, R, 0.5);
+    }
+    // 壁の表示
+    drawWall();
+}
+
+int main()         /*** main関数 ***/
+{
+    int i;
+    block&#91;0&#93;&#91;0&#93; = 0.5;
+    block&#91;0&#93;&#91;1&#93; = 7.5;
+    block&#91;0&#93;&#91;2&#93; = 0.5;
+
+    srand(time(NULL)); // 乱数の初期化
+    dmLoop(800, 600, simLoop, command); // シミュレーションループ ウインドウの幅，高
+    return 0;
+}
+</pre>
+<p>ここではswitch文を使ったキー処理の方法を学びます．キーボード入力の処理にswitch文はうってつけです。 ゲームではキーボード入力によりレーザービームを発射したり，車を操縦しますね．switch文を使って，キーボードからのキー入力を処理する方法を学びます．</p>
+<p><strong>switch文とキー処理</strong><br />
+新しく登場したのが１２行目のcommand関数です．これは，キーボードからのキー入力を引数cmdとして受け取ります．このサンプルプログラムではswitch文を使いキー入力の値に応じて分岐させ違う処理をさせています．aまたはdが入力されるとブロックを表す黄色の球を左または右へ１[m]移動します．wまたはxならブロックを上または下へ1[m]移動させます．</p>
+<p>その他のキーを入力するとdefaultにあるprintf文でcmdで入力された文字を表示します． なお、switch文の代わりにif文でもできますが、キー入力が増え分岐が多くなるとswitch文の方がすっきりした読みやすいプログラムを書けます。</p>
+<p>では，演習をしながら落ち物系パズルゲームを作っていきましょう．</p>
+<ul>
+<li><strong>演習<br />
+</strong></p>
+<ol>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2014/06/step2-140626.zip">step2-140626.zip</a>をダウンロードし，実行してください．</li>
+<li>ブロックが壁から飛び出さないようにしましょう．</li>
+<li>ブロックが自動的に下に落ちるようにしましょう．</li>
+<li>ブロックが下の壁に到着したら、新しいブロックを登場させましょう．</li>
+<li> 新しいブロックが古いブロックを通り抜けないようにしましょう。</li>
+</ol>
+</li>
+</ul>
+<p>今回はここまで．</p>
+<p>以上</p>

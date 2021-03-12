@@ -1,0 +1,92 @@
+---
+layout: post
+title: rosbagのイメージデータをyoloで物体検出
+date: 2017-09-30 14:38:06.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  _edit_last: '2'
+  views: '820'
+  _thumbnail_id: '15900'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_toc_novisible: '0'
+  update_level: high
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/13568.html"
+---
+<p><a href="http://demura.net/tukuba-challenge/13568.html/attachment/person2" rel="attachment wp-att-13571"><img class="aligncenter size-full wp-image-13571" src="{{ site.baseurl }}/assets/images/2017/09/person2.png" alt="" width="972" height="729" /></a></p>
+<p>rosbagで保存したイメージデータをyoloで物体検出した作業のメモ。上と下の写真はつくばチャレンジ実験走行で探索対象を検出したときのスクリーンショット。マネキンもpersonと検出するので実験走行に使える。。。</p>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Ubuntu16.04, ROS Kinetic, Cuda 8.0, OpenCV3.2</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li><code>cd catkin_ws/src</code></li>
+<li><code>git clone --recursive https://github.com/leggedrobotics/darknet_ros.git</code></li>
+<li><code>cd ..</code></li>
+<li><code>catkin_make -DCMAKE_BUILD_TYPE=Release</code></li>
+</ul>
+<p><strong>重みのダウンロード</strong></p>
+<ul>
+<li>cd ~/catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights/</li>
+<li>wget http://pjreddie.com/media/files/yolo-voc.weights</li>
+<li>wget http://pjreddie.com/media/files/tiny-yolo-voc.weights</li>
+<li>wget http://pjreddie.com/media/files/yolo.weights</li>
+<li>wget http://pjreddie.com/media/files/tiny-yolo.weights</li>
+<li>wget http://pjreddie.com/media/files/yolo9000.weights</li>
+</ul>
+<p><strong>設　定</strong></p>
+<ul>
+<li>モデルの変更
+<ul>
+<li>catkin_ws/src/darknet_ros/darknet_ros/launch/darknet_ros.launchの以下の行のyolo_voc.yamlを好きなネットワークモデル（つまり、yolo.yaml, tiny_yolo.yaml, yolo9000.yaml)に変更する。</li>
+<li>&lt;rosparam command="load" ns="darknet_ros" file="$(find darknet_ros)/config/yolo_voc.yaml"/&gt;</li>
+</ul>
+</li>
+<li>トピック名の変更
+<ul>
+<li>catkin_ws/src/darknet_ros/darknet_ros/config/ros.yamlのトピック名を必要があれば変更する。特にcamera_readingのトピック名は変更しなければならないと思う。私の場合はサブスクライバだけ次のように/image_rawに変更した。</li>
+<li>subscribers:<br />
+camera_reading:<br />
+topic: /image_raw<br />
+queue_size: 1</li>
+</ul>
+</li>
+</ul>
+<p><strong>実行方法</strong></p>
+<ul>
+<li>roscore</li>
+<li> rosbagの再生
+<ul>
+<li>rosbag play   bagfile.bag</li>
+</ul>
+</li>
+<li>roslaunch darknet_ros darknet_ros.launch</li>
+</ul>
+<p>終わり</p>
+<p><a href="http://demura.net/tukuba-challenge/13568.html/attachment/person3-2" rel="attachment wp-att-13576"><img class="aligncenter size-large wp-image-13576" src="{{ site.baseurl }}/assets/images/2017/09/person3-1-1024x768.jpg" alt="" width="800" height="600" /></a></p>

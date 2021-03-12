@@ -1,0 +1,155 @@
+---
+layout: post
+title: 'Folding@home: インストール (Linux)'
+date: 2020-04-18 21:30:24.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '17762'
+  views: '1011'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/17749.html"
+---
+<p>Folding@home(FAH)のUbuntuへのインストール方法を紹介します。この記事はUbuntu18.04で試しています。</p>
+<p>なお、インストール、実行やチームへの参加は自己責任でお願いします。この活動で生じたあらゆる不利益に責任を取ることはできません。</p>
+<ul>
+<li><strong>ダウンロード</strong>
+<ul>
+<li> 以下のオフィシャルウェブサイトへ行き、以下の３つのファイルを~/Downloadsにダウンロードする。
+<ul>
+<li><a href="https://foldingathome.org/start-folding/">START FOLDING</a>
+<ul>
+<li><a href="https://download.foldingathome.org/releases/public/release/fahclient/debian-stable-64bit/v7.6/fahclient_7.6.9_amd64.deb">fahclient_7.6.9_amd64.deb</a></li>
+<li><a href="https://download.foldingathome.org/releases/public/release/fahcontrol/debian-stable-64bit/v7.6/fahcontrol_7.6.9-1_all.deb">fahcontrol_7.6.9-1_all.deb</a></li>
+<li><a href="https://download.foldingathome.org/releases/public/release/fahviewer/debian-stable-64bit/v7.6/fahviewer_7.6.9_amd64.deb">fahviewer_7.6.9_amd64.deb</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>FAHクライアント</strong>
+<ul>
+<li><strong>概要</strong>：FAHクライアントはサーバーと通信して仕事を受け取り、その結果をサーバーに送り返す機能を持っています。端末で次のコマンドを実行してインストールする。ウインドウが開くのでユーザ名、チームID等を設定する。
+<ul>
+<li>$ <code> cd ~/Downloads</code></li>
+<li>$ <code> sudo dpkg -i --force-depends fahclient_7.6.9_amd64.deb</code></li>
+</ul>
+</li>
+<li><strong>ユーザ名の入力</strong>：デフォルトではAnonymous(匿名)ですがせっかくですから、他のかぶらない名前を入力しましょう。<a href="https://stats.foldingathome.org/donors">名前はここで確認できます。</a>入力してEnterキーを押す。<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f1.png"><img class="aligncenter size-full wp-image-17666" src="{{ site.baseurl }}/assets/images/2020/04/f1.png" alt="" width="832" height="577" /></a></li>
+<li><strong>チームIDの入力</strong>：デフォルトは0です。チームIDを入力するとチーム内での順位やSNSなどを設定しているチームは交流ができるのでお勧めです。金沢市は人口あたりの感染者数では日本一という危機的な状態です(4/13現在)。この危機を少しでも解決するためにチーム Kanazawaをつくりました。番号は257261です。<a href="https://www.facebook.com/FAHKanazawa">Facebookページはここです。</a>もしよろしければ、その番号を入力して頂ければありがたいです。Enterキーを押す。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f2.png"><img class="aligncenter size-full wp-image-17667" src="{{ site.baseurl }}/assets/images/2020/04/f2.png" alt="" width="832" height="577" /></a></li>
+<li><strong>パスキーの取得</strong>：パスキー(Passkey)はセキュリテイを高めボーナスポイントを獲得するために必要です。<a href="https://apps.foldingathome.org/getpasskey">このウェブサイトにアクセスして</a>、Nameに上で入力したユーザ名、Emailにメールアドレスを入力して"Get Passkey"をクリックする。パスキーが記載されたメールが送られてくる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f6.png"><img class="aligncenter size-full wp-image-17671" src="{{ site.baseurl }}/assets/images/2020/04/f6.png" alt="" width="634" height="303" /></a></li>
+<li><strong>パスキーの入力</strong>：メールで送られてきたパスキーをコピペし、Enterキーを押す。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f3.png"><img class="aligncenter size-full wp-image-17668" src="{{ site.baseurl }}/assets/images/2020/04/f3.png" alt="" width="832" height="577" /></a></li>
+<li><strong>貢献度の設定</strong>：システムリソースの割当程度を決めます。普通のノートパソコンはlightがお勧めです。それ以上はmediumを設定しましょう。GPU搭載のパソコンの場合はlightだとGPUが使われません。さらに貢献されたい方はfullはいかがでしょうか。Enterキー押す。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f4.png"><img class="aligncenter size-full wp-image-17669" src="{{ site.baseurl }}/assets/images/2020/04/f4.png" alt="" width="832" height="577" /></a></li>
+<li><strong>自動起動の設定</strong>：FAHクライアントソフトの自動起動をするかどうか決めます。デフォルトは&lt;はい&gt;です。起動し忘れるので、そのままEnterキーを押しましょう。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f5.png"><img class="aligncenter size-full wp-image-17670" src="{{ site.baseurl }}/assets/images/2020/04/f5.png" alt="" width="832" height="577" /></a></li>
+<li>インストールが始まり終了すると端末に次のように表示されます。この設定は/etc/fahclient/config.xmlに保存されます。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f7.png"><img class="aligncenter size-full wp-image-17679" src="{{ site.baseurl }}/assets/images/2020/04/f7.png" alt="" width="812" height="425" /></a></li>
+</ul>
+</li>
+<li><strong>FAHコントロール</strong>
+<ul>
+<li><strong>概要</strong>：FAHコントロールは設定用のソフトです。私の環境の場合、同じPCでもWindows版のFAHソフトを入れた場合は自動的にGPUまで認識したのですが、Linux版の場合はこのFAHコントロールで設定する必要がありました。</li>
+<li><strong>インストール</strong>：端末を開き、次のコマンドを実行します。
+<ul>
+<li>$ <code>cd ~/Downloads</code></li>
+<li>$ <code> sudo dpkg -i --force-depends fahcontrol_7.6.9-1_all.deb<br />
+</code></li>
+</ul>
+</li>
+<li><strong>GPUの設定：</strong>GPUがない場合はこの作業は不要です。端末を開き、次のコマンドで起動します。
+<ul>
+<li>$ <code>FAHControl &amp; </code></li>
+<li>FAHControlウインドウが開くので"Configure"をクリック。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f8.png"><img class="aligncenter size-full wp-image-17681" src="{{ site.baseurl }}/assets/images/2020/04/f8.png" alt="" width="800" height="544" /></a></li>
+<li>Configureウインドウが開くので"Expert"のタブをクリック。"Extra client options"のgpuがデフォルトで"false"になっているので"true"に変更し、"保存(S)"をクリックします。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f10.png"><img class="aligncenter size-full wp-image-17682" src="{{ site.baseurl }}/assets/images/2020/04/f10.png" alt="" width="700" height="580" /></a></li>
+<li>Configureの"Slots"タブをクリックします。GPUを追加します。"追加(A)"をクリック。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f11.png"><img class="aligncenter size-full wp-image-17683" src="{{ site.baseurl }}/assets/images/2020/04/f11.png" alt="" width="700" height="580" /></a></li>
+<li>Folding Slotウインドウが開くので、下図のようにGPUのラジオボタンをクリックしてONにして、"OK(O)"をクリックします。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f12.png"><img class="aligncenter size-full wp-image-17684" src="{{ site.baseurl }}/assets/images/2020/04/f12.png" alt="" width="600" height="580" /></a></li>
+<li>Configureウインドウでgpuを追加されているのがわかります。"保存(S)"をクリックします。<span style="color: #ff0000;"><strong>追加できない場合は、上のFolding Slotウインドウでの作業でopencl-indexだけを0にしてください。</strong></span><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f14.png"><img class="aligncenter size-full wp-image-17686" src="{{ site.baseurl }}/assets/images/2020/04/f14.png" alt="" width="700" height="580" /></a></p>
+<ul>
+<li>GPU搭載しているのに"No available GPUs"とエラーがでる場合は次のコマンドでクライアントを停止して再度起動して、上のgpu追加を再度実行します。<span style="color: #ff0000;"><strong>それでも追加できない場合は、２つ上のFolding Slotウインドウでの作業に戻りopencl-indexだけを0にしてください。</strong></span>
+<ul>
+<li>$ <code>sudo /etc/init.d/FAHClient stop</code></li>
+<li>$ <code>sudo /etc/init.d/FAHClient start</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>成功すると次のようにgpuが追加されているのがわかります。作業が終わったのでウインドウの右上の☓印をクリックしてウインドウを閉じます。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f15a.png"><img class="aligncenter size-full wp-image-17687" src="{{ site.baseurl }}/assets/images/2020/04/f15a.png" alt="" width="923" height="515" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>FAHビューア</strong>
+<ul>
+<li><strong>概要</strong>：現在、解析中ウイルスのタンパク質の3Dモデルを確認できます。</li>
+<li><strong>インストール</strong>
+<ul>
+<li>$ <code> sudo dpkg -i --force-depends fahviewer_7.6.9_amd64.deb</code></li>
+</ul>
+</li>
+<li><strong>起動</strong>
+<ul>
+<li>$ <code>FAHViewer &amp;</code></li>
+<li>次のようなウインドウが開き、自分の貢献を確認できます。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f16.png"><img class="aligncenter size-full wp-image-17688" src="{{ site.baseurl }}/assets/images/2020/04/f16.png" alt="" width="800" height="624" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>FAH Web Control</strong>
+<ul>
+<li>概要：ブラウザで以下のURLにアクセスするとパワーなどの設定や作業の進捗等を確認できます。もし、Chromeでうまくいかない場合はFireFoxを使ってください。
+<ul>
+<li><a href="https://client.foldingathome.org/">https://client.foldingathome.org/</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/f17.png"><img class="aligncenter size-large wp-image-17689" src="{{ site.baseurl }}/assets/images/2020/04/f17-1024x852.png" alt="" width="1024" height="852" /></a></p>
+<p>&nbsp;</p>
+<p>終わり</p>
+<p>&nbsp;</p>

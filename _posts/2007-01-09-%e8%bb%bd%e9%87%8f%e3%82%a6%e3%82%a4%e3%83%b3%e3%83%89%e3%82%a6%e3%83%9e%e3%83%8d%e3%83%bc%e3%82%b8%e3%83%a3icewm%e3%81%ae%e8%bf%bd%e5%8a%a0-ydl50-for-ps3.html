@@ -1,0 +1,63 @@
+---
+layout: post
+title: 軽量ウインドウマネージャIceWMの追加 (YDL5.0 for PS3)
+date: 2007-01-09 15:47:29.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '258'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/367.html"
+---
+<p>Yellow Dog Linux 5.0 for PlayStation 3のウインドウマネージャーはデフォルトでE19、追加インストールするとGNOMEやKDEを選択することができます。</p>
+<p>PS3のメモリは250MBしかないので、より軽量なIceWMをインストールしたのでその方法を紹介します。</p>
+<ul>
+<li>I<a href="http://www.icewm.org/">csWMのダウンロード</a><br />
+ 1.2.30 (2006-12-24)をダウンロードしました。</li>
+<li>準備<br />
+ IceWMをコンパイルするためにはX Windowシステムの開発環境とImlibが必要なので以下のパッケージをインストールします。</li>
+</ul>
+<ul>
+</ul>
+<li>IceWmのコンパイルとインストール</li>
+<ul>
+<li>tar  xvzf   icewm-1.2.30.tar.gz</li>
+<li>cd   icdwm-1.2.30</li>
+<li>./configure  --enable-antialiasing   --enable-wm-session</li>
+<li>make</li>
+<li>su</li>
+<li>make install</li>
+</ul>
+<li>IceWMのセッションへの追加<br />
+ YDLのログイン時にセッションでIceWMを選択できるように以下の作業を実施します。</li>
+<ul>
+<li>セッションのリストへ追加<br />
+ cp  icewm-1.2.30/lib/IceWM.desktop   /usr/share/xsessions</li>
+<li>/etc/X11/xinit/XsessionへのIceWMの追加<br />
+ 以下のコードを６１行目にある　gnome)　の上行に挿入する。<br />
+ icewm)<br />
+ exec -l $SHELL -c "$SSH_AGENT $DBUS_LAUNCH icewm-session"<br />
+ ;;</li>
+<li>/etc/X11/xinit/XclientsへIceWMを追加
+<ul>
+<li>以下のコードを１３行目STARTE="$(which enlightenment 2&gt;/dev/null)"<br />
+ の下に挿入する。<br />
+ STARTICEWM="$(which icewm 2&gt;/dev/null)"</li>
+<li>以下のコードを２７行目 PREFERRED="$STARTKDE"の下に挿入する。<br />
+ elif [ "$DESKTOP" = "IceWM" ]; then<br />
+ PREFERRED="$STARTICEWM"</li>
+</ul>
+</li>
+</ul>

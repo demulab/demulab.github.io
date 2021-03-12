@@ -1,0 +1,62 @@
+---
+layout: post
+title: ROS IndigoのGazeboシミュレータでTurtlebot2を表示
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>このメモはkendemuさんの<a href="http://qiita.com/kendemu/items/f915c7c2498b04e097cc">この記事</a>を参考にしました。kendemuさんありがとう。</p>
+<ul>
+<ul>
+<ul>
+<li>Gazebo4のインストール：<a href="http://gazebosim.org/download">ここから</a>Debian用のファイルをダウンロードし、以下のコマンドでインストールする。</li>
+</ul>
+</ul>
+</ul>
+<p><code> ＄　sh ~/download/gazebo4_install.sh</code></p>
+<ul>
+<li>ROS作業用のディレクトリを作る。既にある場合はそれを使えば以下の作業は不要。ただ、既存のturtlebot_siulatorとは別のディレクトリにする。
+<ul>
+<li>$ mkdir -p  ~/catkin_ws/src</li>
+<li>$ cd ~/catkin_ws/src</li>
+<li>$ catkin_init_workspace</li>
+<li>$ cd  ~/catkin_ws</li>
+<li>$ catkin_make</li>
+<li>$ source  devel/setup.bash</li>
+</ul>
+</li>
+<li>ソースインストール作業
+<ul>
+<li>$ cd ~/catkin_ws/src</li>
+<li>$ git clone https://github.com/turtlebot/turtlebot_simulator.git</li>
+<li>$ rosinstall ~/catkin_ws/src/turtlebot_simulator /opt/ros/indigo</li>
+<li>$ echo "source ~/catkin_ws/src/turtlebot_simulator/setup.bash" &gt;&gt; ~/.bashrc</li>
+<li> 以下のコマンドで必要なパッケージをインストールする
+<ul>
+<li>$ sudo apt-get install ros-indigo-gazebo4-ros</li>
+<li>$ sudo apt-get install ros-indigo-gazebo4-plugins</li>
+<li>$ sudo apt-get install ros-indigo-gazebo4-ros-control</li>
+<li>$ sudo apt-get installros-indigo-gazebo4-ros-pkgs</li>
+<li>$ sudo apt-get install ros-indigo-gazebo-concert</li>
+<li>$ sudo apt-get install ros-indigo-gazebo-msgs</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>

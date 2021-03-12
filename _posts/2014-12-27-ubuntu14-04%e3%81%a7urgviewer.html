@@ -1,0 +1,56 @@
+---
+layout: post
+title: Ubuntu14.04でUrgViewer
+date: 2014-12-27 09:50:15.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _oembed_19741b02ee80f7595cd2f79f5a45eee6: "{{unknown}}"
+  views: '1027'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/11481.html"
+---
+<p>Ubuntu14.04 LTS 日本語 RemixでUrgViewerのビルドしたときのメモです。</p>
+<p>なお、以下のウェブサイトを参考にしました。ありがとうございます。Ubuntu14.04はQT5なのでその部分が違います。<br />
+<a href="http://mohammedari.blogspot.jp/2013/10/ubuntuurgviewertopurg.html">http://mohammedari.blogspot.jp/2013/10/ubuntuurgviewertopurg.html</a></p>
+<ul>
+<li>/etc/udev/rules.dに60-cdcacm.rulesを作る。もし、60番が既に使われていたら違う番号にする。ファイルの中身は以下のとおり。<br />
+<code><br />
+KERNEL=="ttyACM*", MODE:="0666"<br />
+</code></li>
+<li>次のコマンドでudevサービスをリスタートさせ、LidarのUSBを抜き差しする。<br />
+$ sudo service udev restart</li>
+<li>Ubuntu用のバイナリがないのでソースからビルドする。まず、<a href="http://sourceforge.net/projects/urgnetwork/files/Urg_Viewer/">ここからUrg_viewer-2.0.6.tar.gzをダウンロードし、</a>ファイルを~/srcに移動し、次のコマンドで展開する。<br />
+<code><br />
+$ cd ~/src<br />
+$ tar xvzf Urg_viewer-2.0.7.tar.gz<br />
+</code></li>
+<li>UrgviewerはQTを使っているのでライブラリをインストールする。<br />
+<code><br />
+$ sudo apt-get install qt-sdk<br />
+</code></li>
+<li>Urg_viewer-2.0.7はQT4を使っているのでQT5のqmakeだとビルドできない。qmake-qt4コマンドを使う。<br />
+<code><br />
+$ cd ~/src/Urg_viewer-2.0.7<br />
+$ qmake-qt4<br />
+$ make<br />
+</code></li>
+<li>次のコマンで実行する。終わり。<br />
+<code><br />
+$ ./Urg_viewer<br />
+</code></li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

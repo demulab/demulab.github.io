@@ -1,0 +1,52 @@
+---
+layout: post
+title: 'Turtlebot3: 3. OpenCRの設定'
+date: 2018-04-01 14:32:58.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '4048'
+  _thumbnail_id: '14411'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/14406.html"
+---
+<p>Turtleobot3に搭載されているコントローラOpenCR1.0の設定メモ。このコントローラはオープンハードウェア＆ソフトウェアで、ROSを使った組み込み向けに作られており、開発環境はArduino、Scratchからプロ向けまである。なお、OpenCRのマイクロコントローラは32ビットARM Corte-M7ベースのSTM32F746ZGT6を使っており、3軸ジャイロ、3軸加速度、3軸の地磁気センサを搭載している。詳細は以下のe-Manualを参照。</p>
+<ul>
+<li><a href="http://emanual.robotis.com/docs/en/parts/controller/opencr10/">OpenCR1.0 e-Manual, ROBOTIS</a></li>
+</ul>
+<p><strong>ファームウェアのアップロード（Raspberry Pi3での作業）</strong></p>
+<ul>
+<li>以下の作業はTurtebot3 Burgerに搭載されているRaspb erry Pi3で実施する。リモートPCでも実施可能。</li>
+<li>アップロードはシェルスクリプトを使う方法とArduino IDEを使う２つの方法がある。ファイヤーウォールに守られている本学の環境だとArduino IDEを使う方法は必要なファイルをダウンロードできず作業を失敗ので、シェルスクリプトを使う方法を紹介する。<a href="http://emanual.robotis.com/docs/en/platform/turtlebot3/opencr_setup/#opencr-setup">Arduino IDEを使う方法はここを参照。</a></li>
+<li>まず、Raspberry Pi 3にディスプレイ、キーボード、マウスを接続し、OpenCRに電源にACアダプタから給電し、OpenCRのスライドスイッチを入れる（正面から見て右に移動するとON、左はOFF)。</li>
+</ul>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/04/burger.png"><img src="{{ site.baseurl }}/assets/images/2018/04/burger.png" alt="" width="837" height="1125" class="aligncenter size-full wp-image-14411" /></a></p>
+<ul>
+<li> 端末を開き、次のコマンドを実行する。
+<ul>
+<li><code>export OPENCR_PORT=/dev/ttyACM0</code></li>
+<li><code>export OPENCR_MODEL=burger</code></li>
+<li><code>cd ~/src</code></li>
+<li><code>cd src</code></li>
+<li><code>wget https://github.com/ROBOTIS-GIT/OpenCR/raw/develop/arduino/opencr_release/shell_update/opencr_update.tar.bz2</code></li>
+<li><code>tar -xvf opencr_update.tar.bz2</code></li>
+<li><code>cd ./opencr_update</code></li>
+<li><code>./update.sh /dev/ttyACM0  burger.opencr</code></li>
+<li>下図のようにjump_to_fwがOKになっていれば成功。なお、2018年4月1日に実行したところ、ファームウェアバージョンは1.1.2。Arudino IDEを使う方法だとファームウェアのバージョンを簡単に変更できる。</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/04/opencr.png"><img src="{{ site.baseurl }}/assets/images/2018/04/opencr.png" alt="" width="764" height="411" class="aligncenter size-full wp-image-14407" /></a></p>
+<p>終わり。</p>

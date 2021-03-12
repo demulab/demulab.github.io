@@ -1,0 +1,35 @@
+---
+layout: post
+title: 'ODE Tutorial 9: ERP (Joint Error Reduction Parameter)'
+date: 2006-11-28 22:23:39.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '701'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/350.html"
+---
+<p>This page was mainly translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.</p>
+<p><img title="Sample4a" src="{{ site.baseurl }}/assets/images/2006/11/sample4a.jpg" alt="Sample4a" width="224" height="217" /></p>
+<p>ODE (Open Dynamics Engine) lecture time it is 9th.  This time when using ODE you must remember, it explains the  parameter ERP (joint error Error Reduction  Parameter) concerning.</p>
+<p>As for ERP it is the parameter which corrects the error of the joint. When repeatedly simulation it keeps, the center of  the joint keeps slipping in computing error and the like. With  ERP it takes the value up to 1 from 0 that it corrects that. As  for 0 as for 1 with the following step error is corrected in 0  vis-a-vis not correcting error completely. As for recommendation value is about 0.8, but default value is 0.2.  In the present sample program being not to have set, ERP is  calculated as 0.2. ERP cannot recommend is set to 1 densely.  As for the gap of the joint because of the error to which  various approximate calculations depend the thing which is made  completely 0 being not to be possible, it does.</p>
+<p>When ERP is set, API below is used. Furthermore,  this works to global and corrects the error of all joints.</p>
+<ul>
+<li>dWorldSetERP (dWorldID, dReal erp)<br />
+dWorldID is the ID number of the world, and erp is a real number from 0.0 to 1.0. The default value of erp is 0.2.</li>
+</ul>
+<p>So, as a practice of dWorldSetERP;  Inserting dWorldSetERP(world, 0.0) under dWorldSetGravity of sample4, please try  executing. Furthermore, in order dWorldSetERP (world,0.0) to  add, to be easy to see<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fsample4a.tgz" target="_self">as for sample4a which</a>changes point of view. With this example being not to correct  the gap of the joint, as in the figure disjointed incident occurs.</p>
+<p>To be continued.</p>
+<p><!-- ▼追記▼ --><!-- ▲追記▲ --><!-- entry-content --><!-- ▲エントリ▲ --><!-- ▼エントリフッター▼ --></p>

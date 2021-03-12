@@ -1,0 +1,155 @@
+---
+layout: post
+title: 'ODE Tutorial 16: A Robot Arm Petit Simulator'
+date: 2007-02-10 14:46:13.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1190'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/374.html"
+---
+<p>Most of this page was translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.</p>
+<p><img title="3 joint manipulator" src="{{ site.baseurl }}/assets/images/2007/02/armMini.jpg" alt="3 joint manipulator" align="middle" /><br />
+<strong><br />
+A 3DOF Robot Arm Petit Simulator  (The source code is only about 100 lines)</strong></p>
+<p>It is 16th tutorial of this ODE(Open Dynamics Engine) Tutorial. ODE is an open source physics libary, and it is widely used  in various game software, and simulators in research.</p>
+<p>This time in order to rearrange present knowledge, it will try  making the petit simulator of the simple 3 joint manipulator.  This<span style="color: #000000;">is</span>when ODE is used,<span style="color: #ff0000;"><strong>"This kind of simulator is produced with only 100 lines."</strong></span>With being to be  the program which is said it abbreviates the collision calculation  part. Please try mounting the person who learned kinematics and  opposite kinematics to this robot. When the robot moves, it is  something which becomes matter of concern which is understood  strangely.</p>
+<p>So, the source code will be introduced next.<!-- ▼追記▼ --></p>
+<p>The robot can be controlled by a keyboard　with  following commads.</p>
+<p>As for the 1st joint  is moved with  pushing <strong>'j'</strong> (increase) or <strong>'f'</strong> (decrease) key, the 2nd joint being the <strong>'d'</strong> or 　'<strong>k'</strong> key, being the <strong>'s'</strong> or　'<strong>l'</strong> key, moves the  3rd joint. This has described in the command function of the  program.</p>
+<p>This program is simple enough for the person who has understood the past ODE lecture. You think that explanation almost does not need. If  there is a place where it is not understood please write to comment.</p>
+<p><!--more--></p>
+<p>[code]<br />
+//  arm.cpp  3 DOF manipulator    by   Kosei Demura  2006<br />
+#include                     // ODE<br />
+#include   // the drawing library of ODE<br />
+#ifdef dDouble<br />
+#define dsDrawCapsule  dsDrawCapsuleD<br />
+#endif<br />
+#define NUM 4                             // the number of links (base it includes)<br />
+dWorldID    world;                         // Kinetics calculation world<br />
+dBodyID     link [ NUM ];            // Link link [ as for 0 ] base<br />
+dJointID      joint [ NUM ];           // Joint    joint [ 0 ] locking base and the land<br />
+static double THETA [ NUM ] = {0.0, 0.0, 0.0, 0.0};  // Joint target angle [ rad ]<br />
+static double l [ NUM ]  = {0.10, 0.90, 1.00, 1.00};     // Link length [ m ]<br />
+static double r [ NUM ]  = {0.20, 0.04, 0.04, 0.04};     // Link radius [ m ]</p>
+<p>// P control<br />
+void control () {<br />
+static int step = 0;     // The number of steps of simulation<br />
+double k1 =  10.0,  fMax  = 100.0;     // k1: Proportional gain,  fMax: Largest torque [ Nm ]<br />
+printf ("\r%6d: "Step++);<br />
+for (int j = 1; J &lt; NUM; J++) {<br />
+double tmpAngle = dJointGetHingeAngle (joint [ j ]);     // Present joint angle [ rad ]<br />
+double z = THETA [ j ] - tmpAngle;                               // z:  = target joint angle - Present joint angle<br />
+dJointSetHingeParam (joint [ j ],  dParamVel and  k1*z);     // Setting of angular velocity<br />
+dJointSetHingeParam (joint [ j ], dParamFMax and fMax);  // Setting of largest torque<br />
+}<br />
+}</p>
+<p>//Drawing API initialization<br />
+//As for the API of ODE as for the unit of all joints [ rad ] is, but the argument 3 dimensional arrangement //hpr of dsSetViewpoint which is the API of drawstuff [ the unit of each element of 3 ] [ has become the ｰ ]. //Just this being to be different, you will pay attention!<br />
+void START () {<br />
+float xyz [ 3 ] = {  3.04, 1.28, 0.76};     // Point of view x, y and z [ m ]<br />
+float hpr [ 3 ] = {-160.0, 4.50, 0.00};    // Gaze (heading, pitch and roll) [ ｰ ]<br />
+dsSetViewpoint (xyz and hpr);              // Setting of point of view and gaze<br />
+}</p>
+<p>/ /Key operation function<br />
+/ /At each time there is input of the key value of that key is substituted in cmd.<br />
+void command (int cmd) {/<br />
+switch (cmd) {<br />
+case ‘j’:  THETA [ 1 ] += 0.05; Break;  // When the j key is pushed, THETA [ angle of 1 ] increases 0.05 [ rad ]<br />
+case ‘f’:  THETA [ 1 ] -= 0.05; Break;<br />
+case ‘k’:  THETA [ 2 ] += 0.05; Break;<br />
+case ‘d’:  THETA [ 2 ] -= 0.05; Break;<br />
+case ‘l’:  THETA [ 3 ] += 0.05; Break;<br />
+case ’s’:  THETA [ 3 ] -= 0.05; Break;<br />
+}<br />
+//In order/ or target angle not to exceed the joint movable limits, it restricts<br />
+// The joint movable limits dJointSetHingeParam (dJointID, int parameter and dReal value) with, in case of the //joint lower limit in case of dParamLoStop and the joint upper limit set parameter to dParamHiStop. Value //inserts the value. As for unit [ rad ].<br />
+if (THETA [ 1 ] &lt;   - M_PI)  　　THETA [ 1 ]     =      - M_PI;   // M_PI is π<br />
+if (THETA [ 1 ] &gt;      M_PI)  　　THETA [ 1 ]     =       M_PI;<br />
+if (THETA [ 2 ] &lt;  -2*M_PI/3)  THETA [ 2 ] =  - 2*M_PI/3;<br />
+if (THETA [ 2 ] &gt;   2*M_PI/3)  THETA [ 2 ] =   2*M_PI/3;<br />
+if (THETA [ 3 ] &lt;  -2*M_PI/3)  THETA [ 3 ] =  - 2*M_PI/3;<br />
+if (THETA [ 3 ] &gt;   2*M_PI/3)  THETA [ 3 ] =   2*M_PI/3;<br />
+}</p>
+<p>//  Simulation loop<br />
+//  Each time it is called the execution time simulation. With the source code it is not understood, but this part // has entered into the while loop. In addition, here as for the cord/code regarding collision detection it is<br />
+// abbreviated.<br />
+void simLoop (int pause) {<br />
+control ();<br />
+dWorldStep (world, 0.02);<br />
+// Drawing of robot<br />
+dsSetColor (1.0,1.0,1.0); / Setting of color (r, g and b) as for each value 0? 1, here it sets to white<br />
+for (int i = 0; I &lt; NUM; I++) / Drawing the link of the robot in the capsule<br />
+dsDrawCapsule (dBodyGetPosition (link [ i ]), dBodyGetRotation (link [ i ]), l [ i ], r [ i ]);<br />
+}</p>
+<p>int main (int argc and char *argv [ ]) {<br />
+dsFunctions fn; 　// Drawing function<br />
+dMass mass;        // Mass parameter<br />
+double x [ NUM ] = {0.00}, y [ NUM ] = {0.00};              // Balance station<br />
+double z [ NUM ]         = {0.05, 0.50, 1.50, 2.55};<br />
+double m [ NUM ] = {10.00, 2.00, 2.00, 2.00};                   // Mass<br />
+double anchor_x [ NUM ]  = {0.00}, anchor_y [ NUM ] = {0.00};<br />
+double anchor_z [ NUM ] = {0.00, 0.10, 1.00, 2.00}  ;       //Rotary center<br />
+double axis_x [ NUM ]  = {0.00, 0.00, 0.00, 0.00};              //Axis of rotation<br />
+double axis_y [ NUM ]  = {0.00, 0.00, 1.00, 1.00};<br />
+double axis_z [ NUM ]  = {1.00, 1.00, 0.00, 0.00};<br />
+fn.version = DS_VERSION;  Fn.start   = &amp;start;<br />
+fn.step   = &amp;simLoop;      Fn.command = &amp;command;<br />
+fn.path_to_textures = "../.. /drawstuff/textures";</p>
+<p>world = dWorldCreate ();   // Formation of the kinetics calculation world<br />
+dWorldSetGravity (world, 0, 0, -9.8);    / / Gravity setting</p>
+<p>for (int i = 0; I &lt; NUM; I++) {                     // Formation of link it sets<br />
+link [ i ] = dBodyCreate (world);                // Formation of link<br />
+dBodySetPosition (link [ i ], x [ i ], y [ i ], z [ i ]);  // Setting of position<br />
+dMassSetZero (&amp;mass);                        // Initialization of mass parameter<br />
+dMassSetCappedCylinderTotal (&amp;mass, m [ i ],3, r [ i ], l [ i ]);  // Mass calculation of link<br />
+dBodySetMass (link [ i ], &amp;mass);            // Setting of mass<br />
+}<br />
+// Formation of the joint it sets<br />
+joint [ 0 ] = dJointCreateFixed (world, 0);  // Fixed joint (fixing of base and land)<br />
+dJointAttach (joint [ 0 ], link [ 0 ] and 0);  // Installation of fixed joint<br />
+dJointSetFixed (joint [ 0 ]);                         // Setting of fixed joint<br />
+for (int j = 1; J &lt; NUM; J++) {<br />
+joint [ j ] = dJointCreateHinge (world, 0);  // Hinge joint formation<br />
+dJointAttach (joint [ j ], link [ j-1 ], link [ j ]);  // Installation of joint<br />
+dJointSetHingeAnchor (joint [ j ], anchor_x [ j ], anchor_y [ j ], anchor_z [ j ]);  // Setting in joint center<br />
+dJointSetHingeAxis (joint [ j ], axis_x [ j ], axis_y [ j ], axis_z [ j ]);  // Setting of joint axis of rotation<br />
+}<br />
+dsSimulationLoop (argc, argv and 640, 570, &amp;fn); / Simulation loop<br />
+return 0;<br />
+}<br />
+[/code]</p>
+<p><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2farm070112.tar">Furthermore, the program is download possible  from here</a>. There is no warranty for this software. In order to operate, mingw is necessary. Please refer past tutorial.</p>
+<ol>
+<li>Arm070112.tar is copied in /home/ user name  /src/ode-0.7/myprog. You are not concerned the last directory  name myprog even with another name.</li>
+<li>Command below is executed with terminal software.</li>
+</ol>
+<ul></ul>
+<ul>
+<li>dd  - /src/ode-0.7/myprog</li>
+<li>tar   xvf   arm070112.tar</li>
+</ul>
+<ul>
+<li>cd   arm</li>
+</ul>
+<ul>
+<li>make</li>
+</ul>
+<ul>
+<li>. /arm</li>
+</ul>
+<p>End.</p>

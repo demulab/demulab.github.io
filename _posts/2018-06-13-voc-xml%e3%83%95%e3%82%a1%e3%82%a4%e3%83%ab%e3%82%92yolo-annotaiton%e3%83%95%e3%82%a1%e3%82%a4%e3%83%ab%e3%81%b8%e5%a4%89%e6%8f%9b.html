@@ -1,0 +1,55 @@
+---
+layout: post
+title: VOC xmlファイルをYOLO annotaitonファイルへ変換
+date: 2018-06-13 20:06:44.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1609'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/14665.html"
+---
+<p>VOC xmlファイルをYOLO annotationファイルへ変換する方法は以下を参照。</p>
+<ul>
+<li><a href="https://github.com/SsaRu/convert2Yolo">convert2Yolo</a></li>
+</ul>
+<p>準備</p>
+<ul>
+<li><code>cd ~/src</code></li>
+<li><code>git clone https://github.com/SsaRu/convert2Yolo.git</code></li>
+<li><code>sudo pip3 install -r requirements.txt</code></li>
+<li><code>~/src/convert2Yolo$ python3 example.py --datasets VOC --img_path ~/data/hackathon180611/18cup.img --label ~/data/hackathon180611/18cup.txt --convert_output_path ~/data/hackathon180611/18cup.txt2 --img_type ".jpg" --manipast_path ~/data/hackathon180611/18cup.manifest --cls_list_file ~/data/hackathon180611/class.name</code></li>
+</ul>

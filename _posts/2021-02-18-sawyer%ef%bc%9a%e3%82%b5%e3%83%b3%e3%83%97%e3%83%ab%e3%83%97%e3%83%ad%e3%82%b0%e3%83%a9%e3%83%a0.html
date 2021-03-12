@@ -1,0 +1,426 @@
+---
+layout: post
+title: Sawyer：サンプルプログラム
+date: 2021-02-18 10:51:01.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-02-18 10:51:01'
+  _thumbnail_id: '19847'
+  views: '80'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/19860.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sawyer_simu2.png"><img class="aligncenter size-full wp-image-19847" src="{{ site.baseurl }}/assets/images/2021/02/sawyer_simu2.png" alt="" width="911" height="611" /></a></p>
+<p>MoveIt!を使ったロボットアームを制御するサンプルプログラムです。</p>
+<pre>#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sys
+import copy
+import rospy
+import moveit_commander
+import moveit_msgs.msg
+import geometry_msgs.msg
+
+from std_msgs.msg import String
+
+import intera_dataflow
+from intera_io import IODeviceInterface
+from intera_core_msgs.msg import IONodeConfiguration
+
+import rospkg
+
+from gazebo_msgs.srv import (
+      SpawnModel,
+      DeleteModel,
+)
+
+from geometry_msgs.msg import (
+      PoseStamped,
+      Pose,
+      Point,
+      Quaternion,
+)
+
+
+rospy.init_node('arm_demo',anonymous=True)
+gripper_io = IODeviceInterface("end_effector","right_gripper")
+
+def open_gripper():
+  gripper_io.set_signal_value("position_m", 0.15)
+  rospy.sleep(2)
+
+def close_gripper():
+  gripper_io.set_signal_value("position_m", 0.0)
+  rospy.sleep(2)
+
+
+def load_gazebo_models(table_pose=Pose(position=Point(x=1.0, y=0.0, z=0.0)), table_reference_frame="world"):
+  block_reference_frame="world"
+
+  block_pose = (Pose(position=Point(x=0.7, y=0.0, z=0.7725)), \
+                Pose(position=Point(x=0.7, y=0.1, z=0.7725)), \
+                Pose(position=Point(x=0.7, y=0.2, z=0.7725)), \
+                Pose(position=Point(x=0.7, y=0.3, z=0.7725)), \
+                Pose(position=Point(x=0.7, y=0.4, z=0.7725)), \
+                Pose(position=Point(x=0.8, y=0.0, z=0.7725)), \
+                Pose(position=Point(x=0.8, y=0.1, z=0.7725)), \
+                Pose(position=Point(x=0.8, y=0.2, z=0.7725)), \
+                Pose(position=Point(x=0.8, y=0.3, z=0.7725)), \
+                Pose(position=Point(x=0.8, y=0.4, z=0.7725)))
+
+
+
+
+  # Get Models' Path
+  model_path = rospkg.RosPack().get_path('sawyer_sim_examples')+"/models/"
+
+  # Load Table SDF
+  table_xml = ''
+  with open (model_path + "cafe_table/model.sdf", "r") as table_file:
+    table_xml=table_file.read().replace('\n', '')
+
+  # Load Block URDF
+  block_xml = ''
+  with open (model_path + "block/model.urdf", "r") as block_file:
+    block_xml=block_file.read().replace('\n', '')
+
+  # Load Garbage Can URDF
+  garbage_can_xml = ''
+  with open (model_path + "garbage_can/model.sdf", "r") as garbage_can_file:
+    garbage_can_xml=garbage_can_file.read().replace('\n', '')
+
+  # Spawn Table SDF
+  rospy.wait_for_service('/gazebo/spawn_sdf_model')
+  try:
+    spawn_sdf = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
+    resp_sdf  = spawn_sdf("cafe_table", table_xml, "/",
+                             table_pose, table_reference_frame)
+  except rospy.ServiceException, e:
+    rospy.logerr("Spawn SDF service call failed: {0}".format(e))
+
+
+  # Spawn Garbage Can URDF
+  garbage_can_pose = Pose(position=Point(x=0.75, y=-0.25, z=0.8))
+  rospy.wait_for_service('/gazebo/spawn_sdf_model')
+  try:
+    spawn_sdf = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
+    resp_sdf  = spawn_sdf("garbage_can", garbage_can_xml, "/", garbage_can_pose, "world")
+  except rospy.ServiceException, e:
+    rospy.logerr("Spawn SDF service call failed: {0}".format(e))
+
+
+  # Spawn Block URDF
+  rospy.wait_for_service('/gazebo/spawn_urdf_model')
+  try:
+    for i in range(10):
+      spawn_urdf = rospy.ServiceProxy('/gazebo/spawn_urdf_model', SpawnModel)
+      block_name = "block" + str(i)
+      resp_urdf  = spawn_urdf(block_name, block_xml, "/", block_pose[i], block_reference_frame)
+  except rospy.ServiceException, e:
+    rospy.logerr("Spawn URDF service call failed: {0}".format(e))
+
+
+def delete_gazebo_models():
+  try:
+    delete_model = rospy.ServiceProxy('/gazebo/delete_model', DeleteModel)
+    resp_delete = delete_model("cafe_table")
+
+    for i in range(10):
+      block_name = "block" + str(i)
+      resp_delete = delete_model(block_name)
+
+    resp_delete = delete_model("garbage_can")
+
+  except rospy.ServiceException, e:
+    print("Delete Model service call failed: {0}".format(e))
+    
+
+def set_target_position(pose_target, x, y, z, qx, qy, qz, qw):
+  pose_target.position.x = x
+  pose_target.position.y = y
+  pose_target.position.z = z
+  pose_target.orientation.x = qx
+  pose_target.orientation.y = qy
+  pose_target.orientation.z = qz
+  pose_target.orientation.w = qw
+
+  
+def main():
+  print("*** Start Demo ***")
+  ## moveit_commanderとrospyの初期化.
+  moveit_commander.roscpp_initialize(sys.argv)
+
+  ## RobotCommanderオブジェクトのインスタンス生成。これがロボットのインタフェースになる。
+  robot = moveit_commander.RobotCommander()
+
+  ## PlanningSceneInterfaceオブジェクトのインスタンス生成。これがロボット周囲環境へのインタフェースになる。
+  scene = moveit_commander.PlanningSceneInterface()
+
+  ## MoveGroupCommanderオブジェクトのインスタンス生成。これがジョイントへのインタフェースになる。
+  ## このインタフェースは運動計画と動作実行に使われる。
+  group = moveit_commander.MoveGroupCommander("right_arm")
+
+
+  ## DisplayTrajectoryパブリッシャーの生成。RVIZ用の軌道視覚化に使われる。
+  ## trajectories for RVIZ to visualize.
+  display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',
+                                      moveit_msgs.msg.DisplayTrajectory)
+
+  ## 基本情報の取得
+  ## ロボットの参照フレーム（基純座標系）を取得する
+  print("*** ロボットの参照フレーム: %s" % group.get_planning_frame())
+
+  ## ハンドの参照フレーム（基純座標系）を取得する
+  print("*** ハンドの参照フレーム: %s" % group.get_end_effector_link())
+
+  ## ロボットの全グループを表示する。
+  print("*** ロボットグループ:")
+  print(robot.get_group_names())
+
+  ## ロボットの状態表示
+  print("*** ロボットの状態表示")
+  print(robot.get_current_state())
+
+  ## 目標姿勢への運動計画
+  print("*** Plan 1の生成 ***")
+  # position x, y,z; orientation x,y,z,x
+  pose_target = geometry_msgs.msg.Pose()
+  set_target_position(pose_target,0.5, 0.0, -0.1, 0.0, 1.0, 0.0, 0.0) # 最後の４つの引数は姿勢なので変更しない
+  #set_target_position(pose_target,0.7, -0.05, 1.2, 0.0, 1.0, 0.0, 0.0)
+  group.set_pose_target(pose_target)
+
+
+  ## 計画の実行
+  plan1 = group.plan()
+
+  print("*** RVIZがPlan 1を表示するまで待機 ***")
+  rospy.sleep(5)
+
+  ## RVIZでの計画された軌道表示
+  print("*** Plan1 表示 ***")
+  display_trajectory = moveit_msgs.msg.DisplayTrajectory()
+
+  display_trajectory.trajectory_start = robot.get_current_state()
+  display_trajectory.trajectory.append(plan1)
+  display_trajectory_publisher.publish(display_trajectory);
+
+  print("*** Plan1が表示されるのを再度待機　***")
+  rospy.sleep(5)
+
+  # Uncomment below line when working with a real robot
+  group.go(wait=True)
+
+  # 目標姿勢の消去
+  group.clear_pose_targets()
+
+  #  テーブルとブロックのロード
+  load_gazebo_models()                   
+
+  # 終了時にテーブルとブロック、ゴミ箱を削除
+  rospy.on_shutdown(delete_gazebo_models)
+  
+  print("*** Plan 2 ***")
+  pose_target = geometry_msgs.msg.Pose()
+  set_target_position(pose_target,0.5, 0.0, 0.3, 0.0, 1.0, 0.0, 0.0)
+  group.set_pose_target(pose_target)
+
+  print("Close gripper")
+  close_gripper()
+  plan2 = group.plan()
+  rospy.sleep(5)
+  group.go(wait=True)
+  group.clear_pose_targets()
+  
+  print("*** Plan 3 ***")
+  pose_target = geometry_msgs.msg.Pose()
+  set_target_position(pose_target,0.5, 0.0, -0.1, 0.0, 1.0, 0.0, 0.0)
+  group.set_pose_target(pose_target)
+
+  print("Gripper open")
+  open_gripper()
+  plan3 = group.plan()
+  rospy.sleep(5)
+  group.go(wait=True)
+  group.clear_pose_targets()
+  rospy.sleep(5)
+  
+  print("Close gripper")
+  close_gripper()
+  rospy.sleep(5)
+
+  ## collision object messageの定義
+  collision_object = moveit_msgs.msg.CollisionObject()
+
+  ## moveit_commanderの終了
+  moveit_commander.roscpp_shutdown()
+
+  print("End")
+
+
+if __name__=='__main__':
+  try:
+    main()
+  except rospy.ROSInterruptException:
+    pass</pre>
+<p><strong>準　備</strong></p>
+<ul>
+<li>ゴミ箱の3Dモデルのダウンロード
+<ul>
+<li><a href="https://drive.google.com/file/d/1h3EW9wqyGW7QKEDgQPA5dihF70R3JWyF/view?usp=sharing">ここをクリック</a>しファイルを適当な場所に保存する。この例では~/Downloadsに保存する。</li>
+<li>端末を開き、以下のコマンドを実行する。
+<ul>
+<li>$ cd ~/ros_ws/src/sawyer_simulator/sawyer_sim_examples/models</li>
+<li>$ cp ~/Downloads/garbage_can.tar .</li>
+<li>$ tar xvf garbage_can.tar</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>サンプルプログラムarm_demo2.pyのダウンロード
+<ul>
+<li><a href="https://drive.google.com/file/d/1NNlen-7Gtqu2CQVVUkkMFV1_d-3MC-Dy/view?usp=sharing">ここをクリックし</a>ファイルを適当な場所に保存する。この例では~/Downloadsに保存する。</li>
+<li>端末を開き、以下のコマンドを実行する。
+<ul>
+<li>$ cd ~/ros_ws/src/sawyer_simulator/sawyer_sim_examples/scripts</li>
+<li>$ cp /mnt/c/arm_demo2.py .</li>
+<li>次のコマンドでarm_demo2.pyがあればコピー成功！
+<ul>
+<li>$ ls</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><b>実　行</b></p>
+<ul>
+<li>１番目の端末を開き、次のコマンドでgazeboを起動する。
+<ul>
+<li><code>$ cd ~/ros_ws</code></li>
+<li><code>$ ./intera.sh sim</code></li>
+<li><code>$ roslaunch sawyer_gazebo sawyer_world.launch electric_gripper:=true</code></li>
+</ul>
+</li>
+<li>2番目の端末を開く。必要があればキーボードの操作によりアームを好きな姿勢に移動する。次に、ロボットを稼働状態にしコントローラを起動する。
+<ul>
+<li>アームの移動（必要があれば）</li>
+<li><code>$ cd ~/ros_ws</code></li>
+<li><code>$ ./intera.sh sim</code></li>
+<li><code>$ rosrun intera_examples joint_position_keyboard.py</code></li>
+</ul>
+<ul>
+<li>移動できたらCtrlキーを押しながら、Cキーを押してキー操作のアプリを落とす。</li>
+<li>同じ端末で、次のコマンドによりロボットを稼働状態にする。
+<ul>
+<li><code>$ rosrun intera_interface enable_robot.py -e</code></li>
+</ul>
+</li>
+<li>次のコマンドでコントローラを起動する。
+<ul>
+<li><code>$ rosrun intera_interface joint_trajectory_action_server.py</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>3番目の端末を開き、次のコマンドでrviz（ROSの視覚化ツール）を起動する。
+<ul>
+<li><code>$ cd ~/ros_ws</code></li>
+<li><code>$ ./intera.sh sim</code></li>
+<li><code>$ roslaunch sawyer_moveit_config sawyer_moveit.launch electric_gripper:=true</code></li>
+</ul>
+</li>
+<li>4番目の端末を開き、次のコマンドでロボットアームを動かす。
+<ul>
+<li><code>$ cd ~/ros_ws</code></li>
+<li><code>$ ./intera.sh sim</code></li>
+<li><code>$ cd ~/ros_ws/src/sawyer_simulator/sawyer_sim_examples/scripts</code></li>
+<li><code>$ python arm_demo2.py</code></li>
+</ul>
+</li>
+</ul>
+<p><b>演習</b></p>
+<ul>
+<li>サンプルrプログラムの実行
+<ul>
+<li>上の実行手順に従い、サンプルプログラムを実行して動作を確認する。</li>
+</ul>
+</li>
+<li>自作プログラムの作成と実行方法
+<ul>
+<li>作成方法
+<ul>
+<li>サンプルプログラムarm_demo2.pyを以下のコマンドを使いgeditなどのエディタで開く。別名（例えば arm_my_demo.py)をつけて保存する。保存するディレクトリはarm_demo.pyと同じところにする。
+<ul>
+<li><code>$ cd ~/ros_ws</code></li>
+<li><code>$ ./intera.sh sim</code></li>
+<li><code>$ cd ~/ros_ws/src/sawyer_simulator/sawyer_sim_examples/scripts</code></li>
+<li><code>$ gedit arm_demo2.py</code></li>
+</ul>
+</li>
+<li>arm_my_demo.pyをエディタで開きファイルを編集・保存する。</li>
+</ul>
+</li>
+<li>実行方法
+<ul>
+<li>端末が開いていたら全閉じる。</li>
+<li>上の実行方法の１から３番目の端末での作業を実施する。</li>
+<li>新しい端末を開き、次のコマンドを実行する。一番最後のarm_my_demo.pyは適宜変更する。
+<ul>
+<li>$ cd ~/ros_ws</li>
+<li>$ ./intera.sh sim</li>
+<li>$ cd ~/ros_ws/src/sawyer_simulator/sawyer_sim_examples/scripts</li>
+<li>$ python arm_my_demo.py</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ハンズオン
+<ul>
+<li>デモプログラムを参考にテーブル上のブロック10個を黄色のゴミ箱に最低１個を入れるプログラムを作りなさい。</li>
+<li>ブロックの位置をずらしてもよい。ただし、黄色のゴミ箱の中や上にブロックを配置してはいけない。</li>
+<li><span class=""><b>ヒント：手先の位置姿勢を設定して実行しても”no motion plan”などと表示されてアームが動ない場合があります。それは可動域や干渉あるいは特異点などで、その位置姿勢に到達できないのです。その場合は、ロボットの初期姿勢を変更するか目標の位置と姿勢を変更するしかありません。</b></span></li>
+</ul>
+</li>
+</ul>
+<p><span class="">終わり</span></p>

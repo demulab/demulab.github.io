@@ -1,0 +1,146 @@
+---
+layout: post
+title: プログラミング言語：VS Code (VSCodium) の使い方
+date: 2020-09-29 10:02:42.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '17794'
+  views: '864'
+  the_page_main_category: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _wp_old_date: '2020-04-20'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/17792.html"
+---
+<p>この記事はKITロボティクス学科プログラミング言語用で、授業で配布したVSCodiumのポータブル環境用です。</p>
+<p>では、さっそくVSCodiumを使ってみましょう。</p>
+<p><strong>起　動</strong></p>
+<ul>
+<li>デスクトップに作ったVSCodiumのショートカットStart.cmdをダブルクリックして起動します。</li>
+</ul>
+<p><strong>プログラム（プロジェクト）の作り方</strong></p>
+<ul>
+<li>授業で使うVSCodiumはプロジェクト単位でプログラムを作成します。プログラム１個につき１プロジェクトを作成し、１つのフォルダを割り当てます。なぜ、１つのフォルダを割り当てるかというとプログラムをビルドすると実行ファイルができたり、そのプロジェクト用の設定ファイルが作成されるので、１つにまとめていた方が保守管理が楽なのです。</li>
+<li>ウインドウ上部にある「ファイル(F)」→「フォルダーをワークスペースに追加…」を選ぶ。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs3-6.png"><img class="aligncenter size-full wp-image-17794" src="{{ site.baseurl }}/assets/images/2020/09/vs3-6.png" alt="" width="990" height="620" /></a></li>
+<li>以下のウインドウが開くので。まず、「Cドライブ-&gt;cprog20-&gt;myprog」に移動する。既に、hello、sample1-1、testなどのフォルダーができている。ここに新しいプロジェクト名となるフォルダーを追加する。何もない部分にマウスのポインタを持っていき、右マウスボタンをクリックして「新規作成(X) ＞ フォルダー(F)」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs4-1.png"><img class="aligncenter size-full wp-image-17796" src="{{ site.baseurl }}/assets/images/2020/09/vs4-1.png" alt="" width="747" height="567" /></a></li>
+<li>好きなプロジェクト名のフォルダーを作る。この例ではsample2-1（この意味は教科書「やさしいC]のLesson2のsample1という意味）。フォルダーができたらそれを選択して追加をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs5-1.png"><img class="aligncenter size-full wp-image-17798" src="{{ site.baseurl }}/assets/images/2020/09/vs5-1.png" alt="" width="747" height="385" /></a></li>
+<li>VSCodiumの左欄に未設定（ワークスペース）sample2-1が表示される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs6-1.png"><img class="aligncenter size-full wp-image-17799" src="{{ site.baseurl }}/assets/images/2020/09/vs6-1.png" alt="" width="860" height="360" /></a></li>
+<li>次に未設定のワークスペースに先ほど作ったフォルダー名と同じ名前をつけ保存する。この例ではsample2-1。「ファイル」→「名前を付けてワークスペースを保存…」を選択する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs7-1.png"><img class="aligncenter size-full wp-image-17800" src="{{ site.baseurl }}/assets/images/2020/09/vs7-1.png" alt="" width="860" height="360" /></a></li>
+<li>ワークスペースを保存のウインドウが開くので、ファイル名にプロジェクト名と同じ名前を入力して保存をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs8-1.png"><img class="aligncenter size-full wp-image-17802" src="{{ site.baseurl }}/assets/images/2020/09/vs8-1.png" alt="" width="747" height="385" /></a></li>
+<li>VSCodiumの左欄の未設定が作成したワークスペース名になっていることがわかる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs9-1.png"><img class="aligncenter size-full wp-image-17803" src="{{ site.baseurl }}/assets/images/2020/09/vs9-1.png" alt="" width="860" height="360" /></a></li>
+<li>SAMPLE2-1(ワークスペース）の下にあるsample2-1にマウスのポインタを持っていき、その場で右マウスボタンをクリックし、その右に表示されている一番下の「Create Project from Template」をクリックする。（なお、Create Project from Templateが表示されるためにはProject Templatesの拡張機能をインストールし、設定する必要がある。授業で配布しているVSCodiumは既に設定済みである。）<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs10-1.png"><img class="aligncenter size-full wp-image-17805" src="{{ site.baseurl }}/assets/images/2020/09/vs10-1.png" alt="" width="989" height="419" /></a></li>
+<li>「C Language」が表示されるのでクリックする。これは授業用のテンプレート。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs11-2.png"><img class="aligncenter size-full wp-image-17806" src="{{ site.baseurl }}/assets/images/2020/09/vs11-2.png" alt="" width="954" height="412" /></a></li>
+<li>VSCodiumの左欄に.vscodeという設定用のディレクトリができているのがわかる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs12.png"><img class="aligncenter size-full wp-image-17807" src="{{ site.baseurl }}/assets/images/2020/09/vs12.png" alt="" width="954" height="412" /></a></li>
+</ul>
+<p><strong>プログラムを書き込むファイルの追加</strong></p>
+<ul>
+<li>プログラムを書き込むファイルを追加する。先ほどの作業と同じように左欄のsample2-1にマウスのポインタを持っていき右マウスボタンをクリックし、「新しいファイル」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs13.png"><img class="aligncenter size-full wp-image-17808" src="{{ site.baseurl }}/assets/images/2020/09/vs13.png" alt="" width="954" height="412" /></a></li>
+<li>ファイル名を入力する欄にプロジェクトと同じ名前で拡張子cを付ける。<span style="color: #ff0000;"><strong>C言語のファイルとわかるように必ず拡張子にcを付ける。</strong></span>この例ではsample2-1.c<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs14.png"><img class="aligncenter size-full wp-image-17809" src="{{ site.baseurl }}/assets/images/2020/09/vs14.png" alt="" width="954" height="412" /></a></li>
+<li>右欄にプログラムを打ち込んでいく。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs19.png"><img class="aligncenter size-full wp-image-17814" src="{{ site.baseurl }}/assets/images/2020/09/vs19.png" alt="" width="953" height="501" /></a></li>
+<li>プログラムを打ち終えたら保存する。保存の仕方は２とおりある。キー操作は速いのでお勧め。
+<ul>
+<li>キー操作：Ctrl + s (コントロールキーを押しながらsキーを押す）</li>
+<li>マウス操作：ファイル→保存<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs16.png"><img class="aligncenter size-full wp-image-17811" src="{{ site.baseurl }}/assets/images/2020/09/vs16.png" alt="" width="954" height="412" /></a></li>
+</ul>
+</li>
+</ul>
+<p><strong>コンパイル（ビルド）</strong></p>
+<ul>
+<li>授業のVSCodiumではコンパイラとしてオープンソースのgccを使っている。初めのうちはコマンド操作になれるためにターミナルを開きコマンドを実行してビルドする。</li>
+<li>「ターミナル」→「新しいターミナル」を選択する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs20.png"><img class="aligncenter size-full wp-image-17815" src="{{ site.baseurl }}/assets/images/2020/09/vs20.png" alt="" width="953" height="501" /></a></li>
+<li>下図の赤枠の部分にコマンドを打ち込む。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs21.png"><img class="aligncenter size-full wp-image-17816" src="{{ site.baseurl }}/assets/images/2020/09/vs21.png" alt="" width="953" height="501" /></a></li>
+<li><strong>コンパイル（ビルド）</strong>：次のコマンドを打ち込んでビルトする。
+<ul>
+<li><strong>gcc  ソースコード名（拡張子.cを忘れない）</strong>
+<ul>
+<li>この例では、gcc sample2-1.c<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs23.png"><img class="aligncenter size-full wp-image-17819" src="{{ site.baseurl }}/assets/images/2020/09/vs23.png" alt="" width="953" height="641" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ファイル表示</strong>：次のコマンドを打ち込んでファイルを表示する。a.exeがあれば成功！
+<ul>
+<li><strong>dir</strong><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs22.png"><img class="aligncenter size-full wp-image-17817" src="{{ site.baseurl }}/assets/images/2020/09/vs22.png" alt="" width="953" height="641" /></a></li>
+</ul>
+</li>
+</ul>
+<p><strong>実　行</strong></p>
+<ul>
+<li>次のコマンドを打ち込んで、以下のように表示されれば成功。
+<ul>
+<li>a.exe
+<ul>
+<li>エラーがでる場合は<strong> ./exe</strong>として、exeの前に<strong>.(ピリオド)</strong>と<strong>/(スラッシュ)</strong>を入れる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs23-1.png"><img class="aligncenter size-full wp-image-17821" src="{{ site.baseurl }}/assets/images/2020/09/vs23-1.png" alt="" width="953" height="641" /></a></li>
+</ul>
+</li>
+<li>なお、a.exeはWindowsの実行形式ファイルです。ファイル名aはコンパイルするときにファイル名を指定しなかったら規定のファイル名になった。ファイル名をしてしてコンパイルするときは以下のコマンドを使う。
+<ul>
+<li>gcc -o  実行ファイル名  ソースファイル名
+<ul>
+<li>例　gcc -o  sample2-1  sample2-1.c<br />
+なお、実行ファイル名に拡張子はつけず、ソースファイル名には.cを付けること。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/vs24.png"><img class="aligncenter size-full wp-image-17823" src="{{ site.baseurl }}/assets/images/2020/09/vs24.png" alt="" width="953" height="641" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>今回は少し長かったですが、慣れると簡単にできますよ。お疲れ様！</p>
+<p>&nbsp;</p>

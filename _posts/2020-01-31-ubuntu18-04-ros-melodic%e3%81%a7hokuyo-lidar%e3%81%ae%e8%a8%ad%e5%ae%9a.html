@@ -1,0 +1,135 @@
+---
+layout: post
+title: 'Ubuntu18.04: ROS MelodicでLidarの設定'
+date: 2020-01-31 18:26:26.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '15972'
+  views: '985'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_main_category: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/16658.html"
+---
+<p>KobukiベースのHappy RobotにはHokuyo Lidarを搭載しています。この回ではROS MelodicでのHokuyo Lidarの設定を学びます。HokuyoのLidarを搭載しない場合は次の回へ進んでください。</p>
+<p><strong>Kobukiのセットアップ</strong></p>
+<ul>
+<li>$ source  /opt/ros/melodic/setup.bash</li>
+<li>$ rosrun kobuki_ftdi create_udev_rules</li>
+</ul>
+<p><strong>Hokuyo Lidar設定</strong></p>
+<ul>
+<li>TurtlebotパッケージではHokuyo Lidar (UTM-30LX)の設定がないので追加する。<br />
+~/catkin_ws/src/turtlebot/turtlebot_description/urdf/turtlebot_properties.urdf.xacroに以下のコードを一番下の&lt;/robot&gt;の上に追加する。なお、コピペするとurdf の読み込みでエラーになるので、手で入力するか、以下のファイルを解凍してオリジナルのurdfディレクトリと置き換えてください。</p>
+<ul>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2019/08/urdf.zip">urdf.zip</a></li>
+</ul>
+</li>
+</ul>
+<pre class="brush:cpp;">&lt;!-- Urg Lidar --&gt;
+  &lt;joint name="laser" type="fixed"&gt;
+    &lt;origin xyz="0.13 0.00 0.1" rpy="0 0 0" /&gt;
+    &lt;parent link="base_link" /&gt;
+    &lt;child link="base_laser_link" /&gt;
+  &lt;/joint&gt;
+
+  &lt;link name="base_laser_link"&gt;
+    &lt;visual&gt;
+      &lt;geometry&gt;
+        &lt;box size="0.06 0.06 0.07" /&gt;
+      &lt;/geometry&gt;
+      &lt;material name="Black" /&gt;
+    &lt;/visual&gt;
+    &lt;inertial&gt;
+      &lt;mass value="0.000001" /&gt;
+      &lt;origin xyz="0 0 0" /&gt;
+      &lt;inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+        iyy="0.0001" iyz="0.0"
+        izz="0.0001" /&gt;
+    &lt;/inertial&gt;
+  &lt;/link&gt;</pre>
+<ul>
+<li style="text-align: justify;"> ~/catkin_ws/src/turtlebot/turtlebot_bringup/launch/3dsensor.launchの次の部分を変更する。<br />
+変更前：</p>
+<pre class="brush:cpp;"> &lt;arg name="scan_topic" default="scan"/&gt;</pre>
+<p>変更後:</p>
+<pre class="brush:cpp;"> &lt;arg name="scan_topic" default="kinect_scan"/&gt;
+ &lt;node name="laser_driver" pkg="urg_node" type="urg_node"&gt; &lt;param name="frame_id" value="base_laser_link" /&gt;&lt;/node&gt;</pre>
+</li>
+<li style="text-align: justify;">~/catkin_ws/src/turtlebot_apps/turtlebot_navigation/param/costmap_common_params.yamlの31行目のmin_obstacle_heightを0.05,32行目のmax_obstacle_heightを1.2に変更する．Hokuyo Lidarを低い位置に取り付けるため．この設定をしないと障害物回避をしないので悩むことになる．この設定では高さ0.05[m]以上1.2[m]以下の障害物を回避する。それ以外は回避しない。ロボットの高さやセンサの取り付け位置でこの値を変更する。
+<pre class="brush:cpp;"> 
+ scan:
+    data_type: LaserScan
+    topic: scan
+    marking: true
+    clearing: true
+    min_obstacle_height: 0.05
+    max_obstacle_height: 1.2
+</pre>
+</li>
+<li>urg nodeをインストールする。
+<ul>
+<li>$ sudo apt install ros-melodic-urg-node</li>
+</ul>
+</li>
+<li>udevの設定：一般ユーザはデフォルトではHokuyo Lidarのデバイスファイル/dev/ttyACM0にアクセスできないので以下のコマンドでアクセスできるようにできる。
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>$ sudo chmod u+rw /dev/ttyACM0</li>
+</ul>
+</li>
+<li>これを毎回実行するのは面倒なのでudevを設定する。</li>
+<li>udevデータベースからデバイスの情報を取得<br />
+$ udevadm info -n /dev/ttyACM0<br />
+各デバイスに固有な情報を探します。ここでは、idVendorとidProductを使います。lsusbコマンドでidを調べることができる。<br />
+/etc/udev/rules.d/60-cdc_acm.rulesというファイルを作成します。<br />
+中身は次のとおりです。なお、cdc_acmはUSBのドライバ名です。ここではarduinoもコンピュータに接続されているとします。接続されていない場合はttyACM1が含まれている行を削除してください。コンピュータを再起動するとデバイス名が固定され、ファイルにアクセスできるはずです。</li>
+</ul>
+</li>
+</ul>
+<pre class="brush:cpp;"> 
+KERNEL=="ttyACM*", ATTRS{idProduct}=="0000", SYMLINK+="ttyACM_URG", MODE="0666"
+KERNEL=="ttyACM*", ATTRS{idVendor}=="2a03", ATTRS{idProduct}=="0043", SYMLINK+="ttyACM_ARDUINO", MODE="0666"
+</pre>
+</li>
+</ul>
+<p>以上</p>

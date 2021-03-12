@@ -1,0 +1,33 @@
+---
+layout: post
+title: 'RoboCup@Home: ナビゲーションテスト'
+date: 2016-03-30 22:52:15.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  views: '321'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/12642.html"
+---
+<p><a href="http://demura.net/athome/12642.html/attachment/nav3" rel="attachment wp-att-12645"><img src="{{ site.baseurl }}/assets/images/2016/03/nav3.jpg" alt="nav3" width="960" height="540" class="aligncenter size-full wp-image-12645" /></a><a href="http://demura.net/athome/12642.html/attachment/nav1" rel="attachment wp-att-12643"><img src="{{ site.baseurl }}/assets/images/2016/03/nav1-300x169.jpg" alt="nav1" width="253" height="142" class="wp-image-12643 alignnone" /></a> <a href="http://demura.net/athome/12642.html/attachment/nav2" rel="attachment wp-att-12644"><img src="{{ site.baseurl }}/assets/images/2016/03/nav2-300x169.jpg" alt="nav2" width="253" height="143" class="wp-image-12644 alignnone" /></a>RoboCup@Homeのルール説明をします。@Homeは家庭での暮らしに役に立つロボットの研究開発を促進するためのプロジェクトで、その技術レベルを評価する競技会が開催されています。ジャパンオープン＠Home Educationでは、以下の４種目が開催されました。</p>
+<ol>
+<li>ナビゲーションテスト</li>
+<li>音声認識テスト</li>
+<li>レストラン</li>
+<li>ファイナル（自由デモ・プレゼンテーション）</li>
+</ol>
+<p>ここでは、ナビゲーションテストを紹介します。ナビゲーションテストはその名のとおり、事前に決められた幾つかの経由点を順番に通り、途中で通路がふさがれて経路を再計画したり、経由点を人が取り囲んでいる状態で、人を認識し、どいてもらうよう発話したり、経由点に人が立っていて、その人を追跡して指定されていない経由点へ行き到着したら、音声指示により元の経由点の戻り、最後は出口から会場を退出する一連の動作を競います。評価方法は、進んだ経由点の数や決められたタスクをこなした数による点数制です。</p>
+<p>WinKIT@DKTチームのロボットMiniは、ROSで動いており、ナビゲーションにはmove_base、人の追跡には、下に取り付けてあるHokuyoの２次元レーザスキャナで人の足を検出するプログラムを実装しています。</p>
+<p>なお、ジャパンオープン2016では、後半の人の後をついていくタスク時に、歩行者についていけずに失敗になりました。Kobukiの最高速度は0.7 [m/s]なので、ルールにどおりに自然に歩かれると追跡が困難です。昨年まではゆっくり歩いていましたが、今年はルールどおり厳格になりました。今まで考えていなかったのですが、見失ったときに歩行者を探すような探索プログラムの追加が必要なことがわかりました。世界大会までに実装します。</p>

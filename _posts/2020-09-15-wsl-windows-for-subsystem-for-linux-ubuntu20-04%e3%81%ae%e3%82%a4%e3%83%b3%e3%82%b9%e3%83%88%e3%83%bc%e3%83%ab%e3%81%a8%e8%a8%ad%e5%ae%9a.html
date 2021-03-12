@@ -1,0 +1,121 @@
+---
+layout: post
+title: 'WSL: Windows for Subsystem for Linux (Ubuntu20.04)のインストールと設定'
+date: 2020-09-15 18:13:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '19317'
+  views: '940'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/pdpractice/19314.html"
+---
+<p>Windows for Subsystem for Linux (以下、WSLと表記)のインストールとメモ。PD実践のシミュレータはWSL2では動かないので必ずWSLをインストールすること。</p>
+<ul>
+<li> バージョンの確認
+<ul>
+<li>「スタートメニュー→歯車アイコン（設定）→システム→バージョン情報」を確認しWindowsの1903以上なら良い。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/version.png"><img class="aligncenter wp-image-16106 size-full" src="{{ site.baseurl }}/assets/images/2020/09/version.png" alt="" width="265" height="157" /></a><br />
+バージョンが低い場合は「スタートメニュー→歯車アイコン（設定）→更新とセキュリティ」から更新する。なお、更新作業は時間がかかり（私の環境では１時間程度かかった）、途中で作業を中断し電源を切れないので時間的に余裕がある場合に実施すること。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/windows_update.png"><img class="aligncenter size-large wp-image-16107" src="{{ site.baseurl }}/assets/images/2020/09/windows_update-1024x686.png" alt="" width="1024" height="686" /></a></li>
+</ul>
+</li>
+<li>Windows Subsystem for Linuxの有効化
+<ul>
+<li>スタートメニュ→Windowsシステムツール→コントロールパネル→プログラム→プログラムと機能→Windowsの機能の有効化または無効化をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/validation.png"><img class="aligncenter size-full wp-image-16109" src="{{ site.baseurl }}/assets/images/2020/09/validation.png" alt="" width="954" height="594" /></a></li>
+<li>「Linux用Windowsサブシステム」と「仮想マシン プラットフォーム」にチェックを入れ、「OK」をクリックする。「Linux用Windowsサブシステム」がなく「Windows Subsystem for Linux」がある場合は、それと「仮想マシン プラットフォーム」にチェックを入れる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/wsl-1.png"><img class="aligncenter size-full wp-image-19479" src="{{ site.baseurl }}/assets/images/2020/09/wsl-1.png" alt="" width="455" height="811" /></a></li>
+<li>再起動するように聞かれるので再起動する。</li>
+</ul>
+</li>
+<li>開発者モードの有効化
+<ul>
+<li>再起動後、スタートメニュー→「設定」→「更新とセキュリティ」と進み、左メニューの「開発者向け」をクリックする。「開発者向け」にある開発者モードをオンにする。セキュリティリスクにさらされるなど注意されるが、「はい」をクリックして開発者モードを有効にする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_設定_2020-9-15_17-55-35_No-00.png"><img class="aligncenter size-large wp-image-19316" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_&#35373;&#23450;_2020-9-15_17-55-35_No-00-1024x722.png" alt="" width="1024" height="722" /></a></li>
+</ul>
+</li>
+<li> Ubuntuをストアからインストール
+<ul>
+<li>スタートメニューの検索窓に「store」と入力すると「Microsoft Store」と表示されるのでそれをクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0036.png"><img class="aligncenter size-full wp-image-15069" src="{{ site.baseurl }}/assets/images/2020/09/No-0036.png" alt="" width="413" height="689" /></a></li>
+</ul>
+</li>
+<li>「検索」に「Ubuntu」と入力して、Ubuntu 20.04LTSを選択しクリックする。下の画面にならない場合は「検索」にUbuntuと入力する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_Microsoft-Store_2020-9-15_18-2-46_No-00.png"><img class="aligncenter size-large wp-image-19317" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_Microsoft-Store_2020-9-15_18-2-46_No-00-1024x779.png" alt="" width="1024" height="779" /></a></li>
+<li>「入手」をクリックする。</li>
+<li>入手が終わると次の画面になるので「起動」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_Microsoft-Store_2020-9-15_18-4-18_No-00.png"><img class="aligncenter size-large wp-image-19318" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_Microsoft-Store_2020-9-15_18-4-18_No-00-1024x779.png" alt="" width="1024" height="779" /></a></li>
+<li>次のウインドウになるので少し待つ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0041-1.png"><img class="aligncenter wp-image-15079 size-full" src="{{ site.baseurl }}/assets/images/2020/09/No-0041-1.png" alt="" width="979" height="296" /></a></li>
+<li><span style="color: #ff0000;"><strong>ユーザ名とパスワードを聞かれるので必ず入力すること。</strong></span>これを入力しないで次の作業に進むとユーザがrootになってしまい、今後の作業に支障がでます。なお、ユーザ名とパスワードに全角は使えないので半角英数字を使うこと。ユーザ名、パスワードは今後も使うので忘れないこと。<span style="color: #ff0000;">なお、パスワードを入力しても何も表示されないので、実際に入力できているか不安になるかもしれませんがそれで正常です。これで悩んでメールを送ってくれた学生がいました。この場合は、悩まなくてもよいのです。</span><br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0042.png"><img class="aligncenter wp-image-15080 size-full" src="{{ site.baseurl }}/assets/images/2020/09/No-0042.png" alt="" width="979" height="296" /></a></li>
+<li>時間帯の設定。標準では、日本の時間帯ではないので以下のコマンドを端末にコピペする。パスワードを聞かれるので入力する。なお、$はプロンプト（入力できる状態を示す記号）なのでコピペしない。
+<ul>
+<li>$ <code>sudo dpkg-reconfigure tzdata</code><br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0044.png"><img class="aligncenter wp-image-15082 size-full" src="{{ site.baseurl }}/assets/images/2020/09/No-0044.png" alt="" width="979" height="296" /></a></li>
+<li>次のウインドウになるので「Asia」を選択して、Tabキーを押して「OK」を選択してEnterキーを押す。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/time_zone.png"><img class="aligncenter size-full wp-image-16114" src="{{ site.baseurl }}/assets/images/2020/09/time_zone.png" alt="" width="979" height="512" /></a></li>
+<li>「T」を押すとTaipeに飛ぶので、下矢印キーでTokyoを選択し、Enterキーを押す。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0047.png"><img class="aligncenter size-full wp-image-15086" src="{{ site.baseurl }}/assets/images/2020/09/No-0047.png" alt="" width="979" height="296" /></a></li>
+<li>dateコマンドを端末に入力して正しい時間帯に(JST)なっていたら終わり。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0048.png"><img class="aligncenter size-full wp-image-15088" src="{{ site.baseurl }}/assets/images/2020/09/No-0048.png" alt="" width="979" height="296" /></a></li>
+</ul>
+</li>
+<li>ダウンロード先の変更。標準では海外からダウンロードするようになっているので、時短するために以下のコマンドを端末にコピペして実行し、国内に変更する。
+<ul>
+<li>$ <code>sudo sed -i 's/\/archive\.ubuntu/\/jp\.archive\.ubuntu/' /etc/apt/sources.list</code><br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0049.png"><img class="aligncenter size-full wp-image-15090" src="{{ site.baseurl }}/assets/images/2020/09/No-0049.png" alt="" width="907" height="103" /></a></li>
+</ul>
+</li>
+<li>次のコマンドでアップデートする。
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt upgrade -y</code></li>
+</ul>
+</li>
+<li>必要なパッケージをインストールする。
+<ul>
+<li>$ <code>sudo apt-get install language-pack-ja</code></li>
+<li>$ <code>sudo update-locale LANG=ja_JP.UTF-8</code></li>
+<li>$ <code>sudo apt-get install git build-essential</code></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

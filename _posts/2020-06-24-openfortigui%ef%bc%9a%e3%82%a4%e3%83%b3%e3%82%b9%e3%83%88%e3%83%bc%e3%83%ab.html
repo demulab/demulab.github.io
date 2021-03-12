@@ -1,0 +1,133 @@
+---
+layout: post
+title: OpenFortiVPN：LinuxでのVPN接続アプリ
+date: 2020-06-24 10:00:11.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '17917'
+  views: '820'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _wp_old_date: '2020-06-23'
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/17915.html"
+---
+<p>LinuxでのVPN接続アプリを探している方も多いと思います。<br />
+特に、WindowsでFortiClientを使っている方に、Fortigate VPN-ハードウェアに接続するオープンソースのLinuxクライントアプリOpneFortiVPNとそのGUIであるOpenFortiGUI を紹介します。</p>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li><a href="https://hadler.me/linux/openfortigui/">OpenFortiGUI, Bits and Bytes</a></li>
+<li><a href="https://github.com/adrienverge/openfortivpn">openfortivpn</a></li>
+</ul>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Ubuntu18.04</li>
+</ul>
+<p><strong>準　備</strong></p>
+<ul>
+<li>Qt5とその関連パッケージが必要なのでインストールする。
+<ul>
+<li>$ sudo apt install qtbase5-dev qttools5-dev-tools qt5-default qt5keychain-dev</li>
+</ul>
+</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>OpenFortiVpn
+<ul>
+<li>$ sudo apt install openfortivpn</li>
+</ul>
+</li>
+<li> OpenFortiGUI
+<ul>
+<li> バイナリのインストール。以下のdebファイルをインストールする。
+<ul>
+<li><a href="https://apt.iteas.at/iteas/pool/main/o/openfortigui/openfortigui_0.8.2-1_amd64_bionic.deb">OpenFortiGUI 0.8.2 64bit</a></li>
+</ul>
+</li>
+<li> ソースからのインストール。次のコマンドを実行する。
+<ul>
+<li>$ cd ~/src</li>
+<li>$ git clone https://github.com/theinvisible/openfortigui.git</li>
+<li>$ cd openfortigui</li>
+<li>$ git submodule init</li>
+<li>$ git submodule update</li>
+<li>$ qmake</li>
+<li>$ make</li>
+<li>$ cd openfortigui</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>実　行</strong></p>
+<ul>
+<li>$ <code>./openfortigui </code></li>
+</ul>
+<p><strong>設　定</strong></p>
+<ul>
+<li>ファイル→セットアップウイザード→OpenFortiGUI初期設定（AES鍵の設定）→完了</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/of1.png"><img class="aligncenter size-full wp-image-17917" src="{{ site.baseurl }}/assets/images/2020/06/of1.png" alt="" width="640" height="504" /></a></p>
+<ul>
+<li>追加→VPN→VPNの設定
+<ul>
+<li>名前、VPNサーバー、ユーザ、パスワードなどを設定する</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/of2.png"><img class="aligncenter size-full wp-image-17916" src="{{ site.baseurl }}/assets/images/2020/06/of2.png" alt="" width="700" height="664" /></a></p>
+<p><strong>使い方</strong></p>
+<ul>
+<li>OpenFortiGUIを起動する。
+<ul>
+<li>openfortigui &amp;</li>
+</ul>
+</li>
+<li>接続したいVPNをクリックして選択肢、「接続」をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/06/openforti2-1.png"><img class="size-full wp-image-18284 aligncenter" src="{{ site.baseurl }}/assets/images/2020/06/openforti2-1.png" alt="" width="760" height="336" /></a></p>
+<ul>
+<li>ログイン画面になるので、ユーザー名とパスワードを入力して「送信」をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/06/openforti3.png"><img class="aligncenter size-full wp-image-18285" src="{{ site.baseurl }}/assets/images/2020/06/openforti3.png" alt="" width="450" height="324" /></a></p>
+<p>&nbsp;</p>
+<ul>
+<li>接続されると、状態が「接続済み」に変わる。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/06/openforti5.png"><img class="size-full wp-image-18286 aligncenter" src="{{ site.baseurl }}/assets/images/2020/06/openforti5.png" alt="" width="760" height="336" /></a></p>
+<p>終わり</p>

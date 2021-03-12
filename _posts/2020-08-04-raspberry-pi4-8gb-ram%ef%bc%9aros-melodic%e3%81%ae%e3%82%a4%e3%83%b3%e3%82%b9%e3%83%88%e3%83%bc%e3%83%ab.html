@@ -1,0 +1,108 @@
+---
+layout: post
+title: Raspberry Pi4 (8GB RAM)：ROS Melodicのインストール
+date: 2020-08-04 12:16:27.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '18082'
+  views: '312'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/18578.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2020/08/603px-Melodic_Morenia.png" /></p>
+<p>Ubuntu18.04インストール済みのRaspberry Pi4 (8GB RAM)にROS Melodicのインストールメモです。<br />
+RAM 4GBとインストールに使ったイメージが違うので、ROS Melodicをインストールしたときに依存関係でエラーがでました。</p>
+<p>Raspberry Pi4はCPUにArm Cortex-A72 ARMv8 64bitを使用していますが、インストールにおいてIntel系のPCとの違いはありませんでした。この記事はROS のオフィシャルウェブサイトの次の日本語記事を簡略化しています。詳しい説明は次のリンクをご覧ください。なお、firewall外の環境を前提にしています。</p>
+<ul>
+<li><a href="http://wiki.ros.org/melodic/Installation/Ubuntu">ROS Melodic の Ubuntu へのインストール</a></li>
+</ul>
+<p>----------------------------------------------------------------------------------------------</p>
+<p>１．準備</p>
+<p style="padding-left: 30px;">(1) 端末(ターミナル、terminal)を開いて、以下のコマンドをコピペして、Enterキーを押し実行する。パスワードを聞かれたら入力する。</p>
+<ul>
+<li>$ <code>sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" &gt; /etc/apt/sources.list.d/ros-latest.list'</code></li>
+</ul>
+<p style="padding-left: 30px;"> (2)  同様にして以下のコマンドを実行する。</p>
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt install curl</code></li>
+<li>$ <code>curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&amp;search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | sudo apt-key add -</code></li>
+</ul>
+<p>2. インストール</p>
+<p>(1)  以下のコマンドでインストール先をアップデートし、ソフトウェアを最新バージョンにする。</p>
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt upgrade</code></li>
+</ul>
+<p>(2)  ROS Melodicのインストール</p>
+<ul>
+<li>$ <code>sudo apt install ros-melodic-desktop-full</code></li>
+<li>私の環境では、以下のパッケージについて依存関係でエラーがでた。エラーが出ない場合は次の初期設定に進む。
+<ul>
+<li>libgl-mesa-dev</li>
+<li>libgles2-mesa-dev</li>
+<li>libglvnd-dev</li>
+</ul>
+</li>
+<li>「’apt --fix-broken install'を実行してみてください」とメッセージが出るので実行する。
+<ul>
+<li><code>$ sudo apt --fix-broken install</code></li>
+</ul>
+</li>
+</ul>
+<p>3. 初期設定</p>
+<p style="padding-left: 30px;">(1)  以下のコマンドでrosdepをインストール、初期化する。rosdepはシステム依存するソフトウェアをインストールするツール。1行目を入力したらEnterキーを押し、2行目を入力したらEnterキーを押す。rosdepはコンパイルを楽にするツール。<span style="color: #ff0000;"><strong>以下の作業はProxy環境下では失敗するので、スマホのデザリングや自宅など学外ネットワークで実施すること。</strong></span></p>
+<ul>
+<li>$ <code>sudo apt install python-rosdep</code></li>
+<li>$ <code>sudo rosdep init</code></li>
+<li>$ <code>rosdep update</code></li>
+</ul>
+<p style="padding-left: 30px;">(2) 環境設定。楽をするための設定。以下のコマンドを端末にコピペしてEnterキーを押す。1行ずつ実施すること。</p>
+<ul>
+<li>$ <code>cd</code></li>
+<li>$ <code>echo "source /opt/ros/melodic/setup.bash" &gt;&gt; ~/.bashrc</code></li>
+<li>$ <code>source ~/.bashrc</code></li>
+</ul>
+<p style="padding-left: 30px;">(3) rosinstall 。インストールが簡単になるツールを以下のコマンドでインストールする。</p>
+<ul>
+<li>$ <code>sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential</code></li>
+</ul>
+<p>終わり</p>

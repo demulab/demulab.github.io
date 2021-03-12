@@ -1,0 +1,127 @@
+---
+layout: post
+title: ROS×Python勉強会： cv_bridge
+date: 2015-12-03 15:33:36.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '10154'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/12469.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/12/opencv.png"><img src="{{ site.baseurl }}/assets/images/2015/12/opencv.png" alt="opencv" width="964" height="269" class="aligncenter size-full wp-image-12470" /></a></p>
+<p>この記事はROS×Python勉強会用です。今回はcv_bridgeを使い、ROSでOpenCVを使いxtionのカメラから取得した画像を処理します。<br />
+この記事は、以下のROSチュートリアルと「ROSで始めるロボットプログラミング、小倉著」を参考にしています。</p>
+<ul>
+<li><a href="http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython">Converting between ROS images and OpenCV images (Python)</a></li>
+</ul>
+<p>ソース：ROSのチュートリアルと「ROSで始めるロボットプログラミング」をベースに改変しています。</p>
+<pre class="brush:python;"> 
+#!/usr/bin/env python                                                                        
+# -*- coding: utf-8 -*-                                                                      
+
+import roslib
+roslib.load_manifest('cv_bridge_tutorial')
+import sys
+import rospy
+import cv2
+import numpy as np
+from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+
+class image_converter:
+  def __init__(self):
+    self.image_pub = rospy.Publisher("image_topic", Image, queue_size=1)
+    self.bridge = CvBridge()
+    self.image_sub = rospy.Subscriber("/camera/rgb/image_raw",Image,self.callback)
+
+  def callback(self,data):
+    try:
+      cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+    except CvBridgeError as e:
+      print(e)
+
+    # RGB表色系からHSV表色系に変換                                                           
+    hsv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
+
+    # しきい値の設定（ここでは赤を抽出）                                                     
+    color_min = np.array(&#91;150,100,150&#93;)
+    color_max = np.array(&#91;180,255,255&#93;)
+
+    # マスク画像を生成                                                                       
+    color_mask = cv2.inRange(hsv_image, color_min, color_max);
+    # 画像配列のビット毎の倫理席。マスク画像だけが抽出される。                               
+    cv_image2  = cv2.bitwise_and(cv_image, cv_image, mask = color_mask)
+
+    # RGBからグレースケールへ変換                                                            
+    gray_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+    cv_image3  = cv2.Canny(gray_image, 15.0, 30.0);
+
+ # 円を描画                                                                               
+    color  = (0, 255, 0)
+    center = (100, 100)
+    radius = 20
+    cv2.circle(cv_image2, center, radius, color)
+
+    # ウインドウのサイズを変更                                                               
+    cv_half_image = cv2.resize(cv_image,   (0,0),fx=0.5, fy=0.5)
+    cv_half_image2 = cv2.resize(cv_image2, (0,0),fx=0.5,fy=0.5);
+    cv_half_image3 = cv2.resize(cv_image3, (0,0),fx=0.5,fy=0.5);
+
+    # ウインドウ表示                                                                         
+    cv2.imshow("Origin Image", cv_half_image)
+    cv2.imshow("Result Image", cv_half_image2)
+    cv2.imshow("Edge Image",   cv_half_image3)
+    cv2.waitKey(3)
+   
+    try:
+      self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image2, "bgr8"))
+    except CvBridgeError as e:
+      print(e)
+
+def main(args):
+  ic = image_converter()
+  rospy.init_node('image_converter', anonymous=True)
+  try:
+    rospy.spin()
+  except KeyboardInterrupt:
+    print("Shutting down")
+  cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    main(sys.argv)
+</pre>
+<p>準備</p>
+<ul>
+<li>$ cd ~/catkin_ws/src</li>
+<li>$ catkin_create_pkg  cv_bridge_tutorial sensor_msgs opencv2 cv_bridge rospy std_msgs</li>
+<li>$ cd cv_bridge_tutorial</li>
+<li>$ mkdir  scripts</li>
+<li>$ cd scripts</li>
+<li>$ gedit cv_bridge_tutorial.py<br />
+上のソースコードをgeditにコピペして保存する。</p>
+<ul>
+<li>cv_bridge_tutorialディレクトリ以下をtarで固めたものは<a href="http://demura.net/wordpress/wp-content/uploads/2015/12/cv_bridge_tutorial.tgz">これcv_bridge_tutorial.tgz</a></li>
+</ul>
+</li>
+<li>$ chmod u+x cv_bridge_tutorial.py</li>
+</ul>
+<p>実行方法</p>
+<ul>
+<li>$ roslaunch openni2_launch openni2.launch</li>
+<li>$ rosrun cv_bridge_tutorial  cv_bridge_tutorial.py</li>
+</ul>
+<p>終わり</p>

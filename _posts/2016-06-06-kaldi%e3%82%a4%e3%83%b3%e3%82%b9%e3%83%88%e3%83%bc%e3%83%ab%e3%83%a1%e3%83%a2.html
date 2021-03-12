@@ -1,0 +1,87 @@
+---
+layout: post
+title: Kaldiインストールメモ
+date: 2016-06-06 15:05:11.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup
+tags: []
+meta:
+  views: '2461'
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/robocup/12912.html"
+---
+<p>音声認識エンジンKaldi関連プログラムのインストールメモ</p>
+<p>０．準備<br />
+$ sudo apt-get install build-essential gfortran libgfortran3 libblas-dev libatlas-base-dev cython zlib1g-dev<br />
+automake libtool autoconf</p>
+<p>$ sudo wget http://distfiles.macports.org/openfst/openfst-1.3.4.tar.gz</p>
+<p>1. Kaldiのインストール<br />
+端末を開き、以下のコマンドを実行する。<code><br />
+$ cd ~/src<br />
+$ git clone https://github.com/kaldi-asr/kaldi.git</code></p>
+<p>2. 関連ライブラリのインストール<br />
+$ cd ~/src/kaldi/src/tools<br />
+$ ./extras/check_dependencies.sh<br />
+$ sudo wget http://distfiles.macports.org/openfst/openfst-1.3.4.tar.gz<br />
+$ tar xvzf openfst-1.3.4.tar.gz<br />
+$ cd openfst-1.3.4/src/include/fst<br />
+$ patch -p0 -N &lt; ../../../../openfst-1.3.4.patch<br />
+$ cd ~/src/kaldi/src/tools<br />
+$ ln -s openfst-1.3.4  openfst<br />
+$ cd openfst<br />
+$ ./configure --enable-static=no<br />
+$ make<br />
+$ sudo make install<br />
+$ cd ~/src/kaldi/tools/extras/openfst-1.3.4/src/lib<br />
+$ cp -a /usr/local/lib/libfst.*   .<br />
+$ cp -a /usr/local/lib/libfstscript.*  .</p>
+<p>3. Kaldiのビルド</p>
+<p>$ ~/src/kaldi/src<code><br />
+$ ./configure --shared<br />
+</code>atlasやopenfstのヘッダーファイルやライブラリがないと怒られたら、configureファイルを開いて該当箇所を探し、オプションで次のように指定する。<br />
+$ ./configure --shared --fst-root=../tools/extras/openfst-1.3.4/src  --atlas-root=../tools/extras/ATLAS</p>
+<p>上のコマンドでkaldi.mkファイルが生成されるので、その中のCXXFLAGSの$(EXTRA_CXXFLAGS)の後に-O3 -DNDEBUG -ldlを挿入し保存する。該当部分は下図のようになる。<br />
+<a href="http://demura.net/robocup/12912.html/attachment/cxx" rel="attachment wp-att-12915"><img src="{{ site.baseurl }}/assets/images/2016/06/cxx.png" alt="cxx" width="685" height="177" class="aligncenter size-full wp-image-12915" /></a><br />
+<code><br />
+引き続き、同じディレクトリで以下のコマンドを実行する。<br />
+$ make depend -j 4<br />
+$ make -j 4<br />
+$ make ext -j 4<br />
+</code><br />
+私の環境core i7-4500U、memory 8GBでコンパイルに1時間ぐらい要した。</p>
+<p>2. kaldi-gstreamer-serverのインストール<br />
+<code><br />
+$ sudo pip install tornado<br />
+$ sudo pip install --upgrade tornado<br />
+$ sudo pip install ws4py==0.3.2<br />
+$ cd ~/src<br />
+$ git clone https://github.com/alumae/kaldi-gstreamer-server.git<br />
+$ cd ~/src/kaldi-gstreamer-server/test/models<br />
+$ ./download-tedlium-nnet2.sh </code></p>
+<p>3. kaldinnet2onlinedecoderのインストール<br />
+<code><br />
+$ cd ~/src<br />
+$ git clone https://github.com/alumae/gst-kaldi-nnet2-online.git<br />
+$ sudo apt-get install gstreamer1.0-plugins-bad gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-pulseaudio gstreamer1.0-plugins-ugly gstreamer1.0-tools libgstreamer1.0-dev<br />
+$ sudo apt-get install libjansson-dev<br />
+$ cd ~/src/gst-kaldi-nnet2-online/src<br />
+Makefileの中をKALDI_ROOT=/home/demulab/src/kaldi<br />
+と書き換える.<br />
+$ make depend<br />
+$ make<br />
+$ cp -a libgstkaldionline2.so ~/src/kaldi/src/gst-plugin/.<br />
+$ cd<br />
+.bashrcの最後に以下を追加する。<br />
+export GST_PLUGIN_PATH=~/src/gst-kaldi-nnet2-online/src<br />
+</code></p>

@@ -1,0 +1,50 @@
+---
+layout: page
+title: 8. ERPとCFM
+date: 2008-10-06 21:55:58.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  _aioseop_keywords: Open Dynamics Engine
+  _aioseop_title: ERP and CFM
+  syntaxhighlighter_encoded: '1'
+  views: '8455'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode8"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2008/10/sample4a.jpg" alt="sample4a" title="sample4a" width="224" height="217" /></p>
+<p>ODE (Open Dynamics  Engine) 初級講座の第８回目です。</p>
+<p>今回はＯＤＥを使ううえで覚えておかなければならないパラメータERP (Error Reduction Parameter，ジョイント誤差修正パラメータ)とCFM（Constraint Force Mixing，拘束力混合パラメータ）について説明します。</p>
+<p><span style="color: #0000ff;"><strong>1. ERP (Error Reduction Parameter)</strong></span></p>
+<p>ERPはジョイントの誤差を修正するパラメータです。シミュレーションを繰り返していくと、ジョイントの中心が計算誤差などでずれていきます。それを修正 するのがERPで０以上１以下の値をとります。０は誤差を全く修正しないのに対し、1は次のステップで誤差を０に修正します。推奨値は0.1から0.8となっ ていますが、デフォルト値（規定値）は0.2です。今までのサンプルプログラムでは設定していなかったのでERPは0.2として計算されています。ERPを１に設定することは、あまりお勧めできません。</p>
+<p>ERPを設定する場合は以下のAPIを使います。なお、これはグローバル（大域的）に働き全てのジョイントの誤差を修正します。</p>
+<ul>
+<li><strong>dWorldSetERP(dWorldID, dReal erp)</strong><br />
+ここで、dWorldIDはワールドのＩＤ番号、erpは0.0から1.0までの実数となります。</li>
+</ul>
+<p>では、実習としてdWorldSetERP(world, 0.0);を<a href="http://demura.net/wordpress/wp-content/uploads/2008/09/sample3-080929.zip">sample3</a>のdWorldSetGravityの下に挿入して実行してみてください。ERPが０の場合はジョイントのずれを修正しないので上図のようにバラバラ事件が発生します。</p>
+<p><span style="color: #0000ff;"><strong>2. CFM （Constraint Force Mixing）</strong></span></p>
+<p>次に、もう一つのODE特有なパラメータCFM（Constraint Force Mixing）について説明します。日本語には訳しづらいですが直訳すると拘束力混合パラメータとなります。</p>
+<p>拘束には 大きく分けて<span style="color: #990000;"><strong>ハード(hard)拘束</strong></span>と<span style="color: #990000;"><strong>ソフト(soft)拘束</strong></span>の ２種類あります。ハード拘束では拘束条件を律儀に必ず守らなければいけません。一方、ソフト拘束は融通がきいて多少のずれはＯＫなのです。一般的にはハー ド拘束が多いのですが、ODEではCFMを導入することによりソフト拘束となります。CFMが0のときはハード拘束、大きくなるに従いソフト拘束になりま す。</p>
+<p>また、ODEでは拘束とジョイントを同じ意味で使う場合が多いのでジョイントを例に挙げると、ハード拘束ではジョイントの拘束条件を一切破ってはい けません。 つまり、ジョイントの回転軸の位置や向きが結合されている２つのリンクが少しもずれてはいけません。一方、ソフト拘束では多少関節中心や軸の向きがずれて もよいので物理的には生物のように柔らかい関節をシミュレート可能です。</p>
+<p>なお、前回のERPと今回のCFMを 使うことによってバネ・ダンパシステムのシミュレートも可能です。ヒューマノイドのシミュレーションで地面と足の接触をバネ・ダンパモデルとする場合が多いので、そういったシミュレーションもＯＤＥで十分可能です。詳しくは<a title="ODE Manual" href="http://ode.org/ode-latest-userguide.html" target="_self">ODEマニュアル</a>をご覧ください。</p>
+<p>次に、CFMの具体的な使い方を説明します。</p>
+<p>CFMを設定する場合は以下のAPIを使います。なお、これはグローバルに働き全てのジョイントに作用します。単精度の場合のCFMのデフォルト値は10E-5、倍精度の場合は10E-10となります。</p>
+<ul>
+<li><strong>dWorldSetCFM(dWorldID, dReal cfm)</strong><br />
+ここで、dWorldIDはワールドのＩＤ番号、cfmはCFMの値。</li>
+</ul>
+<p>では、実習としてdWorldSetCFMを先ほど修正したsample3のWorldSetERP の下の行に挿入し、cfmの値をいろいろ変更して遊んでみてください。CFMの値を大きくするとジョイントが柔らかくなります。小さくする場合は０が最小 でこの場合はハード拘束となります。CFMが負の値はシステムが不安定になるので止めてください。</p>
+<p>なお、CFMにはシミュレーションを安定させる働きがありますので、物体の挙動がおかしな場合は値を少しずつ大きくすることをお勧めしますが、通常の用途では大きい場合でも1e-3（10の-3乗)程度が良いでしょう。大きすぎるとスライムのように柔らかくなりすぎます。</p>
+<p>では、また次回。</p>

@@ -1,0 +1,147 @@
+---
+layout: post
+title: ODE講座13：３関節マニピュレータ
+date: 2006-06-01 19:45:49.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1808'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/285.html"
+---
+<p> <img title="3関節　マニピュレータ" src="{{ site.baseurl }}/assets/images/2006/06/armMini.jpg" border="0" alt="3関節　マニピュレータ" align="middle" /><br />
+<strong>３関節マニピュレータのシミュレータ　（ソースコードはたった100行)</strong></p>
+<p>５月２７，２８日と早稲田大学で開催されたRobomec06に参加しました．Robomecは日本機械学会ロボットメカトロニクス部門が主催する発表者約８００名というマンモスな講演会です．私もODE(Open Dynamics Engine)で開発したロボット教育教材について発表したところこのウェブサイトの読者の方とお会いできてハッピーな気分になりました．</p>
+<p> さて，フリーの物理計算エンジンODE講座は２月５日ぶりの更新となりました．その間，工学設計Ⅲ（卒業研究に相当）の指導，本の素原稿を出版社に提出，そのフィードバック，RoboCup Japan Open，ODEを使用した講義の開講，RoboCup世界大会への準備などいろいろなことがあり更新をさぼっていました．</p>
+<p>今回の講座ではRobomecの予稿に掲載した３関節マニピュレータロボットのソースコードを掲載します（コメントを補足しています）．これはODEを使うと<strong>「たった１００行でこのようなシミュレータができるんです．」</strong>というプログラムなので衝突計算部分は省略しています．運動学や逆運動学を習った方はこのロボットに実装してみてください．ロボットが動くと不思議にわかった気になるものです．</p>
+<p>では，ソースコードを次に紹介しましょう．</p>
+<p><!--more--></p>
+<p>ロボットはキーボードで操作可能です． ロボットの第１関節はj（増加）又はf（減少）キーで，第２関節はd又はkキーで，第３関節はs又はlキーで動かします．これはプログラムのcommand関数に記述しています．</p>
+<p>過去のODE講座を理解されている方には簡単なので説明がほとんどいらないと思います．わからない箇所があればコメントに書き込んでください．</p>
+<p>//  arm.c  3 DOF manipulator     copyright (c) 2006  Kosei Demura<br />
+#include &lt;ode/ode.h&gt;                    // ODE<br />
+#include &lt;drawstuff/drawstuff.h&gt;  // ODEの描画ライブラリ<br />
+#define NUM 4                            // リンク数(土台含む)<br />
+dWorldID    world;                        // 動力学計算世界<br />
+dBodyID     link[NUM];                // リンク　link[0]は土台<br />
+dJointID      joint[NUM];              // 関節　　<br />
+static double THETA[NUM] = { 0.0, 0.0, 0.0, 0.0}; // 関節目標角[rad]<br />
+static double l[NUM]  = { 0.10, 0.90, 1.00, 1.00};    // リンク長[m]<br />
+static double r[NUM]  = { 0.20, 0.04, 0.04, 0.04};    // リンク半径[m]</p>
+<p>// P制御<br />
+void control() {<br />
+  static int step = 0;     // シミュレーションのステップ数<br />
+  double k1 =  10.0,  fMax  = 100.0;     // k1:比例ゲイン<br />
+  printf("\r%6d:",step++);<br />
+  for (int j = 1; j &lt; NUM; j++) {<br />
+    double tmpAngle = dJointGetHingeAngle(joint[j]);     // 現在角[rad]<br />
+    double z = THETA[j] - tmpAngle;                            // z: 残差<br />
+    dJointSetHingeParam(joint[j],  dParamVel,  k1*z);    // 角速度の設定<br />
+    dJointSetHingeParam(joint[j], dParamFMax, fMax); // 最大トルクの設定<br />
+   }<br />
+}<br />
+ <br />
+// 描画APIの初期化<br />
+void start() {             <br />
+  float xyz[3] = {  3.04, 1.28, 0.76};    // 視点<br />
+  float hpr[3] = { -160.0, 4.50, 0.00};  // 視線(heading, pitch, roll)<br />
+  dsSetViewpoint(xyz,hpr);                // 視点と視線の設定　　　<br />
+}</p>
+<p>// キー操作関数<br />
+void command(int cmd) { //<br />
+  switch (cmd) {<br />
+  case 'j':  THETA[1] += 0.05; break;  // jキー<br />
+  case 'f':  THETA[1] -= 0.05; break;<br />
+  case 'k':  THETA[2] += 0.05; break;<br />
+  case 'd':  THETA[2] -= 0.05; break;<br />
+  case 'l':  THETA[3] += 0.05; break;<br />
+  case 's':  THETA[3] -= 0.05; break;<br />
+  }<br />
+　// 目標角度の制限　<br />
+  if (THETA[1] &lt;   - M_PI)  THETA[1] =      - M_PI; // M_PI：円周率<br />
+  if (THETA[1] &gt;      M_PI)  THETA[1] =       M_PI;<br />
+  if (THETA[2] &lt;  -2*M_PI/3)  THETA[2] =  - 2*M_PI/3;<br />
+  if (THETA[2] &gt;   2*M_PI/3)  THETA[2] =   2*M_PI/3;<br />
+  if (THETA[3] &lt;  -2*M_PI/3)  THETA[3] =  - 2*M_PI/3;<br />
+  if (THETA[3] &gt;   2*M_PI/3)  THETA[3] =   2*M_PI/3;<br />
+}</p>
+<p>// シミュレーションループ<br />
+void simLoop(int pause) {<br />
+  control();<br />
+  dWorldStep(world, 0.02);<br />
+  // ロボットの描画                                                                    <br />
+  dsSetColor(1.0,1.0,1.0); // 色の設定<br />
+  for (int i = 0; i &lt; NUM; i++ )<br />
+    dsDrawCappedCylinderD(dBodyGetPosition(link[i]),<br />
+          dBodyGetRotation(link[i]), l[i], r[i]);<br />
+}<br />
+                                                  <br />
+int main(int argc, char *argv[]) {<br />
+  dsFunctions fn; // 描画関数<br />
+  dMass mass;  // 質量パラメータ<br />
+  double x[NUM] = {0.00}, y[NUM] = {0.00};              // 重心位置<br />
+  double z[NUM]         = { 0.05, 0.50, 1.50, 2.55};<br />
+  double m[NUM] = {10.00, 2.00, 2.00, 2.00};           // 質量<br />
+  double anchor_x[NUM]  = {0.00}, anchor_y[NUM] = {0.00};<br />
+  double anchor_z[NUM] = { 0.00, 0.10, 1.00, 2.00}  ;//回転中心　<br />
+  double axis_x[NUM]  = { 0.00, 0.00, 0.00, 0.00};     //回転軸<br />
+  double axis_y[NUM]  = { 0.00, 0.00, 1.00, 1.00};<br />
+  double axis_z[NUM]  = { 1.00, 1.00, 0.00, 0.00};<br />
+  fn.version = DS_VERSION;  fn.start   = &amp;start;<br />
+  fn.step   = &amp;simLoop;      fn.command = &amp;command;<br />
+  fn.path_to_textures = "../../drawstuff/textures";</p>
+<p>  world = dWorldCreate();  // 動力学計算世界の生成<br />
+  dWorldSetGravity(world, 0, 0, -9.8);     // 重力設定<br />
+ <br />
+  for (int i = 0; i &lt; NUM; i++) {                     // リンクの生成と設定<br />
+    link[i] = dBodyCreate(world);                // リンクの生成<br />
+    dBodySetPosition(link[i], x[i], y[i], z[i]); // 位置の設定<br />
+    dMassSetZero(&amp;mass);                        // 質量パラメータの初期化<br />
+    dMassSetCappedCylinderTotal(&amp;mass,m[i],3,r[i],l[i]);  // リンクの質量計算<br />
+    dBodySetMass(link[i], &amp;mass);            // 質量の設定<br />
+  }<br />
+// 関節の生成と設定<br />
+  joint[0] = dJointCreateFixed(world, 0); // 固定関節（土台と地面の固定）<br />
+  dJointAttach(joint[0], link[0], 0);          // 固定関節の取付け<br />
+  dJointSetFixed(joint[0]);                      // 固定関節の設定<br />
+  for (int j = 1; j &lt; NUM; j++) {<br />
+    joint[j] = dJointCreateHinge(world, 0); // ヒンジ関節生成<br />
+    dJointAttach(joint[j], link[j-1], link[j]); // 関節の取付け<br />
+    dJointSetHingeAnchor(joint[j], anchor_x[j], anchor_y[j],anchor_z[j]); //関節中心の設定<br />
+    dJointSetHingeAxis(joint[j], axis_x[j], axis_y[j], axis_z[j]); // 関節回転軸の設定<br />
+  }<br />
+  dsSimulationLoop(argc, argv, 640, 570, &amp;fn);　//　シミュレーションループ<br />
+  return 0;<br />
+}</p>
+<p> <a href="http://demura.net/archives/images/ode/arm.tar" target="_self">なお，プログラムはここからダウンロード可能です</a><br />
+動作させるためにはcygwinまたはlinuxが必要です．過去の講座を参考にしてください。以下の要領で展開，make，実行してください．</p>
+<ol>
+<li>arm.tarを/home/ユーザ名/src/ode-0.5/myprogの中にコピーする．一番最後のディレクトリ名myprogは別の名前でもかまいません．</li>
+<li>以下のコマンドをcygwinのターミナルソフトやxtermなどで実行する．</li>
+</ol>
+<ul>
+<li>cd  ~/src/ode-0.5/myprog</li>
+<li>tar   xvf   arm.tar</li>
+</ul>
+<ul>
+<li>cd   arm</li>
+</ul>
+<ul>
+<li>make </li>
+</ul>
+<ul>
+<li>./arm　　　</li>
+</ul>
+<p>おしまい．</p>

@@ -1,0 +1,321 @@
+---
+layout: post
+title: HARD2020：質問応答システムのつくり方（WSL2）
+date: 2020-09-04 11:23:35.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  views: '168'
+  _thumbnail_id: '19158'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19135.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_rwt_speech_recognition-Google-Chrome_2020-9-4_11-26-11_No-00.png"><img class="aligncenter size-large wp-image-19158" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_rwt_speech_recognition-Google-Chrome_2020-9-4_11-26-11_No-00-1024x539.png" alt="" width="1024" height="539" /></a></p>
+<p>この記事はHARD2020（Home AI Robot Development)ワークショップ用です。 本記事ではWSL2を使った簡単な質問応答システムを作ってみましょう。言語は英語だけです。日本語には対応していません。なお、RoboCup@Home EducationやWorld Robot Summitの使用言語は英語だけです。英語で動作するシステムを開発しないと大会には参加できません。さらに、英語の勉強にもなるので一石二鳥ですね。</p>
+<p><strong>ソースコードの説明</strong></p>
+<pre>#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sys, copy, rospy, time
+import subprocess, ngram
+import numpy as np
+from std_msgs.msg import String
+from speech_recognition_msgs.msg import SpeechRecognitionCandidates
+
+
+class SpeechRecog:
+    # コンストラクタ
+    def __init__(self):
+        rospy.init_node('speech_recog',anonymous=True)  # ノードの初期化
+
+        self.recog_transcript = []  #　認識結果
+        self.question_all_no  = 10  #　全問題数
+        self.question_no      = 3   #  質問の回数
+        self.answer_count     = 0   #  回答数
+
+        # 質問文
+        self.sentence_all = [
+            "Who are the inventors of the C programming language?", #1
+            "Who is the inventor of the Python programming language?", #2
+            "Where does the term computer bug come from?", #3
+            "What is the name of the round robot in the new Star Wars movie?", #4
+            "What did Alan Turing create?", #5
+            "What Apollo was the last to land on the moon?", #6
+            "Who developed the first industrial robot?", #7
+            "Which company makes ASIMO?", #8
+            "How many people live in the Germany?", #9
+            "What city is the capital of the Germany?" #10
+        ]
+
+        # 解答文
+        self.sentence_answer = [
+            "Ken Thompson and Dennis Ritchie", #1
+            "Guido van Rossum", #2
+            "From a moth trapped in a relay", #3
+            "BB-8", #4
+            "Many things like Turing machines and the Turing test", #5
+            "Apollo 17", #6
+            "The American physicist Joseph Engelberg. He is also considered the father of robotics.", #7
+            "Honda", #8
+            "A little over 80 million", #9
+            "Berlin" #10
+        ]
+
+        # subscriber
+        rospy.Subscriber('/create1/speech_result',SpeechRecognitionCandidates, self.speech_recog_cb)
+
+        # publisher
+        self.speak_pub = rospy.Publisher('/tts', String, queue_size=10)
+
+        # ウエルカムメッセージ
+        time.sleep(1) # この間を入れないと次の文を発話しない
+        self.speak("Welcome to the Hard Question answering system. Please ask me a question after a beep sound", 8)
+
+
+    # 音声認識コールバック関数。認識した結果が引数recogに入る。
+    def speech_recog_cb(self,recog):
+        self.recog_transcript = recog.transcript # 認識結果の文
+        self.confidence       = recog.confidence # 認識結果の信頼度
+
+
+    # 発話
+    def speak(self, sentence, sleep_time=3.5):
+        self.speak_pub.publish(sentence)
+        time.sleep(sleep_time) # pubulishした後に少しスリープが必要。秒数は調整すること
+
+
+    # 質問のタイミングを示すビープ音
+    def beep(self):
+        time.sleep(0.3)
+        args = ['/usr/bin/paplay', '/usr/share/sounds/freedesktop/stereo/complete.oga']
+        subprocess.call(args)
+
+
+    #　メイン関数
+    def main(self):
+        rate = rospy.Rate(1)
+
+        time.sleep(1)       # 少し間を置く [s]
+        speech_recog.beep() # 回答を促すビープ音
+
+        while not rospy.is_shutdown():
+            max_k   = 0
+            max_no  = 0
+            max_val = 0
+
+            time.sleep(1)
+            rospy.loginfo(self.recog_transcript)
+
+            # 文章間の類似度を計算する。音声認識結果は完全ではないのでに近い質問があるか調べる。
+            # 文章間の類似度を計算する方法はいろいろあるが、ここではN-gramを使う手法を用いている。
+            # recog_transcriptには複数の音声認識結果の文章が格納されているので、それら全てと
+            # 全質問文の類似度を計算して、一番類似度の高い文章を質問文としている。
+            if len(self.recog_transcript) &gt; 0: # 音声認識結果がある場合だけ処理。
+                for i in range(0, self.question_all_no):
+                    for k in range(0, len(self.recog_transcript)):
+                        rospy.loginfo(self.recog_transcript[k])
+                        val = ngram.NGram.compare(self.recog_transcript[k], self.sentence_all[i])
+                        if val &gt;=  max_val:
+                            max_k   = k
+                            max_no  = i
+                            max_val = val
+                            rospy.loginfo('max_val=%s', str(max_val))
+
+            if max_val &gt;= 0.3: # 類似度の最大値が0.3以上なら。この値は調整必要。
+                self.speak('Answer', 1)
+                self.speak(self.sentence_answer[max_no], 5)
+
+                rospy.loginfo("answer[%d]:%s",max_no, self.sentence_answer[max_no])
+                print(self.confidence)
+                del self.recog_transcript[:]
+                time.sleep(3)
+                self.answer_count = self.answer_count + 1
+                if self.answer_count &lt; self.question_no:
+                    speech_recog.beep() # 回答を促すビープ音
+                    time.sleep(1)       # 少し間を置く [s]
+                else:
+                    self.speak('Congratulations! You are a quiz king!', 3)
+                    sys.exit() # プログラム終了
+
+            rate.sleep()
+
+
+if __name__ == '__main__':
+    try:
+        speech_recog = SpeechRecog()
+        speech_recog.main()
+    except rospy.ROSInterruptException: pass</pre>
+<p>&nbsp;</p>
+<p><strong>準備</strong></p>
+<ul>
+<li>端末で次のコマンドを実行する。
+<ul>
+<li><code>$ pip install ngram</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>パッケージの作成</strong></p>
+<ul>
+<li>次のコマンドでspeech_recogパッケージを作りましょう！
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2020</code></li>
+<li><code>$ catkin_create_pkg speech_recog roscpp rospy std_msgs</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>ソースコードの作成</strong></p>
+<ul>
+<li>エディタを開き、上のソースコードをコピペしてセーブする。以下のコマンドはエディタにgeditを使う場合。
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2020/speech_recog/src</code></li>
+<li><code>$ gedit speech_recog.py</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>ビルド</strong></p>
+<ul>
+<li>Pythonはビルドする必要はないが、ROSで使用する場合は必要になる場合があるので、以下のコマンドを実行する。私の環境ではcatkin  buildをしないと、roscdやrosrunコマンドでspeech_recogを実行できなかった。
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build  speech_recog</code></li>
+</ul>
+</li>
+<li>作成したpythonプログラムに実行権を与える。実行権を与えないとrosrunコマンドで実行できない。
+<ul>
+<li><code>$ source ~/.bashrc</code></li>
+<li><code>$ roscd speech_recog/src</code></li>
+<li><code>$ chmod u+x speech_recog.py</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>実行</strong></p>
+<ul>
+<li> 以下の説明の順番どおりに実施してください。</li>
+<li> 音声認識ノードの起動
+<ul>
+<li>Ubuntu端末を開き、以下のコマンドを実行してrwt_speech_recognitionノードを起動する
+<ul>
+<li><code>$ roslaunch rwt_speech_recognition rwt_speech_recognition.launch</code></li>
+</ul>
+</li>
+<li>WindowsのChromeブラウザの起動して、以下のURLにアクセスする。
+<ul>
+<li> <a href="http://localhost:8000/rwt_speech_recognition/">http://localhost:8000/rwt_speech_recognition/</a></li>
+<li>[English]を選択し、[Continuous]モードにして、[Start]を押して音声認識をスタートする。</li>
+<li>ROS Topicが"/create1/speech_result"になっているか確認する。なっていない場合はサンプルプログラムが動作しないので以下のファイルの29行目のvalueの値を"/Tablet/voice"から"/create1/speech_result"に変更する。
+<ul>
+<li>~/catkin_ws/src/visualization_rwt/rwt_speech_recognition/www/index.html</li>
+<li>28行目変更前：<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_NoName_2020-9-5_16-22-12_No-00.png"><img class="aligncenter size-full wp-image-19196" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_NoName_2020-9-5_16-22-12_No-00.png" alt="" width="811" height="44" /></a></li>
+<li>28行目変更後：<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_NoName_2020-9-5_16-19-50_No-00.png"><img class="aligncenter wp-image-19195 size-full" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_NoName_2020-9-5_16-19-50_No-00.png" alt="" width="893" height="42" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>音声合成ノードの起動
+<ul>
+<li>Windowsのエクスプローラーで以下のファイルをダブルクリックしてPulseAudioサーバーを起動する。
+<ul>
+<li>C:\WSL\pulseaudio-1.1\bin\pulseaudio.exe</li>
+</ul>
+</li>
+<li> Ubuntu端末を開き、次のコマンドを実行して音声合成ノードpicottsを起動する。
+<ul>
+<li><code>$ rosrun picotts picotts.exe</code></li>
+</ul>
+</li>
+<li>オプション：クオリティが高いmicrosoftやgoogleの音声合成エンジンに変更してみよう。別の端末を開き以下を実行する。
+<ul>
+<li>Microsoft
+<ul>
+<li><code>$ rostopic pub /picotts/engine std_msgs/String "microsoft"</code></li>
+</ul>
+</li>
+<li>Google
+<ul>
+<li><code>$ rostopic pub /picotts/engine std_msgs/String "google"</code></li>
+</ul>
+</li>
+<li><code></code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>質問応答ノードの起動
+<ul>
+<li>Ubuntu端末を開き、次のコマンドを実行して質問応答ノードを起動する。
+<ul>
+<li><code>$ rosrun speech_recog speech_recog.py</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>ハンズオン</strong></p>
+<ol>
+<li>質問応答システムを起動して、以下の英文を発音に注して質問してみよう。なお、この質問はRoboCup世界大会2016 RoboCup@HomeリーグのSpeech Recognition Testで使われたものの一部です。
+<ul>
+<li>"Who are the inventors of the C programming language?"</li>
+<li>"Who is the inventor of the Python programming language?"</li>
+<li>"Where does the term computer bug come from?"</li>
+<li>"What is the name of the round robot in the new Star Wars movie?"</li>
+<li>"What did Alan Turing create?"</li>
+<li>"What Apollo was the last to land on the moon?"</li>
+<li>"Who developed the first industrial robot?"</li>
+<li>"Which company makes ASIMO?"</li>
+<li>"How many people live in the Germany?"</li>
+<li>"What city is the capital of the Germany?"</li>
+</ul>
+</li>
+<li>２つの文章間の類似度を計算する手法はいろいろあります。調べる前にPythonの標準モジュールだけを用いて類似度を計算する関数を実装してみよう。調べる前に自分で考えて実装することが今後の財産になります。</li>
+<li>このサンプルプログラムでは２つの文章間の類似度を計算するのにN-gramを用いています。この手法について調べて理解しよう。</li>
+<li>２つの文章間の類似度を計算する手法はいろいろあります。調べて複数の方法を実装して違いを調べてみよう。さらに、自分が考えていた手法とも比較してみよう。</li>
+</ol>
+<p><strong>発　展</strong></p>
+<ul>
+<li>今後、２つの文章間の意味までも考慮して類似度を計算することが必要になると思います。自然言語処理という研究分野になります。勉強したい方は以下の書籍を紹介します。
+<ul>
+<li><a href="https://www.amazon.co.jp/gp/product/4873118360/ref=as_li_tl?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=4873118360&amp;linkCode=as2&amp;tag=demuranet-22&amp;linkId=010ee74b40cf096df3309a9a4d314201" target="_blank">ゼロから作るDeep Learning ❷ ―自然言語処理編（オライリージャパン）</a><img style="border: none !important; margin: 0px !important;" src="{{ site.baseurl }}/assets/images/2020/09/ir?t=demuranet-22&amp;l=am2&amp;o=9&amp;a=4873118360" alt="" width="1" height="1" border="0" /></li>
+<li><a href="https://www.amazon.co.jp/gp/product/4873114705/ref=as_li_tl?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=4873114705&amp;linkCode=as2&amp;tag=demuranet-22&amp;linkId=4213f769fdc4afd3122fb44767746c87" target="_blank">入門 自然言語処理（オライリージャパン）</a><img style="border: none !important; margin: 0px !important;" src="{{ site.baseurl }}/assets/images/2020/09/ir?t=demuranet-22&amp;l=am2&amp;o=9&amp;a=4873114705" alt="" width="1" height="1" border="0" /></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

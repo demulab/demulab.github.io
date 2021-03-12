@@ -1,0 +1,259 @@
+---
+layout: post
+title: HARD2020：ロボット視覚の作り方（Cameraと OpenCV）
+date: 2020-08-28 21:07:02.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  views: '391'
+  _thumbnail_id: '18967'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/18954.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_NoName_2020-8-28_20-1-32_No-00.png"><img class="aligncenter wp-image-18967 size-large" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_NoName_2020-8-28_20-1-32_No-00-1024x283.png" alt="" width="1024" height="283" /></a><br />
+この記事はHARD2020（Home AI Robot Development)ワークショップ用です。今回はcv_bridgeを使い、ROSでコンピュータビジョンライブラリOpenCVを使いカメラから取得した画像を処理します。この記事は、以下のROSチュートリアルと「ROSで始めるロボットプログラミング、小倉著」を参考にしています。</p>
+<ul>
+<li><a href="http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython">Converting between ROS images and OpenCV images (Python)</a></li>
+</ul>
+<p><strong>ソース</strong></p>
+<ul>
+<li>ROSのチュートリアルと「ROSで始めるロボットプログラミング」を参考に改変しています。</li>
+</ul>
+<pre>#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import rospy
+import cv2
+import numpy as np
+from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+
+class image_converter:
+    def __init__(self):
+        self.image_pub = rospy.Publisher("image_topic", Image, queue_size=1)
+        self.bridge = CvBridge()
+        self.image_sub = rospy.Subscriber("/create1/camera/image_raw",Image,self.callback)
+
+    def callback(self,data):
+        try:
+            cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+        except CvBridgeError as e:
+            print(e)
+
+        # RGB表色系からHSV表色系に変換
+        hsv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
+
+        # しきい値の設定（ここでは赤を抽出）
+        color_min = np.array([150,100, 50])
+        color_max = np.array([180,255,255])
+
+        # マスク画像を生成
+        color_mask = cv2.inRange(hsv_image, color_min, color_max);
+        # 画像配列のビット毎の倫理積席。マスク画像だけが抽出される。
+        cv_image2  = cv2.bitwise_and(cv_image, cv_image, mask = color_mask)
+
+        # 重心を求める。moments関数を使うためグレースケール画像へ変換。
+        gray_image2 = cv2.cvtColor(cv_image2, cv2.COLOR_BGR2GRAY)
+        mu = cv2.moments(gray_image2, True)
+        x,y= int(mu["m10"]/mu["m00"]) , int(mu["m01"]/mu["m00"])
+
+        # 重心を中心として半径20ピックセルの円を描画
+        color  = (0, 255, 0)
+        center = (x, y)
+        radius = 20
+        cv2.circle(cv_image2, center, radius, color)
+
+        # エッジを検出する。Canny関数を使うためRGBからグレースケールへ変換
+        gray_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+        cv_image3  = cv2.Canny(gray_image, 15.0, 30.0);
+
+
+        # ウインドウのサイズを変更
+        cv_half_image = cv2.resize(cv_image,   (0,0),fx=0.5, fy=0.5)
+        cv_half_image2 = cv2.resize(cv_image2, (0,0),fx=0.5,fy=0.5);
+        cv_half_image3 = cv2.resize(cv_image3, (0,0),fx=0.5,fy=0.5);
+
+        # ウインドウ表示
+        cv2.imshow("Origin Image", cv_half_image)
+        cv2.imshow("Result Image", cv_half_image2)
+        cv2.imshow("Edge Image",   cv_half_image3)
+        cv2.waitKey(3)
+
+        try:
+            self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image2, "bgr8"))
+        except CvBridgeError as e:
+            print(e)
+
+def main():
+    ic = image_converter()
+    rospy.init_node('camera', anonymous=True)
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        print("Shutting down")
+        cv2.destroyAllWindows()
+
+
+</pre>
+<p>&nbsp;</p>
+<p><strong>カメラの追加</strong></p>
+<ul>
+<li>現在のロボットモデルにはカメラが搭載されいないので追加する。ロボットモデルについては~/catkin_ws/src/create_autonomy/ca_description/urdfの中でいろいろ記述されている。カメラを追加するために以下の２つのファイルに追記する。</li>
+</ul>
+<ul>
+<li>create_base.xacro：110行目 &lt;!-- Simulation sensors --&gt;の上に以下を挿入する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_NoName_2020-8-28_20-49-52_No-00.png"><img class="aligncenter size-full wp-image-18973" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_NoName_2020-8-28_20-49-52_No-00.png" alt="" width="620" height="629" /></a></li>
+</ul>
+<ul>
+<li>create_base_gazebo.xacro：下から３行目に以下を挿入する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_NoName_2020-8-28_20-52-42_No-00.png"><img class="aligncenter size-full wp-image-18974" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_NoName_2020-8-28_20-52-42_No-00.png" alt="" width="624" height="757" /></a></p>
+<ul>
+<li>追加済みファイルへの変更
+<ul>
+<li>以下のurdf_camera.tarファイルをクリックして、Cドライブ直下に保存する。~/catkin_ws/src/create_autonomy/ca_description/urdfの下にダウンロードする。
+<ul>
+<li><a href="https://drive.google.com/file/d/15IFMlb41Zy7P3tZk213B4nBVFzd4zUj-/view?usp=sharing">urdf_camera.tar</a></li>
+</ul>
+</li>
+<li>Ubuntu端末を開いて、次のコマンドでurdf_camera.tarを~/catkin_ws/src/create_autonomy/ca_description/urdfの下にコピーする。UbuntuからWindowsのCドライブのパスは/mnt/cになる。
+<ul>
+<li>cp /mnt/c/urdf_camera.tar  ~/catkin_ws/src/create_autonomy/ca_description/urdf</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>端末で以下のコマンドを実行して追加済みファイルへ変更する。
+<ul>
+<li><code>$ roscd ca_description/urdf</code></li>
+<li><code>$ tar xvf urdf_camera.tar</code></li>
+<li><code>$ mv create_base.xacro create_base.xacro.org</code></li>
+<li><code>$ mv create_base_gazebo.xacro create_base_gazebo.xacro.org</code></li>
+<li><code>$ cp ./urdf_camera/create_base.xacro  create_base.xacro</code></li>
+<li><code>$ cp ./urdf_camera/create_base_gazebo.xacro  create_base_gazebo.xacro</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>準備</strong></p>
+<ul>
+<li>$ cd ~/catkin_ws/src</li>
+<li>$ mkdir hard2020</li>
+<li><code>$ cd ~/catkin_ws/src/hard2020</code></li>
+<li><code>$ catkin_create_pkg camera sensor_msgs opencv2 cv_bridge rospy std_msgs</code></li>
+<li><code>$ cd camera/src</code></li>
+<li>エディタを使い上のプログラムをcamera.pyという名前をつけてsrc下に保存する。以下はgeditを使う場合。
+<ul>
+<li><code>$ gedit camera.py</code></li>
+</ul>
+</li>
+<li>Pythonはビルドする必要はないが、ROSで使用する場合は必要になる場合があるので、以下のコマンドを実行する。
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build camera</code></li>
+</ul>
+</li>
+<li> コマンドで実行できるように実行権を与える。
+<ul>
+<li><code>$ chmod u+x camera.py</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>実行</strong></p>
+<ul>
+<li>端末を３つ開き、以下のコマンドを実行する。</li>
+<li> シミュレータの起動
+<ul>
+<li><code>$ roslaunch ca_gazebo create_empty_world.launch</code></li>
+</ul>
+</li>
+<li>cameraノードの起動
+<ul>
+<li><code>$ rosrun camera  camera.py</code></li>
+</ul>
+</li>
+<li>遠隔操作
+<ul>
+<li><code>$ roslaunch ca_tools keyboard_teleop.launch</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>ハンズオン</strong></p>
+<ul>
+<li>サンプルプログラムの実行
+<ul>
+<li>シミュレータにコーラ缶(Coke Can)をロボットの前に挿入する。
+<ul>
+<li>Insert タブ→http://gazbosim.org/models/→Coke Can</li>
+</ul>
+</li>
+<li>ロボットをキーボードで操作してコーラ缶の方向に進んだり、その場回転して画像処理が行われていることを確認する。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/opencv1.jpg.png"><img class="aligncenter size-large wp-image-18968" src="{{ site.baseurl }}/assets/images/2020/08/opencv1.jpg-1024x708.png" alt="" width="1024" height="708" /></a></p>
+<ul>
+<li>OpenCV
+<ul>
+<li>勾配検出フィルタ
+<ul>
+<li>サンプルプログラムではエッジ検出にcanny関数を使用した。その他にも勾配検出フィルタとして、Sobel関数、Laplacian関数などがある。参考リンクのOpenCV-Pythonチュートリアルで調べて、サンプルプログラムを改変して違いを見てみよう。</li>
+</ul>
+</li>
+<li>物体の輪郭抽出
+<ul>
+<li>サンプルプログラムではコーラ缶の位置を推定するのに赤領域の重心を使った。より正確にするには物体の輪郭を検出するfindContours関数がある。参考リンクで調べて輪郭を使って物体の位置を推定してみよう。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>応用
+<ul>
+<li>コーラ缶の手前で停止するプログラムを作ろう。なお、カメラでは物体の距離が直接わからないので、コーラ缶の輪郭を検出し、その面積や外接矩形のサイズ[pixel]から推定する必要がある。コーラ缶のサイズはgazeboのGUIで簡単に調べることができる。</li>
+<li>コーラ缶を任意の位置において、それをロボットが探して近づき、手前で停止するプログラムを作ろう。なお、カメラの位置が比較的高いので近づいてコーラ缶を見失う場合には、urdfファイルを変更して高さを変えてもよい。</li>
+</ul>
+</li>
+</ul>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li><a href="http://labs.eecs.tottori-u.ac.jp/sd/Member/oyamada/OpenCV/html/py_tutorials/py_tutorials.html">OpenCV-Pythonチュートリアル</a></li>
+</ul>
+<p>終わり</p>

@@ -1,0 +1,109 @@
+---
+layout: post
+title: 'Ubuntu18.04: ROS Melodicのインストール'
+date: 2020-01-02 01:08:23.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  views: '9821'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _oembed_4baf4cab6a4e4df2d6bea16e6ef5c172: "{{unknown}}"
+  _thumbnail_id: '16523'
+  the_page_main_category: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  last_modified: '2021-03-08 10:15:14'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/16518.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2020/01/603px-Melodic_Morenia.png" /></p>
+<p>ROS Melodicのインストールメモです。この記事はROS のオフィシャルウェブサイトの次の日本語記事を簡略化しています。詳しい説明は次のリンクをご覧ください。私の環境では作業時間は30分ほどでした。</p>
+<p><span style="color: #ff0000;"><strong>なお、この記事の作業では、学校や会社などのファイアウォール内の環境ではなく（つまり、自宅）、LinuxのディストリビューションとバージョンはUbuntu 18.04を前提にしています。</strong></span></p>
+<ul>
+<li><a href="http://wiki.ros.org/melodic/Installation/Ubuntu">ROS Melodic の Ubuntu へのインストール</a></li>
+</ul>
+<p>----------------------------------------------------------------------------------------------</p>
+<p>１．準備</p>
+<p style="padding-left: 30px;">(1) 端末(ターミナル、terminal)を開いて、以下のコマンドをコピペして、Enterキーを押し実行する。パスワードを聞かれたら入力する。なお、行の始めの$はプロンプト(入力の目印)なのでコピペしない。</p>
+<ul>
+<li>$ <code>sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" &gt; /etc/apt/sources.list.d/ros-latest.list'</code></li>
+</ul>
+<p style="padding-left: 30px;"> (2)  同様にして以下のコマンドを実行する。</p>
+<ul>
+<li>$ <code>sudo apt install -y curl</code></li>
+<li>$ <code>curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&amp;search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | sudo apt-key add -</code></li>
+</ul>
+<p>2. インストール</p>
+<p>(1)  以下のコマンドでインストール先をアップデートし、ソフトウェアを最新バージョンにする。</p>
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt upgrade</code></li>
+</ul>
+<p>(2)  ROS Melodicのインストール</p>
+<ul>
+<li>$ <code>sudo apt install -y ros-melodic-desktop-full</code></li>
+</ul>
+<p>3. 初期設定</p>
+<p style="padding-left: 30px;">(1)  以下のコマンドでrosdepを初期化する。rosdepはシステムに依存する必要なソフトウェアをインストールするツール。1行目を入力したらEnterキーを押し、2行目を入力したらEnterキーを押す。rosdepはコンパイルを楽にするツール。<span style="color: #ff0000;"><strong>以下の作業はProxy環境下では失敗するので、Proxy環境の場合は、スマホのデザリングや自宅などで実施する。</strong></span></p>
+<ul>
+<li>$ <code>sudo apt install python-rosdep</code></li>
+<li>$ <code>sudo rosdep init</code>
+<ul>
+<li>上記のコマンドを実行して以下のエラーが出る場合は、<br />
+Traceback (most recent call last):<br />
+File "/usr/bin/rosdep", line 3, in &lt;module&gt;<br />
+from rosdep2.main import rosdep_main<br />
+ModuleNotFoundError: No module named 'rosdep2'</li>
+<li>以下のコマンドを実行して必要なpythonモジュールをインストールする。
+<ul>
+<li>sudo -H pip3 install -U rosdep</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>$ <code>rosdep update</code></li>
+</ul>
+<p style="padding-left: 30px;">(2) 環境設定。楽をするための設定。以下のコマンドを端末にコピペしてEnterキーを押す。1行ずつ実施すること。</p>
+<ul>
+<li>$ <code>cd</code></li>
+<li>$ <code>echo "source /opt/ros/melodic/setup.bash" &gt;&gt; ~/.bashrc</code></li>
+<li>$ <code>source ~/.bashrc</code></li>
+</ul>
+<p style="padding-left: 30px;">(3) rosinstall 。インストールが簡単になるツールを以下のコマンドでインストールする。</p>
+<ul>
+<li>$ <code>sudo apt install -y python-rosinstall python-rosinstall-generator python-wstool build-essential python-catkin-tools</code></li>
+</ul>
+<p>終わり</p>

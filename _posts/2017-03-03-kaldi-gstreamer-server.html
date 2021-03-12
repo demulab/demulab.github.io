@@ -1,0 +1,119 @@
+---
+layout: post
+title: 音声認識エンジンKaldiでTED学習済みのDNNモデルを使うためのメモ
+date: 2017-03-03 18:37:42.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2079'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/12743.html"
+---
+<p>音声認識エンジンKaldiは音響モデルにDNN-HMMモデルも使えます。RoboCup@Home2016世界大会ではTED学習済みDNNモデルを使いました。この記事はそのメモ。</p>
+<ul>
+<li>環境
+<ul>
+<li>ThinkPad T450<br />
+(CPU: Intel i7-5500U, GPU: nvidia 940m)</li>
+<li>xubunut14.04.5</li>
+<li>Kernel 4.4.0-66-generic</li>
+<li>gcc/g++ 4.8.4</li>
+</ul>
+</li>
+<li>準備: Python用パッケージのインストール
+<ul>
+<li>非同期のネットワークライブラリtornadoのインストール
+<ul>
+<li>pip install tornado</li>
+</ul>
+</li>
+<li>Python用ウェブソケットプロトコルのインストール
+<ul>
+<li>pip install ws4py == 0.3.2</li>
+</ul>
+</li>
+<li>yamlのインストール
+<ul>
+<li>pip install pyyaml</li>
+</ul>
+</li>
+<li>JSONのインストール
+<ul>
+<li>pip install simplejson</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>kaldiをソースコードからビルドする。<br />
+$ cd ~/src<br />
+$ git clone <a href="https://github.com/kaldi-asr/kaldi.git" target="_blank" rel="noreferrer">https://github.com/kaldi-asr/kaldi.git</a><br />
+$ cd ~/src/kaldi/src<br />
+$<code>./configure --shared</code><br />
+<a href="http://xn--kaldi-ic4dvb81bgg1hpir324a.mk/" target="_blank" rel="noreferrer">上のコマンドでkaldi.mk</a>ファイルが生成されるので、その中のCXXFLAGSの$(EXTRA_CXXFLAGS)の後に-O3 -DNDEBUGをつける。ここでヘッダーファイルがないとエラーがでるときは~/src/kaldi/tools/INSTALLの指示に従って各種ライブラリをインストールする。<br />
+$ make depend<br />
+$ make -j 4<br />
+$ make ext<br />
+1時間ぐらい時間がかかる。</li>
+<li>kaldi-gstreamer-serverのインストール<br />
+$ <code>pip install ws4py==0.3.2</code><br />
+$ cd ~/src<br />
+$ git clone <a href="https://github.com/alumae/kaldi-gstreamer-server.git" target="_blank" rel="noreferrer">https://github.com/alumae/kaldi-gstreamer-server.git</a></li>
+<li> gst-kaldi-nnet2-onlineのインストール<br />
+$ cd ~/src<br />
+$ git clone https://github.com/alumae/gst-kaldi-nnet2-online.git<br />
+$ sudo apt-get install gstreamer1.0-plugins-bad gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-pulseaudio gstreamer1.0-plugins-ugly gstreamer1.0-tools libgstreamer1.0-dev<br />
+$ sudo apt-get install libjansson-dev<br />
+$ cd ~/src/gst-kaldi-nnet2-online/src<br />
+Makefileの中をKALDI_ROOT=/home/demulab/src/kaldi<br />
+と書き換える.<br />
+$ make depend<br />
+$ make<br />
+~/.bashrcに以下を追加<br />
+export GST_PLUGIN_PATH=~/src/gst-kaldi-nnet2-online/src<br />
+$ cd ; source .bashrc<br />
+次のコマンドを実行してプラグインに関する情報が表示されればＯＫ<br />
+$ gst-inspect-1.0 kaldinnet2onlinedecoder</li>
+<li> 英語のニューラルネットモデルTEDLIUMのダウンロード。サイズが1.5GBあるので空き容量に注意。
+<ul>
+<li>cd ~/src/kaldi-gstreamer-server/test/models</li>
+<li>./download-tedlium-nnet2.sh</li>
+<li>~/src/kaldi-gstreamer-server/test/models/englishにtedlium_nnet_ms_sp_onlineディレクトリができているか確認する。</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>端末を３つ開き、以下のサーバー、ワーカー、クライアントを起動する。</li>
+<li> サーバーの起動
+<ul>
+<li>cd ~/src/kaldi-gstreamer-server</li>
+<li>python kaldigstserver/master_server.py --port=8888</li>
+</ul>
+</li>
+<li>ワーカーの起動
+<ul>
+<li>cd ~/src/kaldi-gstreamer-server</li>
+<li>python kaldigstserver/worker.py -u ws://localhost:8888/worker/ws/speech -c sample_english_nnet2.yaml</li>
+</ul>
+</li>
+<li>クライアントの起動
+<ul>
+<li>cd ~/src/kaldi-gstreamer-server</li>
+<li>python kaldigstserver/client.py -r 8192 test/data/bill_gates-TED.mp3</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>

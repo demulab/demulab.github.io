@@ -1,0 +1,73 @@
+---
+layout: post
+title: 'pyenv: Pythonバージョンの管理'
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>Pythonバージョン管理ツール<a href="https://github.com/pyenv/pyenv">pyenv</a>をインストールしたときのメモ</p>
+<ul>
+<li>環境
+<ul>
+<li>Ubuntu 16.04</li>
+</ul>
+</li>
+<li> インストール
+<ul>
+<li>git clone https://github.com/pyenv/pyenv.git ~/.pyenv</li>
+</ul>
+</li>
+<li>環境変数の設定
+<ul>
+<li><code>$ echo 'export PYENV_ROOT="$HOME/.pyenv"' &gt;&gt; ~/.bashrc</code></li>
+<li><code>echo 'export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"' &gt;&gt; ~/.bashrc</code></li>
+<li><code> echo -e 'if command -v pyenv 1&gt;/dev/null 2&gt;&amp;1; then\n  eval "$(pyenv init -)"\nfi' &gt;&gt; ~/.bash_profile</code></li>
+</ul>
+</li>
+<li>シェルの再起動
+<ul>
+<li>exec "$SHELL"</li>
+</ul>
+</li>
+<li>Pythonのインストール
+<ul>
+<li>pyenv install 2.7.12</li>
+<li>pyenv install 3.5.4</li>
+</ul>
+</li>
+<li>使い方
+<ul>
+<li>グローバル設定
+<ul>
+<li>pyenv global 3.5.4</li>
+</ul>
+</li>
+<li>ディレクトリのみ
+<ul>
+<li>pyenv  local  3.5.4</li>
+</ul>
+</li>
+<li>一時設定
+<ul>
+<li>pyenv  shell  3.5.4</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>

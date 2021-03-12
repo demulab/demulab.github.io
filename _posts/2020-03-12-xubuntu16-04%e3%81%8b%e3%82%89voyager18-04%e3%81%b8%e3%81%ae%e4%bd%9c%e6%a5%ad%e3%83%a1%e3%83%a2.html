@@ -1,0 +1,203 @@
+---
+layout: post
+title: Xubuntu16.04からVoyager18.04へ
+date: 2020-03-12 20:29:39.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '176'
+  _thumbnail_id: '16995'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/16979.html"
+---
+<p><!-- wp:image {"id":14767} --></p>
+<figure class="wp-block-image"><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/VoyagerNight.png"><img class="alignleft size-large wp-image-16995" src="{{ site.baseurl }}/assets/images/2020/03/VoyagerNight-1024x640.png" alt="" width="1024" height="640" /></a><br />仕事で使っているデスクトップパソコンがXubuntu16.04だったのでそろそろサポートが切れる。Voyager18.04にアップグレードしたので作業メモ。VoyagerはXubuntu18.04ベースのおしゃれなフレンチディストリビューション。上の壁紙はVin rougeをイメージさせる。</figure>
+<p><strong>環 境</strong></p>
+<ul>
+<li>CROYDON (BTO組立パソコン)<br />(CPU: Intel i7-8700K, GPU: Nvidia 1080Ti, Memory:32GB)</li>
+<li>Motherboard: ASRock Fatal1ty Z370 Gaming K6</li>
+<li>Voyager 18.04</li>
+</ul>
+<p><strong>ソフトウェアRAIDの解除</strong></p>
+<ul>
+<li>必要なファイルのバックアップを取る。RAIDを適用しているのは/homeのみなので、それだけを外付けハードディスクに保存した。約350GBあり、データを保存するまで約半日要した。</li>
+<li> 現在の環境はVLM上でソフトウェアRAIDを組んでいる。まず、Rootでログインして、次のコマンドでRAIDを解除した。
+<ul>
+<li># umount /dev/mapper/vg0-home</li>
+<li>#  /etc/fstabの該当行を次のようにコメントアウトする。
+<ul>
+<li>#/dev/vg0/home   /home  ext4  defaults  1   2</li>
+</ul>
+</li>
+<li># reboot</li>
+<li>再起動後に/homeを確認すると今までのユーザがないことを確認する。</li>
+</ul>
+</li>
+</ul>
+<p><strong>Voyager 18.04のインストール</strong></p>
+<p><!-- /wp:image --></p>
+<p><!-- wp:paragraph --><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li>ダウンロード
+<ul>
+<li><a href="https://sourceforge.net/projects/voyagerlive/files/Voyager-18.04.2-amd64.iso/download">ここからVoyager-18.04.2-amd64.isoをダウンロードする</a></li>
+</ul>
+</li>
+<li>インストールUSBメディアの作成
+<ul>
+<li>ダウンロードしたイメージファイルを使いUSBインストールメディアを作成する。ここではLinuxで作成する手順を示す。Voyagerのイメージファイルは1.8GBなので2GB以上のUSB Flash Memoryを用意する。最近はコンビニで8GBなら1000円程度で購入できる。</li>
+<li>USB Flash MemoryをPCに挿入する</li>
+<li>USBメモリがマウントさえていると作業できないのでアンマウントする。ファイルマネージャーでもよいし、以下のコマンドでもできる。
+<ul>
+<li>$ df
+<ul>
+<li>/dev/sda1 1796960 1796960 0 100% /media/ユーザ名/USB DISK</li>
+<li>上のように表示されている場合は/dev/sda1がマウントされている。</li>
+</ul>
+</li>
+<li>$ sudo  umount  デバイス名
+<ul>
+<li>上の例ではデバイス名は/dev/sda1</li>
+</ul>
+</li>
+<li>$ df
+<ul>
+<li>/dev/sda1は表示されていないことを確認する。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>イメージファイルをddコマンドを使いUSBメモリに書き込む
+<ul>
+<li>$sudo dd if=イメージファイル　of=USBメモリのデバイス名  bs=ブロックサイズ
+<ul>
+<li>この例では以下になる</li>
+<li>イメージファイル：/home/ユーザ名/Downloads/Voyager-18.04.2-amd64.iso</li>
+<li>デバイス名：/dev/sda    (sda1ではない。数字を除くので注意)</li>
+<li>ブロックサイズ：4096   (デフォルトは512。4096は私のファイルシステムのブロックサイズ)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>インストール
+<ul>
+<li>BIOSの設定を変更して、USBメモリからブートできるようにしてVoyager18.04.2をインストールする。</li>
+<li>不具合を避けるためクリーンインストールする。「ディスクを削除してXubuntuをインストール」を選び、「新しいXubuntuのインストールにLVMを使用する」にチェックを入れる。後は指示に従いインストールするだけ。</li>
+</ul>
+</li>
+<li>ソフトウェアRAIDの復旧
+<ul>
+<li>$  sudo apt install  mdadm</li>
+<li> /etc/fstabの一番下の行に以下を入れる。
+<ul>
+<li>/dev/vg0/home   /home  ext4  defaults  1   2</li>
+</ul>
+</li>
+<li>$ sudo reboot</li>
+<li>再起動が終了すると/homeが復活する。</li>
+</ul>
+</li>
+<li> 設定
+<ul>
+<li> 日本語化
+<ul>
+<li>Settings-&gt;Language Support 「The language support is not installed completely」と表示されるので、[Install]をクリック</li>
+<li>Settings-&gt;Language Support
+<ul>
+<li>Install/Remove Languages -&gt; Japanese</li>
+<li>Keyboard Input method system -&gt; fcitx</li>
+</ul>
+</li>
+<li>再起動すると日本語を使えるようになる。</li>
+</ul>
+</li>
+<li>ホームディレクトリのフォルダ名を日本語から英語に変更する。
+<ul>
+<li>$ LANG=C xdg-user-dirs-gtk-update</li>
+</ul>
+</li>
+<li> Conkyの文字化けを直す
+<ul>
+<li>日本語フォントを設定して日本語化もできるが、デザイン的に英語が合うので、英語で表示する。</li>
+<li><a href="https://qiita.com/AmGacrux/items/b5bef6646a2576e577bc">この記事のとおり実施</a></li>
+<li>メニュー-&gt;設定-&gt;セッションと起動-&gt;自動開始アプリケーションのConky Controlを選択してEditをクリックする。コマンドに以下に変更する。つまり、言語環境を英語にする。
+<ul>
+<li>ALLh -c "sleep 5;LC_ALL=C sh ~/.scripts/Conky/DemConky.sh;"</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> すぐ必要なソフトのインストール
+<ul>
+<li>$ sudo apt install git emacs25</li>
+</ul>
+</li>
+<li>CAPS LOCKとCTRLキーの入れ替える
+<ul>
+<li>/etc/default/keyboardのXKBOPTIONS=”ctrl:nocaps”と変更する。</li>
+</ul>
+</li>
+<li>ログイン画面に写真を入れる
+<ul>
+<li>入れたい写真の画像ファイルを~/.faceにコピーする。これだけ。</li>
+</ul>
+</li>
+<li>ブートのメニューを変更するのは、Grub Customizerを使うと簡単。以下のコマンドでインストールできる。
+<ul>
+<li>sudo add-apt-repository ppa:danielrichter2007/grub-customizer</li>
+<li>sudo apt update</li>
+<li> sudo apt install grub-customizer</li>
+</ul>
+</li>
+<li>Grub Customizerは以下のコマンで実行する。使い方は検索して調べる。
+<ul>
+<li>sudo grub-customizer</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p>Fin</p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p>&nbsp;</p>

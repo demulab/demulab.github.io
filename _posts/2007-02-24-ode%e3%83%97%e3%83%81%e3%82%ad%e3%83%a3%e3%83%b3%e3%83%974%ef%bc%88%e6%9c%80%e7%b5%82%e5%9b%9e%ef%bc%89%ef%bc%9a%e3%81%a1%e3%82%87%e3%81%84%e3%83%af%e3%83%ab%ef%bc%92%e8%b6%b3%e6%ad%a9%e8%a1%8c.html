@@ -1,0 +1,50 @@
+---
+layout: post
+title: ODEプチキャンプ4（最終回）：ちょいワル２足歩行ロボットの作り方！
+date: 2007-02-24 19:44:04.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2718'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/377.html"
+---
+<p> <br />
+<img src="{{ site.baseurl }}/assets/images/2007/02/camp4.jpg" alt=" " width="480" height="118" /></p>
+<p>2月10日から12日までの３連休は全国でいろいろなイベントが開催され、ここ金沢でも<a href="http://www.kanazawa-cb.com/food/index_03.htm">第１９回フードピアランド</a>が県中央公園で開催され、石川県や全国のおいしい食べ物の屋台が所狭しと並びふるさとの味を満喫しました。輪島産の焼き牡蠣がとても美味でした。</p>
+<p>さて、オープンソースの動力学計算エンジンODE　(Open Dynamics Engine)　に関する<a href="http://www.ohmsha.co.jp/robocon/">ロボコンマガジン</a>の連載もNo.50（２月１５日発売）で終わりです。 今回はODEの世界を楽しんでもらうためカラーページに掲載してもらい、背景やテクスチャファイルの変更法など付属のドロースタッフの使い方をメインに説明し、簡単な２足歩行制御についても触れています。</p>
+<p><img title="ロボットシミュレータ　シミュレーション" src="{{ site.baseurl }}/assets/images/2007/02/fire3s.jpg" alt="Open Dynamics Engine  Robot Simulator" width="480" height="309" /></p>
+<p>       <strong>サンプルプログラムのスクリーンショット</strong></p>
+<p>なお、サンプルプログラムとして上図にあるＳＦちっくな２足歩行ロボットWarusa P01を題材にしていますので興味のある方は是非お読みください。</p>
+<p>プログラムには簡単な ２足歩行制御が実装されており、以下のリンクからゲットできますので、ご自由に遊んでください。 ただし、無保証でお遊び（ゲームのようには楽しめません。単なるサンプルです。）用です。バグもありますので再配布はお止めください。なお、遊び方はすみませんがロボコンマガジンの記事あるいはソースコードをご覧ください。</p>
+<ul>
+<li>サンプルプログラム(Petit Waru Robot Simulator)のダウンロード</li>
+</ul>
+<ul>
+<li><a href="http://demura.net/archives/images/ode/camp4/warusap070221.lzh">warusap070221.lzh</a>(lzhで圧縮)</li>
+</ul>
+<ul>
+<li><a href="http://demura.net/archives/images/ode/camp4/warusap070221.tgz">warusap070221.tgz</a>(ｔｇｚで圧縮)</li>
+<li>上の２つのファイルは圧縮方法が違うだけで中身は同じものです。</li>
+</ul>
+<p><!--more--></p>
+<p>ちなみに、 このロボットの名前Warusa P01はアニメ「ルパン三世」の愛用している銃ワルサーP38を文字って命名したものです。デザイン優先のため歩行制御には向いていません。そもそも股関節が胴体の真横についている構造のロボットにスムーズな２足歩行をさせることは容易ではないのです。パラメータも十分にチューニングしていないので、なんとか歩く程度のレベルです。パラメータをチューニングしてよりスムーズに歩かせてみてください。</p>
+<p>なお、琉球大学の山田さんからMac OS X用のmakefileを送っていただきましたので、上記のファイルには入れてあります。makefile.osxという名前なのでmakefileにコピーしてお使いください。ODE0.8からmake installでlibdrawstuff.aが/usr/local/libにコピーされなくなりましたので御自分で/usr/local/libにコピーしてからお使いください。また、drawsutffもカーボンに対応しX11がなくてもOS X上で動くようになりました。ずいぶん楽チンになったものです。以上の情報は全て山田さんからの情報です。私のiMacはインテリアと化しているので本当に助かりました。</p>
+<p><strong>[訂正・お詫び]</strong><br />
+ロボコンマガジンNo.50のP69にある「プチ講座　回転行列って何ですか？」で回転行列のr33に対応する要素はR[0]ではなくR[10]です。以下の式が正解です。ロボコンマガジンに確認したところ、このミスは編集の段階を離れ印刷の段階で起きたようです。私のミスではありませんが、この場を借りて訂正しお詫びします。<br />
+ <br />
+<img src="{{ site.baseurl }}/assets/images/2007/02/matrix.jpg" alt=" " /></p>
+<p> </p>
+<p>最後になりますが、ロボコンマガジンの連載は私にとって貴重な体験となりました。編集を担当してくださった高橋様には大変お世話になりありがとうございました。また、私の記事を読んでODEをはじめられた方もいらしゃるとのことなので、執筆したかいがあったというものです。また、機会を作り他の雑誌にも記事を投稿しようと考えていますので今後ともよろしくお願いします。</p>

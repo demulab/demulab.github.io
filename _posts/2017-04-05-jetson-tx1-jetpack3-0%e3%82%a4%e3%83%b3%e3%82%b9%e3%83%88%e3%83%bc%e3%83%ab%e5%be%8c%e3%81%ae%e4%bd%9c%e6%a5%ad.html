@@ -1,0 +1,94 @@
+---
+layout: post
+title: 'Jetson TX1: JetPack3.0インストール後の作業'
+date: 2017-04-05 07:18:41.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  views: '760'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/13328.html"
+---
+<p>Jetson TX1にJetPack3.0をインストールした後の作業メモ</p>
+<ul>
+<li> ユーザの作成
+<ul>
+<li>System Settings -&gt; User Accounts でMy Accountsを作る。この例ではアカウント名をここではhappyminiとする。</li>
+<li>/etc/groupのvideoにアカウント名を加える。この例では以下になる。この作業をしないとそのアカウント名でloginできない。
+<ul>
+<li>video:x:44:ubuntu,nvidia,happymini</li>
+</ul>
+</li>
+<li>新しく作成したアカウントでログインしたら、端末を開き、次のコマンドでubuntuアカウントの.bashrcをコピーする。
+<ul>
+<li>cd</li>
+<li>cp  /home/ubuntu/.bashrc  .</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> unityは重いのでxfceを利用する
+<ul>
+<li>sudo apt-get install xubuntu-desktop</li>
+<li>sudo apt-get install xfce4 xfce4-goodies gnome-icon-theme-full</li>
+</ul>
+</li>
+<li>xfceよりさらに軽くしたときはicewmをインストール
+<ul>
+<li>sudo apt-get install icewm icewm-gnome-support icewm-themes</li>
+</ul>
+</li>
+<li> ウェブブラウザのインストール
+<ul>
+<li>sudo apt-get install chromium-browser</li>
+</ul>
+</li>
+<li>ROSのインストール
+<ul>
+<li>cd src</li>
+<li>git clone https://github.com/jetsonhacks/installROSTX1.git</li>
+<li>cd installROSTX1</li>
+<li>./installROSTX1</li>
+<li>./setupCatkinWorkspace.sh</li>
+</ul>
+</li>
+<li> TX1キャリアボードがパッシブシートシンクなので温度測定とGUI表示ツールをインストール
+<ul>
+<li>sudo apt-get install lm-sensors</li>
+<li>sudo apt-get install psensor</li>
+</ul>
+</li>
+<li>開発環境のインストール
+<ul>
+<li>sudo apt-get install python3-setuptools</li>
+<li>sudo easy_install3 pip</li>
+<li>sudo apt-get install python-dev</li>
+<li>sudo apt-get install python3-dev</li>
+</ul>
+</li>
+<li> 各種アプリケーションをインストール
+<ul>
+<li>sudo apt-get install  emacs</li>
+<li>sudo apt-get install  htop</li>
+</ul>
+</li>
+<li>tensorflow1.0.1のインストール（<a href="http://www.wazeka-inc.com/archives/371">わっぜか株式会社の情報</a>）
+<ul>
+<li>tensorflow-1.0.1-cp35-cp35m-linux_aarch64.whlを<a href="https://drive.google.com/file/d/0B2jw9AHXtUJ_OFJDV19TWTEyaWc/view">ここからダウンロード(python3.5用)<br />
+</a></li>
+<li>pip3 install tensorflow-1.0.1-cp35-cp35m-linux_aarch64.whl</li>
+</ul>
+</li>
+</ul>

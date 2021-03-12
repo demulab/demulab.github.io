@@ -1,0 +1,132 @@
+---
+layout: post
+title: ROSとCaffeの連携
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '28'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/14231.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/01/drpepper.png"><img src="{{ site.baseurl }}/assets/images/drpepper.png" alt="" width="402" height="325" class="aligncenter size-full wp-image-14235" /></a>ROSでCaffeを使うためにros_caffeパッケージをインストールしたときのメモ。このパッケージはカメラから画像トピックをcaffeで識別して、トピック/caffe_retをパブリッシュする。環境によってcaffeのビルドは苦労するかもしれないが、それ以外はとても簡単。</p>
+<p><strong>ウェブサイト</strong></p>
+<ul>
+<li><a href="https://github.com/tzutalin/ros_caffe">https://github.com/tzutalin/ros_caffe</a></li>
+</ul>
+<p><strong>ハードウェア環境</strong></p>
+<ul>
+<li>CPU: Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz (6 core)</li>
+<li>GPU: NVIDIA GTX 1080Ti</li>
+<li>Memory: 32GB</li>
+</ul>
+<p><strong>ソフトウェア環境</strong></p>
+<ul>
+<li>Ubuntu16.04</li>
+<li>ROS Kinetic</li>
+<li>CUDA8.0</li>
+</ul>
+<ul>
+<li>OpenCV3.4.0
+<ul>
+<li>OpenCV ContribとCudaのモジュールが必要。</li>
+<li><a href="http://demura.net/misc/14118.html">インストールはここを参照。</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>ソースの取得</strong></p>
+<ul>
+<li>$ <code>cd ~/catkin_ws/src</code></li>
+<li>$ <code>git clone --recursive https://github.com/tzutalin/ros_caffe.git</code></li>
+<li>$ <code>cd ~/catkin_ws/src/ros_caffe</code></li>
+</ul>
+<p><strong>Caffeのビルド</strong></p>
+<ul>
+<li>$ cd ~/catkin_ws/src/ros_caffe/caffe</li>
+<li>$ cp Makefile.config.example Makefile.config</li>
+<li>Makefile.configに以下を追加する
+<ul>
+<li>INCLUDE_DIRS += /usr/include/hdf5/serial</li>
+<li>LIBRARY_DIRS += /usr/lib/x86_64-linux-gnu/hdf5/serial</li>
+<li>OPENCV_VERSION := 3</li>
+<li>USE_PKG_CONFIG := 1</li>
+</ul>
+</li>
+<li>$ make all; make distribute</li>
+</ul>
+<p><strong>ROSパッケージのビルド</strong></p>
+<ul>
+<li>~/catkin_src/src/ros_caffe/CMakeLists.txtに以下を追加する。
+<ul>
+<li>include_directories(/usr/include/hdf5/serial)</li>
+</ul>
+</li>
+<li>~/catkin_ws/src/ros_caffe/src/ros_caffe_test.cppの15行目を使用するカメラのトピック名に変更する。デフォルトはcamera/rgb/image_raw。
+<ul>
+<li>const std::string RECEIVE_IMG_TOPIC_NAME = "/usb_cam/image_raw";</li>
+</ul>
+</li>
+<li>$ cd catkin_ws</li>
+<li>$ catkin_make</li>
+</ul>
+<p><strong>実行</strong></p>
+<ul>
+<li>caffenetモデルをダウンロードする
+<ul>
+<li>$ roscd ros_caffe</li>
+<li>$ cd data</li>
+<li>$ sh download_caffe_model.sh</li>
+</ul>
+</li>
+<li>端末を開いて次のコマンドを実行
+<ul>
+<li>$ roscore</li>
+</ul>
+</li>
+<li>もう一つ端末を開いて次のコマンドを実行
+<ul>
+<li>$ rosrun ros_caffe  ros_caffe_test</li>
+</ul>
+</li>
+<li>実行結果</li>
+</ul>
+<p style="padding-left: 90px;"><code>Test default image under /data/cat.jpg<br />
+0.3134 - "n02123045 tabby, tabby cat"<br />
+0.2380 - "n02123159 tiger cat"<br />
+0.1235 - "n02124075 Egyptian cat"<br />
+0.1003 - "n02119022 red fox, Vulpes vulpes"<br />
+0.0715 - "n02127052 lynx, catamount"<br />
+</code></p>
+<p><strong>Webカメラを使った実行</strong></p>
+<ul>
+<li>$ sudo apt install ros-kinetic-usb-cam</li>
+<li>端末を４つ開いて以下のコマンドを実行
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>$ <code>roscore</code></li>
+<li>$ <code>rosrun usb_cam usb_cam_node</code></li>
+<li>$ <code>rosrun image_view image_view image:=/usb_cam/image_raw</code></li>
+<li>$ <code>rosrun ros_caffe ros_caffe_test</code></li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/01/caffe_result.png"><img src="{{ site.baseurl }}/assets/images/caffe_result.png" alt="" width="747" height="216" class="aligncenter size-full wp-image-14237" /></a></li>
+</ul>
+<p><strong>ROSトピック</strong></p>
+<ul>
+<li>識別結果　/caffe_ret</li>
+</ul>
+<p>以上</p>

@@ -1,0 +1,88 @@
+---
+layout: post
+title: PD実践：センサ演習５．超音波センサの使い方
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '10'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>超音波センサの使い方を学びます。</p>
+<ul>
+<li><strong>API</strong>
+<ul>
+<li>ポート1の超音波センサを初期化
+<ul>
+<li> ev3_sensor_config(EV3_PORT_1, ULTRASONIC_SENSOR);<br />
+ポート1が超音波センサであることを設定</li>
+</ul>
+</li>
+<li> ポート1の超音波センサから距離情報を取得
+<ul>
+<li> int16_t color  distance =<br />
+ev3_ultrasonic_sensor_get_distance(EV3_PORT_1);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サンプルプログラム</strong>
+<ol>
+<li> <a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43388/mod_page/content/12/app_sonar.c">/sonar/app.c</a>：超音波センサの計測値（距離）をLCDに表示する。</li>
+<li><a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43388/mod_page/content/12/app_sonar_listen.c"> /sonar_listen/app.c</a>：超音波センサを用いて超音波を検出したかどうかをLCDに表示する。
+<ul>
+<li>上のリンクをクリックするとソースコードが表示されますが、文字化けしないように文字コード等を変更しているので、このコードをコピペしたものはビルドで失敗します。あくまで表示用なので注意してください。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong> 演習</strong>
+<ul>
+<li> 超音波センサをEV3（ポート1）に接続した後、サンプルプログラム１をEV3にアップロードし、動作を確認してください。</li>
+<li><strong>[レポート１]  </strong>計測値が25cm未満なら”Red”、25cmから50cm未満なら”Yellow”、それ以上なら”Blue”を表示するプログラムを作成してください。</li>
+</ul>
+</li>
+<li><b>参考</b>
+<ul>
+<li><a href="http://www.toppers.jp/ev3pf/EV3RT_C_API_Reference/group__ev3sensor.html">各種センサに関するAPI (EV3RT C  API Reference)</a></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

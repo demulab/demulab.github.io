@@ -1,0 +1,90 @@
+---
+layout: post
+title: PD実践：センサ演習２．音を鳴らそう！
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '23'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19610'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19241.html"
+---
+<p>EV3で音を鳴らす方法を学びます。</p>
+<ul>
+<li><strong>音に関するAPI</strong>
+<ul>
+<li>440Hz（ラの音）で100ミリ秒鳴らす
+<ul>
+<li> ev3_speaker_play_tone( 440, 100);</li>
+</ul>
+</li>
+<li> 音量を1に設定する（0～100、0はミュート）
+<ul>
+<li> ev3_speaker_set_volume(1);</li>
+</ul>
+</li>
+<li> 音を停止する
+<ul>
+<li> ev3_speaker_stop();</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サンプルプログラム</strong>
+<ol>
+<li>/sound_1/app.c：beep音を鳴らす。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_NoName_2020-9-28_21-33-44_No-00.png"><img class="aligncenter wp-image-19610 size-full" src="{{ site.baseurl }}/assets/images/SnapCrab_NoName_2020-9-28_21-33-44_No-00.png" alt="" width="971" height="404" /></a></li>
+<li>/sound_2/app.c：「カエルの歌」を奏でる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_NoName_2020-9-28_22-10-55_No-00.png"><img class="aligncenter size-full wp-image-19614" src="{{ site.baseurl }}/assets/images/SnapCrab_NoName_2020-9-28_22-10-55_No-00.png" alt="" width="906" height="1146" /></a></li>
+</ol>
+</li>
+<li><strong>演習</strong>
+<ul>
+<li>サンプルプログラム２をEV3にアップロードし、動作を確認しよう！</li>
+<li> サンプルプログラム２を改造し、自分の好きな曲のメロディ（音）を鳴らそう！</li>
+</ul>
+</li>
+<li><strong>参考</strong>
+<ul>
+<li><a href="http://www.toppers.jp/ev3pf/EV3RT_C_API_Reference/group__ev3api-speaker.html">音に関するAPI (EV3RT C API Reference)</a></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

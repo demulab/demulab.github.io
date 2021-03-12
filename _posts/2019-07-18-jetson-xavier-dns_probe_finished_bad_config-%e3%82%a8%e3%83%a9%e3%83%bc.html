@@ -1,0 +1,53 @@
+---
+layout: post
+title: 'Jetson Xavier: DNS_PROBE_FINISHED_BAD_CONFIG エラー'
+date: 2019-07-18 17:31:10.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '129'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_toc_novisible: '0'
+  update_level: high
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/15910.html"
+---
+<p>Jetson Xavier固有の問題ではないと思うが、DNS_PROBE_FINISHED_BAD_CONFIG エラーが出てどのウェブサイトにも接続できなくなった。解決方法のメモ。</p>
+<ul>
+<li>$ sudo rm /etc/resolv.conf</li>
+<li>$ sudo ln -s  /etc/run/resolvconf/resolv.conf  /etc/resolv.conf</li>
+<li>$ sudo resolvconf -u</li>
+<li>$ sudo service network-manager restart</li>
+</ul>
+<p>上の方法で一時的に良くなったが、またウェブサイトに繋がらなくなったのでDNSサーバーを設定した。</p>
+<ul>
+<li>システム設定→ネットワーク→有線→オプション→IPv4設定</li>
+<li>追加のDNSサーバー：8.8.8.8</li>
+<li>保存</li>
+</ul>
+<p>以上</p>

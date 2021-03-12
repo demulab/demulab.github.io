@@ -1,0 +1,71 @@
+---
+layout: post
+title: Magazine Basicのカスタマイズメモ
+date: 2009-06-07 13:59:41.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags:
+- WordPress
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '801'
+  image: http://demura.net/wordpress/wp-content/uploads/2009/06/magazine3.jpg
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/3824.html"
+---
+<p>Magazine Basicのカスタマイズメモです．</p>
+<p><strong>Magazine Basicのファイル修正</strong></p>
+<ul>
+<li>フォント
+<ul>
+<li>style.css
+<ul>
+<li>タイトル, h1, h2, blockquote</li>
+</ul>
+</li>
+<li>iestyle.css:</li>
+</ul>
+<ul>
+<li>#sub-navigation li { 		padding: 0 10px 1px 8px;  /* 上右下左　0 10px 1px 0; */ 		}</li>
+</ul>
+<ul>
+</ul>
+</li>
+</ul>
+<li>サイドバーの幅
+<ul>
+<li>style.php<br />
+ 標準では800と1024しか選べない．style.phpの先頭から25行目ぐらいまでを次のように変更．<br />
+ <a href="http://demura.net/wordpress/wp-content/uploads/2009/06/magazine3.jpg"><img class="alignnone size-medium wp-image-3840" title="magazine3" src="{{ site.baseurl }}/assets/images/2009/06/magazine3-300x225.jpg" alt="magazine3" width="300" height="225" /></a></li>
+</ul>
+</li>
+<li>日付
+<ul>
+<li>single.php</li>
+<li>layout/default.php, option3.php
+<ul>
+<li>the_time("Y年n月j日(D)")</li>
+</ul>
+</li>
+</ul>
+</li>
+<p><strong>Wordpressの設定変更</strong></p>
+<ul>
+<li>Magazine Basicはコメントが入れ子に対応しており，それを有効にするためには
+<ul>
+<li>Wordpressの設定→ディスカッション設定の「コメントを５階層までのスレッド（入れ子）形式にする．」にチェックを入れる</li>
+<li>「新しいコメントを各ページのトップにする．」を設定</li>
+</ul>
+</li>
+</ul>

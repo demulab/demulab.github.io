@@ -1,0 +1,71 @@
+---
+layout: post
+title: 物理エンジンで学ぶC言語[Step2:繰り返し] ODE-0.12対応
+date: 2012-05-28 16:46:30.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1958'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/9663.html"
+---
+<p>[caption id="attachment_4103" align="alignnone" width="534" caption="ピラミッド：ホームワーク６の答え"]<a href="http://demura.net/wordpress/wp-content/uploads/2009/06/pyramid1.jpg"><img src="{{ site.baseurl }}/assets/images/2012/05/pyramid1.jpg" alt="ピラミッド：ホームワークの答え" title="pyramid1" width="534" height="364" /></a>[/caption]</p>
+<p>Step1で物体の描画を学びました．今回は同じ形状のものを繰り返しても描画する方法を学びます．</p>
+<p>C言語の繰り返しにはfor文, while文，do while文がありましたね．ここではfor文を使い，上図のようなピラミッドを作ってみましょう．では、さっそくソースコードを見ていきます．</p>
+<p><!--more--><br />
+4行目から6行目は配列の初期化です．宣言と同時に値を代入することを初期化とよびます．<br />
+13行目のdsSetColor()は色を設定する関数です．引数は光の3原色の値を3個取り，１番目は赤，２番目は緑，３番目は青成分で0以上1以下の値となります．ちなみに，全部0だと黒，全部1.0だと白です．<br />
+15から18行目がfor文です．繰り返し回数はnum回，ここでは10行目でnumが11になっているので，11回ループが回ることになります．<br />
+16行目のp[1]は絶対座標系のy座標の値です．なお，p[0]にはx座標，p[2]にはz座標の値が入っていて，x座標は地面の中央マーカーから赤マーカーの方向，y座標は中央マーカーから青マーカーの方向，z座標は中央マーカーから上空方向になります．<br />
+17行目は直方体の描画です．<br />
+これで今回は終わりです．ホームワークは少し難しくします.</p>
+<pre class="brush:cpp">/* step2 物体の繰り返し表示　*/
+#include "dm2.h"
+ // Rは回転行列の各要素が格納される配列. 4, 8, 12番目の要素は高速化のために常に０
+double R&#91;12&#93; ={1,0,0,0, 0,1,0,0, 0,0,1,0};
+double p&#91;3&#93; = {0.0, 0.0, 0.05};   //　重心の位置(x,y,z)&#91;m&#93;
+double sides&#91;3&#93; = {0.1, 0.1, 0.1}; // 直方体の各辺の長さ(x, y, z)&#91;m&#93;
+
+void simLoop(int pause)        /***  シミュレーションループ　***/
+{
+　int i, num = 11;             // 直方体の数
+　dsSetColor(1.0, 0.0, 0.0);   // 赤色の設定(赤，緑，青）
+　for (i = 0; i &#60; num; i++) {
+　　p&#91;1&#93; = i * 0.2;       // p&#91;1&#93;は直方体重心のy軸成分
+　　dsDrawBox(p,R,sides); // 直方体の表示
+　}
+}
+
+int main()         /*** main関数 ***/
+{
+　dmLoop(800, 600, simLoop); // シミュレーションループ ウインドウの幅，高，ループ関数
+　return 0;
+}</pre>
+<p><strong>ホームワーク２</strong></p>
+<ol>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2012/05/step2-120530.zip">step2-120530.zip</a>をダウンロードして実行しよう．</li>
+<li>赤い直方体（この例では立方体）の色を青色に変えよう．
+<ul>
+<li>dsSetColor(float r, float g, float b)<br />
+r, g, bは光の３原色の赤、緑、青成分。値は0以上１以下。例えば、緑にしたかったらrとbは０、gには１を代入する。</li>
+</ul>
+</li>
+<li>緑色の直方体の位置を左にずらし，中央の直方体が原点に来るようにしましょう．</li>
+<li>上の問題で，直方体の色を黒から赤に徐々に変化させよう．つまり、左端は黒で、右に行くに従って赤の成分が大きくなり、右端は赤の直方体を表示させる。</li>
+<li>forループを２重にし，ｘ軸方向にも赤色の直方体を描画し，合計121個の直方体を表示しよう．</li>
+<li>forループを３重にし，z軸方向にも赤色の直方体を描画し，直方体の間隔も調整して上図のようなピラミッドを作ろう．</li>
+</ol>
+<p>昔エジプトに行きピラミッドに少しだけ登ったことがあります。遠くからはきれいな四角錐に見えますが、大きな立方体が積み重ねられできています。残念ながら今は登ることが禁止されているようですね。</p>
+<p style="text-align: right;">でむ</p>

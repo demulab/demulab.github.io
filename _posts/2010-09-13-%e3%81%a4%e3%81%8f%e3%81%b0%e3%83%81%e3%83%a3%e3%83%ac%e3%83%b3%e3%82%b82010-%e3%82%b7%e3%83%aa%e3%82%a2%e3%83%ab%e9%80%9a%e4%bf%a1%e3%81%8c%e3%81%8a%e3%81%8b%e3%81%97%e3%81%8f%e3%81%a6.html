@@ -1,0 +1,31 @@
+---
+layout: post
+title: 'つくばチャレンジ2010: シリアル通信がおかしくて'
+date: 2010-09-13 21:45:51.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  _edit_last: '2'
+  views: '740'
+  _wp_old_slug: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/7844.html"
+---
+<p>昨年はコンピュータのOSにUbuntu9.04を使い，特に問題なくロボットを動かすことができました．今年になりOSをUbuntu10.04にバージョンアップしたところ，今まで読めていたFOGが読めなくなったり，レーザスキャナをピッチ方向に振るためのサーボモータRobotis RX64を制御できなくなったり不具合が続出して困ったものです．原因は何だと思いますか？</p>
+<p><!--more--></p>
+<p>いろいろ調べたところ，どうやらシリアル通信に問題がありそうです．Boost::asioを使った以下の記事のクラスを使いプログラムを組み直したところ状況が改善されました．しばらくテストして問題ないようならシリアル通信にはこれを使っていきたいと思います．</p>
+<ul>
+<li><a href="http://www.webalice.it/fede.tft/serial_port/serial_port.html">Serial port and C++</a></li>
+</ul>
+<p style="text-align: right;">でむ</p>

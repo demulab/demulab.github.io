@@ -1,0 +1,280 @@
+---
+layout: post
+title: 仮想シミュレーション環境「箱庭」のインストール(Windows・Ubuntu20.04)
+date: 2020-08-17 22:42:13.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '18418'
+  views: '198'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/18771.html"
+---
+<p>仮想シミュレーション環境「箱庭」のインストールメモ。ターゲットCPUはV850。中の人に聞いたところ、ARM版はAPIも完全に実装されていないのでV850版の方が安定してお勧めらしい。ETロボコンシミュレータもV850で開発されているそうだ。なお、通信方法はUDPかMMAPのどちらかを選択できるが、中に人のアドバイスによるとロボット１台の場合は通信の遅延がないMMAPがお勧めなので、PD実践の授業ではそちらを利用する。本家サイトではWSLにUbuntu18.04のインストールを説明しているが、Ubuntu20.04でもできたので、その方法をこのページでは説明する。なお、本家サイトではLinxu、Macのインストール法の説明もある。</p>
+<p><strong>本家サイト</strong></p>
+<ul>
+<li><a href="https://toppers.github.io/hakoniwa/prototypes/single-robot/">TOPPERS/箱庭 単体ロボット向け</a></li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>WSLのインストール
+<ul>
+<li>WSL2はWindowsのUnityとUDP通信ができないので、以下のリンクに従ってWSLをインストールする。Ubuntuはバージョン20.04を選択する。
+<ul>
+<li><a href="https://qiita.com/Aruneko/items/c79810b0b015bebf30bb">https://qiita.com/Aruneko/items/c79810b0b015bebf30bb</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Rubyのインストール
+<ul>
+<li>WSLのUbuntu20.04のターミナル(端末)を起動して以下のコマンドを実行する。
+<ul>
+<li><code>$ sudo apt install ruby</code></li>
+</ul>
+</li>
+<li>Ubuntu18.04では必要ないが、Ubuntu20.04はRubyのバージョンが上がったのでビルドに必要なshellライブラリをインストールする。ASP3カーネルの最新版では対応済みなのでそのうち箱庭のアップデートでこの作業は必要なくなるらしい（中の人情報）
+<ul>
+<li><code>$ sudo gem install shell</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>athrill2のインストール
+<ul>
+<li>Ubuntuの端末を起動する。</li>
+<li>ダウンロード
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/toppers/athrill.git</code></li>
+<li><code>$ git clone https://github.com/toppers/athrill-target-v850e2m.git</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ sudo apt install build-essential</code></li>
+<li><code>$ cd ~/src/athrill-target-v850e2m/build_linux</code></li>
+<li><code>$ make timer32=true clean</code></li>
+<li><code>$ make timer32=true</code></li>
+<li>ファイルの確認
+<ul>
+<li><code>$ ls -l ../../athrill/bin/linux/athrill2</code></li>
+<li>上のコマンドを実行して、以下のように表示されば成功
+<ul>
+<li>-rwxr-xr-x 1 user group 3889056 7月 1 11:04 ../../athrill/bin/linux/athrill2*</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>設定
+<ul>
+<li>エディタで~/.bashrcを開き以下の行を末尾に加え保存する。
+<ul>
+<li>export PATH=/home/ユーザ名/src/athrill/bin/linux:${PATH}</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>linux版64bit gccコンパイラのインストール
+<ul>
+<li>以下のサイトからコンパイラとライブラリのファイルathrill-gcc-package.tar.gzを/home/ユーザ名/srcにダウンロードする。なお、Windowsのchromeやedgeなどのブラウザを使ってダウンロードした場合は、Windows上での保存先は"\\wls$\Ubuntu-20.04\home\ユーザ名\src"となる。
+<ul>
+<li><a href="https://github.com/toppers/athrill-gcc-v850e2m/releases/tag/v1.1">https://github.com/toppers/athrill-gcc-v850e2m/releases/tag/v1.1</a></li>
+</ul>
+</li>
+<li>展開
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ tar xzvf athrill-gcc-package.tar.gz</code></li>
+<li><code>$ cd athrill-gcc-package</code></li>
+<li><code>$ tar xzvf athrill-gcc.tar.gz</code></li>
+<li>以下のコマンドを実行して次のように表示されれば成功。
+<ul>
+<li><code>$ ls  usr/local/athrill-gcc</code>
+<ul>
+<li>bin include lib libexec share v850-elf</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> 移動
+<ul>
+<li>以下のコマンドを実行してusr/local/athrill-gccを/usr/localに移動する。
+<ul>
+<li><code>$ sudo mv usr/local/athrill-gcc  /usr/local</code></li>
+</ul>
+</li>
+<li>エディタを使って~/.bashrcの一番下の行に以下を追加して保存する。
+<ul>
+<li>export PATH=/usr/local/athrill-gcc/bin/:${PATH}<br />
+export LD_LIBRARY_PATH=/usr/local/athrill-gcc:/usr/local/athrill-gcc/lib:${LD_LIBRARY_PATH}</li>
+</ul>
+</li>
+<li>以下のコマンドを使って追加したパスを有効化する。
+<ul>
+<li><code>$ source  ~/.bashrc</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>箱庭用EV3RT開発環境のインストール
+<ul>
+<li>ダウンロード・インストール
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/toppers/ev3rt-athrill-v850e2m.git</code></li>
+</ul>
+</li>
+<li>サンプルプログラムのダウンロード
+<ul>
+<li>$ cd ~/src</li>
+<li>$ git clone https://github.com/toppers/hakoniwa-scenario-samples.git</li>
+<li>$ cp -r hakoniwa-scenario-samples/single-robot/* ~/src/ev3rt-athrill-v850e2m/sdk/workspace</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Unityのインストール
+<ul>
+<li><a href="https://demura.net/education/18510.html">このリンクに従ってインストールする。</a></li>
+</ul>
+</li>
+<li> Unityパッケージのダウンロード
+<ul>
+<li>Cドライブ直下にUnityというフォルダーを作成する。</li>
+<li> 以下のパッケージをUnityフォルダーにダウンロードする。
+<ul>
+<li>single-robot-HackEV.unitypackage(v2.0)：HackEVを模した走行体モデル</li>
+<li><a href="https://github.com/toppers/hakoniwa-Unity-HackEV/releases/tag/v2.0">https://github.com/toppers/hakoniwa-Unity-HackEV/releases/tag/v2.0</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>新規プロジェクトの作成
+<ul>
+<li>Unityの左欄の「プロジェクト」をクリックすると次の画面になるので「新規作成」をクリックして新しいプロジェクトを作成する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity16-1.png"><img class="aligncenter size-full wp-image-18416" src="{{ site.baseurl }}/assets/images/2020/08/unity16-1.png" alt="" width="1006" height="633" /></a></li>
+<li>次の画面になるので、「3D」が選択されていることを確認し、プロジェクト名に「test」、保存先は「C:\Unity」にして「作成」をクリックして新しいプロジェクトを作成する。<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity21.png"><img class="aligncenter size-full wp-image-18421" src="{{ site.baseurl }}/assets/images/2020/08/unity21.png" alt="" width="886" height="524" /></a></li>
+<li>次のようにUnityが起動する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity18.png"><img class="aligncenter size-large wp-image-18418" src="{{ site.baseurl }}/assets/images/2020/08/unity18-1024x520.png" alt="" width="1024" height="520" /></a></li>
+</ul>
+</li>
+<li>Unityパッケージのインポート
+<ul>
+<li>Unityのメニュバーから「Assets」→「Import Package」→「Custom package...」をクリックして、先ほどダウンロードしたパッケージ「single-robot-HackEV.unitypackage」を開く。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity1-2.png"><img class="aligncenter size-full wp-image-18489" src="{{ site.baseurl }}/assets/images/2020/08/unity1-2.png" alt="" width="986" height="573" /></a></li>
+<li>Import Unity Package画面が開くので、そのまま「Import」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity20.png"><img class="aligncenter size-full wp-image-18420" src="{{ site.baseurl }}/assets/images/2020/08/unity20.png" alt="" width="390" height="621" /></a></li>
+<li>「Scenes]のToopers_Coursesをダブルクリックすると左欄にToppers_Course 、Hakoniwa、Robot、envが現れる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/hakoniwa1.png"><img class="aligncenter size-large wp-image-18550" src="{{ site.baseurl }}/assets/images/2020/08/hakoniwa1-1024x599.png" alt="" width="1024" height="599" /></a></li>
+</ul>
+</li>
+</ul>
+<p><strong>設　定</strong></p>
+<ul>
+<li> シミュレーション設定
+<ul>
+<li>Unityメニューの「Edit」→「Project Settings...」の左欄の「Time」をクリックし、Fixed timestepとTime Scaleを以下のように変える。
+<ul>
+<li>Fixed Timestep: 0.001</li>
+<li>Time Scale: 0.6<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity3-1.png"><img class="aligncenter size-full wp-image-18492" src="{{ site.baseurl }}/assets/images/2020/08/unity3-1.png" alt="" width="683" height="545" /></a></li>
+</ul>
+</li>
+<li>同じく「Project Settings」の「Quality」をクリックして、OtherのVsync Countを以下のように設定する。
+<ul>
+<li>VSync Count: Don't Sync<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity4-1.png"><img class="aligncenter size-full wp-image-18493" src="{{ site.baseurl }}/assets/images/2020/08/unity4-1.png" alt="" width="683" height="624" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li> 通信方法の設定
+<ul>
+<li>MMAPとUDPの２つの設定法がある。PD実践ではMMPを使うので、ここではその説明のみをする。
+<ul>
+<li> 準備
+<ul>
+<li> 以下のリンクをクリックしてファイルをC:\Unityにダウンロードして解凍する。
+<ul>
+<li><a href="https://github.com/toppers/hakoniwa-scenario-samples/archive/master.zip">https://github.com/toppers/hakoniwa-scenario-samples/archive/master.zip</a></li>
+</ul>
+</li>
+<li>解凍すると以下のフォルダが作られる。
+<ul>
+<li>C:\Unity\hakoniwa-sceneario-samples-master</li>
+</ul>
+</li>
+<li>C:\Unity\hakoniwa-sceneario-samples-master\single-robot\line_traceをC:\Unityにコピーする。コピーが成功すると以下のディレクトリができる。
+<ul>
+<li>C:\Unity\line_trace</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>「Player」のOther SettingsのScripting Define Symbolsを以下のように設定する。
+<ul>
+<li>Scripting Define Symbols: VDEV_IO_MMAP<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/mmap1.png"><img class="aligncenter size-full wp-image-18541" src="{{ site.baseurl }}/assets/images/2020/08/mmap1.png" alt="" width="791" height="495" /></a></li>
+</ul>
+</li>
+<li>左欄にあるHierarchyビューからRobot→RobotModelをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/mmap2-1.png"><img class="aligncenter size-large wp-image-18543" src="{{ site.baseurl }}/assets/images/2020/08/mmap2-1-1024x599.png" alt="" width="1024" height="599" /></a></li>
+<li>右欄のIo Writer(Script)とIo Reader(Script)のFilepathを次のように設定する。設定したらメニューバーのFile -&gt; Saveで保存する。なお、このファイルをWSLのUbuntuから使用時にアクセスする。
+<ul>
+<li>Io Writer: C:\Unity\line_trace\unity_mmap.bin</li>
+<li>Io Reader: C:\Unity\line_trace\athrill_mmap.bin</li>
+</ul>
+</li>
+<li>メニューバーFile-&gt;Saveで設定を保存する。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>以上で終わり。お疲れ様！</p>

@@ -1,0 +1,67 @@
+---
+layout: post
+title: 'Ubuntu16.04: OpenCV3.2.0インストール'
+date: 2017-10-04 19:28:40.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _oembed_5f3820b4bb2b72a26c4730fe68b4e41c: "{{unknown}}"
+  _oembed_bfb72ad07d0c02ef7a1ed0340d943bb4: "{{unknown}}"
+  _edit_last: '2'
+  _oembed_c3a24d88c5e29adcadca08bff5227eba: "{{unknown}}"
+  views: '2421'
+  _oembed_23b481f5481508e70323462e6375c616: "{{unknown}}"
+  _oembed_ce4c26a8cfa7e278a32e61164fc3e5f3: "{{unknown}}"
+  _oembed_e29cba18da5b08312b6237ea632df0e7: "{{unknown}}"
+  _oembed_619ca0f782b54455895d0195d29f74e9: "{{unknown}}"
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/13738.html"
+---
+<p>Ubuntu16.04にOpenCV3.2.0をソースからビルドしインストールしたときのメモ。以下のサイト等を参考にした。なお、OpenCV3.3.0は以下の手順ではエラーが出てビルドができないので注意。</p>
+<p>http://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html</p>
+<p>準備</p>
+<ul>
+<li>sudo apt install build-essential cmake git</li>
+<li>sudo apt install pkg-config unzip ffmpeg qtbase5-dev python-dev python3-dev python-numpy python3-numpy</li>
+<li>sudo apt install libopencv-dev libgtk-3-dev libdc1394-22 libdc1394-22-dev libjpeg-dev libpng12-dev libtiff5-dev libjasper-dev</li>
+<li>sudo apt install libavcodec-dev libavformat-dev libswscale-dev libxine2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev</li>
+<li>sudo apt install libv4l-dev libtbb-dev libfaac-dev libmp3lame-dev libopencore-amrnb-dev libopencore-amrwb-dev libtheora-dev</li>
+<li>sudo apt install libvorbis-dev libxvidcore-dev v4l-utils vtk6</li>
+<li>sudo apt install liblapacke-dev libopenblas-dev libgdal-dev checkinstall</li>
+</ul>
+<p>ソースコードのダウンロード</p>
+<ul>
+<li>cd</li>
+<li>mkdir src</li>
+<li>cd src</li>
+<li>git clone https://github.com/opencv/opencv.git</li>
+<li>cd opencv</li>
+<li>git checkout 3.2.0</li>
+<li>cd ~/src</li>
+<li>git clone https://github.com/opencv/opencv_contrib.git</li>
+<li>cd opencv_contrib</li>
+<li>git checkout 3.2.0</li>
+</ul>
+<p>ソースのビルド</p>
+<ul>
+<li>cd ~/src/opencv</li>
+<li>mkdir build</li>
+<li>cd build</li>
+<li>cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=~/src/opencv_contrib/modules  -D BUILD_EXAMPLES=ON  -D WITH_OPENGL=ON ..</li>
+<li>make -j 2</li>
+<li>sudo make install</li>
+<li>sudo /bin/bash -c 'echo "/usr/local/lib" &gt; /etc/ld.so.conf.d/opencv.conf'</li>
+<li>sudo  ldconfig</li>
+</ul>
+<p>以上</p>

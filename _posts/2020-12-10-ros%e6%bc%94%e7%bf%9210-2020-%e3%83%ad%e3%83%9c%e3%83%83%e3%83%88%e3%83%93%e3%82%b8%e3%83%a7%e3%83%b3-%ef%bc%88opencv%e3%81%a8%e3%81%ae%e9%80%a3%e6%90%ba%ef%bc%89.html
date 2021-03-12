@@ -1,0 +1,243 @@
+---
+layout: post
+title: 'ROS演習10-2020: ロボットビジョン （OpenCVとの連携）'
+date: 2020-12-10 09:39:20.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '14070'
+  views: '65'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _wp_old_date: '2020-12-17'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19698.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2017/12/coke.png"><img class="aligncenter size-full wp-image-14070" src="{{ site.baseurl }}/assets/images/2020/12/coke.png" alt="" width="800" height="190" /></a></p>
+<p>&nbsp;</p>
+<p>この記事は私が金沢工業大学ロボティクス学科で担当している2020年度後学期講義ロボットプログラミングⅡ用です。今回はcv_bridgeを使います。ROSでOpenCVを使いgazeboシミュレータのRGB-Dセンサから取得した画像から赤色の抽出とエッジ抽出を行います。</p>
+<p>この記事は、以下のROSチュートリアルと「ROSで始めるロボットプログラミング、小倉著」を参考にしています。</p>
+<ul>
+<li><a href="http://wiki.ros.org/cv_bridge/Tutorials/UsingCvBridgeToConvertBetweenROSImagesAndOpenCVImages">Converting between ROS images and OpenCV images (C++)</a></li>
+</ul>
+<p>ソース：ROSのチュートリアルと「ROSで始めるロボットプログラミング」をベースに改変しています。</p>
+<pre class="brush:cpp;"> 
+#include &lt;ros/ros.h&gt;
+#include &lt;image_transport/image_transport.h&gt;
+#include &lt;cv_bridge/cv_bridge.h&gt;
+#include &lt;sensor_msgs/image_encodings.h&gt;
+#include &lt;opencv2/imgproc/imgproc.hpp&gt;
+#include &lt;opencv2/highgui/highgui.hpp&gt;
+
+static const std::string OPENCV_WINDOW = "Image window";
+
+class ImageConverter
+{
+  ros::NodeHandle nh_;
+  image_transport::ImageTransport it_;
+  image_transport::Subscriber image_sub_;
+  image_transport::Publisher image_pub_;
+
+public:
+  // コンストラクタ
+　ImageConverter()
+    : it_(nh_)
+  {
+    // カラー画像をサブスクライブ                                                                
+    image_sub_ = it_.subscribe("/create1/camera/image_raw", 1,
+      &amp;ImageConverter::imageCb, this);
+    // 処理した画像をパブリッシュ                                                                                          
+    image_pub_ = it_.advertise("/image_topic", 1);
+ }
+
+  // デストラクタ
+  ~ImageConverter()
+  {
+    cv::destroyWindow(OPENCV_WINDOW);
+  }
+
+  // コールバック関数
+  void imageCb(const sensor_msgs::ImageConstPtr&amp; msg)
+  {
+    cv_bridge::CvImagePtr cv_ptr, cv_ptr2, cv_ptr3;
+ try
+    {
+      // ROSからOpenCVの形式にtoCvCopy()で変換。cv_ptr-&gt;imageがcv::Matフォーマット。
+      cv_ptr    = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+      cv_ptr3   = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);
+    }
+    catch (cv_bridge::Exception&amp; e)
+    {
+      ROS_ERROR("cv_bridge exception: %s", e.what());
+      return;
+    }
+
+    cv::Mat hsv_image, color_mask, gray_image, cv_image2, cv_image3;
+    // RGB表色系をHSV表色系へ変換して、hsv_imageに格納
+    cv::cvtColor(cv_ptr-&gt;image, hsv_image, CV_BGR2HSV);
+
+    // 色相(Hue), 彩度(Saturation), 明暗(Value, brightness) 
+    // 指定した範囲の色でマスク画像color_mask(CV_8U:符号なし8ビット整数)を生成  
+    // マスク画像は指定した範囲の色に該当する要素は255(8ビットすべて1)、それ以外は0                                                      
+    cv::inRange(hsv_image, cv::Scalar(150, 100, 50, 0) , cv::Scalar(180, 255, 255, 0), color_mask);
+    // ビット毎の論理積。マスク画像は指定した範囲以外は0で、指定範囲の要素は255なので、ビット毎の論理積を適用すると、指定した範囲の色に対応する要素はそのままで、他は0になる。
+    cv::bitwise_and(cv_ptr-&gt;image, cv_ptr-&gt;image, cv_image2, color_mask);
+    // グレースケールに変換
+    cv::cvtColor(cv_ptr-&gt;image, gray_image, CV_BGR2GRAY);
+    // エッジを検出するためにCannyアルゴリズムを適用
+    cv::Canny(gray_image, cv_ptr3-&gt;image, 15.0, 30.0, 3);
+
+    // ウインドウに円を描画                                                
+    cv::circle(cv_ptr-&gt;image, cv::Point(100, 100), 20, CV_RGB(0,255,0));
+
+    // 画像サイズは縦横1/4に変更
+    cv::Mat cv_half_image, cv_half_image2, cv_half_image3;
+    cv::resize(cv_ptr-&gt;image, cv_half_image,cv::Size(),0.25,0.25);
+    cv::resize(cv_image2, cv_half_image2,cv::Size(),0.25,0.25);
+    cv::resize(cv_ptr3-&gt;image, cv_half_image3,cv::Size(),0.25,0.25);
+
+    // ウインドウ表示                                                                         
+    cv::imshow("Original Image", cv_half_image);
+    cv::imshow("Result Image", cv_half_image2);
+    cv::imshow("Edge Image", cv_half_image3);
+    cv::waitKey(3);
+ 
+    // エッジ画像をパブリッシュ。OpenCVからROS形式にtoImageMsg()で変換。                                                            
+    image_pub_.publish(cv_ptr3-&gt;toImageMsg());
+  }
+};
+
+int main(int argc, char** argv)
+{
+  ros::init(argc, argv, "image_converter");
+  ImageConverter ic;
+  ros::spin();
+  return 0;
+}
+</pre>
+<p>&nbsp;</p>
+<p><b> 1.  準備<br />
+</b></p>
+<ul>
+<li>opencv3のパッケージをインストールする。
+<ul>
+<li>sudo apt update</li>
+<li>sudo apt upgrade</li>
+<li>sudo apt install libopencv-dev</li>
+<li>proxy環境下などでatpでエラーが出る場合は<a href="https://demura.net/misc/16564.html">ここを参照して設定する</a>。</li>
+</ul>
+</li>
+<li> プログラムのダウンロード
+<ul>
+<li>$  cd  ~/src/robot_programming2</li>
+<li><span style="font-size: 13.2px;">$  git pull</span>
+<ul>
+<li>git pullでcv_bridge_tutorialをダウンロードできない場合は以下の作業を行う。
+<ul>
+<li>学内
+<ul>
+<li>$ cd ~/src</li>
+<li>$ rm ~/src/robot_programming2</li>
+<li>$ git clone https://github.com/demulab/robot_programming2.git</li>
+</ul>
+</li>
+<li>学外
+<ul>
+<li>$ cd ~/src</li>
+<li>$ rm ~/src/robot_programming2</li>
+<li>$ git clone https://github.com/demulab/robot_programming2.git -c http.proxy=””</li>
+</ul>
+</li>
+<li>~/catkin_ws/srcの下にコピーする。
+<ul>
+<li>$ cp -r ~/src/robot_programming2/cv_bridge_tutorial  ~/catkin_ws/src</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ cd ~/catkin_ws</li>
+<li>$ catkin  build cv_bridge_tutorial
+<ul>
+<li>cv_bridgeパッケージでエラーが出る場合
+<ul>
+<li>~/catkin_ws/src/vision_opencv/cv_bridgeディレクトリがあるか確認する。cv_bridgeはパッケージとしてインストールしているので、これは必要ないので以下のコマンドで~/tmpディレクトリを作り移動する。
+<ul>
+<li>$ mkdir ~/tmp</li>
+<li>$ mv  ~/catkin_ws/src/vision_opencv/cv_bridge  ~/tmp</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><b><br />
+２. 実行<br />
+</b></p>
+<ul>
+<li>$ roslaunch ca_gazebo create_empty_world.launch</li>
+<li>$ rosrun cv_bridge_tutorial cv_bridge_tutorial</li>
+<li>起動したgazeboの環境は何もないempty_worldなので、GazeboのInsertタブをクリックして、その中のCoke Canを選択する。ロボットの前方1mの位置をクリックするとそこに現れます。次のコマンドでロボットを動かしてカメラ画像が変わるのを確認しよう。
+<ul>
+<li>$ roslaunch ca_tools keyboard_teleop.launch</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><b>３．演習<br />
+</b></p>
+<ul style="list-style-type: circle;">
+<li>シミュレータにコカ・コーラの缶(Coke Can)を挿入して、それを追うプログラムを作ろう
+<ul>
+<li>コーラ缶を挿入するためにはGazeboのInsertタブをクリックして、その中のCoke Canを選択して、Gazebo上の配置したい場所をクリックするとそこに現れます。</li>
+<li>コーラ缶の位置を推定する方法はいろいろありますが、ここではマスクをかけた赤い画像の重心を求めることにします。OpenCVで画像の各画素にアクセスする方法は次のリンクを参考にしてください。
+<ul>
+<li><a href="http://demura.net/%E6%9C%AA%E5%88%86%E9%A1%9E/13786.html">RobotVision勉強会：第３回 カメラ・動画の読込みと画素へのアクセス</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

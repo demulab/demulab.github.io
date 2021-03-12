@@ -1,0 +1,137 @@
+---
+layout: post
+title: 'GAZEBO: 簡単なプラグインプログラミング'
+date: 2014-10-08 23:03:59.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '4533'
+  _oembed_a9df6578aeb4c1f1e89b990fe7e636e0: "{{unknown}}"
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/11253.html"
+---
+<p>この記事が私が担当しているロボットプログラミングⅡの講義用です。<br />
+今回はgazeboのプログラミングを初体験しましょう。<br />
+ここではgazebo単体で利用できる簡単な方法(プラグイン)を説明します。<br />
+次の手順に従って作業しましょう。</p>
+<p>本記事は<a href="http://www.gazebosim.org/tutorials?tut=plugins_hello_world&amp;cat=write_plugin">GAZEBO.orgのチュートリアル</a>を改変しています。</p>
+<p>1. 作業ディレクトリの作成<br />
+端末を開き、以下のコマンドを実行する（$は打ち込まない）。ロボットプログラミングの演習では~/prog2ディレクトリ（フォルダ）の中にいろいろなプログラムを作っていく。<br />
+<code><br />
+$ cd<br />
+$ mkdir prog2<br />
+$ cd prog2<br />
+$ mkdir 1hello<br />
+$ cd 1hello<br />
+$ gedit hello_world.cc<br />
+</code><br />
+2. プラグイン用ソースコードの作成<br />
+プラグインとなるC++言語のソースコード(拡張子cc)を作成する。</p>
+<p>以下のプログラムを「1.作業ディレクトリの作成」で開いたgedit（エディター）にコピペしてhello_world.ccを保存する。<br />
+<span style="color: #ff0000;">　注：コピペするときは、下プログラムの右上にあるプリンタアイコンの左にあるView Sourceアイコンをクリックして、ソースを表示して、それをコピペすること。そうしないと、コンパイルと時のエラーになやまされることになる。</span></p>
+<pre class="brush:cpp;">#include &#60;gazebo/gazebo.hh&#62; // gazebo用のヘッダーファイル
+namespace gazebo
+{
+  class WorldPluginTutorial : public WorldPlugin
+  {
+    public: WorldPluginTutorial() : WorldPlugin()
+    {
+      printf("Hello World!\n"); // ユーザがプログラムするのはこの行だけ
+    }
+
+    public: void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf)
+    {
+       //今回はSDF(Simulation Description Format)ファイル
+       // を読み込まないでここは空
+    }
+  };
+  GZ_REGISTER_WORLD_PLUGIN(WorldPluginTutorial); // プラグインの登録
+}
+</pre>
+<p>コピペしたらgeditの「保存」ボタンをクリックして~/prog2/1hello/の中に保存し、geditメニューバーの「ファイル(F)」→「終了(Q)」でgeditを終了する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2014/10/gedit_hozon.png"><img src="{{ site.baseurl }}/assets/images/2014/10/gedit_hozon-300x214.png" alt="gedit_hozon" width="300" height="214" class="aligncenter size-medium wp-image-11298" /></a><br />
+3. ワールドファイルの作成<br />
+シミュレーションの世界を設定するワールドファイル(拡張子はworld)を作成する。先程、geditを保存したディレクトリ(~/prog2/1hello/)で、次のコマンドを端末で実行する。<br />
+<code><br />
+$ gedit hello.world<br />
+</code><br />
+geditのウインドウが新たに開くので、以下の<span style="color: #ff0000;">ソースコード（２番の注参照）</span>をコピペ、保存し、geditを終了する。４行目のlibhello_world.soはhello_world.ccをコンパイルすると自動的に生成される。</p>
+<pre class="brush:cpp;">&#60;?xml version="1.0"?&#62;
+&#60;sdf version="1.4"&#62;
+  &#60;world name="default"&#62;
+    &#60;plugin name="hello_world" filename="./build/libhello_world.so"/&#62;
+  &#60;/world&#62;
+&#60;/sdf&#62;
+</pre>
+<p>4. コンパイル設定ファイルの作成<br />
+gazeboではソースコードをコンパイル(ビルド）するのにcmakeというシステムを使う。<br />
+先程から使っている端末で以下のコマンドを実行しgeditを起動する。<br />
+<code><br />
+$ gedit CMakeLists.txt<br />
+</code><br />
+CMakeLists.txtはcmakeの設定ファイル。次の<span style="color: #ff0000;">ソースコード（２番の注参照）</span>をgeditにコピペし、CMakeLists.txtを保存する。保存場所は２番、３番と同じ~/prog2/1helloディレクトリ。保存したらgeditを終了する。</p>
+<pre class="brush:cpp;">cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+
+find_package(Boost REQUIRED COMPONENTS system)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+
+include (FindPkgConfig)
+if (PKG_CONFIG_FOUND)
+  pkg_check_modules(GAZEBO gazebo)
+endif()
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+
+add_library(hello_world SHARED hello_world.cc)
+target_link_libraries(hello_world ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
+</pre>
+<p>5．コンパイル<br />
+以下のコマンドを実行し、ソースコードをメイクする。<br />
+<code><br />
+$ cd ~/prog2/1hello<br />
+$ mkdir build<br />
+$ cd build<br />
+$ cmake ../<br />
+$ make<br />
+</code></p>
+<p>cmakeのコマンドがないと怒られたら、以下のコマンドを実行し、再度、上のコマンドを実行する。<br />
+<code><br />
+$ sudo apt-get install cmake<br />
+</code></p>
+<p>では、実行しよう！以下のコマンドを実行し、端末にhello world!と表示されれば成功。<br />
+<code><br />
+$ cd ~/prog2/1hello<br />
+$ gzserver hello.world --verbose<br />
+</code><br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2014/10/hello.png"><img src="{{ site.baseurl }}/assets/images/2014/10/hello-300x144.png" alt="hello" width="300" height="144" class="aligncenter size-medium wp-image-11263" /></a></p>
+<p>終わり</p>
+<p>おまけ：上の方法でうまく行かない場合は、<a href="http://demura.net/wordpress/wp-content/uploads/2014/10/1hello.tgz">1hello.tgz</a>を~/prog2にダウンロードし、次のコマンドで解凍し、上の説明に戻って実行しよう。<br />
+<code><br />
+$ cd ~/prog2<br />
+$ tar xvzf  1hello.tgz</p>
+<hr />
+<p><strong>Exercise</strong></p>
+<p>1. 上の手順と同様にして"I Love KIT"と表示するプログラムを作ろう（標準出力の復習）。<br />
+&lt;ヒント&gt; まず、~/prog2/ex1-kitというフォルダを作り、その中で作業しなさい。<br />
+kit.cc、kit.world、CMakeLists.txtの３個のファイルを作成する。</p>
+<p>2. 上の手順と同様にして以下の星印を表示しよう（for文の復習）。<br />
+&lt;ヒント&gt; まず、~/prog2/ex1-starというフォルダを作り、その中で作業しなさい。<br />
+star.cc、star.world、CMakeLists.txtの３個のファイルを作成する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2014/10/star.png"><img src="{{ site.baseurl }}/assets/images/2014/10/star-300x217.png" alt="star" width="300" height="217" class="aligncenter size-medium wp-image-11274" /></a></p>
+<p>3. 上の手順と同様にして、キーボードから1~3が入力されたらWinter、4~6ならSpring、7~9ならSummer、10~12ならFallと表示するプログラムをif文を使い実装しよう（標準入力、if文の復習）。</p>
+<p>4.  上の手順と同様にして、３番目の問題をswitch文で実装しよう（switch文の復習）。</p>
+<p>5. 上の手順と同様にして、３次元ベクトルa(0.1, 0.2, 0.3)とb(0.3, 0.2, 0.1)の内積を計算するプログラムを実装しよう（配列の復習）。</p>
+<p>以上</code></p>

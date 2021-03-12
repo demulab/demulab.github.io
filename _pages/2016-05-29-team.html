@@ -1,0 +1,111 @@
+---
+layout: page
+title: The demura.net team
+date: 2016-05-29 13:10:27.000000000 +09:00
+type: page
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  _wp_page_template: default
+  views: '5729'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/team"
+---
+<p>demura.netチームのウェブサイトへようこそ！ demura.netチームは金沢工業大学のプロジェクトの一つで、世界で活躍するエンジニアの輩出を目指しています。現在、６月末にドイツで開催される世界大会へ向けて急ピッチで開発を進めています。授業関係の情報は、上のナビゲーションバーの「授業」と「Ｌｅｃｔｕｒｅ」のリンクを参照してください。</p>
+<ul>
+<li><strong>Member</strong>
+<ul>
+<li>KIT ロボティクス学科： 永島  一輝、榎本 光洋、山川 武聖</li>
+<li>夢考房Junior  SROP研究員　出村 賢聖</li>
+</ul>
+</li>
+<li><strong>Adviser</strong>
+<ul>
+<li>KIT ロボティクス学科 教授 出村 公成</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><a href="https://youtu.be/cR79BZigk7s">Qualification Video</a></li>
+</ul>
+<p><iframe src="https://www.youtube.com/embed/cR79BZigk7s" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>
+<p><iframe src="https://www.youtube.com/embed/VcnqB33cgwc" width="420" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>
+<ul>
+<li><strong>Vision</strong></li>
+</ul>
+<p style="text-align: justify;">demura.netチームは2012年からロボカップジャパンオープン@Homeリーグへ出場し、2015年からはRoboCup世界大会に出場しています。世界大会では初出場ながら、世界９位（日本勢トップ）の成績を収めることができました。<br />
+我々のチームのビジョンは「かわいいロボットを創り、世界をハッピーする」です。日本は本格的な少子高齢化時代に突入し、我々は、かわいいロボットがその問題を解決する切り札と考えており、生活支援ロボット Happy Miniを開発しています。Happy Miniは幼児をイメージしたかわいらしいイメージと元気のでる黄色をボディカラーに採用し、安全性と持ち運び安さを考慮して、小型・軽量です。家族に愛されるペットのようなロボットの実現を目指しています。</p>
+<ul>
+<li><strong>Robot</strong></li>
+</ul>
+<p style="text-align: justify;">(1) Hardware</p>
+<p style="text-align: justify;">Happy Miniのデザインコンセプトは、かわいい、シンプル、安全、ユーザビリティです。かわいいがMiniにとってもっとも重要なコンセプトです。Miniは幼児をモデルとしたロボットで、RoboCup@Home世界大会に出場している他のロボットと同様にその能力は限定的です。  ですから、Miniには人間のヘルプが必要で、かわいい外見が重要なのです。MiniのエクステリアはFig.1に示すような丸みをおび、ビビットな黄色です。Fig.1 (c)の Kenseiko-chanは、我々が開発した第1世代の生活支援ロボットで、Happy Miniは2015年の世界大会へ出場するために開発されました。技術的な情報は <a href="http://demura.net/robocupathome/attachment/demuratdp20160219-final" rel="attachment wp-att-12604">team description paper</a>をご覧ください。</p>
+<p><a href="http://demura.net/robocupathome/attachment/mini" rel="attachment wp-att-12603"><img src="{{ site.baseurl }}/assets/images/2016/05/mini.jpg" alt="mini" width="628" height="334" class="aligncenter size-full wp-image-12603" /></a></p>
+<p style="text-align: center;">Fig.1   Happy Mini (Second generation) and Kenseiko-chan (First generantion)</p>
+<p>(2) Software</p>
+<p>ソフトウェアシステムはロボットミドルウェアROSとディープラーニングのフレームワークCaffeをベースにしています。物体検出や人物検出には、 HaarCascade classifier, Flat Clustering filtering, Deep Neural Networks (DNNs)などのアルゴリズムを使用しています(Fig.2). 人の性別識別には、Nesterov accelerated gradient と Convolution DNNsを用いています。</p>
+<p style="text-align: center;"><a href="http://demura.net/robocupathome/attachment/face" rel="attachment wp-att-12616"><img src="{{ site.baseurl }}/assets/images/2016/05/face.jpg" alt="face" width="603" height="167" class="size-full wp-image-12616" /><br />
+</a>Fig.2   Face recognition using HarrCascade and DNN</p>
+<p style="text-align: left;">シミュレータ（Fig.3)はGazeboを用い、Happy Miniの３次元モデルはURDF (Universal Robot-ics Description Format)ファイルと3D CADから3Dメッシュをインポートして制作しました。</p>
+<p style="text-align: center;"><a href="http://demura.net/robocupathome/attachment/simulator" rel="attachment wp-att-12617"><img src="{{ site.baseurl }}/assets/images/2016/05/simulator.jpg" alt="simulator" width="618" height="177" class="aligncenter size-full wp-image-12617" /></a></p>
+<p style="text-align: center;">Fig.3  The Happy Mini Simulator using Gazebo</p>
+<ul>
+<li><strong>Results in RoboCup@Home</strong>
+<ul>
+<li>ロボカップジャパンオープン2016: 優勝</li>
+<li>RoboCup2015世界大会：9位</li>
+<li>ロボカップジャパンオープン2015: 5位</li>
+</ul>
+</li>
+<li><strong>Our Sponsors：</strong>以下のスポンサー様の温かいご支援によりRoboCup世界大会へ出場できることになりました。この場を借りて御礼申し上げます。各スポンサーカテゴリ内での順番は申込み順です。</li>
+<li><span style="color: #000080;"><strong><span style="color: #ff0000;">The</span>  <span style="color: #ff0000;">Platinum Sponsor</span><br />
+</strong></span><span style="color: #000080;"><strong><br />
+</strong><a href="http://www.tsuzuki-mfg.co.jp/"><strong><span style="font-size: big;">株式会社　都筑製作所</span></strong></a></span><a href="http://www.tsuzuki-mfg.co.jp/"><img src="{{ site.baseurl }}/assets/images/2016/05/f165916176142e03381c6f51d52fe288.bmp" alt="都筑製作所ロゴ" width="1000" height="244" class="aligncenter wp-image-12797" /></a></li>
+<li><strong>Gold Sponsors</strong>
+<ul>
+<li><a href="http://demura.net/team/attachment/nakamura-tome" rel="attachment wp-att-12829">中村留精密工業株式会社</a><a href="http://demura.net/team/attachment/nt-logo%e7%b7%91" rel="attachment wp-att-12881"><br />
+</a><a href="http://demura.net/team/attachment/nt-logo%e7%b7%912" rel="attachment wp-att-12882"><br />
+</a><a href="http://demura.net/team/attachment/%e4%b8%ad%e6%9d%91%e7%95%99web%e3%83%ad%e3%82%b4-2" rel="attachment wp-att-12887"><img src="{{ site.baseurl }}/assets/images/2016/05/cf06ebc2dac1fe854ed00b0d3615eef5-1-300x84.png" alt="中村留WEBロゴ" width="349" height="98" class="aligncenter wp-image-12887" /></a></li>
+<li><a href="http://www.sankogosei.co.jp/">三光合成株式会社</a></li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/team/attachment/%e4%b8%89%e5%85%89%e5%90%88%e6%88%90%e3%83%ad%e3%82%b4_%e3%83%95%e3%82%a9%e3%83%b3%e3%83%88%e3%82%b5%e3%82%a4%e3%82%ba%ef%bc%97%ef%bc%92" rel="attachment wp-att-12899"><img src="{{ site.baseurl }}/assets/images/2016/05/212319261951a647d78cf11053ad8bf4.png" alt="三光合成ロゴ_フォントサイズ７２" width="420" height="69" class="aligncenter wp-image-12899" /></a></p>
+<ul>
+<li><strong>Silver Sponsors</strong>
+<ul>
+<li><a href="http://www.sifi.co.jp/">株式会社システムインフロンティア<br />
+</a><a href="http://demura.net/team/attachment/%e3%83%ad%e3%82%b401_sif-2" rel="attachment wp-att-12943"><img src="{{ site.baseurl }}/assets/images/2016/05/7dc6e556240caebff436cd2b5583cd2e-1-300x130.png" alt="ロゴ01_SIF" width="300" height="130" class="aligncenter size-medium wp-image-12943" /></a></li>
+<li><a href="http://www.todraw.co.jp/">東京ドロウイング株式会社<br />
+</a><a href="http://demura.net/team/attachment/%e6%9d%b1%e4%ba%ac%e3%83%89%e3%83%ad%e3%82%a6%e3%82%a4%e3%83%b3%e3%82%b0" rel="attachment wp-att-12906"><img src="{{ site.baseurl }}/assets/images/2016/05/90c60497b181292762ee953c20d69ced.png" alt="東京ドロウイング" width="315" height="120" class="aligncenter size-full wp-image-12906" /></a></li>
+<li><a href="http://www.maspro.co.jp/">マスプロ電工株式会社<br />
+</a><a href="http://demura.net/team/attachment/kodak_logo-2" rel="attachment wp-att-12896"><img src="{{ site.baseurl }}/assets/images/2016/05/kodak_logo-1-300x183.png" alt="kodak_logo" width="300" height="183" class="aligncenter wp-image-12896 size-medium" /></a></li>
+<li><a href="http://www.artec-kk.co.jp/">アーテック株式会社<br />
+</a><a href="http://demura.net/team/attachment/logo_ao" rel="attachment wp-att-12870"><img src="{{ site.baseurl }}/assets/images/2016/05/logo_ao-300x107.png" alt="logo_ao" width="300" height="107" class="aligncenter size-medium wp-image-12870" /></a></li>
+</ul>
+</li>
+<li><strong> Bronz Sponsors</strong>
+<ul>
+<li><a href="http://金沢エンジニアリングシステムズ">株式会社 金沢エンジニアリングシステムズ</a><br />
+<a href="http://demura.net/team/attachment/%e9%87%91%e6%b2%a2%e3%82%a8%e3%83%b3%e3%82%b8%e3%83%8b%e3%82%a2%e3%83%aa%e3%83%b3%e3%82%b0%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e3%82%ba%e3%83%ad%e3%82%b4-2" rel="attachment wp-att-12833"><img src="{{ site.baseurl }}/assets/images/2016/05/b4de75bdc9781ccaa299e3fa039e11f6-1-300x100.png" alt="金沢エンジニアリングシステムズロゴ" width="300" height="100" class="aligncenter size-medium wp-image-12833" /></a></li>
+<li><a href="http://www.dse-corp.co.jp/">株式会社　第１システムエンジニアリング</a><br />
+<a href="http://demura.net/team/attachment/%e7%ac%ac%ef%bc%91%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e3%82%a8%e3%83%b3%e3%82%b8%e3%83%8b%e3%82%a2%e3%83%aa%e3%83%b3%e3%82%b0%e3%83%ad%e3%82%b43" rel="attachment wp-att-12835"><img src="{{ site.baseurl }}/assets/images/2016/05/193a5d8497d129d893dc1a6dba17ec4e.png" alt="第１システムエンジニアリングロゴ3" width="272" height="87" class="aligncenter size-full wp-image-12835" /></a></li>
+<li><a href="http://itk-pro.com/">株式会社　アイ・ティー・ケー</a><br />
+<a href="http://demura.net/team/attachment/itk" rel="attachment wp-att-12836"><img src="{{ site.baseurl }}/assets/images/2016/05/ITK-300x106.png" alt="ITK" width="300" height="106" class="aligncenter size-medium wp-image-12836" /></a></li>
+<li>丸文通商株式会社<br />
+<a href="http://demura.net/team/attachment/jpeg20cm" rel="attachment wp-att-12937"><img src="{{ site.baseurl }}/assets/images/2016/05/JPEG20cm-300x34.jpg" alt="JPEG20cm" width="300" height="34" class="aligncenter size-medium wp-image-12937" /></a></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

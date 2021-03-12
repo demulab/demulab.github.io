@@ -1,0 +1,201 @@
+---
+layout: page
+title: 11. 力とトルク
+date: 2008-10-10 22:01:56.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '12574'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode11"
+---
+<p>ODE (Open Dynamics Engine) 初級講座の第１１回目です。</p>
+<p><img src="{{ site.baseurl }}/assets/images/2008/10/sensor2.jpg" alt=" " width="360" height="179" /></p>
+<p>今回は 力とトルクについて勉強しましょう。</p>
+<p><span style="color: #000080;"><strong>1.  ボディに関する力とトルク</strong></span></p>
+<p>ボディにかかる力、トルクを取得するAPIはdBodyGetForce(), dBodyGetTorqueです。ボディに力、トルクを設定するAPIはdBodySetForce, dBodySetTorqueとなっています。座標系は絶対座標系です。</p>
+<ul>
+<li><strong>const dReal *dBodyGetForce (dBodyID body); </strong></li>
+<li><strong>const dReal *dBodyGetTorque (dBodyID body); </strong><br />
+ボディbodyの力とトルクベクトルを返す。戻り値はdReal型の要素数３個の配列へのポインタ。</li>
+<li><strong>void dBodySetForce(dBodyID b, dReal x, dReal y, dReal z); </strong></li>
+<li><strong>void dBodySetTorque(dBodyID b, dReal x, dReal y, dReal z); </strong><br />
+力とトルクベクトルをボディbodyに設定する。</li>
+</ul>
+<p>&nbsp;</p>
+<p><span style="color: #000080;"><strong>２．ジョイント（関節）に関する力とトルク</strong></span></p>
+<p><strong>(1) 力とトルクの取得</strong></p>
+<p>次にジョイントに関する力とトルクについて学びましょう。ODEでは関節に かかるトルクなどをすぐ取得できません．取得するためにはdJointSetFeedback()で関節を指定してからdJointGetFeedback()で 情報を取得します．これはパフォーマンスを向上させるためです．常に全ての関節にかかる力とトルクが必要なわけではありませんよね．</p>
+<ul>
+<li><strong>void dJointSetFeedback (dJointID, dJointFeedback *);</strong><br />
+力とトルクの情報を取得する関節JointIDにdJointFeedback構造体を設定する．&nbsp;</p>
+<p>typedef struct dJointFeedback {<br />
+dVector3 f1; // 関節がボディ1に及ぼしている力<br />
+dVector3 t1; // 関節がボディ1に及ぼしているトルク<br />
+dVector3 f2; // 関節がボディ2に及ぼしている力<br />
+dVector3 t2; // 関節がボディ2に及ぼしているトルク<br />
+} dJointFeedback;</li>
+<li><strong>dJointFeedback *dJointGetFeedback (dJointID);</strong><br />
+dJointIDで指定している関節の力とトルクの情報を取得します．</li>
+</ul>
+<p><strong>(2) 力とトルクの設定</strong></p>
+<p>ジョイントの種類によって力またはトルクを設定することになります。つまり、ヒンジジョイントのような回転式ジョイントにはトルクを与えれば良いですし、スライダジョイントのような直動式ジョイントには力を与えれば良いわけです。</p>
+<ul>
+<li><strong>dJointAddHingeTorque(dJointID joint, dReal torque)</strong><br />
+ヒンジジョイントjointに対してトルクtorqueをかけます。ジョイントに結合されているボディ１とボディ２に対して同じトルクを反対方向にかけています。これはdBodyAddTorqueを元に作られています。</li>
+<li><strong>dJointAddSliderForce(dJointID joint, dReal force)</strong><br />
+スライダジョイントの軸に対して力forceをかけます。ジョイントに結合されているボディ１とボディ２に対して同じ力を反対方向にかけています。これはdBodyAddForceを元に作られています。</li>
+</ul>
+<p>次 に，このAPIを使ったサンプルプログラムを紹介します．２つのボックスを固定ジョイント(Fixed Joint)でくっつけ，そこにかかる力を表示するプログラムです．ボックスの重さが各1kgなので，z軸方向（上方向）には9.8Nの力がかかっていれ ば理論どおりです．私の環境では理論どおり9.8の値をたたき出していました．</p>
+<p>なお，プログラムでは２つのボックスのうち，下を圧力センサとみなしています．ヒューマノイド足裏の圧力センサをシミュレートする場合は，下のボックスのサイズを小さくし，数を増やせばよいわけです．</p>
+<p>次からサンプルプログラムをダウンロードできます。</p>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/sample11-120904.zip">サンプルプログラム１１</a></li>
+</ul>
+<pre class="brush:cpp">// sample11.cpp  by Kosei Demura  2006-2008
+#include "ode/ode.h"
+#include "drawstuff/drawstuff.h"
+
+static dWorldID world;
+static dSpaceID space;
+static dGeomID  ground;
+static dJointID fixed;
+static dJointGroupID
+contactgroup;
+dJointFeedback *feedback = new dJointFeedback;
+dsFunctions fn;
+
+typedef struct {
+  dBodyID body;
+  dGeomID geom;
+  dReal   radius,length,width,height,mass;
+} myLink;
+
+myLink box,sensor;
+
+static void nearCallback (void *data, dGeomID o1, dGeomID o2)
+{
+  static int MAX_CONTACTS = 10;
+  int i;    // 2つのボディがジョイントで結合されていたら衝突検出しない
+
+  dBodyID b1 = dGeomGetBody(o1);
+  dBodyID b2 = dGeomGetBody(o2);
+
+  if (b1 &amp;&amp; b2 &amp;&amp; dAreConnected (b1,b2)) return;
+
+  dContact contact&#91;MAX_CONTACTS&#93;;
+  int numc = dCollide(o1,o2,MAX_CONTACTS,&amp;contact&#91;0&#93;.geom,   sizeof(dContact));
+
+  if (numc &#62; 0) {     for (i=0; i &#60; numc; i++) {
+    contact&#91;i&#93;.surface.mode  =  dContactSoftCFM | dContactSoftERP;
+    contact&#91;i&#93;.surface.mu       = dInfinity;　　// 摩擦係数
+    contact&#91;i&#93;.surface.soft_cfm = 1e-8;
+    contact&#91;i&#93;.surface.soft_erp = 1.0;
+
+    dJointID c = dJointCreateContact(world,contactgroup,&amp;contact&#91;i&#93;);
+    dJointAttach (c,dGeomGetBody(contact&#91;i&#93;.geom.g1),        dGeomGetBody(contact&#91;i&#93;.geom.g2));
+  }
+}
+
+static void simLoop (int pause)
+{
+  static int steps = 0;
+  dSpaceCollide(space,0,&amp;nearCallback);
+
+  dWorldStep(world,0.01);
+  dJointGroupEmpty(contactgroup);
+  feedback = dJointGetFeedback(fixed);　// 力とトルク情報の取得
+  printf("%5d Force fx=%6.2f ",steps++,feedback-&#62;f1&#91;0&#93;);　// x座標成分
+  printf("fy=%6.2f ",feedback-&#62;f1&#91;1&#93;);　　　　　　　// y座標成分
+  printf("fz=%6.2f \n",feedback-&#62;f1&#91;2&#93;);　 　　　　// z座標成分
+
+  // ボックスの描画
+  dsSetColor(1.0,0.0,0.0);
+  dReal sides1&#91;&#93; = {box.length,box.width,box.height};
+
+  dsDrawBoxD(dBodyGetPosition(box.body),   dBodyGetRotation(box.body),sides1);    // センサの描画
+  dsSetColor(0.0,0.0,1.0);
+  dReal sides2&#91;&#93; = {sensor.length,sensor.width,sensor.height};
+
+  dsDrawBoxD(dBodyGetPosition(sensor.body),    dBodyGetRotation(sensor.body),sides2);
+}
+
+void start()
+{
+  static float xyz&#91;3&#93; = {0.0,-3.0,1.0};
+  static float hpr&#91;3&#93; = {90.0,0.0,0.0};
+  dsSetViewpoint (xyz,hpr);
+}
+
+void  setDrawStuff()
+{
+  fn.version = DS_VERSION;
+  fn.start   = &amp;start;
+  fn.step    = &amp;simLoop;
+  fn.command = NULL;
+  fn.stop    = NULL;
+  fn.path_to_textures = "../../drawstuff/textures";
+}
+
+int main (int argc, char **argv)
+{
+  setDrawStuff();
+  dInitODE();
+  world = dWorldCreate();
+  space = dHashSpaceCreate(0);
+  contactgroup = dJointGroupCreate(0);
+  dWorldSetGravity(world,0,0,-9.8);
+  ground = dCreatePlane(space,0,0,1,0);
+
+  dMass m1;
+  dReal x0 = 0.0, y0 = 0.0, z0 = 0.0;
+
+  // センサ（下のボックス）
+  sensor.length = 0.2;
+  sensor.width  = 0.2;
+  sensor.height = 0.2;
+  sensor.mass   = 1.0;
+  sensor.body   = dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetBoxTotal(&amp;m1,sensor.mass,sensor.length,sensor.width,sensor.height);
+  dBodySetMass(sensor.body,&amp;m1);
+  dBodySetPosition(sensor.body, x0, y0, 0.5 * sensor.height + z0);
+  sensor.geom = dCreateBox(space,sensor.length,sensor.width,sensor.height);
+  dGeomSetBody(sensor.geom,sensor.body);
+
+   // ボックス（上のボックス）
+  box.length = 0.2;
+  box.width  = 0.2;
+  box.height = 0.2;
+  box.mass   = 1.0;
+  box.body   = dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetBoxTotal(&amp;m1,box.mass,box.length,box.width,box.height);
+  dBodySetMass(box.body,&amp;m1);
+  dBodySetPosition(box.body, x0, y0, sensor.height + 0.5 * box.height + z0);
+  box.geom = dCreateBox(space,box.length,box.width,box.height);
+  dGeomSetBody(box.geom,box.body);
+
+  // 固定ジョイント
+  fixed = dJointCreateFixed(world,0);
+  dJointAttach(fixed,box.body,sensor.body);
+  dJointSetFixed(fixed);    // 力とトルク情報を取得する関節を指定
+  dJointSetFeedback(fixed,feedback);
+  dsSimulationLoop(argc,argv,352,288,&amp;fn);
+  dWorldDestroy(world);
+  dCloseODE();
+
+  return 0;
+}</pre>

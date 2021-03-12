@@ -1,0 +1,217 @@
+---
+layout: post
+title: VGG Image Annotator (VIA-2.0.10)：お手軽アノテーションツール
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-02-19 09:42:46'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19772'
+  views: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<div class="bp-content box-show-preview-controls" tabindex="-1" data-testid="bp-content">
+<div class="bp-doc bp-doc-document bp-is-scrollable" tabindex="0">
+<p>インスタンスセグメンテーション用アノテーションツールとして使っているVGG Image Annotator (VIA)の使用法のメモ。VIAはウェブベースのツールでHTML、Javascript、CSS以外のライブラリを使っていないのでWindows、Linux、Macでもお手軽に利用できる。バージョン2.0.8ではCOCOフォーマットのアノテーションファイルをエクスポートできなかったが、2.0.10ではできるようになったのでありがたい。さらに、バージョン3では動画、音声データのアノテーションも可能になっている。</p>
+<p>なお、この記事ではWindows10を使い、データとしては「じゃんけん」のオリジナルデータを用いた。</p>
+<p><strong>公式ウェブサイト</strong></p>
+<ul>
+<li><a href="https://www.robots.ox.ac.uk/~vgg/software/via/">VGG Image Annotator (VIA)</a></li>
+</ul>
+</div>
+<div></div>
+<div class="pdfViewer">
+<div id="bp-page-2" class="page" data-page-number="2" data-loaded="true">
+<div class="textLayer"><strong>ソフトウェアのインストールと準備</strong></div>
+<ul>
+<li class="textLayer">以下のURLから、via-2.0.10.zipをダウンロードし、好きなディレクトリに解凍する。この例ではCドライブ直下にeduというディレクトリを作り、その下に解凍する。
+<ul>
+<li class="textLayer"><a href="http://www.robots.ox.ac.uk/~vgg/software/via/">http://www.robots.ox.ac.uk/~vgg/software/via/</a></li>
+</ul>
+</li>
+<li class="textLayer">画像を読み込むディレクトリと、プロジェクトを保存するディレクトリを事前に用意し、画像読み込み用のディレクトリにアノテーションする画像を入れておく。この例では手のデータを扱うので「hand」という名前で作成している。名前は自分のデータ合ったものにするとわかりやすい。
+<ul>
+<li class="textLayer">画像読み込み用に以下のディレクトリを作成する。
+<ul>
+<li class="textLayer">C:\edu\via-2.0.10\data\hand</li>
+</ul>
+</li>
+<li>訓練用データ(train)、検証用データ(val)用に以下のtrainとvalディレクトリを作成する。画像データをtrainに8～9割、valに1～2割程度になるように保存する。
+<ul>
+<li class="textLayer">C:\edu\via-2.0.10\data\hand\train</li>
+<li>C:\edu\via-2.0.10\data\hand\val</li>
+</ul>
+</li>
+<li class="textLayer">プロジェクト保存用に以下のディレクトリを作成する。
+<ul>
+<li class="textLayer">C:\edu\via-2.0.10\data\hand\project</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>使い方</strong></p>
+<ul>
+<li><strong>起　動</strong>
+<ul>
+<li class="annotationLayer"> エクスプローラーを使って以下のファイルをダブルクリックして起動する。VIAはhtmlファイルを開くだけなので、起動はとても簡単。
+<ul>
+<li>C:\edu\via-2.0.10\via.html</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>プロジェクトへファイルの追加</strong>
+<ul>
+<li>画像を読み込むには、左にあるバーの赤丸で囲んだ[Add Files]を左クリックした後に、画像読み込み用ディレクトリまで移動し、画像を選択する。複数選択したいときは、SHIFTキーを押しながら左クリックする。選択に成功した場合、以下のように選択したファイル名と画像が表示される。
+<div id="bp-page-2" class="page" data-page-number="2" data-loaded="true"></div>
+<div id="bp-page-3" class="page" style="padding-left: 40px;" data-page-number="3" data-loaded="true">
+<div class="canvasWrapper" style="padding-left: 40px;"><a href="https://demura.net/wordpress/wp-content/uploads/2021/01/via1-1.png"><img class="aligncenter size-full wp-image-19772" src="{{ site.baseurl }}/assets/images/via1-1.png" alt="" width="1024" height="815" /></a></div>
+</div>
+</li>
+</ul>
+</li>
+<li><strong>アノテーション作業</strong></li>
+</ul>
+</div>
+<div id="bp-page-3" class="page" style="padding-left: 40px;" data-page-number="3" data-loaded="true">
+<div class="canvasWrapper" style="padding-left: 40px;"></div>
+</div>
+<div id="bp-page-4" class="page" data-page-number="4" data-loaded="true">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li class="canvasWrapper"><strong>形状選択：</strong>Region Shapeの中の形状を選択しアノテーションする。右から3番目の[Polygon region shape (多角形)]を選択した場合は、多角形の頂点で左マウスボタンをクリックし、アノテーション終了時にはEnterキーを押す。</li>
+<li>頂点に移動：頂点をクリックしながらドラッグする。</li>
+<li>頂点の追加：Ctrlキーを押しながら多角形の辺をクリックする。</li>
+<li>頂点の削除：Ctrlキーを押しながら多角形の頂点をクリックする。</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 40px;"><a href="https://demura.net/wordpress/wp-content/uploads/2021/01/via2.png"><img class="aligncenter size-full wp-image-19773" src="{{ site.baseurl }}/assets/images/via2.png" alt="" width="1024" height="815" /></a></p>
+</div>
+<div id="bp-page-5" class="page" style="padding-left: 40px;" data-page-number="5" data-loaded="true">
+<div class="canvasWrapper" style="padding-left: 40px;"></div>
+<ul>
+<li class="textLayer"><strong>属性の定義</strong>
+<ul>
+<li class="textLayer">アノテーションしてできた各形状を区別するためにその属性(name, type, image_qualityなど)を定義しなければならない。左サイドバーのAttributes→Regin Attributesに"attribute name"を薄字で書かれたキーボード入力できる欄がある。そこに"<strong>shape</strong>"と入力し、右横にある「+」を左クリックする。[Type]を"text"から"<strong>dropdown</strong>"に変更する。dropdown用のidを入力が現れるので[id]に"<strong>rock</strong>"、"<strong>paper</strong>"、"<strong>scissors</strong>"と追加する。それから、それらの下の[Toggle Annotation Editor]をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/02/via2.png"><img class="aligncenter size-full wp-image-19877" src="{{ site.baseurl }}/assets/images/via2.png" alt="" width="360" height="618" /></a></li>
+<li>ドロップダウン形式の[shape]が下図のように出るので、ドロップダウンから写真の領域に当てはまる形状をrock、paper、scissorsから選ぶ（この例では"paper"を選択する）。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/02/via3.png"><img class="aligncenter size-full wp-image-19878" src="{{ site.baseurl }}/assets/images/via3.png" alt="" width="357" height="770" /></a></li>
+</ul>
+</li>
+<li class="textLayer">デフォルトではアノテーション領域は番号になっているが、キーボードの「↑」キーを入力することで、下図のように、ラベリング情報の表示形式を先ほど選択した"paper"に変更できる。これで、表示している画像のアノテーションが終ったので、キーボードの「→」キーを入力し、次の画像をアノテーションする。同様に全ての画像をアノテーションする。<a href="https://demura.net/wordpress/wp-content/uploads/2021/01/via5.png"><img class="aligncenter size-large wp-image-19778" src="{{ site.baseurl }}/assets/images/via5-1024x883.png" alt="" width="1024" height="883" /></a></li>
+</ul>
+</div>
+<div id="bp-page-6" class="page" data-page-number="6" data-loaded="true">
+<ul>
+<li><strong>プロジェクトの保存</strong>
+<ul>
+<li><span style="color: #ff0000;"><strong>後でプロジェクトを再利用できるように必ず保存しておこう。2.0.10ではcocoフォーマットでJSONファイルを保存して、それを読み込んで作業を試みたがうまくいかなった。</strong></span></li>
+<li>設定：上メニューバーの[Project]→[Settings]で設定する。
+<ul>
+<li>[Project Name] わかりやすい名前に変更しよう。デフォルトではvia_projectの後に、_日月年_時間がプロジェクトのファイル名になる。</li>
+<li>[Default Path]に画像ファイルをパスを入れると便利。Windowsでも以下のようにUnixの形式で入力する。最初と最後の／(スラッシュ)を忘れると認識されないので注意。なお、Windowsの形式ではc:\edu\via-2.0.0\data\hand\valとなる。入力したら[Save]をクリックして保存する。
+<ul>
+<li>/edu/via-2.0.10/data/hand/val/</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>保存：上メニューバーの[Project]→[Save]で保存する。</li>
+</ul>
+</li>
+<li><strong>JSONファイルの出力</strong>
+<ul>
+<li>アノテーションした情報を教師データとして使われるJSON(JavaScript Object Notation)フォーマットのファイルに出力する。JSONはウェブ等で良く使われる軽量のデータ交換フォーマットである。</li>
+<li>アノテーション作業が全て終了したら、その情報をJSONファイルに出力する。この例ではCOCOフォーマットが必要なので、上のバーのAnnotationからExport Annotations (COCO Format)を左クリックして選択して、JSONファイルを出力する。</li>
+<li>「via-***_coco.json」というファイル名でブラウザのダウンロードディレクトリ(デフォルトはダウンロード)に保存される。このファイルは学習や推論時に必要になるので、アノテーションした画像ファイルと同じディレクトリに移動する。</li>
+</ul>
+</li>
+</ul>
+<p><strong>分担作業した場合のJSONファイルの作り方</strong></p>
+<p>アノテーション作業を複数人で実施して、お互いのアノテーションデータを統合したい場合がよくあると思うのでここで説明する。<span style="color: #ff0000;"><strong>なお、COCOフォーマットではうまく統合できなかったので、各人は(from json)フォーマットでアノテーションファイルをエクスポートする。</strong></span></p>
+<ul>
+<li>画像ファイルの統合。統合用のtrainディレクトリを新たに作成する。各人のtrainディレクトリの画像ファイルを新しく作成した統合用trainディレクトリにコピーする。なお、アノテーションファイルは各分担ファイルがわかるように名前を変更して、統合用trainディレクトリにコピーする。</li>
+<li>統合用trainディレクトリの各アノテーションファイルをメニューバーの[Annotation]→[Import Annotations (***)]から読みこむ。ここで***は保存したAnnotationの形式で、(from csv)、 (from json)、 (from COCO format)の３タイプがあるのでファイル名を見て適切なものを選択する。私の環境では、<strong><span style="color: #ff0000;">COCO formatではうまく統合できなかったおで、jsonフォーマットをインポートする。</span></strong></li>
+<li><strong>エラーが出る場合</strong>
+<ul>
+<li>アノテーションファイルを読み込んだときに以下のように"File Not Found"というエラーが出た場合は青で囲んだ[project settings]をクリックしてパスを設定する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/02/via4-1.png"><img class="aligncenter size-large wp-image-19886" src="{{ site.baseurl }}/assets/images/via4-1-1024x720.png" alt="" width="1024" height="720" /></a></li>
+<li>[Settings]のウインドウになるので、"Default Path"に画像ファイルをパスを入れる。Windowsでも以下のようにUnixの形式で入力する。最初と最後の／(スラッシュ)を忘れると認識されない。なお、Windowsの形式ではc:\edu\via-2.0.0\data\hand\valとなる。入力したら[Save]をクリックして保存する。パスが認識されると下図のようアノテーション付きで表示される。
+<ul>
+<li>/edu/via-2.0.10/data/hand/val/<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2021/02/via6.png"><img class="aligncenter size-large wp-image-19887" src="{{ site.baseurl }}/assets/images/via6-1024x706.png" alt="" width="1024" height="706" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>同様にして分担した数だけのアノテーションファイルをインポートする。この例ではじゃんけんの種類である3個のアノテーションファイルをインポートする。</li>
+<li>これで分割したアノテーションの統合が終わった。あとはアノテーションファイルを統合用trainディレクトリにエクスポートするだけ。ここでは、深層学習にCOCOフォーマットが必要なので、[Annotation]→[Export Annotations (COCO format)]でファイルを統合用trainディレクトリにエクスポートする。</li>
+<li>上と同じ作業をevalディレクトリに対しても行う。</li>
+</ul>
+<p><strong>プロジェクトの保存</strong></p>
+<p>アノテーション情報をプロジェクトとして保存することで、そのファイルを読み込めば前回終了した画像の続きからアノテーションを再開できる。</p>
+<ul>
+<li>プロジェクトの保存の前に、読み込んでいる画像へのパスを指定する。上のバーのProjectからSettingsに移動。</li>
+<li>Default Pathに画像へのパスを入力する。この例で、trainのディレクトリから読み込んでいるので、パスは以下になる。
+<ul>
+<li>~/src/via-2.0.10/data/hand/train/</li>
+</ul>
+</li>
+<li>最後に、下の「Save」ボタンを左クリックして設定完了。</li>
+<li>次に、プロジェクトを保存する。上のバーのProjectからSaveを選択。Project Nameを好きな名前に変更してOKを左クリックすると本プロジェクトがJSONファイル形式で保存される。</li>
+</ul>
+<ul>
+<li>このファイルを保存する。ここでは、以下のディレクトリに保存する。
+<ul>
+<li>C:\edu\via-2.0.10\data/hand/train</li>
+</ul>
+</li>
+</ul>
+<p><strong>プロジェクトの読み込み</strong></p>
+<ul>
+<li>上のバーのProjectからLoadを選択する。そこからプロジェクト(JSONファイル(jsonファイル)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="bp-notifications-wrapper">以上</div>

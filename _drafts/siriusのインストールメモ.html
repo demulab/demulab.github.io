@@ -1,0 +1,67 @@
+---
+layout: post
+title: Siriusのインストールメモ
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- robocup
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>Siriusのインストールメモ．</p>
+<ul>
+<li>Sirius-1.0.1(437MB)を<a href="http://sirius.clarity-lab.org/index.html%3Fp=13.html">ここからダウンロード</a>し，~/srcの中にコピーする．wiki_indri_index.tar.gz(11GB)も合わせてダウンロード．
+<ul>
+<li>cd ~/src</li>
+<li>tar xvzf  sirius-1.0.1.tar.gz</li>
+<li>mv sirius-1.0.1 sirius</li>
+<li>cd ~/src/sirius/sirius-application</li>
+<li>tar xvzf  question-answer.tar.gz</li>
+<li>sudo  ./get-dependencies.sh</li>
+<li>./get-kaldi.sh</li>
+<li>./compile-sirius-server.sh</li>
+</ul>
+</li>
+<li>kaldiのビルド
+<ul>
+<li>NVIDIAのGPUを使う場合は事前にcudaをインストールする必要あり</li>
+<li>cd ~/src/sirius/sirius-application/speech-recognition/kaldi/tools</li>
+<li>speexのインストール
+<ul>
+<li> ./tools/install_speex.sh</li>
+<li>cd ..</li>
+<li>cd speex</li>
+<li>./configure</li>
+<li>make -j 8</li>
+<li>sudo make install</li>
+<li>cd ..</li>
+<li>mv speex-1.2rc1  tools/.</li>
+<li>mv speex tools/.</li>
+</ul>
+</li>
+<li>cd ~/src/sirius/sirius-application/speech-recognition/kaldi/src</li>
+<li>./configure</li>
+<li>make depend -j 8</li>
+<li>make -j 8
+<ul>
+<li>cudamatrixでエラーが出るので，cudamatrix/Makefileの31行目の以下の部分を取り，14行目をその部分に入れ<br />
+-gencode arch=compute_13, code=sm_13<br />
+31行目を以下のように変更する<br />
+CUDA_ARCH= -gencode arch=compute_20, code=sm_20</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

@@ -1,0 +1,35 @@
+---
+layout: post
+title: ODE講座９：ERP （ジョイント誤差修正パラメータ）
+date: 2005-11-14 12:30:00.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '555'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/261.html"
+---
+<p><img title="sample4a" src="{{ site.baseurl }}/assets/images/2005/11/sample4a.jpg" border="0" alt="sample4a" width="224" height="217" /> </p>
+<p>１１ 月１２、１３日とKIT推薦試験の面接委員として静岡へいってまいりました。私が所属しているロボティクス学科は昨年、志願者７１名だったのに 対し、今年は８０名と増加していますので何よりです。KITの夢考房では学部１年生からロボット開発に参加できるので、ロボットマニアにはたまらないとこ ろ だと思います。</p>
+<p> さて、ODE (Open Dynamics Engine)講座の第９回目です。最近は投稿してくださる方も現れたのでやりがいも出てきました。今回はＯＤＥを使ううえで覚えておかなければならない パラメータERP (Error Reduction Parameter)について説明します。</p>
+<p><!--more--></p>
+<p>ERPはジョイントの誤差を修正するパラメータです。シミュレーションを繰り返していくと、ジョイントの中心が計算誤差などでずれていきます。それ を修正 するのがERPで０から１までの値をとります。０は誤差を全く修正しないのに対し、1は次のステップで誤差を０に修正します。推奨値は0.8から1となっ ていますが、規定値は0.2です。今までのサンプルプログラムでは設定していなかったのでERPは0.2として計算されています。ERPを１に設定するこ とはお勧めできません。ジョイントのずれは様々な近似計算のよる誤差のため完全に０にすることはできないのです。</p>
+<p>ERPを設定する場合は以下のAPIを使います。なお、これはグローバルに働き全てのジョイントの誤差を修正します。</p>
+<ul>
+<li>dWorldSetERP(dWorldID, dReal erp)<br />
+ここで、dWorldIDはワールドのＩＤ番号、erpは0.0から1.0までの実数となります。</li>
+</ul>
+<p>では、実習としてdWorldSetERP(world, 0.0);をsample4のdWorldSetGravityの下に挿入して実行してみてください。なお、dWorldSetERP(world,0.0)を追加し、 見やすいように視点を変更した<a href="http://demura.net/archives/images/ode/sample4a.tgz" target="_self">sample4aはここに</a>あります。この例ではジョイントのずれを修正しないので図のようにバラバラ事件が発生します。</p>
+<p>では、また次回。</p>

@@ -1,0 +1,109 @@
+---
+layout: post
+title: RGB-Dセンサ：CloudCompareを使いRealSense D435iとStructure Coreを比較してみた
+date: 2020-03-29 19:25:52.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '17486'
+  views: '828'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/17471.html"
+---
+<p>[caption id="attachment_17488" align="aligncenter" width="688"]<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc19.png"><img class="wp-image-17488 size-full" src="{{ site.baseurl }}/assets/images/2020/03/cc19.png" alt="" width="688" height="546" /></a> 平面の点群（上：RealSense D435i、下：Structure Core)[/caption]</p>
+<p>RealSense D435iとStructure Coreを使いポイントクラウド(点群)からPLY形式の3Dファイルを取得できたので、点群とメッシュの編集ソフトCloudCompareを使って両者を定量的に比較してみた。</p>
+<p><strong>CloudCompareのインストールと起動</strong></p>
+<ul>
+<li><a href="https://www.danielgm.net/cc/">CloudCompare</a>はオープンソースの点群とメッシュ編集ソフトウェア。Windows、Mac、Linuxで使える。ライセンスはGPL。</li>
+<li>インストール
+<ul>
+<li>パッケージ管理ソフトSnappyがインストールされていない場合は、次のコマンドでインストールする。
+<ul>
+<li>$ sudo apt -y  install snapd</li>
+</ul>
+</li>
+<li>$ snap insall cloudcompare</li>
+</ul>
+</li>
+<li>起動
+<ul>
+<li>$ cloudcompare.CloudCompare</li>
+<li>以下のウインドウが開く<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc5.png"><img class="aligncenter size-large wp-image-17472" src="{{ site.baseurl }}/assets/images/2020/03/cc5-1024x786.png" alt="" width="1024" height="786" /></a></li>
+</ul>
+</li>
+</ul>
+<p><strong>CloudCompareを使った平面推定</strong></p>
+<ul>
+<li>では、CloudCompareを使いRealSenseとStructure Coreから取得した点群の3Dファイルを開き、フィッティングする平面を推定してみよう。</li>
+<li>File -&gt; Open から開くファイルを選択する。この例では、点群ファイル00150.plyを選択し"Open"をクリックする。なお、この00105.pyは1m先の平らな壁をRealSenseで取得したもの。<a href="https://github.com/demuko/data.git">データはここからダンロードできる。</a><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/openfile.png"><img class="aligncenter size-full wp-image-17473" src="{{ site.baseurl }}/assets/images/2020/03/openfile.png" alt="" width="626" height="446" /></a></li>
+<li>"Ply File Open"ウインドウが開くので、何も変えずに"Apply"をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/plyopen.png"><img class="aligncenter size-full wp-image-17474" src="{{ site.baseurl }}/assets/images/2020/03/plyopen.png" alt="" width="347" height="718" /></a></p>
+<ul>
+<li>点群が表示される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc6.png"><img class="aligncenter size-large wp-image-17475" src="{{ site.baseurl }}/assets/images/2020/03/cc6-1024x786.png" alt="" width="1024" height="786" /></a></li>
+<li>平面推定。推定する点群をクリックする。選択された点群領域が黄色で表示される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc7.png"><img class="aligncenter size-large wp-image-17476" src="{{ site.baseurl }}/assets/images/2020/03/cc7-1024x786.png" alt="" width="1024" height="786" /></a></li>
+<li>Tools→Fit→Plane を選択<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc8.png"><img class="aligncenter size-large wp-image-17477" src="{{ site.baseurl }}/assets/images/2020/03/cc8-1024x786.png" alt="" width="1024" height="786" /></a></li>
+<li>点群にフィットする平面が計算される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc10.png"><img class="aligncenter size-large wp-image-17479" src="{{ site.baseurl }}/assets/images/2020/03/cc10-1024x786.png" alt="" width="1024" height="786" /></a></li>
+</ul>
+<p><strong>点群と平面の距離計算</strong></p>
+<ul>
+<li>ここでは、推定された平面と各点群との距離の標準偏差を計算する。標準偏差が小さいほど点群は平面に近いことになる。計算するために、点群と平面を選択する。下画面左欄DB Treeの上から２番目(00150-Cloud)と３番目の項目(Dip: 003 deg)をシフトキーを押しながらクリックする。両方とも選択されるとグレーで表示される。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc11.png"><img class="aligncenter size-large wp-image-17480" src="{{ site.baseurl }}/assets/images/2020/03/cc11-1024x786.png" alt="" width="1024" height="786" /></a></li>
+<li>Tools→Distances→Cloud/Mesh Distを選択<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc12.png"><img class="aligncenter size-large wp-image-17481" src="{{ site.baseurl }}/assets/images/2020/03/cc12-1024x786.png" alt="" width="1024" height="786" /></a></li>
+<li>Computeをクリックし、OKをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc13.png"><img class="aligncenter size-full wp-image-17482" src="{{ site.baseurl }}/assets/images/2020/03/cc13.png" alt="" width="420" height="482" /></a></li>
+<li>計算結果が下のConsoleに表示される。このRealSenseから取得したデータはStd deviation(標準偏差）が0.006790 [m]となった。単位系はmmにすると約6.8 [mm]である。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc14-1.png"><img class="aligncenter size-large wp-image-17484" src="{{ site.baseurl }}/assets/images/2020/03/cc14-1-1024x786.png" alt="" width="1024" height="786" /></a></li>
+<li>同様にしてStructure Coreから取得した点群で計算した結果が次のとおり。Std deviation(標準偏差）が1.810365 [mm]となった。なお、Structure Coreから取得したデータの単位系はmm、RealSenseの単位系はmなので1000倍違う。画面下にスケールがあるのでそれでわかる。<a href="https://github.com/demuko/data.git">Structure Coreのデータもここから取得できる。</a><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/cc15.png"><img class="aligncenter size-large wp-image-17485" src="{{ site.baseurl }}/assets/images/2020/03/cc15-1024x786.png" alt="" width="1024" height="786" /></a></li>
+</ul>
+<p><strong>RealSense D453iとStructure Coreとの比較</strong></p>
+<ul>
+<li>結果をまとめると次になる。両者の画像を見ると一目瞭然である。定量的にもRealSenseの方が約3.75倍標準偏差が大きく凸凹していることがわかる。
+<ul>
+<li>RealSense D435i:  標準偏差　6.79 [mm]</li>
+<li>Structure Core:      標準偏差　1.81 [mm]</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

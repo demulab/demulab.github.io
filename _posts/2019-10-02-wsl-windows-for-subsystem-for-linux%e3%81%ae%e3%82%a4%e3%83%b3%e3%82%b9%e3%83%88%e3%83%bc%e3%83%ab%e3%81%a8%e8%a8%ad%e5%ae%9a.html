@@ -1,0 +1,199 @@
+---
+layout: post
+title: 'WSL: Windows for Subsystem for Linuxのインストールと設定'
+date: 2019-10-02 11:08:06.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '15125'
+  views: '171'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/16103.html"
+---
+<p>仮想マシンを使わなくてWindows上でLinuxが使えるWindows for Subsystem for Linux (以下、WSLと表記)のインストールとメモ。しかもLinuxのバイナリがそのまま動く。Windows10のバージョンが1803だとROSのシミュレータGazeboでロボットが動作せず、授業では使用できなかった。バージョン1903は動作したという報告があったので試してみる。</p>
+<ul>
+<li> バージョンの確認
+<ul>
+<li>「スタートメニュー→歯車アイコン（設定）→システム→バージョン情報」を確認しWindowsの1903以上なら良い。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/version.png"><img class="aligncenter wp-image-16106 size-full" src="{{ site.baseurl }}/assets/images/2019/10/version.png" alt="" width="265" height="157" /></a><br />
+バージョンが低い場合は「スタートメニュー→歯車アイコン（設定）→更新とセキュリティ」から更新する。なお、更新作業は時間がかかり（私の環境では１時間程度かかった）、途中で作業を中断し電源を切れないので時間的に余裕がある場合に実施すること。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/windows_update.png"><img class="aligncenter size-large wp-image-16107" src="{{ site.baseurl }}/assets/images/2019/10/windows_update-1024x686.png" alt="" width="1024" height="686" /></a></li>
+</ul>
+</li>
+<li>Windows Subsystem for Linuxの有効化
+<ul>
+<li>スタートメニュ→Windowsシステムツール→コントロールパネル→プログラム→プログラムと機能→Windowsの機能の有効化または無効化をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/validation.png"><img class="aligncenter size-full wp-image-16109" src="{{ site.baseurl }}/assets/images/2019/10/validation.png" alt="" width="954" height="594" /></a></li>
+<li>Windows Subsystem for Linuxにチェックを入れ、「OK」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/windows_subsystem.png"><img class="aligncenter size-full wp-image-16110" src="{{ site.baseurl }}/assets/images/2019/10/windows_subsystem.png" alt="" width="415" height="368" /></a></li>
+<li>再起動するように聞かれるので再起動する。</li>
+</ul>
+</li>
+<li>Ubuntuをストアからインストール
+<ul>
+<li>スタートメニューの検索窓に「store」と入力すると「Microsoft Store」と表示されるのでそれをクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0036.png"><img class="aligncenter size-full wp-image-15069" src="{{ site.baseurl }}/assets/images/2019/10/No-0036.png" alt="" width="413" height="689" /></a></li>
+</ul>
+</li>
+<li>下記の画面になるので、Ubutu 16.04LTSを選択しクリックする。下の画面にならない場合は「検索」にUbuntuと入力する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0038.png"><img class="aligncenter size-full wp-image-15071" src="{{ site.baseurl }}/assets/images/2019/10/No-0038.png" alt="" width="1202" height="933" /></a></li>
+<li>次のウインドウになるので「入手」をクリックする。ダウンロードサイズは約200MB。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/ubuntu.png"><img class="aligncenter size-large wp-image-16111" src="{{ site.baseurl }}/assets/images/2019/10/ubuntu-1024x816.png" alt="" width="1024" height="816" /></a></li>
+<li>入手が終わると次の画面になるので「起動」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0040-1.png"><img class="aligncenter size-full wp-image-15076" src="{{ site.baseurl }}/assets/images/2019/10/No-0040-1.png" alt="" width="1202" height="676" /></a></li>
+<li>次のウインドウになるので少し待つ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0041-1.png"><img class="aligncenter size-full wp-image-15079" src="{{ site.baseurl }}/assets/images/2019/10/No-0041-1.png" alt="" width="979" height="296" /></a></li>
+<li>ユーザ名とパスワードを聞かれるので入力する。全角は使えないので半角英数字を使うこと。ユーザ名、パスワードは今後も使うので忘れないこと。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0042.png"><img class="aligncenter size-full wp-image-15080" src="{{ site.baseurl }}/assets/images/2019/10/No-0042.png" alt="" width="979" height="296" /></a></li>
+<li>時間帯の設定。標準では、日本の時間帯ではないので以下のコマンドを端末にコピペする。パスワードを聞かれるので入力する。なお、$はプロンプト（入力できる状態を示す記号）なのでコピペしない。
+<ul>
+<li>$ <code>sudo dpkg-reconfigure tzdata</code><br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0044.png"><img class="aligncenter size-full wp-image-15082" src="{{ site.baseurl }}/assets/images/2019/10/No-0044.png" alt="" width="979" height="296" /></a></li>
+<li>次のウインドウになるので「Asia」を選択して、Tabキーを押して「OK」を選択してEnterキーを押す。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/time_zone.png"><img class="aligncenter size-full wp-image-16114" src="{{ site.baseurl }}/assets/images/2019/10/time_zone.png" alt="" width="979" height="512" /></a></li>
+<li>「T」を押すとTaipeに飛ぶので、下矢印キーでTokyoを選択し、Enterキーを押す。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0047.png"><img class="aligncenter size-full wp-image-15086" src="{{ site.baseurl }}/assets/images/2019/10/No-0047.png" alt="" width="979" height="296" /></a></li>
+<li>dateコマンドを端末に入力して正しい時間帯に(JST)なっていたら終わり。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0048.png"><img class="aligncenter size-full wp-image-15088" src="{{ site.baseurl }}/assets/images/2019/10/No-0048.png" alt="" width="979" height="296" /></a></li>
+</ul>
+</li>
+<li>ダウンロード先の変更。標準では海外からダウンロードするようになっているので、時短するために以下のコマンドを端末にコピペして実行し、国内に変更する。
+<ul>
+<li>$ <code>sudo sed -i 's/\/archive\.ubuntu/\/jp\.archive\.ubuntu/' /etc/apt/sources.list</code><br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0049.png"><img class="aligncenter size-full wp-image-15090" src="{{ site.baseurl }}/assets/images/2019/10/No-0049.png" alt="" width="907" height="103" /></a></li>
+</ul>
+</li>
+<li>次のコマンドでアップデートする。
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt upgrade -y</code></li>
+</ul>
+</li>
+<li>X Window システムのインストール。WSLはグラフィカルなインタフェース(GUI)が使えないので、ROSを動かすためにはX Windowシステムを別にインストールしなければならない。調べたらVcXsrvが無償で良さそうなのでインストールしてみる。以下のウェブサイトに行き、下図の赤で囲った「Download]をクリックする。2019年10月2日現在のバージョンは1.20.5.1。
+<ul>
+<li><a href="https://sourceforge.net/projects/vcxsrv/">https://sourceforge.net/projects/vcxsrv/</a><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/vcxsrv.png"><img class="aligncenter size-full wp-image-16116" src="{{ site.baseurl }}/assets/images/2019/10/vcxsrv.png" alt="" width="877" height="692" /></a></li>
+<li>ダウンロードしたexeファイルをダブルクリックする。次のウインドウが開くので「Next」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0051.png"><img class="aligncenter size-full wp-image-15096" src="{{ site.baseurl }}/assets/images/2019/10/No-0051.png" alt="" width="422" height="290" /></a></li>
+<li>インストールするフォルダーを聞かれるので、デフォルトのまま「Install」をクリックする。<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0052.png"><img class="aligncenter size-full wp-image-15097" src="{{ site.baseurl }}/assets/images/2019/10/No-0052.png" alt="" width="422" height="290" /></a></li>
+<li>セットアップが終わったら「Close」をクリックしてインストールを終了する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0053.png"><img class="aligncenter size-full wp-image-15098" src="{{ site.baseurl }}/assets/images/2019/10/No-0053.png" alt="" width="422" height="290" /></a></li>
+</ul>
+</li>
+<li>Ｘ起動
+<ul>
+<li>デスクトップにできたXLaunchアイコンをダブルクリックする。</li>
+<li>Select display settingsのウインドウになるのでデフォルトのまま「次へ(N)」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0054.png"><img class="aligncenter size-full wp-image-15102" src="{{ site.baseurl }}/assets/images/2019/10/No-0054.png" alt="" width="510" height="367" /></a></li>
+<li>Select how to start clientのウインドウになるので、デフオルトのまま「次へ(N)」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0055.png"><img class="aligncenter size-full wp-image-15103" src="{{ site.baseurl }}/assets/images/2019/10/No-0055.png" alt="" width="510" height="367" /></a></li>
+<li>Extra Settingsのウインドウになるので 以下の図のようにClipboard、Primary Selection、Disable　access controlにチェックを入れ、Native openglのチェックを外して「次へ」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/extrasetting.png"><img class="aligncenter size-full wp-image-15135" src="{{ site.baseurl }}/assets/images/2019/10/extrasetting.png" alt="" width="510" height="367" /></a></li>
+<li>Finish configurationウインドウになるので、「Save configuration」をクリックして設定ファイルを保存してから「完了」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0057.png"><img class="aligncenter size-full wp-image-15107" src="{{ site.baseurl }}/assets/images/2019/10/No-0057.png" alt="" width="510" height="367" /></a></li>
+<li>ファイアウォールなどを設定している場合は、次の図のように「Windowsセキュリティの重要な警告」というウインドウが開くので、「アクセスを許可する」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/No-0060.png"><img class="aligncenter size-full wp-image-15108" src="{{ site.baseurl }}/assets/images/2019/10/No-0060.png" alt="" width="615" height="435" /></a></li>
+</ul>
+</li>
+<li>Ubuntuの設定
+<ul>
+<li>スタートメニュー→Ubuntu 16.04からUbuntuターミナルを起動する。<br />
+デスクトップにショートカットを作っておくと便利。</li>
+<li> 起動したターミナルで以下のコマンドを実行し、必要なパッケージをインストールする。なお、$はプロンプトなので入力しない。
+<ul>
+<li>$ <code>sudo apt update</code></li>
+<li>$ <code>sudo apt upgrade</code></li>
+<li>$ <code>sudo apt-get install language-pack-ja -y</code></li>
+<li>$ <code>sudo update-locale LANG=ja_JP.UTF-8</code></li>
+<li>$ <code>sudo apt-get install git emacs gedit build-essential firefox dbus -y</code></li>
+</ul>
+</li>
+<li>環境変数の設定
+<ul>
+<li>自分のパソコン画面にLinuxのウインドウアプリケーションが表示されるように以下のコマンドを実行して環境変数を設定する。
+<ul>
+<li>$ <code>echo 'export DISPLAY=localhost:0.0' &gt;&gt; ~/.bashrc</code></li>
+<li>$ <code>source ~/.bashrc</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="http://demura.net/lecture/15261.html">ROS Kineticのインストール</a>
+<ul>
+<li>上のリンクに従ってインストール作業をしてから、以下の設定を行う。</li>
+<li> Gazeboを起動すると画面が真っ黒で何も表示されない。モデルが表示されるように以下のコマンドで環境変数を設定する。
+<ul>
+<li>$ echo 'export GAZEBO_IP=127.0.0.1' &gt;&gt; ~/.bashrc</li>
+<li>$ source ~/.bashrc</li>
+</ul>
+</li>
+<li>Gazeboの起動
+<ul>
+<li>Ubuntuターミナルを起動し、次のコマンドを実行する。
+<ul>
+<li>$ gazebo<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/gazebo.png"><img class="aligncenter size-full wp-image-15138" src="{{ site.baseurl }}/assets/images/2019/10/gazebo.png" alt="" width="1210" height="660" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>rvizでdbus関係のエラーを解決するためにmachine IDを設定する。Ubuntuターミナルを起動し、次のコマンドを実行する。
+<ul>
+<li>$ dbus-uuidgen | sudo tee /etc/machine-id</li>
+</ul>
+</li>
+<li>rvizの起動
+<ul>
+<li>Ubuntuターミナルを起動し、次のコマンドを実行する。
+<ul>
+<li>$ roscore</li>
+</ul>
+</li>
+<li>もう一つ、Ubuntuターミナルを起動し、次のコマンドを実行する。
+<ul>
+<li>$ rosrun  rviz  rviz<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/rviz.png"><img class="aligncenter wp-image-15139" src="{{ site.baseurl }}/assets/images/2019/10/rviz.png" alt="" width="382" height="206" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 30px; text-align: right;">終わり</p>

@@ -1,0 +1,82 @@
+---
+layout: post
+title: 'OnlineJudge: オンラインジャッジの使い方'
+date: 2020-04-25 11:54:23.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '17922'
+  views: '231'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/17929.html"
+---
+<p>オープンソースのオンラインジャッジOnlineJudge2.0の設定方法です。オンラインジャッジとはプログラミングの問題をオンラインで採点するシステムのことで、これは中国の青島大学が開発しています。</p>
+<p>本記事ではその使い方を説明します。</p>
+<p><strong>ログイン</strong></p>
+<ul>
+<li>FortiClientを起動して大学ネットにVPN接続をする。</li>
+<li>次に、Chromeを起動する。ウェブブラウザには必ずChromeを使うこと。他のブラウザでは問題があるとTAから報告があった。</li>
+<li>指定されたURL、ユーザ名、パスワードを入力してGOをクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/doj1.png"><img class="aligncenter size-full wp-image-17922" src="{{ site.baseurl }}/assets/images/2020/04/doj1.png" alt="" width="1195" height="787" /></a></p>
+<ul>
+<li>ログインすると次の画面になるので、上部メニューのProblemsをクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/doj2.png"><img class="aligncenter size-full wp-image-17923" src="{{ site.baseurl }}/assets/images/2020/04/doj2.png" alt="" width="1195" height="787" /></a></p>
+<ul>
+<li>Ttitleの下の問題名をクリックして解く問題を選択する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/doj3.png"><img class="aligncenter size-full wp-image-17924" src="{{ site.baseurl }}/assets/images/2020/04/doj3.png" alt="" width="1182" height="365" /></a></p>
+<ul>
+<li>選択した問題の画面になるので、説明をよく読む。<span style="color: #ff0000;"><strong>自動的に採点されるので大文字小文字の違いやスペース、改行がないだけでもエラーになるので注意！全角文字は使ってはいけない、全て半角にすること。</strong></span>下図赤枠の部分にプログラムを打ち込み終わったらSubmitをクリックして解答を提出する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/doj4.png"><img class="aligncenter size-full wp-image-17925" src="{{ site.baseurl }}/assets/images/2020/04/doj4.png" alt="" width="1171" height="1405" /></a></p>
+<ul>
+<li>提出するとその解答により左下のStatusが次のように表示される。
+<ul>
+<li>Compile Error：コンパイルエラー。文法的に間違っている。</li>
+<li>Wrong Answer： コンパイルは通ったが、答えが間違っている。</li>
+<li>Accepted：正解。おめでとう！</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/doj5.png"><img class="aligncenter size-full wp-image-17926" src="{{ site.baseurl }}/assets/images/2020/04/doj5.png" alt="" width="1171" height="1405" /></a></p>
+<ul>
+<li>Acceptedになったら上のメニュー「Problems」をクリックして新しい問題を選ぶ。なお、試験のときは「Problems」右の「Contests」を選択する。</li>
+</ul>
+<p>終わり。Happy Programming !</p>
+<p>&nbsp;</p>

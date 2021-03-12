@@ -1,0 +1,105 @@
+---
+layout: page
+title: スキルアップ講座：移動ロボットの自己位置推定
+date: 2011-06-03 22:35:10.000000000 +09:00
+type: page
+parent_id: '479'
+published: true
+password: ILoveYumekobo
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1648'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/mcl"
+---
+<ul>
+<li><strong><span style="color: #ff0000;">注　意</span></strong>
+<ul>
+<li><strong><span style="color: #ff0000;">ここにある全ての資料の再配布を禁止します．個人の勉強用にだけお使いください．</span></strong></li>
+</ul>
+</li>
+<li>日時
+<ul>
+<li>2013年6月15日（土）　時間：９時～１２時　２３－２１４</li>
+</ul>
+</li>
+<li>講義資料
+<ul>
+<li><a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/skillupMCL130615.pdf">パワーポイント</a> (<span style="color: #ff0000;">再配布禁止</span>)</li>
+<li><a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/pointerStruct120616.pdf">ポインタ・構造体120616 (<span style="color: #ff0000;">再配布禁止</span>)</a></li>
+</ul>
+</li>
+<li>演習１
+<ul>
+<li>開発環境のインストール
+<ul>
+<li><a href="http://demura.net/9ode/10357.html">CodeBlocks12.11</a></li>
+<li><a href="http://demura.net/9ode/9463.html">ODE-0.12</a></li>
+</ul>
+</li>
+<li>車輪型ロボットシミュレータのインストール
+<ul>
+<li><a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/skillup120615.zip">skillup120615.zip</a>をダウンロードする</li>
+<li>c:\ode-0.12\myprogフォルダを作り，その中にlocalizationフォルダを解凍する．</li>
+<li>c:\ode-0.12\myprog\localizationフォルダにtextures, common.h, localization.cbp, localization.cpp, main.h, main.cpp,があれば解凍に成功．</li>
+<li>エクスプローラでlocalization.cbpをダブルクリックすると，code:blocksが起動するのでビルド，実行する．</li>
+<li>ソースコードの説明</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>演習２
+<ul>
+<li><strong>STEP1:サンプリング</strong>
+<ul>
+<li>デッドレコニングの情報に従って全パーティクルを移動</li>
+</ul>
+</li>
+<li><strong>STEP2: 重みの計算</strong>
+<ul>
+<li>重みを計算する。</li>
+<li>そのために、自己位置を知る関数getPos()を作成する。getPos()はシミュレータでの真の位置(deadReckoning関数内のpb[0],pb[1])をx,y軸方向に50cm以内の乱数を加える関数にしなさい．</li>
+</ul>
+</li>
+<li><strong>STEP3: 再サンプリング</strong>
+<ul>
+<li>自己位置の計算．自己位置は全パーティクルの期待値</li>
+<li>等間隔サンプリングの実施</li>
+<li>STEP1に戻る．</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>参考資料
+<ul>
+<li>中型ロボットリーグ
+<ul>
+<li>Merke, Welker, Riedmiller: "<a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/merke_welker_riedml.ecai04ws.pdf">Line Based Robot Localization under Natural Light Conditions</a>,"  ECAI 2004 Workshop on Agents in Dynamic and Real Time Environments, 2004</li>
+<li>佐藤他，<a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/hibikino08.pdf">ロボカップサッカー中型リーグにおける白線情報を用いた自己位置推定法の検討(ロボカップ・ロボットコンテスト)</a>, ロボティクス・メカトロニクス講演会講演概要集, 2P1-J14, 2008</li>
+<li>出村公成他，<a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/demura09.pdf">全方位カメラを用いたテンプレートマッチングに基づくモンテカルロ位置同定法</a>, 日本ロボット学会誌 27(2), 249-257, 2009</li>
+<li>石川他，<a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/SIG-Challenge-B001-4.pdf">自律移動ロボットにおける処理時間と推定精度を考慮したモンテカルロ位置推定法</a>,<br />
+第31回人工知能学会 AI チャレンジ研究会, 2010</li>
+<li>新福他，<a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/51c4cdcaf3e8eb7b60eb6f4ec9839313.pdf">ロボカップ中型リーグにおけるパーティクルフィルタを用いたロボットの自己位置推定</a>,<br />
+ロボティクス・メカトロニクス講演会講演概要集, 1P1-F26, 2010</li>
+<li>Liu, Yin, Liao, "<a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/5343-12018-1-PB.pdf">Robot Self-localization with Optimized Error Minimizing for Soccer Contest</a>," JOURNAL OF COMPUTERS, VOL. 6, NO. 7, 2011</li>
+</ul>
+</li>
+<li>一般
+<ul>
+<li>加藤丈和：<a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/particleFilterTutorial.pdf">パーティクルフィルタとその実装</a>，情報処理学会研究報告, 2007</li>
+<li>樋口<a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/particleFilterTutorial21.pdf">：粒子フィルタ，電子情報通信学会誌，vol.88, no.12, pp.989-994,  (2005</a>)</li>
+<li><a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/kitagawa44-1-031.pdf">北川：モンテカルロ・フィルタおよび平滑化につじて，統計数理，vol.44, pp.31-48, (1996)</a></li>
+<li>Isard and Blake, <a href="http://edu1.kanazawa-it.ac.jp/demura/education/skillUp/condensation.pdf">CONDENSATION—Conditional Density Propagation for Visual Tracking</a>,International Journal of Computer Vision, vol.29 ,  pp.5–28 (1998)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

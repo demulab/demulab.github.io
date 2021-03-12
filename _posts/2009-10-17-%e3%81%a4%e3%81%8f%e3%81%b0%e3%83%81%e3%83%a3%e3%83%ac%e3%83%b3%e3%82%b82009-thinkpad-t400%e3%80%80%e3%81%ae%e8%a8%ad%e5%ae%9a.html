@@ -1,0 +1,132 @@
+---
+layout: post
+title: 'つくばチャレンジ2009: ThinkPad T400　の設定'
+date: 2009-10-17 10:36:24.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '1341'
+  _oembed_1267e1ef1d98e6f3435162eeb35bf0c6: "{{unknown}}"
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/4816.html"
+---
+<p>防備録としてThinkPad T400の設定をメモします．インストールしたOSはUbuntu 9.04です．WindowsとLinuxのデュアルブートとしました．gpsdの設定を新たに追加しました．</p>
+<ul>
+<li>準備
+<ul>
+<li>500GBのハードディスをWindows 300GB,  Linux 200GBに分割して使うために，Windowsのコントロールパネルを使い500GBの領域を300GBと200GBに分割します．</li>
+</ul>
+</li>
+<li>Linuxのインストール
+<ul>
+<li>Ubuntu 9.04日本語REMIXをCD-Rに焼き，DVDドライブにセットし，コンピュータを再起動する．</li>
+<li>指示に従ってインストールする．パーティションの分割だけ注意が必要で，今回は手動分割を行った．
+<ul>
+<li>スワップに10GB, 後の190GBはルートパーティションとした．</li>
+</ul>
+</li>
+<li>後は、ほぼ自動でノートラブルでインストール完了。Windowsのインストールより簡単。おそるべし、Ubuntu。</li>
+</ul>
+</li>
+<li>CapsLockとCtrlの切り替え
+<ul>
+<li>システム→設定→キーボード→レイアウト→日本→レイアウトのオプション→Ctrlキーの位置→Swap Ctrl and CapsLock</li>
+</ul>
+</li>
+<li>開発環境
+<ul>
+<li>日本語環境のセットアップ
+<ul>
+<li>システム→システム管理→日本語環境セットアップヘルパで必要なソフトをインストール</li>
+</ul>
+</li>
+<li>C, C++言語の開発環境　
+<ul>
+<li>sudo aptitude install build-essential</li>
+</ul>
+</li>
+<li>Qtのインストール
+<ul>
+<li>http://qt.nokia.com/downloads-jpからhttp://www.qtsoftware.com/downloads/sdk-linux-x11-32bit-cpp　を/home/ユーザ名/に　ダウンロード</li>
+<li>chmod u+x  qt-sdk-linux-x86-opensource-2009.03.1.bin </li>
+<li>Setupのウインドウが開くので指示に従ってインストール</li>
+<li>Qtが原因のエラーをなくすために以下のパッケージをインストール</li>
+<li>sudo aptitude install libglib2.0-dev</li>
+<li>sudo aptitude install libxrender-dev</li>
+<li>sudo aptitude install libfontconfig1-dev </li>
+</ul>
+</li>
+<li>SDLのインストール
+<ul>
+<li>sudo aptitude install libSDL1.2-dev</li>
+<li>sudo aptitude install libsdl-net1.2-dev</li>
+</ul>
+</li>
+<li>Boostのインストール
+<ul>
+<li>sudo aptitude install libboost1.35-dev libboost1.35-dbg libboost1.35-doc</li>
+</ul>
+</li>
+<li>Urg-0.7.7のインストール
+<ul>
+<li>北陽電機のホームページ　URGプログラミングガイド参照</li>
+<li>./configure</li>
+<li>make</li>
+<li>sudo make install</li>
+<li>なお、Ubuntuのパッケージインストールする場合はboost1.35でないとmakeで失敗します。</li>
+</ul>
+</li>
+<li>gpsdのインストール
+<ul>
+<li>gpsdと通信するクライアントプログラムを作成するためにソースコードを取ってきて参考にした．ライブラリはソースコード付属のlibgps.aを使用．</li>
+<li><a href="http://gpsd.berlios.de/">gpsd - a gps service deamon</a>からgpsd-2.39.tar.gzをダウンロード</li>
+<li>sudo apt-get install  automake</li>
+<li>sudo apt-get install libtool</li>
+<li>sudo apt-get install libmotif-dev</li>
+<li>sudo apt-get install libxp-dev</li>
+<li>sudo apt-get install libxaw7-dev</li>
+<li>./autogen.sh</li>
+<li>make</li>
+<li>sudo make install</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>デバイスファイル名の固定
+<ul>
+<li>udevデータベースからデバイスの情報を取得。Ubuntu9.04からudevinfoがudevadmに変更された。デバイスファイル名には/dev/ttyACM0などを入れる。
+<ul>
+<li>
+<pre>udevadm info --query=all --name=デバイスファイル名 </pre>
+</li>
+<li>各デバイスに固有な情報を探します。ここでは、idVendorとidProductの情報を使います。</li>
+</ul>
+</li>
+<li>/etc/udev/rules.d/96-local.rulesというファイルを作成
+<ul>
+<li>中身は次のとおりです。なお，idProductの番号は変えています．</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre class="brush:cpp"># ttyACM0: URG Laser scanner
+KERNEL=="ttyACM*",  SUBSYSTEMS=="usb", ATTRS{idVendor}=="15d1", ATTRS{idProduct}=="0000", NAME="ttyACM0"
+# ttyACM1: U-blox 5 GPS
+KERNEL=="ttyACM*",  SUBSYSTEMS=="usb", ATTRS{idVendor}=="1546", ATTRS{idProduct}=="01a5", NAME="ttyACM1"
+# urbtc0: imcs01 robot controller
+KERNEL=="urbtc0", MODE="0666
+</pre>

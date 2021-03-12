@@ -1,0 +1,35 @@
+---
+layout: post
+title: 'Robomec2009: drawstuff上位互換ライブラリ'
+date: 2009-05-25 22:25:19.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '1377'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/3692.html"
+---
+<p>[caption id="attachment_3691" align="alignnone" width="550" caption="drawstuff上位互換ライブラリ：シドニー嬢（右端）がそっぽを向いていますね．"]<a href="http://demura.net/wordpress/wp-content/uploads/2009/05/irrstuff.jpg"><img class="size-medium wp-image-3691" title="irrstuff" src="{{ site.baseurl }}/assets/images/2009/05/irrstuff-300x246.jpg" alt="drawstuff上位互換ライブラリ" width="550" height="450" /></a>[/caption]</p>
+<p>ODEは使い方が簡単なのでロボット学会にも多くのユーザがいます．問題点としては，計算精度が高くないことです．これは速度とのトレードオフなので，精度が必要な場合は日本が誇るOpenHRPを使えばOKです．</p>
+<p>OpenHRPと比較して大きな問題点は，ODEは動力学計算ライブラリなので可視化のために３次元グラフィクスライブラリdrawstuffがおまけて付いていますが機能がとても限られている点です．次の点が少し本格的なシミュレータを作成する場合にネックになります．</p>
+<ul>
+<li>３次元モデルファイルを読み込むローダーがない</li>
+<li>文字列をウインドウに表示できない</li>
+</ul>
+<p>上記の問題点を解決したのが，今回Robomec2009で発表したdrawstuff上位互換ライブラリです．３次元グラフィクスライブラリ<a href="http://irrlicht.sourceforge.net/">irrlicht</a>をベースに書きました．使い方はいたって簡単で，インクルードするヘッダファイルとリンクするライブラリを変更するだけです．過去のソフトウェア資産を無駄にしないエコ発想です．発表したところ結構評判が良かったので，勇気付けられました．上の画像はそのスクリーンショットです．一番左の黒いロボットは，学生が3D　CADで設計したロボカップ中型ロボットです．</p>
+<p>現状では，ローダーで読み込んたポリゴンの衝突検出がまだ実装されていない点と，速度が遅い点です．特に，速度が遅いと誰も使ってくれないので，遅い原因を分析し高速化をしなければなりません．いつリリースするかは考慮中です．興味のある方は是非コメントください．開発する原動力になります．</p>
+<p style="text-align: right;">でむ</p>
+<p><br class="spacer_" /></p>

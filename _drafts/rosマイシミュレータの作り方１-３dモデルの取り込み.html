@@ -1,0 +1,89 @@
+---
+layout: post
+title: ROSマイシミュレータの作り方１：３Dモデルの取り込み
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p><a href="http://demura.net/?attachment_id=12577" rel="attachment wp-att-12577"><img src="{{ site.baseurl }}/assets/images/meshlab1.png" alt="meshlab1" width="697" height="537" class="aligncenter size-full wp-image-12577" /></a></p>
+<p>ROSとGazeboを使った自作ロボットのシミュレータを制作したので、その作業メモ。ここでは、3Dモデルの取り込み方を説明。３D CADやBlenderなどで予め3Dモデルがあることが前提。ここでは、Happy miniのstlファイルを利用。<a href="http://demura.net/?attachment_id=12575" rel="attachment wp-att-12575">ここhappy_mini.stl.tar</a>をクリックするとダウンロードできる。</p>
+<ul>
+<li>MeshLab V1.3.2のインストール
+<ul>
+<li>sudo apt-get install  meshlab</li>
+</ul>
+</li>
+<li>MeshLabで 3Dモデルファイルの読み込み
+<ul>
+<li>meshlabを起動し、File-&gt;Import Meshからダウンロードしたhappy_stlを選択して、「開く」をクリック。</li>
+</ul>
+</li>
+<li>Meshの分割
+<ul>
+<li>happy_mini.stlはひとつの大きなメッシュなので、これを部品ごとに分ける。<br />
+Filters-&gt;Mesh Layer-&gt;Split in connected components</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/?attachment_id=12580" rel="attachment wp-att-12580"><img src="{{ site.baseurl }}/assets/images/meshlab_layer-1-300x177.png" alt="meshlab_layer" width="300" height="177" class="aligncenter size-medium wp-image-12580" /></a></p>
+<ul>
+<li>分割されたMeshに名前付け
+<ul>
+<li>View-&gt;Show Layer Dialog</li>
+<li>Render-&gt;Render Mode-&gt;Selected Face rendering</li>
+<li>Layer Dialogにあるメッシュ番号をクリックすると選択されたメッシュが赤色になる。下の図の場合、CC150は頭。CC150にカーソールを持って行き右マウスボタンをクリックして、Rename Current Meshを選択し、開いたウインドウのNew Labelにheadを打ち込み、Applyをクリックするとメッシュの名前が変わる。この作業をひたすら繰り返す。ただし、シミュレータで必要のない細かい部品は削除する。</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/?attachment_id=12582" rel="attachment wp-att-12582"><img src="{{ site.baseurl }}/assets/images/meshlab_select_mesh-300x177.png" alt="meshlab_select_mesh" width="300" height="177" class="aligncenter size-medium wp-image-12582" /></a></p>
+<ul>
+<li>riプロジェクトの保存
+<ul>
+<li>File-&gt;Save projectで好きなプロジェクト名をつけて各メッシュとこのプロジェクトを保存する。</li>
+</ul>
+</li>
+<li>メッシュの簡単化（ポリゴン数の削減）
+<ul>
+<li>CADからstlファイルを生成した場合はポリゴン数が多いのでシミュレータを高速化するためにポリゴン数を削減する。</li>
+<li>Filters &gt; Remeshing, simplification and construction &gt; Quadratic Edge Collapse Decimation</li>
+</ul>
+</li>
+<li>メッシュの統合
+<ul>
+<li>ロボットの3Dモデルは多くのメッシュで構成される。シミュレータでは扱いづらいので、機能毎のメッシュを一つのメッシュに統合する。</li>
+<li>Filters-&gt;Mesh Layer-&gt;Flatten visible Layers</li>
+<li>Files-&gt;Export mesh as<br />
+ファイル形式をplyで保存</li>
+</ul>
+</li>
+<li>色付きメッシュの保存
+<ul>
+<li>Filters-&gt;Texture-&gt;Parameterization: Trivial Per Triangle</li>
+<li>Filters-&gt;Texture-&gt;Vertex Color to Texture
+<ul>
+<li>Assign textureとFill textureにチェックを入れる</li>
+</ul>
+</li>
+<li>Files-&gt;Export mesh as
+<ul>
+<li>Collada File Format (*dae)ファイルで保存</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

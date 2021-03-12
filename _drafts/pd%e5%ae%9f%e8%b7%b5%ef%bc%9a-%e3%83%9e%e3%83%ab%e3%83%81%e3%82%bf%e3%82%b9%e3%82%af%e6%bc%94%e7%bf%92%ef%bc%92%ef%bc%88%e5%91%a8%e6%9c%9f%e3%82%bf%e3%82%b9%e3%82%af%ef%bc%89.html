@@ -1,0 +1,319 @@
+---
+layout: post
+title: PD実践： マルチタスク演習２（周期タスク）
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- lecture
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  views: '14'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<div>
+<ul>
+<li><strong>リアルタイムOS</strong>
+<ul>
+<li>この演習で使用しているEV3RTはリアルタイムOSであり、組み込みシステムに使われている。リアルタイムOSを使うと、プログラマは実行タイミングや実行時間を決めることでき、処理する時間をばらつきのないようにできる。これは、高い精度の制御をするために必要でロボットなどで大切である。</li>
+<li>EV3RTではこの機能を実現するために周期ハンドラとよばれる決められた時間間隔でタスクを実行する機能がある。<a href="http://www.seojapan.co.jp/itpedia/programming/%E3%83%8F%E3%83%B3%E3%83%89%E3%83%A9/">ハンドラ</a>とは、何かの処理が要求されたときに起動されるプログラムのこと。周期ハンドラは一定周期で実行されるハンドラであり、マウスがクリックされたときに実行されるイベントハンドラなどがある。なお、周期ハンドラについて詳細に知りたい学生は<a href="https://mitsut.github.io/toppers_kernel_spec/#_%E5%91%A8%E6%9C%9F%E3%83%8F%E3%83%B3%E3%83%89%E3%83%A9">Toppers新世代標準仕様書のハンドラ</a>を参照して欲しい。</li>
+</ul>
+</li>
+<li><strong>周期ハンドラ</strong></li>
+</ul>
+<p><img role="presentation" src="{{ site.baseurl }}/assets/images/No-0090.png" alt="" width="951" height="684" /><img role="presentation" src="{{ site.baseurl }}/assets/images/No-0090.png" alt="" width="951" height="684" /><img class="img-responsive atto_image_button_text-bottom" role="presentation" src="{{ site.baseurl }}/assets/images/SnapCrab_NoName_2019-11-7_9-32-37_No-00.png" alt="" width="967" height="725" /></p>
+<p>&nbsp;</p>
+<pre>DOMAIN(TDOM_APP) {
+    ...
+    EV3_CRE_CYC(TEST_EV3_CYC1, { TA_STA, 0, test_ev3_cychdr, 500, 0 });  ← この行を追加
+    ...
+}
+ATT_MOD(app.o)
+</pre>
+<p>EV3_CRE_CYCの各パラメータの意味は、以下の通りです。</p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>【第１パラメータ】周期ハンドラのID番号</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>【第２パラメータ】周期ハンドラの属性。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>TA_STAを指定すると、アプリケーションの起動時に周期処理も開始する。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>TA_NULLを指定すると、アプリケーションでEV3_sta_cyc(TEST_EV3_CYC1)を呼び出すまで動作しない。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>【第３パラメータ】周期ハンドラに渡される値（拡張情報）。この演習では0を指定する。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>【第４パラメータ】周期的に実行される関数。Cファイルに同名の関数を定義してください。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>【第５パラメータ】起動周期（EV3RTの場合、単位はミリ秒で指定）。この演習では500を指定する。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>【第６パラメータ】起動位相。周期ハンドラの動作開始を指定してから、最初に周期ハンドラが呼ばれるまでの相対時間。この演習では0を指定する。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>属性にTA_STAを指定して、起動位相に0を指定するとシステムが起動して最初のタイムティックが発生した時に動作する。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>周期ハンドラのAPI</li>
+</ul>
+<div>
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<h5><b>ER ev3_sta_cyc</b></h5>
+</td>
+<td>
+<h5><b>(</b></h5>
+</td>
+<td>
+<h5><b>ID </b></h5>
+</td>
+<td>
+<h5><em><b>ev3cycid</b></em></h5>
+</td>
+<td>
+<h5><b>)</b></h5>
+</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<p>   EV3用周期ハンドラの動作を開始する．</p>
+<dl>
+<dt>引数</dt>
+<dd>
+<table>
+<tbody>
+<tr>
+<td>ev3cycid</td>
+<td>EV3用周期ハンドラのID番号（EV3_CRE_CYCで指定）</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl>
+<dt>戻り値</dt>
+<dd>
+<table>
+<tbody>
+<tr>
+<td>E_OK</td>
+<td>正常終了</td>
+</tr>
+<tr>
+<td>E_CTX</td>
+<td>非タスクコンテキストからの呼出し</td>
+</tr>
+<tr>
+<td>E_ID</td>
+<td>不正ID番号</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</div>
+</div>
+<p>&nbsp;</p>
+<div>
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<h5>ER ev3_stp_cyc</h5>
+</td>
+<td>
+<h5>(</h5>
+</td>
+<td>
+<h5>ID</h5>
+</td>
+<td>
+<h5><em>ev3cycid</em></h5>
+</td>
+<td>
+<h5>)</h5>
+</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<p>   EV3用周期ハンドラの動作を停止する．</p>
+<dl>
+<dt>引数</dt>
+<dd>
+<table>
+<tbody>
+<tr>
+<td>ev3cycid</td>
+<td>EV3用周期ハンドラのID番号（EV3_CRE_CYCで指定）</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl>
+<dt>戻り値</dt>
+<dd>
+<table>
+<tbody>
+<tr>
+<td>E_OK</td>
+<td>正常終了</td>
+</tr>
+<tr>
+<td>E_CTX</td>
+<td>非タスクコンテキストからの呼出し</td>
+</tr>
+<tr>
+<td>E_ID</td>
+<td>不正ID番号</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<ul>
+<li>サンプルプログラム</li>
+</ul>
+<ol>
+<li>ソースファイル：<a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43400/mod_page/content/13/app_cyc_task.c">/cyc-task/app.c</a>、設定ファイル：<a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43400/mod_page/content/13/app_cyc_task.pdf" target="_blank" rel="noopener">/cyc-task/app.cfg</a><br />
+プログラム起動後、MAIN_TASKはメロディーを鳴らす。同時に、周期ハンドラが 500ms毎に起動され、LCDにカウンタ表示する。</li>
+</ol>
+<ul>
+<li>演習２</li>
+</ul>
+</div>
+<div>
+<div>
+<ol>
+<li><i> </i>サンプルプログラムcyc-taskの動作を確認してください。周期ハンドラの動作の仕組みを考えて説明してください。</li>
+<li> サンプルプログラムを改造し、以下のプログラムを作成しなさい。『「かえるの歌」のメロディーを永遠と鳴らし続けながら、カウント数をLCDに表示する』<br />
+- MAIN_TASK：「かえるの歌」のメロディーを鳴らす<br />
+- SUB_TASK：　カウント数をLCDに表示する</li>
+<li>第３週演習３[レポート１]では並列実行を習っていなかったので反応の鈍いプログラムでした。サンプルプログラムcyc-taskを改良してリアルタイム性の高いプログラムを作成してください。<br />
+以下のカラーセンサー（環境光と反射光）の組立例を組み立ててください。フタが開いたら100ms以内で「かえるの歌」が流れ、閉じたら100ms以内で止まるプログラムを作成しよう！</p>
+<ol>
+<li style="list-style-type: none;">
+<ul>
+<li>29_lightsensor.lxf：オープンセンサー<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/29_lightsensor.png"><img role="presentation" src="{{ site.baseurl }}/assets/images/29_lightsensor.png" alt="" width="600" height="266" /></a></li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<p>&nbsp;</p>
+</div>
+</div>
+<div>
+<p>&nbsp;</p>
+<ul>
+<li>レポート３</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>マルチタスク演習１，２をレポートにまとめ、Moodleから提出してください。</li>
+</ul>
+</li>
+</ul>
+</div>

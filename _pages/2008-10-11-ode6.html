@@ -1,0 +1,166 @@
+---
+layout: page
+title: 6. Collision Detection
+date: 2008-10-11 14:43:41.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '3421'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode6"
+---
+<p style="margin: 0px 0px 15px;"><img src="{{ site.baseurl }}/assets/images/2008/10/sample2.jpg" width="280" height="269" style="border-style: none;" /></p>
+<p style="margin: 0px 0px 15px;">This is the 6th ODE (Open Dynamics Engine) tutorial.</p>
+<p style="margin: 0px 0px 15px;"><span>This time, I explain the collision detection. </span><span>In the previous tutorial, as you know, dynamics and the collision detection are separately implemented in ODE. </span><span>To calculate the dynamics, firstly create a world by <strong>dWorldCreate ()</strong>, secondly create a body  in the world, and finally calculate the dynamics by  <strong>dWorldStep()</strong>. </span></p>
+<p style="margin: 0px 0px 15px;"><span><strong>Geometry</strong></span></p>
+<p style="margin: 0px 0px 15px;"><span>A geometry is a shape of an object.  It is used for collision detection. The below figure shows typical geometries, such as  sphere, box, cylinder and capsule. </span></p>
+<p style="margin: 0px 0px 15px;"><img src="{{ site.baseurl }}/assets/images/2008/10/geometry.jpg" width="320" height="239" style="border-style: none;" /></p>
+<p style="margin: 0px 0px 15px;"><span>Meanwhile, in order to calculate the collision detection, </span><span>firstly create a space by <strong>dHashSpaceCreate ()</strong>, secondly create a geometry  in the space, and finally detect a collision by <strong>dSpaceCollide()</strong>.</span></p>
+<p style="margin: 0px 0px 15px;"><span>In the following sample program, In line 97,  a sphere geometry is created by <strong>dCreateSphere()</strong> . </span><span>In line 98, ball.geom, the geometry of the ball, is associated with ball.body by<strong> dGeomSetBody()</strong>. An </span><span>ODE object is composed of body and geometry. Both attributes must be associated. </span></p>
+<p style="margin: 0px 0px 15px;"><span>Then, <strong>dSpaceCollide() </strong>is called in the simLoop function. </span><span> </span><span>Arguments o1 and o2 of <strong>nearCallback()</strong> are geometries which  are potentially collide each other.  You can set properties, such as the upper number of contact points, a friction coefficient,  a bounce coefficient, a friction model, a softness parameter, and so on,  of the contact surface in the <strong>nearCallback()</strong> function.</span></p>
+<p style="margin: 0px 0px 15px;"><span><span style="color: #ff0000;"><strong>In addition, you have to be careful that the arguments  o1 and o2 probably  collide, sometimes these do not collide each other. </strong></span></span><span><span style="color: #ff0000;"><strong>In order to know the collision, examine return value from dCollide(). If there is the collision, the return value is more than one.</strong></span></span></p>
+<p style="margin: 0px 0px 15px;"><span>As in line 88, firstly create a contact group by dJointGroupCreate() which is a container of collision points,  and clear the container by dJointGroupEmpty() every simulation step as in line 53.</span></p>
+<p style="margin: 0px 0px 15px;"><span>Now, let's read the source code.</span></p>
+<p style="margin: 0px 0px 15px;"><span><br />
+</span></p>
+<pre class="brush:cpp">// sample6.cpp
+#include &#60;ode/ode.h&#62;
+#include &#60;drawstuff/drawstuff.h&#62;
+
+static dWorldID world;
+static dSpaceID space;
+static dGeomID  ground;
+static dJointGroupID contactgroup;
+static int flag = 0;
+dsFunctions fn;
+
+const dReal   radius = 0.2;
+const dReal   mass   = 1.0;
+
+typedef struct {
+  dBodyID body;
+  dGeomID geom;
+} MyObject;
+MyObject ball;
+
+static void nearCallback(void *data, dGeomID o1, dGeomID o2)
+{
+  const int N = 10;
+  dContact contact&#91;N&#93;;
+
+  int isGround = ((ground == o1) || (ground == o2));
+
+  int n =  dCollide(o1,o2,N,&amp;contact&#91;0&#93;.geom,sizeof(dContact));
+
+  if (isGround)  {
+    if (n &#62;= 1) flag = 1;
+    else        flag = 0;
+    for (int i = 0; i &#60; n; i++) {
+      contact&#91;i&#93;.surface.mode = dContactBounce;
+      contact&#91;i&#93;.surface.mu   = dInfinity;
+      contact&#91;i&#93;.surface.bounce     = 0.0; // (0.0~1.0) restitution parameter
+      contact&#91;i&#93;.surface.bounce_vel = 0.0; // minimum incoming velocity for bounce
+      dJointID c = dJointCreateContact(world,contactgroup,&amp;contact&#91;i&#93;);
+      dJointAttach (c,dGeomGetBody(contact&#91;i&#93;.geom.g1),dGeomGetBody(contact&#91;i&#93;.geom.g2));
+    }
+  }
+}
+
+static void simLoop (int pause)
+{
+  const dReal *pos,*R;
+
+  flag = 0;
+  dSpaceCollide(space,0,&amp;nearCallback);
+
+  dWorldStep(world,0.01);
+
+  dJointGroupEmpty(contactgroup);
+
+  if (flag == 0) dsSetColor(1.0, 0.0, 0.0);
+  else           dsSetColor(0.0, 0.0, 1.0);
+  pos = dBodyGetPosition(ball.body);
+  R   = dBodyGetRotation(ball.body);
+  dsDrawSphere(pos,R,radius);
+}
+
+void start()
+{
+  static float xyz&#91;3&#93; = {0.0,-3.0,1.0};
+  static float hpr&#91;3&#93; = {90.0,0.0,0.0};
+  dsSetViewpoint (xyz,hpr);
+}
+
+void  prepDrawStuff() {
+  fn.version = DS_VERSION;
+  fn.start   = &amp;start;
+  fn.step    = &amp;simLoop;
+  fn.command = NULL;
+  fn.stop    = NULL;
+  fn.path_to_textures = "../../drawstuff/textures";
+}
+
+int main (int argc, char *argv&#91;&#93;)
+{
+  dReal x0 = 0.0, y0 = 0.0, z0 = 2.0;
+  dMass m1;
+
+  prepDrawStuff();
+
+  dInitODE();
+  world = dWorldCreate();
+  space = dHashSpaceCreate(0);
+  contactgroup = dJointGroupCreate(0);
+
+  dWorldSetGravity(world,0,0,-0.5);
+
+  // Create a ground
+  ground = dCreatePlane(space,0,0,1,0);
+
+  // Create a ball
+  ball.body = dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetSphereTotal(&amp;m1,mass,radius);
+  dBodySetMass(ball.body,&amp;m1);
+  dBodySetPosition(ball.body, x0, y0, z0);
+
+  ball.geom = dCreateSphere(space,radius);
+  dGeomSetBody(ball.geom,ball.body);
+
+  dsSimulationLoop (argc,argv,352,288,&amp;fn);
+
+  dWorldDestroy (world);
+  dCloseODE();
+
+  return 0;
+}</pre>
+<p style="margin: 0px 0px 15px;"><span>In the code, a body and a geomerty are member of the MyObject structure.</span></p>
+<p style="margin: 0px 0px 15px;"><span>dSpaceCollide(), the collision detection function, is called in the simLoop function. You must call it before dWorldStep(). dSpaceCollide() finds contact points and they are constraint for the dynamics calculaiton. </span></p>
+<p>dSpaceCollide() calls the callback function nearCallback().  dSpaceCollide() passes two geometries, o1 and o2,  which potentially collide to nearCallback(). The return value of dCollide() is the number of contact points in line 28.</p>
+<p><span><span style="color: #ff0000;"><strong>In line 30,  if (isGround) sentence from line 30 to line 41, only geometries which potentially collide are processed.</strong></span> </span><span><span style="color: #ff0000;"><strong>In other words, we do not care geometries which are not ground.  Please uncomment the if sentence, if you want to detect collisions of geometries which are not ground.</strong></span></span></p>
+<p style="margin: 0px 0px 15px;"><span><a style="color: #990000; text-decoration: none;" href="http://demura.net/downloads/odesample/sample6-110105.zip">You can download the sample program, sample6.cpp (sample6-110105.zip) from here.</a></span></p>
+<p><span>See you next time!</span></p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span><strong>APIs for collision detection</strong></span>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span><span style="color: #000066;"><strong>dSpaceID dHashSpaceCreate(0)</strong></span></span><span style="color: #000066;"><span style="color: #000066;"><strong> </strong><strong> </strong><span>Create a </span><a name="func_dHashSpaceCreate"></a><span> space. Return value is the space ID.</span></span></span>&nbsp;</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span><span style="color: #000066;"><strong>dGeomID dCreatePlane (dSpaceID space, dReal a, dReal b, dReal c, dReal d)</strong></span></span><span style="color: #000066;"><span style="color: #000066;"><strong> </strong><strong></strong><span>Create a plane. Arguments are parameters of the plane equation  ax+by+cz = d.</span></span></span>&nbsp;</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span><span style="color: #000066;"><strong>dGeomID dCreateSphere (dSpaceID space, dReal r)</strong></span></span><span style="color: #000066;"><span style="color: #000066;"><strong> </strong><strong></strong><span>Create a sphere, r is a radius of the sphere.</span></span></span>&nbsp;</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span><span style="color: #000066;"><strong>void dGeomSetBody (dGeomID geom, dBodyID body)</strong></span></span><span style="color: #000066;"><span style="color: #000066;"><strong> </strong><strong></strong><span>This API associates a geometry with a body.</span></span></span>&nbsp;</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span><span style="color: #000066;"><strong>dJointGroupID dJointGroupCreate (0)</strong></span></span><span style="color: #000066;"><span style="color: #000066;"><strong> </strong><strong></strong><span>Create a joint group which is a container of contact points.</span></span></span>&nbsp;</li>
+<li style="margin: 0px; color: #000000; line-height: 100%;"><span><span style="color: #000066;"><strong>void dJointGroupEmpty (dJointGroupID)</strong></span></span><span style="color: #000066;"><span style="color: #000066;"><strong> </strong><strong></strong><span>Empty a  joint group.  This API must be called in every simulation step. </span></span></span>&nbsp;</li>
+</ul>
+</li>
+</ul>

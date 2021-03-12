@@ -1,0 +1,73 @@
+---
+layout: post
+title: ODE講座15：PLAYSTATION 3でODEを動かそう！(Yellow Dog Linux 5.0)
+date: 2007-01-10 12:20:59.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1677'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/368.html"
+---
+<p align="left"><img src="{{ site.baseurl }}/assets/images/2007/01/screen2.jpg" alt=" " align="middle" /></p>
+<p><span style="font-size: x-small;"><strong>図　Yellow Dog Linux 5.0 for PLAYSTATION 3のスクリーンショット</strong>：左のターミナルにcpuinfoを表示しています。Cell Broadband Engineが２個認識され、machineがPS3PFと認識されていることがわかります。</span><span style="font-size: x-small;">YDLの標準ウインドウマネージャはEnlightenmentですが、gnomeに変更しています。</span></p>
+<p>ゲーム開発やロボットの研究者にも使われているオープンソースの物理計算エンジンODE(Open Dynamics  Engine、オープン ダイナミクスエンジン）を学ぶODE講座も第１５回目となりました。</p>
+<p>今回はお正月企画として、お年玉で購入した？PLAYSTATION 3 (プレイステーション３、PS3）にLinuxをインストールしODEを動かすまでの道のりを紹介したいと思います。</p>
+<p>LinxuのディストリビューションにはPS3用に先陣を切ったYellow Dog Linux 5.0（YDL5.0)のフリーダウンロード（英語）版を使いました。　YDLの前に<a href="http://developer.momonga-linux.org/wiki/?PS3">Momonga Linux</a>(20061217版） を試したのですが、何故かfirefoxが起動せずにすぐ落ちる問題点と音がでないために泣く泣く使うのをあきらめました。Momonga Linuxは私がかつて愛用したKondara Linuxの志を継ぐユニークなディストリビューションです。かわいいモモンガがちびっ子にも大人気です。今後に期待しましょう！</p>
+<p>さて、Yellow Dog Linux 5.0をPS3にインストールする方法は超簡単でFIXSTARSによる詳細な説明が以下のウェブサイトにあるので、そちらをご覧ください。準備等も含めて2時間もあればインストールは終わると思います。私の場合は、Linux用に10GB、Game OS用に50GBのハードディスク領域を確保し、Linuxのスワップ領域は1GB確保しました。</p>
+<p><strong>１．　Yellow Dog Linux 5.0のインストール とカスタマイズ（ウインドウマネージャの日本語化）</strong></p>
+<ul>
+<li><a href="http://www.terrasoftsolutions.com/resources/downloads.shtml">Yellow Dog Linux 5.0のフリーダウンロード</a>（Terra Softのサイト)</li>
+<li><a href="http://cell.fixstars.com/ps3linux/index.php/Yellow_Dog_Linux_for_PS3">Yellow Dog Linux for PS3 （Fixstarsのサイト)</a></li>
+</ul>
+<p><!--more--></p>
+<p><strong>２．ODEを動かすための開発環境と設定</strong></p>
+<p>YDL5.0はインストール時にパッケージを選ぶことができず、それだけではODEを動かすことはできません。ODEはOpenGLのユーティリティライブラリであるGLUが必要なのでそのパッケージをインストールし、X Windowsの設定ファイルxorg.confを設定しなければなりません。</p>
+<ul>
+<li>GLUのインストール<br />
+GLUがインストールされていないと次のようなエラーメッセージがでてコンパイルできません。<br />
+drawstuff.cpp:49:20: error: GL/glu.h: No such file or directory</p>
+<p>それを解決するために、以下のrpmをインストールしました。<a href="http://ftp.kddlabs.co.jp/Linux/distributions/yellowdog/yum/5.0/base/RPMS/">これらのrpmはここで見つかります。</a></li>
+</ul>
+<ul>
+<li>mesa-libGLU-devel-6.4.2-6.FC5.3.ppc.rpm</li>
+<li>freeglut-devel-2.4.0-4.ppc.rpm</li>
+</ul>
+<ul>
+<li>/etc/X11/xorg.confの設定<br />
+YDL5.0の標準設定のままだと、ODEのテストプログラムを動かすときに以下のエラーが出ます。<br />
+Xlib: extension "GLX" missing on display ":0.0"<br />
+Error: no good X11 visual found for OpenGL</p>
+<p>このエラーを回避するために、/etc/X11/xorg.confのSection "Module"にLoad "glx"を付け加えます。私はLoad "type1"と"#Load "dri"の間に入れています。<br />
+Load　 "type1"<br />
+Load 　"glx"<br />
+#Load　 "dri"</li>
+</ul>
+<p><strong>３．ODEのインストール</strong></p>
+<p>ODEのインストール自体は普通のLinuxと全く同じです。以下の私のページをご覧ください。</p>
+<ul>
+<li> <a href="http://demura.net/archives/2006/09/ode4.html">ODE講座４  インストール（Linux編）</a></li>
+</ul>
+<p><strong>４．　所　感<br />
+</strong></p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/01/ydl5s.jpg" alt=" " align="middle" /></p>
+<p><strong>図　YDL 5.0のログイン画面（PS3の出力1080p）：</strong>みかんは子供に食べられてありません。</p>
+<p>自宅のフルハイビジョンのテレビがコンピュータ（ＰＳ３）の画面になることはとても爽快です。ただし、LinuxからPS3のグラフィクスエンジンRSXにアクセスできないのでOpenGLのハードウェアアクセレレーションが使えません。つまり、3Dグラフィクス系のアプリケーションを利用することは実用的ではありません。<span style="color: #000000;">ODE（正確にはdrawstuff)でも</span><span style="color: #000000;">テクスチャがOFFでポリゴンを表示していない場合はそこそこ使えますが、その他の場合は非常に遅いです。</span>また、メモリも256ＭＢしかないのでGNOMEなどを使うとかなり重く、さらに、YDLで利用しているPower PC互換のメインプロセッサコアPPEはPentium 4と比較すると浮動小数点の能力が数分の一程度という報告があります。</p>
+<p>ネガティブなことを書きましたが、CELLプロセッサの高性能数値演算コアSPE(Synergistic Processor Element)を使っていなのでPS3のほんとうの凄さはまだわかりません。今後、SPEを積極的に使うことによりOpenGLなどの3次元グラフィクス表示の問題が解決され、SPEを利用したアプリケーションが多く出てくるとPS3はパーソナルなスーパーコンピュータになるのではないでしょうか。現状のYellow Dog LinuxでもOpen Office（フリーのオフィス）、firefox（フリーのブラウザ）、thunderbird（フリーのメイラー）などのおかげでお金をかけずに基本的なことができます。価格もメモリ250MB、ブルーレイディスクドライブ、ハードディスク60GB搭載モデルで約６万円ですのでお買い得です。Linuxを入れると標準ではGame OSが立ち上がらないので子供のゲームやりすぎを避けることもでき我が家にとってはありがたいです。</p>
+<p>最後に、ＰＳ３の凄さを紹介した立花隆氏の記事を参考文献として紹介します。 CELLの処理パワーを研究に生かすことができればPS3は本当にお買い得なマシンです。</p>
+<p><strong>参考文献</strong></p>
+<ul>
+<li><a href="http://www.nikkeibp.co.jp/style/biz/feature/tachibana/media/061221_ps3/">立花隆、ソニーはどこに向かうのか　ＰＳ３の可能性と不透明な未来 、Nikkei BP net</a></li>
+</ul>

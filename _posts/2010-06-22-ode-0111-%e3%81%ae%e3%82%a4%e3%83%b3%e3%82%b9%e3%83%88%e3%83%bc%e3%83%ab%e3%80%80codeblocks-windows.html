@@ -1,0 +1,136 @@
+---
+layout: post
+title: ODE 0.11.1 のインストール法　(Windows + Code::Blocks)
+date: 2010-06-22 12:38:41.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags:
+- ODE
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '22634'
+  image: http://demura.net/wordpress/wp-content/uploads/2009/06/odelogo1.jpg
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/3850.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2009/06/odelogo1.jpg"><img src="{{ site.baseurl }}/assets/images/2010/06/odelogo1.jpg" alt="odelogo1" title="odelogo1" width="200" height="62" class="alignnone size-full wp-image-3860" /></a></p>
+<div>
+<p>2009年5月24日にリリースされたODE0.11.1のインストール法を説明します．ここでは日本であまりメジャーではありませんが，海外ではユーザも多く，私の講義でも利用しているマルチプラットフォームの開発環境Code::Blocks8.02用の記事です．ODEではCode::Blocksのインストールがサポートされています．残念ながらmsys+mingwはサポートされていません．</p>
+<ol>
+<li><strong>ODE 0.11のインストール</strong>
+<ol type="a">
+<li><a href="http://sourceforge.net/project/downloading.php?group_id=24884&amp;filename=ode-0.11.1.zip&amp;a=18825280">ode-0.11.1.zip</a>のダウンロード．デスクトップへ保存・解凍する．解凍ソフトは<a href="http://www.forest.impress.co.jp/lib/arc/archive/archiver/lhaplus.html">Lhaplus</a>を推奨します．</li>
+<li>ode-0.11.1フォルダーをcドライブのトップへコピー．以下のディレクトリ（フォルダ）構成になります．<span style="font-family: mceinline;">なお，解凍ソフトによっては，ode-0.11.1フォルダーの下にまたode-0.11.1フォルダーが作られるものがあります．その場合は，下のode-0.11.1フォルダーからコピーしてください．</span>
+<ul>
+<li>
+<pre> c:\ode-0.11.1</pre>
+</li>
+</ul>
+</li>
+<li>コマンドプロンプトを起動する．
+<ul>
+<li>スタート→「すべてのプログラム」→「アクセサリ」→「コマンドプロンプト」</li>
+</ul>
+</li>
+<li>以下のようにコマンドを打ち込みますが，打ち間違えると失敗するのでカットアンドペーストを推奨します。カットアンドペーストした後はEnterキーを押してください．自分で打ち込む場合は２個の-(マイナス)文字がつながって見えるので，下画像を参照して注意深く打ち込んでください．
+<ul>
+<li>
+<pre>cd c:\ode-0.11.1\build 
+
+ 注：cdコマンドはディレクトリの移動</pre>
+</li>
+<li>
+<pre>premake4 --with-demos --cc=gcc --os=windows codeblocks</pre>
+<p><strong><span style="color: #ff0000;">注：with, cc,  osの前は-（マイナス）が２個連続している．下画像参照．premake4の前にあるコマンドプロンプトc:\ode-0.11.1\build&gt;は打ち込む必要はありません．<a href="http://demura.net/wordpress/wp-content/uploads/2009/06/premake41.jpg"><img src="{{ site.baseurl }}/assets/images/2010/06/premake41.jpg" alt="premake41" title="premake41" width="500" height="73" class="alignnone size-full wp-image-3856" /></a></span></strong></li>
+</ul>
+<ul>
+<li>成功するとcodeblocksというcode::blocks用のディレクトリがbuildフォルダの中に生成されるので，あるかどうかエクスプローラで確認する．
+<ul>
+<li>
+<pre>c:¥ode-0.11.1¥build¥codeblocks</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<p><br class="spacer_" /></p>
+<li><strong>ODEのビルド</strong>
+<ol type="a">
+<li>code::blocksを起動</li>
+<li>code::blocksのメニューバーから「ファイル(F)」→「開く（O)」を選択
+<ul>
+<li>
+<pre>c:¥ode-0.11.1¥build¥codeblocks¥ode.workspace</pre>
+<p>を選択</li>
+</ul>
+</li>
+<li><span style="color: #008000;"><strong><span style="color: #ff0000;">重要：</span><span style="color: #0000ff;">ビルドターゲットは必ず</span></strong></span><strong><span style="color: #ff0000;">DebugDoubleLib</span><span style="color: #0000ff;">を選択する</span></strong>（下画像の赤丸箇所）．<strong><span style="color: #ff0000;">ここは非常に間違いやすい箇所です。良く説明を読み十分注意して作業を進めてください。</span></strong>
+<ul>
+<li>これによりデバッグ向け，倍精度，静的なライブラリが作られます．ODEではDLL（Dynamic Link Library)より静的ライブラリ(Static Library)が推奨されています．静的ライブラリで作成した実行ファイルはサイズが大きくなりますが，配布時はその実行ファイルだけを配布すれば良くライブラリを付属する必要はありません．自分が作成した実行ファイルを配布するときは静的ライブラリがお勧めです．<br />
+また，DebugSingleLibを選ぶと単精度の静的ライブラリが生成されますが，エラーがでやすいのでお勧めできません． というわけで、<strong><span style="color: #ff0000;">DebugDoubleLib</span></strong>を必ず選択してください。<img src="{{ site.baseurl }}/assets/images/2010/06/targetdebuglib.jpg" alt="targetdebuglib.jpg" /></li>
+</ul>
+</li>
+<li>「ビルド(B)」→「ワークスペースをビルド(W)」を選択．ワークスペースはVisual C++のソリューションと同様なものです．
+<ul>
+<li>デモプログラムの実行ファイルはc:¥ode-0.11.1¥lib¥DebugDoubleLibに生成される．</li>
+<li>試しに，demo_basket.exeをダブルクリックして起動すればODEのビルド成功．</li>
+</ul>
+</li>
+<li><span style="color: #ff0000;"><strong>ビルドに失敗する場合の対策</strong></span>
+<ul>
+<li><span style="border-collapse: separate; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 19px; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; font-family: arial; color: #000000;"><strong>DebugDoubleLib” uses an </strong><em>invalid compiler</em>. </span>と怒られたら
+<ul>
+<li>原因：他のコンパイラでビルドしようとしています。</li>
+<li>対策：設定(s)→コンパイラとデバッガ(C)→グローバルなコンパイラ設定のToolchain実行ファイルが以下のようになっているか確認し（クリックすると画像が拡大される）、違う場合は変更する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2008/12/cb-compiler.jpg"><img src="{{ site.baseurl }}/assets/images/2010/06/cb-compiler-300x278.jpg" title="cb-compiler" width="300" height="278" class="alignnone size-medium wp-image-2946" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<p><!--more--></p>
+<li><strong>ODE本サンプルプログラムのビルド</strong>
+<ol type="a">
+<li><a href="http://demura.net/dl">ダウンロードカテゴリー</a>からrobosimu******(******は日付）をダウンロードして，c:¥ode-0.11.1にコピーし，そこに解凍する．解凍に成功するとc:¥ode-0.11.1¥roboSimu******というディレクトリが生成される．フォルダ名から日付をとり，roboSimuとフォルダ名を変更する．その中にはsrc,texturesフォルダーとがあり，premake.exe, premake.lua, Readme.txt, roboSimu.luaファイルが生成される．srcフォルダーの中にはODE本のサンプルコードがある．</li>
+<li>ODEのインストールと同じように，premakeコマンドを使い，code::blocks用のプロジェクトを生成する．コマンドプロンプトを起動し，以下のコマンドを実行する．なお，ODEでは新しいpremake4を使っていますが，ここではODE本サンプルプログラムに同封されている古いpremakeを使います．
+<ul>
+<li>
+<pre>cd c:\ode-0.11.1\roboSimu</pre>
+</li>
+<li>
+<pre>premake  --target  cb-gcc</pre>
+<p><span style="color: #ff0000;"><strong>注：targetの前は-(マイナス）が２個連続．</strong></span></li>
+</ul>
+<p><br class="spacer_" /></li>
+<li>code::blocksを起動</li>
+<li>code::blocksのメニューバーから「ファイル(F)」→「開く（O)」を選択
+<ul>
+<li>
+<pre>c:\ode-0.11.1\roboSimu\src\roboSimu.workspace</pre>
+<p>を選択</li>
+</ul>
+</li>
+<li><strong><span style="color: #ff0000;">重要：</span><span style="color: #0000ff;">ビルドターゲットを</span></strong><strong><span style="color: #ff0000;">DebugLib</span><span style="color: #0000ff;">とする．</span></strong><br />
+ODEのライブラリをビルドするときDebugDoubleLibを選んでいるので、必ずDebugLibを選択する。</li>
+<li>「ビルド(B)」→「ワークスペースをビルド(W)」を選択。エラーが出た場合は、ODEのビルドに失敗している可能性が高いのでODEのビルドをやり直し。</li>
+<li>サンプルプログラムの実行ファイルはc:¥ode-0.11.1¥roboSimu¥DebugLibに生成される．</li>
+<li>試しに，arm1.exeをダブルクリックして起動すれば成功．お疲れ様でした！</li>
+</ol>
+</li>
+<p>最終更新日：2011-6-22</p>
+</div>

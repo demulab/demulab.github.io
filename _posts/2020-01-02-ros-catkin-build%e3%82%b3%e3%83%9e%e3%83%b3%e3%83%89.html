@@ -1,0 +1,125 @@
+---
+layout: post
+title: 'ROS: catkin buildコマンド'
+date: 2020-01-02 14:20:27.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16273'
+  views: '3848'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/16533.html"
+---
+<p>この記事は以下のROS Wikiの記事を参考に、ビルドコマンドとして新しいcatkin buildを使います。従来のcatkin_makeコマンドと比較して、パッケージ毎に違う環境(isolated environment)でビルドできたり、並列ビルドできるので高速であり、ROSのパスが通っていればどこでもbuildできたり、一つのパッケージだけ簡単にビルドできたりするところがcatkin_makeとは違う優れたところです。</p>
+<ul>
+<li><a href="https://catkin-tools.readthedocs.io/en/latest/index.html#">catkin_tool</a></li>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/CreatingPackage">ROSパッケージを作る</a></li>
+<li><a href="http://wiki.ros.org/ja/ROS/Tutorials/BuildingPackages">ROSのパッケージをビルドする</a></li>
+<li><strong>エラー</strong>
+<ul>
+<li><span style="color: #ff0000;">すでにcatkin_makeでビルドした場合は、~/catkin_wsにあるdevel、buildのディレクトリを消してからcatkin buildし直す必要があります。それでもエラーが出る場合は、ホームディレクトリに.catkin_toolsというフォルダがないかls -aコマンドで確認して、あったらフォルダ毎削除してください。</span></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<hr />
+<p>(1) まず、以下のコマンドでcatkinツールをインストールします。<br />
+<code>$ sudo apt install python-catkin-tools</code></p>
+<p>(2) セットアップする。なお、sourceコマンドはファイルに書かれたコマンドを現在のシェルで実行するコマンドです。<br />
+<code>$ source  /opt/ros/melodic/setup.bash</code><br />
+(3) mkdirコマンドでディレクトリを作る。-pのオプションはcatkin_wsディレクトリをない場合はそれを作り、その中にsrcディレクトリを作ってくれる便利なオプション。なお、~はホームディレクトリの意味。<br />
+<code>$ mkdir  -p  ~/catkin_ws</code><br />
+(4) cdコマンドでディレクトリを移動する。<br />
+<code>$ cd  ~/catkin_ws</code><br />
+(4) 次のコマンドでワークスペースを初期化する。<br />
+<code>$ catkin init</code></p>
+<p><strong>2. ビルドの方法</strong><br />
+ROSではソースコードをビルドするときに<strong><span style="color: #ff0000;">catkin build</span></strong>コマンドを使います。<strong><span style="color: #ff0000;">このコマンドを実行するときは~/catkin_ws以下のディレクトリならどこでも良いところがcatkin_makeと違い便利なところです。</span></strong><br />
+次のコマンドを実行してください。<br />
+<code>$ cd  ~/catkin_ws </code><br />
+<code>$ catkin build </code><br />
+実行後にlsコマンドを実行すると、build、develとlogのディレクトリが新たに作成されていることがわかります。</p>
+<p><strong>3.  設定</strong><br />
+ここで作成したcatkin_wsを有効にするためには以下のコマンドを実行する必要があります。<br />
+<code>$ source ~/catkin_ws/devel/setup.bash </code><br />
+毎回、実行するのは面倒なので~/.bashrcの一番最後にテキストエディターgeditで、上のコマンドを付け加え保存しましょう。まず、geditがインストールされていない場合は次のコマンドでインストールしてください。<br />
+<code>$ sudo apt install gedit</code></p>
+<p>ホームディレクトリに移動します。<br />
+<code>$ cd</code><br />
+次のコマンドでgeditを実行します。<br />
+<code>$ gedit .bashrc</code></p>
+<p>.bashrcの中にsource /opt/ros/melodic/setup.bashがない場合は、下のように２行追加してください。</p>
+<p>source /opt/ros/melodic/setup.bash<br />
+source ~/catkin_ws/devel/setup.bash</p>
+<p>保存はgeditの上ツールバー右にある「Save」をクリックします。では、うまく設定されたか、次のコマンドで確認しましょう。<br />
+<code>$ source .bashrc</code><br />
+<code>$ echo $ROS_PACKAGE_PATH </code><br />
+つぎのように表示されたら成功です。</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2019/10/SnapCrab_NoName_2019-10-12_14-21-56_No-00.png"><img class="aligncenter size-full wp-image-16273" src="{{ site.baseurl }}/assets/images/2020/01/SnapCrab_NoName_2019-10-12_14-21-56_No-00.png" alt="" width="732" height="155" /></a>失敗した場合は、設定をもう一度実行してください。打ち間違えがないか注意しましょう。</p>
+<p><strong>4. パッケージの作成</strong><br />
+準備ができたので早速、パッケージを作りましょう。パッケージは次の<strong><span style="color: #ff0000;">catkin_create_pkg</span></strong>コマンドで作ります。依存パッケージはそのパッケージを作るために必要なパッケージです。<br />
+<strong><code>catkin_create_pkg &lt;パッケージ名&gt; [依存パッケージ1] [依存パッケージ2]　[依存パッケージ3]</code></strong><br />
+helloパッケージを作りましょう！<br />
+<code>$ cd ~/catkin_ws/src</code><br />
+<code>$ catkin_create_pkg hello roscpp </code><br />
+上手く作成できたか確認します。<br />
+<code>$ cd ~/catkin_ws/src/hello </code><br />
+<code>$ ls </code><br />
+CMakeLIsts.txt, include, package.xml, srcができていれば成功です。<br />
+package.xmlに作成者(maintainer)の情報などを書きます。ここでは省略します。ROS Wikiの<a href="http://wiki.ros.org/catkin/package.xml">package.xml</a>を参考にしてください。</p>
+<p><strong>5. ソースコードの作成とビルド</strong><br />
+<code>$ cd ~/catkin_ws/src/hello/src </code><br />
+<code>$ gedit hello_node.cpp</code></p>
+<p>エディタが開くので以下をソースコードを打ち込み「保存(S)」をクリックして保存する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/SnapCrab_NoName_2019-10-12_14-25-59_No-00-1.png"><img class="size-full wp-image-16276 alignnone" src="{{ site.baseurl }}/assets/images/2020/01/SnapCrab_NoName_2019-10-12_14-25-59_No-00-1.png" alt="" width="638" height="250" /></a></p>
+<p>geditで~/catkin_ws/src/hello/CMakeLists.txtを開き、134行目のadd_executableで始まる行と147～149行目のtarget_link_librariesで始まる３行のコメントを次のように外して保存する（つまり、#を消す)。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/10/SnapCrab_NoName_2019-10-12_14-29-18_No-00.png"><img class="aligncenter size-full wp-image-16277" src="{{ site.baseurl }}/assets/images/2020/01/SnapCrab_NoName_2019-10-12_14-29-18_No-00.png" alt="" width="802" height="538" /></a><br />
+ビルドします。まず、catkin_wsディレクトリへ移動します。<br />
+<code>$ cd ~/catkin_ws</code><br />
+今回はhelloノードだけをビルドすればよいのでcatkin buildの後にビルドしたhelloノードを指定します。全パッケージをビルドしたいときはcatkin buildだけでOKです。<br />
+<code></code><code></code><code>$ catkin build hello</code></p>
+<p><strong>6. 実行</strong><br />
+以下の<span style="color: #ff0000;"><strong>roscore</strong></span>コマンドでMaster（マスター）を実行する。他のノードを実行する前に必要です。<br />
+<code>$ roscore</code><br />
+ノードを実行するためには<strong><span style="color: #ff0000;">rosrun</span></strong>コマンドを使います。使い方は次のとおり。<br />
+<strong><code>rosrun パッケージ名　実行ファイル名</code></strong><br />
+別の端末を開き、rosrunコマンドでhello_nodeノードを実行する。<br />
+なお、hello_nodeは~/catkin_ws/devel/lib/hello/hello_nodeにcatkin buildコマンドで作られたものです。<br />
+<code>$ rosrun hello hello_node</code><br />
+次のように表示されたら成功。終わり。お疲れ様！<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/10/No-0115.png"><img class="aligncenter size-full wp-image-15247" src="{{ site.baseurl }}/assets/images/2020/01/No-0115.png" alt="" width="658" height="239" /></a></p>
+<p>&nbsp;</p>

@@ -1,0 +1,75 @@
+---
+layout: post
+title: 3次元描画ライブラリirrDrawStuff-0.02リリース
+date: 2010-02-18 01:17:39.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  views: '231'
+  image: http://demura.net/wordpress/wp-content/uploads/swift_default.jpg
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/6232.html"
+---
+<p>demura.netで開発しているODE用3Dグラフィクスライブラリの上位互換であるirrDrawstuff-0.0.2　（略称iDS)を公開します．</p>
+<p><!--more--></p>
+<p>[caption id="attachment_6237" align="aligncenter" width="547" caption="irrDrawStuff-0.02のスクリーンショット．メニューバーが装備され，3Dモデルの読み込みも可能．"]<a href="http://demura.net/wordpress/wp-content/uploads/2010/02/dwarf.jpg"><img src="{{ site.baseurl }}/assets/images/2010/02/dwarf.jpg" alt="irrDrawStuff-0.02のスクリーンショット．メニューバーが装備＆高速化された．" title="dwarf" width="547" height="490" class="size-full wp-image-6237" /></a>[/caption]</p>
+<p><br class="spacer_" /></p>
+<p>性能，コーディング，操作性の面で0.01と比較して飛躍的に改善されていると思います．drawstufffと比較してほぼ遜色のないレベルにやっとなりました．</p>
+<p>見た目ではメニューバーが追加され，益々drawstuffとクリソツになり，File-&gt;Open Model File &amp; Texture...で上画像のように３Ｄデモルも読み込できる．ただし，テクスチャが反映されない点と衝突検出は未実装．メニューバーが半透明になっているのは私の趣味です．</p>
+<p>個人的にはソースコードのC++化が大きな変更点です．0.01はC言語で書かれたdrawstuffのソースコードをほぼirrlichtのAPIで移植していましたが，これからの開発を考えてソースコードを大幅に変更しC++化しています．そのためリリースが少し遅れました．</p>
+<p>次は，球以外の影の実装と読み込んだ3Dモデルの衝突検出を完全にすることです．近いうちに描画速度の比較結果を報告します．なお，このバージョンではdiLoadMeshは使えません．</p>
+<p><strong>ダウンロード</strong></p>
+<ul>
+<li><strong><a href="http://demura.net/dl">このページからお願いします。</a></strong></li>
+</ul>
+<p><strong>必要な環境</strong></p>
+<ul>
+<li>ODE-0.11.1</li>
+<li>irrlicht-1.7</li>
+</ul>
+<p><strong>インストール法</strong></p>
+<ul>
+<li>Windows
+<ul>
+<li>作成中．基本的には以前のバージョンと同じ．</li>
+</ul>
+</li>
+<li>Linux
+<ul>
+<li>g++</li>
+</ul>
+</li>
+</ul>
+<p><br class="spacer_" /></p>
+<p><strong>変更履歴　Version 0.0.2</strong></p>
+<ul>
+<li> 高速化 </li>
+<li> メニューバー実装 </li>
+<li> ウインドウの大きさを変更可能とした</li>
+<li> DirectXでCould not get lower surface level for mip map generationと出るバグを解消</li>
+<li> APIは変更ないが，ソースコードをC++化した．そのためファイル構成を大きく変更した．</li>
+<li> irrlicht1.7に対応 </li>
+<li> 球(sphere)のみ影を実装</li>
+<li> デモプログラムにshapes.cppとtrimesh.cppの追加，cube.cppの削除</li>
+</ul>
+<p><strong>To Do リスト</strong></p>
+<ul>
+<li>視線方向の設定がODEと違う</li>
+<li>球以外の影が表示されない</li>
+<li>頂点数の制限があり65536個より大きい3Dオブジェクトファイルを表示できない</li>
+<li>3Dオブジェクトファイルから読み込んだジオメトリの衝突検出が不完全</li>
+<li>DirectXへの対応。現状ではDIRECT3D9 begin scene failedとエラー表示されバグあり。</li>
+<li>チュートリアル、マニュアルの作成</li>
+</ul>

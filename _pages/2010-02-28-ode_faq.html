@@ -1,0 +1,382 @@
+---
+layout: page
+title: ODEの良くある質問
+date: 2010-02-28 01:13:35.000000000 +09:00
+type: page
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '30422'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/ode_faq"
+---
+<p>このFAQはODE質問・要望募集！によせられた読者のみなさんからの御質問と学生から授業中に頂いた御質問をまとめたものです。ODEご本家様のFAQを訳したものではありません。今まで質問して頂き本当にありがとうございました。予想外の質問もあり、大変勉強になりました。今後も気軽に質問やコメントをしてくださいね。特に、初心者様からのご質問は大歓迎です。</p>
+<p>なお、demura.netはブログランキングに参加していますので、この記事がご参考になればこの<a href="http://science.blogmura.com/"><img src="{{ site.baseurl }}/assets/images/2010/02/science106_24_1.gif" border="0" alt="にほんブログ村 科学ブログへ" width="106" height="24" /></a>バナーをクリックして頂けると暖かい応援になります。</p>
+<ul>
+<li><span style="color: #0000ff;"><strong>更新履歴 </strong></span>
+<ul>
+<li>B.25追加(2011-1-15)</li>
+<li>B.24追加(2009-12-7)</li>
+<li>B.23追加(2008-10-9)</li>
+<li>A.1～A.5を更新，A.15, A.16，C.7追加(2008-9-16)</li>
+<li>B.9の説明を補足(2008-5-21)</li>
+<li>リンク切れの復活とD.3の更新, B22の追加(2008-4-24)</li>
+<li>A.6の説明を更新(2008-3-14)</li>
+<li>B.3の説明を更新(2008-2-8)</li>
+<li>A.14、A.15、C.21を追加(2008-2-5)</li>
+<li>B.16の説明を詳しくし、B.21を追加(2008-1-29)</li>
+</ul>
+</li>
+</ul>
+<p><!--more--></p>
+<ul>
+<li><span style="color: #0000cc;"><strong>A. インストール・コンパイル</strong></span>
+<ol>
+<li><a href="#a1">Windows　XPでのインストール法を教えてください。(2008-9-16)</a></li>
+<li><a href="#a2">Windows Vistaでもインストールできますか？(2008-9-16)</a></li>
+<li><a href="#a3">Linux上でのインストール法を教えてください。(2008-9-16)</a></li>
+<li><a href="#a4">Mac OS X上でのインストール法を教えてください。</a></li>
+<li><a href="#a5">Visual C++ でのインストール法を教えてください．</a>(2008-9-16)</li>
+<li><a href="#a6">プレーステーション３へインストールできますか？</a></li>
+<li><a href="#a7">単精度と倍精度のどっちでインストールですれば良いですか？</a></li>
+<li><a href="#a8">衝突検出ライブラリはOPCODEとGimpactのどちらをインストールすれば良いですか？</a></li>
+<li><a href="#a9">サンプルプログラムなどをコンパイルすると次のように怒られてしまいます。(2007-6-18)</a><br />
+arm.cpp:60: error: cannot convert ‘const dReal*’ to ‘const double*’ for argument ‘1’ to ‘void dsDrawCapsuleD(const double*, const double*, float, float)’<br />
+make: *** [arm.o] Error 1</li>
+<li><a href="#a10">自分の作ったソースコードをコンパイルしたいのですが、フォルダやソースコードをどこに置けばよいかわかりません。(2007-8-21)</a></li>
+<li><a href="#a11">Windows Vista+MSYS+MinGWを使っていますが、ODEをインストールする際、make installすると"Permission Denied."と怒られます。もう、怒られたくありません。</a>(2007-10-17)</li>
+<li><a href="#a12">odeのインストールでつまづいたのですが、MSYSを起動すると「bash.exe: warning: could not find /tmp, please create!」と表示されるのですが、これは何なのでしょうか？(2008-1-13)</a></li>
+<li><a href="#a13">ＯＤＥ本のサンプルプログラムをダウンロードして，make(コンパイル)すると以下のよう怒られ，何が悪いかわかりません(2008-2-5)。<br />
+error: stray '\239' in program<br />
+error: stray '\187' in program<br />
+error: stray '\191' in program </a></li>
+<li><a href="#a14">遺伝的アルゴリズムのような繰り返し計算にODEを使用する際，計算スピードを上げるために描画を止めていました．しかし，状態の変化を見ようとprintfをしても，MinGW+msysの環境下で描画を止めるとprintfの出力も止まってしまいました．どうすれば良いでしょうか？(2008-2-5)。 </a></li>
+<li><a href="#a15">codeblocksのインストールを完了し、日本語化を行いODEのビルド 中にコンパイルエラーで以下のビルドメッセージを出して止まりました</a>
+<p style="margin: 0px 0px 15px;"><a href="#a14">||=== ode, DebugDoubleLib ===|<br />
+C:\ode-0.10.1\ode\src\box.cpp||In function `int dBoxBox(const dReal*, const |<br />
+C:\ode-0.10.1\ode\src\box.cpp|389|warning: division by zero in `|<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_box.cpp||In member function `void |<br />
+中略<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_trimesh.cpp|867|warning: division by |<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_trimesh.cpp||In function `int |<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_trimesh.cpp|1073|`alloca’ undeclared |<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_trimesh.cpp|1073|(Each undeclared |<br />
+||=== Build finished: 2 個のエラー、 6 個の警告 ===|</a></p>
+<p style="margin: 0px 0px 15px;"><a href="#a14">dALLOCA16　マクロはode\src\util.h 55行目　で定義されいて、この中のalloca　の定義が見えていないようです何処を直せばよいのでしょうか？　(by Highさん, 2008-9-16)</a></p>
+</li>
+<li><a href="#a15">講義 Visual C++ 2008 Expression Editionに沿ってインストールしましたが、データ実行防止が働いて、demo_basket.exeの起動に失敗してしまいました。使用環境は以下のとおりです。OS：vista，CPU：intel core2 duo<br />
+起動させる良い方法はないものでしょうか。　(by たくさん,，2008-9-16) </a></li>
+</ol>
+</li>
+<li><span style="color: #0000cc;"><a href="#a15"><strong>B. ODE本体</strong></a></span>
+<ol>
+<li><a href="#b1">単位系は何ですか？</a></li>
+<li><a href="#worldLocal">絶対（ワールド）座標系ですか？相対（ローカル）座標系ですか？</a></li>
+<li><a href="#b2">ステップサイズとは何ですか？(2008-2-8)</a></li>
+<li><a href="#b3">シミュレーションの最中に、途中から拘束をもうけたり、逆に外したりすることはできますでしょうか？</a></li>
+<li><a href="#b4">特定の物体にだけ（たとえば、箱が複数あったときに、そのうちのひとつにだけ）に外力（～[N]でおす、など）を加えることができますでしょうか？</a></li>
+<li><a href="#b5">シミュレーションをもう一度最初から再生したい場合、一度ウィンドウを閉じて再実行するしかないのでしょうか？</a></li>
+<li><a href="#b6">ジョイントに粘性摩擦を設定できますか？</a></li>
+<li><a href="#b7">ジョイントの位置制御をするAPIはありますか？</a></li>
+<li><a href="#b8">物体間の接触シミュレーションを行う際、以下のようなエラーメッセージが出てうまくできません。物体(布団など）がふっ飛んだり。。。どのように解決すればいいのでしょうか?</a><br />
+ODE Message 3: LCP internal error, s &lt;= 0 (s=-0.0000e+00)</li>
+<li><a href="#b9">dRFromEulerAnglesのオイラー角の種類は何ですか？</a></li>
+<li><a href="#b10">目標位置(x,y,z)に対して現在の位置をdBodyGetPositionで取得して差分を取りたいのですが．．．dBodyGetPositionの中身(行列？ベクトル？)はどうなってるの？</a></li>
+<li><a href="#b11">空気抵抗を設定するには、どうしたらいいのですか？</a></li>
+<li><a href="#b12">jointのトルクと力のdataを取りたいですが。ODEのmanualを読んでもよく分からないです。やり方教えていただけませんか？もしsampleがあればうれしいです。</a></li>
+<li><a href="#b13">球体を転がしてみると止まらずにどっかに行ってしまうので困っちゃいます。助けてください。</a></li>
+<li><a href="#b14">トルク制御をしたいのですが？</a></li>
+<li><a href="#b16">ＯＤＥのシミュレーションはどのような計算法を使っていますか？</a>(2008-1-29)</li>
+<li><a href="#B17">ジョイントの初期角度を変更する方法を教えてください。</a>(2007-9-24)</li>
+<li><a href="#b18">オブジェクトの属性にはなぜジオメトリとボディがあるのでしょうか？ジオメトリのみで定義されたオブジェクの利点は何ですか？</a>(2007-10-12)</li>
+<li><a href="#b19">APIの引数の宣言が良くわかりません。 dsDrawbox(const float p[3], const float R[12], const float sides[3]);などのconst float p[3]はどういう意味ですか？</a>(2007-10-12)</li>
+<li><a href="#b20">オブジェクトを空中に固定する方法を教えてください。</a>(2007-10-12)</li>
+<li><a href="#b21">球を空中から落下させて、地面と衝突したら球の色を変えるなど衝突したときの反応を示すプログラムを作りたいのですが、どうすればよいでしょうか？</a>(2008-1-29)</li>
+<li><a href="#b22">円柱の質量パラメータを計算するdMassSetCapsuleTotal(dMass *mass, dReal m, int dir, dReal radius, dReal length);の３番目の引数の意味がわかりません？</a>(2008-4-24)</li>
+<li><a href="#b23">ODEで行うシミュレーションは決定論的なのでしょうか？つまり、毎回実施しても、結果は変わりませんか？</a>(2008-10-9)</li>
+<li><a href="#b24"> </a><a href="#b24">自作のプログラムをビルドして実行したところ、ビルドには成功したのですが、コマンドプロンプトがでてきて、以下のようなエラーが表示されてしまい、先に進みません。どういしたらよいのでしょうか？</a>(2009-12-7)ODE INTERNAL ERRER2<br />
+Bad argument(s) in dGeomSetBody()</li>
+<li><a href="#b25">リンゴの落下のプログラムにdBodyGetForceを使い力を取得しようとしてprintfで値を見ると０になります。<br />
+どうか教えてください。</a></li>
+</ol>
+</li>
+<li><span style="color: #0000cc;"><strong>C. 　描画関係</strong></span>
+<ol>
+<li><a href="#c1">ODEのウインドウに，物体の位置を表示したり，シミュレーション時間の表示をするにはどうしたらよいのでしょうか？</a></li>
+<li><a href="#c2">ODEのウインドウの大きさを変更すると物体の移動速度が変化します．シミュレーション結果に影響はあるのでしょうか？</a></li>
+<li><a href="#c3">シミュレーションの描画を行わず,シミュレーションを実行するにはどうしたら良いのでしょうか？</a></li>
+<li><a href="#c4">本サイトに掲載されているかっこいいアイボのモデルはどのように作られているのでしょうか？3D-CADか何かのデータからモデルを構築するようなことが可能なのでしょうか？<br />
+できればCADから作れればありがたいのですが(＾＾；(2007-6-14)</a></li>
+<li><a href="#c5">シミュレーション結果（drawstaff）を動画として保存したいのですが何かいい方法はご存知でしょうか？「simulation test environment v0.02」のウインドウをそのまま動画ファイルとして保存できたら嬉しいです。(2007-6-14) </a></li>
+<li><a href="#c6">次のAPIの引数の使い方がわかりません(2008-2-5)。<br />
+void dsDrawBox(const float p[3], const float R[12], const float sides[3]);</a></li>
+<li><a href="#c7">地面(z=0の面)には黄色や赤や青のマーカーがあります．これらマーカーを制御する方法を知りたいです．特に期待したいのは，z軸方向を含む表示のONOFF，間隔と数の変更です．色，大きさもいじることができのでしたら，尚うれしいです．パラメータを変更して，容易に変更可能でしょうか．drawstuffのソースをいじる必要があるのでしたら，どのあたりでしょうか. ご教授いただくことできませんか．(by skasaiさん，2008-9-16)</a></li>
+</ol>
+</li>
+<li><span style="color: #0000cc;"><a href="#c6"><strong>D. その他</strong></a></span>
+<ol>
+<li><a href="#d1">どうやってODEを勉強すればよいのですか？</a></li>
+<li><a href="#d2">ODEに関する日本語の参考書などはありますか？(2007-6-14)</a></li>
+<li><a href="#d3">ロボットなどの研究に使えますか？(2008-4-22)<br />
+</a></li>
+</ol>
+</li>
+</ul>
+<p><!--more--></p>
+<hr />
+<ul>
+<li><span style="color: #0000cc;"><strong>A. インストール・コンパイル</strong></span>
+<ol>
+<li><span style="font-weight: bold;">Windows XPでのインストール法を教えてください。</span><a name="a1"></a><br />
+<a href="http://demura.net/wordpress/tutorials/ode2">ここをご覧ください。</a></li>
+<li><strong>Windows Vistaでもインストールできますか？</strong><a name="a2"></a><br />
+<a href="http://demura.net/wordpress/tutorials/ode2">ここをご覧ください．</a></li>
+<li><span style="font-weight: bold;">Linux上でのインストール法を教えてください。</span><a name="a3"></a><br />
+<a href="http://demura.net/archives/9ode/installlinux.html"></a><a href="http://demura.net/wordpress/tutorials/ode2">ここをご覧ください．</a></li>
+<li><span style="font-weight: bold;">Mac OS X上でのインストール法を教えてください。</span><a name="a4"></a><br />
+すみません。記事を書いていません。私はiMac G5を所有していますが、すっかりインテリアになってしまいお力になれません。</li>
+<li><span style="font-weight: bold;">Visual C++でのインストール法を教えてください。</span><a name="a5"></a><br />
+<a href="http://demura.net/wordpress/tutorials/ode2">ここをご覧ください．</a><a title="View post EX1.1 開発環境とODEのインストール　(Visual C++ 2008 Express Edition編）" href="http://demura.net/9ode/robotsimu/491.html"><br />
+</a></li>
+<li><strong>プレーステーション３へインストールできますか？</strong><a name="a6"></a><br />
+できますが、描画が遅いです。詳しくは<a href="http://demura.net/9ode/368.html">ODE講座１５</a>をご覧ください。</li>
+<li><strong>単精度と倍精度のどっちでインストールですれば良いですか？</strong><a name="a7"></a><br />
+シミュレーションの精度などが要求される場合は倍精度を使ってください。また、倍精度の方が単精度よりODE Internal Errorを回避できるので、倍精度をお勧めします。</li>
+<li><strong>衝突検出ライブラリはOPCODEとGimpactのどちらをインストールすれば良いですか？</strong><a name="a8"></a><br />
+OPCODEをお勧めします。ODE0.9では特に指定しないとOPCODEが使われます。Gimpactを利用したいときはconfigure --with-trimesh=<strong>gimpact</strong>とオプションを設定してください。<br />
+Gimpactはトライメッシュ同士の衝突検出がOPCODEより安定しているようですが、速度が２０倍遅いとの報告があります。また、GimpactはODE0.9では単精度しかサポートしていませんので現状ではあまりお勧めできません。</li>
+<li><strong>サンプルプログラムなどをコンパイルすると次のように怒られてしまいます。</strong><a name="a9"></a><br />
+<strong>arm.cpp: In function ‘void simLoop(int)’:<br />
+arm.cpp:60: error: cannot convert ‘const dReal*’ to ‘const double*’ for argument ‘1’ to ‘void dsDrawCapsuleD(const double*, const double*, float, float)’<br />
+make: *** [arm.o] Error 1</strong><br />
+drawstuffの描画関数は倍精度と単精度があり、ODEを倍精度でインストールしたら倍精度関数(dsDrawCapsuleD)、単精度でインストールしたら単精度関数(dsDrawCapsule)を使う必要があります。上の場合は、ｄｓDrawCapsuleDの１番目と２番目の引数を(const dReal *)でキャストしてください。通常は倍精度と単精度を意識しなで済むように以下のようにプログラムの先頭で宣言します。#ifdef dDOUBLE<br />
+#define dsDrawCapsule dsDrawCapsuleD<br />
+#endif</li>
+<li><strong>自分の作ったソースコードをコンパイルしたいのですが、フォルダやソースコードをどこに置けばよいかわかりません。</strong><a name="a10"></a>Windows+mingw+msys環境で、demura.netのインストール方法でインストールした方を対象にします。<strong><br />
+(1) 準備</strong><br />
+C:\msys\1.0\home\ユーザ名\src\ode-0.9\myprogのフォルダ（ディレクトリ）がなければ作る。UNIXコマンドがわからない方はエクスプローラーを使い右マウスボタンをクリック→新規作成→フォルダで作成するとよいでしょう。なお、フォルダ名はmyprogでなくてもかまいませんが、日本語や全角はやめてください。myprogは自分の作ったプログラムという意味で付けました。<br />
+<strong>(2) フォルダの作成<br />
+</strong>myprogのフォルダーの中に自分が作ったソースコードを格納するフォルダを作る。名前は任意ですが日本語や全角はやめてください。ここではsnakeとします。<br />
+<strong>(3) ソースファイルの保存</strong><br />
+上で作成したフォルダの中に自分が作ったソースファイルを保存する。ソースファイルの編集はterapadなどのエディターを使うと良いでしょう。<br />
+ここでは、snake.cppとします。snake.cppはWindowsの絶対パスで見ると次のようになります。<br />
+C:\msys\1.0\home\ユーザ名\src\ode-0.9\myprog\snake\snake.cpp<br />
+<strong>(4) makefileの編集と保存<br />
+</strong>makefileをdemura.netのサンプルプログラムからコピーし、ソースファイルと同じフォルダに保存する。　エディタを使いmakefileのTARGET の行を自分のソースファイル名（拡張子は除く）に変更する。例　makefileの先頭部分<br />
+CC = g++ -Wall -fno-exceptions -fno-rtti -g -DWIN32<br />
+<span style="color: #cc0000;"><strong>TARGET = snake # snakeの部分を自分のソースファイル名(拡張子は除く）に変更</strong></span><br />
+OBJS = $(TARGET).o<br />
+SOURCE = $(TARGET).cpp<br />
+...<br />
+<strong>(5) コンパイル</strong><br />
+デスクトップのmsysアイコンをダブルクリックしてMINGW32ターミナルを開く。<br />
+以下のコマンドに従いソースファイルを保存したディレクトリに移動しコンパイルする。<br />
+$ cd src/ode-0.9/myprog/snake　　　(フォルダーの移動)<br />
+$ make　　　　　　　　　　　　　　　　　　　　　　 (コンパイル)<br />
+<strong>(6) 実 行</strong><br />
+MINGW32ターミナルでコンパイルしてできた実行形式のファイル名を入力する。<br />
+Windowsの場合は実行形式のファイル名には拡張子exeがついているのですぐにわかります。<br />
+$ 実行形式ファイル名　　　# この例ではsnake</li>
+<li><strong>Windows Vista+MSYS+MinGWを使っていますが、ODEをインストールする際、make installすると"Permission Denied."と怒られます。もう、怒られたくありません。</strong>(2007-10-17)<a name="a11"></a><br />
+ユーザーアカウント制御(UAC)を無効化してください。方法はインターネットを検索するとすぐ見つかります。</li>
+<li><strong>odeのインストールでつまづいたのですが、MSYSを起動すると</strong><strong>「bash.exe: warning: could not find /tmp, please create!」と表示されるのですが、これは何なのでしょうか？</strong><a name="a12"></a><br />
+Windowsのユーザ名が日本語あるいは全角文字の場合になります．ユーザ名が半角小文字のものを作りそこでインストールし直してください．ただし，ユーザ名の変更ではフォルダー名が変わらないので効果がありません．必ず，新しいユーザを作成してください．</li>
+<li><strong>ＯＤＥ本のサンプルプログラムをダウンロードして，make(コンパイル)すると以下のよう怒られ，何が悪いかわかりません。<br />
+error: stray '\239' in program<br />
+error: stray '\187' in program<br />
+error: stray '\191' in program</strong><a name="a13"></a><br />
+このエラーは、ダウンロードするときにファイルの文字コードがUTF8系に変換されることにより、余分な文字がファイルの先頭につくために生じます。<br />
+この場合，Windowsは文字コードをSHIFT-JIS，UNIX系をEUCにすれば良いでしょう。もちろん、その文字が読めるエディター(viでは見えました）で、ファイル先頭の３文字を削除してもかまいません。TeraPadをお使いの場合は，以下のように設定してください。<br />
+表示(V)→オプション(O)でウインドウを開き，文字コードのタブをクリックします。<br />
+「再読込は現在の文字コードで行う(R)」にチェックをいれ，「初期文字コード(C)」と「保存文字コード(D)」をSHIFT-JISにし，「ＯＫボタン」をクリックしてください。</li>
+<li><strong>遺伝的アルゴリズムのような繰り返し計算にODEを使用する際，計算スピードを上げるために描画を止めていました．しかし，状態の変化を見ようとprintfをしても，MinGW+msysの環境下で描画を止めるとprintfの出力も止まってしまいました．どうすれば良いでしょう？</strong>(2007-10-17)<a name="a14"></a><br />
+回答者：ポッターさん、<br />
+でむさんが配布されているmakefileの14行目付近にある<br />
+$(CC) -mwindows -o （略）<br />
+を<br />
+$(CC) -mconsole -o （略）<br />
+のようにすることで，描画を止めてもコンソールにprintfされるようになりました．<br />
+同じように悩んでいる方の手助けになれば幸いです．<br />
+補足：でむ<br />
+ポッターさん、情報ありがとうございます。<br />
+-mwindowsのオプションはwindows用の実行形式ファイルを作成するために付けます。<br />
+-mconsoleのオプションはそれプラス、コンソールを使いたいときに付けます。</li>
+<li>
+<p style="margin: 0px 0px 15px;"><strong>codeblocksのインストールを完了し、日本語化を行いODEのビルド 中にコンパイルエラーで以下のビルドメッセージを出して止まりました</strong></p>
+<p style="margin: 0px 0px 15px;"><strong>||=== ode, DebugDoubleLib ===|<br />
+C:\ode-0.10.1\ode\src\box.cpp||In function `int dBoxBox(const dReal*, const |<br />
+C:\ode-0.10.1\ode\src\box.cpp|389|warning: division by zero in `|<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_box.cpp||In member function `void |<br />
+中略<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_trimesh.cpp|867|warning: division by |<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_trimesh.cpp||In function `int |<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_trimesh.cpp|1073|`alloca’ undeclared |<br />
+C:\ode-0.10.1\ode\src\collision_cylinder_trimesh.cpp|1073|(Each undeclared |<br />
+||=== Build finished: 2 個のエラー、 6 個の警告 ===|</strong></p>
+<p style="margin: 0px 0px 15px;"><strong>dALLOCA16　マクロはode\src\util.h 55行目　で定義されいて、この中のalloca　の定義が見えていないようです何処を直せばよいのでしょうか？</strong><a name="a15"></a></p>
+<p><span style="border-collapse: separate; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 16px; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; font-family: Arial; color: #000000;">「Highです、解決いたしました。＼（＾-＾）／原因はPath変数に他のgcc (Cygwin, WideStudio, AVRGCC) のパスの方が先に書かれて居た為、CodeBlocksが他のｇｃｃのパスを見に行っていた為でした。メニューの[設定] -&gt; [コンパイラーとデバッガー]グローバルなコンパイラ設定 -&gt;[Toolchain実効ファイル]タブ -&gt;[プログラムファイル]タブ で各プログラムの正しいパスを設定しました。</span>」(回答者highさん）</li>
+<li><strong>講 義 Visual C++ 2008 Expression Editionに沿ってインストールしましたが、データ実行防止が働いて、demo_basket.exeの起動に失敗してしまいました。使用環境は以下 のとおりです。OS：vista，CPU：intel core2 duo<br />
+起動させる良い方法はないものでしょうか。 <a name="a16"></a></strong>データ実行防止(DEP）を無効にする方法はネットを探すといろいろありますが、原因がわからないのでお勧めはできません。自己責任でお願いします。</p>
+<p>コントロールパネル→システムとメンテナンス→システム→システムの詳細設定→パフォーマンス→設定→データの実行防止→重要なWindowsのプログラム及びサービスついてのみ有効にする(T)にチェックを入れる．（回答者でむ）</p>
+<p>システムプロパティからは解決できなかったのですが、<br />
+BIOSの設定変更からできました。理由はプロセッサがハードウェアベースのDEPをサポートしていたからでした。やっとこれではじめられます。（回答者たくさん）</li>
+</ol>
+</li>
+<li><span style="color: #0000cc;">B. ODE本体<a name="a16"></a></span>
+<ol>
+<li><strong>単位系は何ですか？</strong><a name="a16"></a><a name="b1"></a><br />
+何でもOKですが、角度だけはradianを使っています。なお、本講座ではSI単位系を使っているので、長さは[m]、時間は[s]、質量は[kg]、力は[N]となっています。</li>
+<li><strong>絶対（ワールド）座標系ですか？相対（ローカル）座標系ですか？</strong><a name="worldLocal"></a><br />
+ほとんどのAPIは絶対座標系です。一部、相対座標系を使うAPIがありますが、API名に相対(relative)を示すRelが入っているのでわかりやすいです。また、数学や物理などでは一般的な右手系を使っています。</li>
+<li><strong>ステップサイズとは何ですか？</strong><a name="b2"></a><br />
+シミュレーションの更新時間間隔です。ODEはtime stepping法という一定の時間間隔でシミュレーションを更新する方法を採用しています。この時間間隔の間に、微分方程式の数値積分と衝突検出計算を行います。つまり、ステップサイズを小さくすると数値積分の精度が高くなりますが、速度は遅くなります。逆に大きくすると速度は速くなりますが、精度は悪くなるトレードオフの関係があります。また、衝突検出計算に関しては、ステップサイズを大きくすると、剛体が相互に侵入する物理的にありえない現象が生じます。ODEは一次の積分器を使っているため計算精度が高くないので、ステップサイズを極端に小さくする必要はありません。なお、ODEは拘束計算に解析法を使っています。このアルゴリズムは現在の主流で、ペナルティ法と比較してステップサイズを大きく取れます。用途や剛体の速度によるので一概にいえませんが、ODE本では0.01[s]にしています。</li>
+<li><span style="font-weight: bold;">シミュレーションの最中に、途中から拘束をもうけたり、逆に外したりすることはできますでしょうか？</span><a name="b3"></a><br />
+できますよ。command関数の中にキーに対応する処理を書けばよいと思います。詳しくは<a href="http://demura.net/9ode/360.html">ODE講座１４</a>をご覧ください。</li>
+<li><span style="font-weight: bold;">特定の物体にだけ（たとえば、箱が複数あったときに、そのうちのひとつにだけ）に外力（～[N]でおす、など）を加えることができますでしょうか？</span><a name="b4"></a><br />
+dBodyAddForce(dBodyID, fx, fy, fz)を使うと可能です。指定したい物体のボディＩＤを１番目の引数、加えたい力の絶対座標系でのx,y,z成分をそれぞれ２番目以降の引数にいれてください。</li>
+<li><span style="font-weight: bold;">シミュレーションをもう一度最初から再生したい場合、一度ウィンドウを閉じて再実行するしかないのでしょうか？</span><a name="b5"></a><br />
+そんなことはありませんよ。<a href="http://demura.net/archives/2007/01/ode14.html">ODE講座１４</a>をご覧ください。</li>
+<li><span style="font-weight: bold;">ジョイントに粘性摩擦を設定できますか？</span><a name="b6"></a><br />
+ODEのジョイントは摩擦がありません。粘性摩擦を設定するAPIはないので、それに相当するトルク（ヒンジなどの場合）や力（スライダーの場合）をかけてください。</li>
+<li><span style="font-weight: bold;">ジョイントの位置制御をするAPIはありますか？</span><a name="b7"></a><br />
+ありません。ご自分でP、PDやPID制御を実装してください。<a href="http://demura.net/9ode/369.html">ODE講座１６</a>はP制御を実装しているので参考にしてください。</li>
+<li><span style="font-weight: bold;">物体間の接触シミュレーションを行う際、以下のようなエラーメッセージが出てうまくできません。物体（布団など</span>）<span style="font-weight: bold;">がふっ飛んだり。。。どのように解決すればいいのでしょうか?</span><br />
+<span style="font-weight: bold;">ODE Message 3: LCP internal error, s &lt;= 0 (s=-0.0000e+00)</span><a name="b8"></a><br />
+行列が特異行列になっているなどLCPを解けない場合にこのエラーがでます。制約が矛盾していたり、冗長な場合に行列が特異になるので、関節や接触点の数 を減らせば防げる可能性が高いです。ボディとジョイントの物理的な位置関係とその設定が矛盾しているときに起きる場合が多いのでチェックしてください。 設定に問題がない場合は、dWorldSetERP, dWorldSetCFM, nearCallback関数内のsoft_erp, soft_cfm, mu, bounceなどのパラメータを調整してください。また、計算精度も関係があるのでODEの設定が単精度なら倍精度に変更すると改善するかもしれませんし、ステップサイズを小さくすると直るかもしれません。後は、神に祈るしかありません。</li>
+<li><strong>dRFromEulerAnglesのオイラー角の種類は何ですか？</strong><a name="b9"></a><br />
+オイラー角はいろいろあり、craigの教科書ロボティクスでは１２種類紹介されています。この他に回転軸を時計まわりに取る流儀もあるので、全部で２４種類もあるのです。多いですね。 dRFromEulerAnglesはcraigのロボティクスにあるZ-Y-Xオイラー角を転置したものになっていて、NASA Standard Aerospace流ではないかと思います。 なお，この流儀は回転軸のとり方がロボティクスで通常使う右ねじとは逆です。航空・宇宙関係ではこちらがスタンダードだということです．以下のサイトをご覧ください。<br />
+1.<a href="http://oemagazine.com/fromTheMagazine/nov05/tutorial.html">http://oemagazine.com/fromTheMagazine/nov05/tutorial.html</a><br />
+2.<a href="http://www.euclideanspace.com/maths/geometry/rotations/euler/index.htm">http://www.euclideanspace.com/maths/geometry/rotations/euler/index.htm</a></li>
+<li><strong>目標位置(x,y,z)に対して現在の位置をdBodyGetPositionで取得して差分を取りたいのですが．．．dBodyGetPositionの中身(行列？ベクトル？)はどうなってるの？</strong><a name="b10"></a><br />
+dBodyGetPositionで計算された位置(x,y,z)の値は配列に格納され,dBodyGetPositionの戻り値はconst dReal *，つまりその配列へのポインタとなっています． 各要素の取り出し方は以下のコードを参考にしてください．<br />
+dBodyID body;<br />
+dReal x, y, z;<br />
+const dReal *pos = dBodyGetPositon(body);<br />
+x = pos[0]; // または　x = *(pos +0);<br />
+y = pos[1]; // y = *(pos + 1);<br />
+z = pos[2]; // z = *(pos + 2);<br />
+printf("重心の位置はx=%f y=%f z=%f \n", x , y, z);</li>
+<li><strong>空気抵抗を設定するには、どうしたらいいのですか？</strong><a name="b11"></a><br />
+流体力学のライブラリではありませんので、設定できません。</li>
+<li><strong>jointのトルクと力のdataを取りたいですが。ODEのmanualを読んでもよく分からないです。やり方教えていただけませんか？もしsampleがあればうれしいです。</strong><a name="b12"></a><br />
+<a href="http://demura.net/9ode/355.html">ODE講座１２</a>、<a href="http://demura.net/9ode/357.html">ODE講座１３</a>をご覧ください。</li>
+<li><strong>球体を転がしてみると止まらずにどっかに行ってしまうので困っちゃいます。助けてください。</strong><a name="b13"></a><br />
+ODE には回転摩擦が実装されていないので、球は永遠に転がり、かなり古いですが、「回って回って回ーる♪」状態になります。関節も同様に摩擦がありません。回転摩擦に関する部分は自分で実装しなければなりませんが、以下のODE Wiki のFAQ 3.15に同じ質問があり実装するうえで参考になりますので目をとおしてください。<br />
+<a href="http://opende.sourceforge.net/wiki/index.php/FAQ#How_do_I_stop_things_from_rolling_off_into_infinity.2C_or_pendulums_from_swinging_forever.3F">How do I stop things from rolling off into infinity, or pendulums from swinging forever?<br />
+</a></li>
+<li><strong>速度制御の代わりにトルク制御をしたいのですが？</strong><a name="b14"></a><br />
+力制御の場合は速度制御で使っていた以下の２行を削除してください。dJointSetHingeParam(dJointID, dParamVel,u);<br />
+dJointSetHingeParam(dJointID, dParamFMax, fmax);その代わりに ｄJointAddHingeTorque()を使ってください。ただし、ODEのジョイントは摩擦がないので、そのままでは振動しやすいので摩擦に相当する力を自分で設定する必要があります。</li>
+<li><strong>ＯＤＥではシミュレーションにどのような計算法に何を使っていますか？</strong><a name="b16"></a><br />
+ロボットのように剛体が関節で結合され、しかも地面や他の物体と衝突、接触を繰り返すシミュレーションの計算方法は、解析的な方法とペナルティ法に分けることができます。ODEは前者の解析的な方法です。<br />
+運動方程式はラグランジェ乗数速度ベースのモデルから導出されています。詳細はTrinkle/Stewart[1-4]とAnitescu/Potra[5-8]の論文をご覧ください。、<br />
+[1] Anitescu M., Cremer J., Potra F.A., 1995, Formulating 3D Contact Dynamics Problems, Mechanics of Structures and Machines, 22/4: 405-437<br />
+[2] Anitescu M., Potra F.A., 1997, Formulating dynamic multirigid-body problems with friction as solvable linear complementarity problems, Reports on Computational Mathematics, 93<br />
+[3] Anitescu M., Potra F.A., Stewart D.E., 1998, Time-Stepping for Three-Dimensional Rigid Body Dynamics, Comp. Methods Appl. Mech. Eng., 177/3-4: 183-197<br />
+[4] Anitescu M., Potra F.A., 2001, A Time-Stepping Method for Stiff Multibody Dynamics with Contact and Friction, Argonne National Laboratory, Argonne, IL<br />
+[5] Stewart D.E., Trinkle J. C., 1997, Dynamics, Friction, and Complementarity Problems, Complementarity and Variational Problems: State of the Art, Proc. 1995 International Conference on Complementarity Problems, Philadelphia: 425-439<br />
+[6] Stewart D.E., 2000, Time-Stepping Methods and the Mathematics of Rigid Body Dynamics, Chap. 9 in Impact and Friction of Solids, Structures and Machines, Vol. 1, Birkhäuser, Boston<br />
+[7] Stewart D.E., Trinkle J.C., 2000, An Implicit Time-Stepping Scheme for Rigid Body Dynamics with Inelastic Collisions and Coulomb Friction, Proceedings of the International Conference on Robotics and Automation (ICRA)<br />
+[8] Trinkle J.C., Pang J.-S., Sudarsk S., Lo G., 1997, On Dynamic Multi-Rigid-Body Contact Problems with Coulomb Friction, Zeithschrift fur Angewandte Mathematik und Mechanik</li>
+<li><strong>ジョイントの初期角度を変更する方法を教えてください（2007-09-24)</strong><a name="B17"></a>ジョイントの初期角度はロボットの初期姿勢で決まり、そのときの角度が０度です。例えば、初期姿勢で２つのリンクが９０度の角度でヒンジジョイントで結合されていたとします。そのときの、ヒンジジョイントの角度は０度です。回転軸ベクトルの時計まわり(右ねじの進む）方向が正、反時計まわり方向が負となります。つまり、ジョイントの初期角度を変更するためには、ロボットの初期姿勢を変更しなければなりません。</li>
+<li><strong>オブジェクトの属性にはなぜジオメトリとボディがあるのでしょうか？ジオメトリのみで定義されたオブジェクの利点は何ですか？</strong><a name="b18"></a>(2007-10-12)ODEの特徴として、物体（オブジェクト）にはジオメトリとボディの属性があり、ジオメトリは衝突検出計算、ボディは動力学計算の対象となります。ボディとジオメトリを分けていることにより、衝突検出のライブラリを比較的簡単に変更することができます。さらに、この特徴をうまくつかうと効率的なシミュレーションを実現できるのです。例えば、ロボットが市街地を走行するシミュレーションの場合、ビルなどは全く動かないものとして扱い、ロボットとの衝突だけを考慮するだけで良いでしょう。そのような場合では、そのビルのオブジェクトをジオメトリだけで定義することにより、特に必要のないビルに対する動力学計算を省略することができます。ビルがたくさんある場合は、この計算コストもばかになりませんし、計算する必要性もありません。なお、ビルのオブジェクトは動力学計算を受けていないので、ロボットが例え衝突しても全く動きません。</li>
+<li><strong>APIの仮引数の宣言が良くわかりません。 dsDrawbox(const float p[3], const float R[12], const float sides[3]);などのconst float p[3]はどういう意味ですか？</strong>(2007-10-12)<a name="b19"></a> 一番目の仮引数float p[3]はfloat型の要素数3個の配列と宣言しています。Ｃ言語では配列を引数として受け渡すことはできないのでポインタとして受け渡します。つまり、 float *pと同じことになります。これにconstがついているので、このポインタを介して値を変更することを禁止しています。変更しようとするとエラーになります。なお、このように仮引数を宣言すると、受け渡すポインタは要素数３個の配列を指していることが良くわかりますね。実際の使用例はODE本　Ｐ９４　プログラム3.5などを参考にしてください。</li>
+<li><strong>オブジェクトを空中に固定する方法を教えてください。</strong><a name="b20"></a>(2007-10-12)オブジェクトを空中の固定したい位置と姿勢に設定します。後はdJointCreateFixed(dWorldID, 0)でfixedジョイントを生成し、dJointAttach(dJointID joint, dBodyID body1, dBodyID body2)を使い、1番目の引数にはfixedジョイントのジョイントID、2番目の引数にはそのオブジェクトのボディID、３番目の引数には静的環境のボディIDである0とを入れてください。最後に、dJointSetFixed(dJointID　joint)で設定して終わりです。</li>
+<li><strong>球を空中から落下させて、地面と衝突したら球の色を変えるなど衝突したときの反応を示すプログラムを作りたいのですが、どうすればよいでしょうか？</strong><a name="b21"></a><br />
+<a href="http://demura.net/9ode/335.html">ODE講座６：衝突検出</a>が参考になると思います。</li>
+<li><strong>円柱の質量パラメータを計算するdMassSetCapsuleTotal(dMass *mass, dReal m, int dir, dReal radius, dReal length);の３番目の引数の意味がわかりません？(2008-4-24)</strong><a name="b22"></a><br />
+３番目の引数はカプセルの長軸方向がどの方向を向いているかを指定します。1ならx軸、２ならy軸、３ならz軸です。なお、カプセルや円柱は姿勢を指定しない場合は、長軸方向がz軸になります。また、カプセルの姿勢をx軸に沿わせた場合は1にしなければなりません。これは慣性テンソルの計算に必用です。</li>
+<li><strong>ODEで行うシミュレーションは決定論的なのでしょうか？つまり、毎回実施しても、結果は変わりませんか？(2008-10-9)</strong><a></a><a name="b23"></a><br />
+基本的には決定論的と考えて差し支えありません。ただし、僅かですが確率的な要素も入っています。繰り返しシミュレーションを実施する場合に、乱数の種を常に同じ値にしないと微妙に結果が変わります。厳密に同じ結果を出したい場合は、dRandSetSeed(unsigned long seed)をシミュレーションの前で呼び出し、seedを常に同じ値にしてください。この乱数はstepfast.cppとquickstep.cppの中で拘束式の順番を入れ替えるために使用しています。<br />
+なお、シミュレーションを繰り返し実行する場合は、ODE Wikiの次のページをご覧ください。<br />
+<a href="http://opende.sourceforge.net/mediawiki-1.6.10/index.php/HOWTO_save_and_restore">http://opende.sourceforge.net/mediawiki-1.6.10/index.php/HOWTO_save_and_restore</a></li>
+<li><strong>自作のプログラムをビルドして実行したところ、ビルドには成功したのですが、コマンドプロンプトがでてきて、以下のようなエラーが表示されてしまい、先に進みません。どういしたらよいのでしょうか？</strong>(2009-12-7)<a name="b24"></a>ODE INTERNAL ERRER2<br />
+Bad argument(s) in dGeomSetBody()<br />
+以下のコードはdGeomSetBodyのはじめの部分です．dAASERT(g)でエラーになっています．つまり，dxGeomのgの値がfalseのとき，そのエラーメッセージを吐きます．dGeomSetBodyの一番目の引数の値が0またはNULLではありませんか？　引数に配列を使っている場合は，添え字にミスがないか確認してください．<br />
+void dGeomSetBody (dxGeom *g, dxBody *b)<br />
+{<br />
+dAASSERT (g);<br />
+dUASSERT (b == NULL || (g-&gt;gflags &amp; GEOM_PLACEABLE),”geom must be placeable”);<br />
+以下　略</li>
+<li><a name="b25"></a><strong>リンゴの落下のプログラムにdBodyGetForceを使い力を取得しようとしてprintfで値を見ると０になります。<br />
+どうか教えてください。</strong></li>
+</ol>
+<blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><p>重力や拘束力をdBodyGetForceで取得できません。以下のページをご覧ください。<br />
+<a rel="nofollow" href="http://groups.google.com/group/ode-users/browse_thread/thread/b61e5d8a1c59a52f/0d8459bf8a710c24?lnk=gst&amp;q=dBodyGetForce#0d8459bf8a710c24">http://groups.google.com/group/ode-users/browse_thread/thread/b61e5d8a1c59a52f/0d8459bf8a710c24?lnk=gst&amp;q=dBodyGetForce#0d8459bf8a710c24<br />
+</a></p></blockquote>
+<blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><p>bodyに働く力は以下の式で計算するより他はありません。<br />
+<strong>力 = 質量 × 加速度 / ステップサイズ</strong></p>
+<p>りんご落下のプログラムに追加すると次のようになります。</p></blockquote>
+<blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><p>static void simLoop (int pause)<br />
+{<br />
+dReal step_size = 0.01;<br />
+const dReal *pos,*R,*force,*v;<br />
+static dReal a[3], f[3], v_prev[3];</p></blockquote>
+<blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><p>dWorldStep(world, step_size);<br />
+v = dBodyGetLinearVel(ball);</p></blockquote>
+<blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><p>for (int i =0; i &lt; 3; i++ )<br />
+{<br />
+a[i] = (v[i] – v_prev[i])/step_size;<br />
+v_prev[i] = v[i];<br />
+f[i] = mass * a[i];<br />
+}</p></blockquote>
+<blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><p>printf(“fx=%f fy=%f fz=%f\n”,f[0],f[1],f[2]);</p></blockquote>
+<blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><p>dsSetColor(1.0,0.0,0.0);<br />
+pos = dBodyGetPosition(ball);<br />
+R = dBodyGetRotation(ball);<br />
+dsDrawSphere(pos,R,radius);<br />
+}</p></blockquote>
+</li>
+</ul>
+<ul>
+<li><span style="color: #0000cc;"><strong>C. 　描画関係</strong></span>
+<ol>
+<li><strong>ODEのウインドウに，物体の位置を表示したり，シミュレーション時間の表示をするにはどうしたらよいのでしょうか？</strong><a name="c1"></a><br />
+drawstuffにはそれ用のAPIがないので書き換えるしかありません。printfなどを使ってターミナルに出力してはいかがでしょうか？</li>
+<li><strong>ODEのウインドウの大きさを変更すると物体の移動速度が変化します．シミュレーション結果に影響はあるのでしょうか？</strong><a name="c2"></a><br />
+結果に影響ありませんが、シミュレーションの速度は遅くなります。</li>
+<li><span style="font-weight: bold;">シミュレーションの描画を行わず,シミュレーションを実行するにはどうしたら良いのでしょうか？</span><a name="c3"></a><br />
+<a href="http://demura.net/9ode/373.html">ODE講座１８</a>をご覧ください。</li>
+<li><strong>サイトに掲載されているかっこいいアイボのモデルはどのように作られているのでしょうか？3D-CADか何かのデータからモデルを構築するようなことが可能なのでしょうか？できればCADから作れればありがたいのですが(＾＾；</strong><a name="c4"></a><br />
+AIBOの3Dデータは<a href="http://openr.aibo.com/">AIBO SDEのウェブサイト</a>からERS-7の3Dデータ（lightwaveフォーマット)をダウンロードし使っています(<span style="color: #cc0000;">現在，AIBO SDEのサイトは閉鎖になりダウンロードできなくなりました</span>）．ODEに付属しているdrawstuffライブラリでは３角メッシュ（３角形で構成されたポリゴン）を作るために、三角形の頂点座標の１次元配列と三角形を構成する頂点番号組の２次元配列を利用しています。 AIBOシミュレータを作ったときは，Crossroads 3Dというフリーソフトがあったのでそれを利用していました．残念ながら最近はリンクが切れてダウンロードできません．なんらかのファイルフォーマット変換ソフトを使って頂点座標の配列と頂点番号組の配列に３Dデータを変換すればdrawstuffで描画が可能になります．ODEは動力学計算ライブラリなので，シミュレーションの描画に関しての開発はほとんどされていません．コミュニティ的にも開発する意向はないようです．</li>
+<li><strong>シミュレーション結果（drawstaff）を動画として保存したいのですが何かいい方法はご存知でしょうか？「simulation test environment v0.02」のウインドウをそのまま動画ファイルとして保存できたら嬉しいです。</strong><a name="c5"></a><br />
+動画キャプチャソフトを利用すればよいです．いろいろあるようですが，demura.netの動画はフリーソフト<a href="http://nonn-et-twk.dnsalias.net/twk/CamStudio/">camStudio</a>を使い作成しました．窓の杜の「カハマルカの瞳」より直感的なインタフェースです．<span style="color: #cc0000;">ただし，Windows Vistaではうまくキャプチャできませんでした．XPでは問題ありません．<br />
+</span></li>
+<li><strong>次のAPIの引数の使い方がわかりません(2008-2-5)。<br />
+void dsDrawBox(const float p[3], const float R[12], const float sides[3]); </strong><a name="c6"></a><br />
+const float p[3]は要素数３個の配列を指すconst ポインタです。constが付いているので、そのポインタを介して値を書き換えようとするとエラーになります。コンパイラではconst float *pと変わりませんが、要素数３個の配列を指していることを明示するために、APIではこのように親切に書いています。さて、ご質問の使う場合は、配列の先頭要素へのポインタ、つまり、配列名を入れてください。例えば、３番目の引数用に、直方体の３辺が格納されている、要素数３個のfloat hen[3]という配列が宣言されていたとします。引数は配列の先頭アドレスを入れます。APIを誤解し間違ってhen[3]といれてはいけません。hen[3]は配列henの４番目の要素で、そんなものはないのでエラーとなります。配列名のhenを入れてください。配列名は配列が格納されている要素でしたね。</li>
+<li>
+<p style="margin: 0px 0px 15px;"><strong>地面(z=0の面)には黄色や赤や青のマーカーがあります．これらマーカーを制御する方法を知りたいです．特に期待したいのは，z軸方向を含む表示のONOFF，間隔と数の変更です．色，大きさもいじることができのでしたら，尚うれしいです．パラメータを変更して，容易に変更可能でしょうか．drawstuffのソースをいじる必要があるのでしたら，どのあたりでしょうか. ご教授いただくことできませんか．(by skasaiさん，2008-9-16)</strong><a name="c6"></a></p>
+<p>drawstuff.cppのコードをいじる必要があります。地面のマーカーはピラミッドグリッドと呼ばれています。1044行目から1077行目にあるdrawPyramidGrid()のfor文をいじれば簡単に変更可能だと思います。　大きさも簡単に変更できます。1061行目のkの値を変更してみてください。(回答者でむ）</li>
+</ol>
+</li>
+<li><span style="color: #0000cc;"><strong>D. その他</strong></span>
+<ol>
+<li><strong>どうやって勉強すればよいですか？</strong><a name="d1"></a><br />
+<a href="http://opende.sourceforge.net/wiki/index.php/Main_Page">ODE New Wiki</a>の<a href="http://opende.sourceforge.net/wiki/index.php/Manual">manual</a>をまず読み、それからODE付属のテストプログラムのソースコードも読んでください。私のODE講座も参考にしてくださいね。</li>
+<li><strong>ODEに関する日本語の参考書などはありますか？</strong><a name="d2"></a><br />
+ロボコンマガジン　No.47～No.50、オーム社に私が連載した記事があります。また、２００７年５月１８日に森北出版から以下の拙著がデビューしました。拙著の半分（約130ページ）はODEのチュートリアルとマニュアルで，残りはロボット工学の基礎とODEを使い具体的にロボットシミュレータを作る方法をソースコード付きで説明しています．</p>
+<ul>
+<li>出村公成，<a href="http://www.amazon.co.jp/gp/product/4627846916?ie=UTF8&amp;tag=demuranet-22&amp;linkCode=as2&amp;camp=247&amp;creative=1211&amp;creativeASIN=4627846916">簡単!実践!ロボットシミュレーション - Open Dynamics Engineによるロボットプログラミング</a>，森北出版（2007年５月１８日)<br />
+<img src="{{ site.baseurl }}/assets/images/2010/02/ir?t=demuranet-22&amp;l=as2&amp;o=9&amp;a=4627846916" width="1" height="1" style="margin: 0px; border: medium none;" /></li>
+</ul>
+</li>
+<li><span style="font-weight: bold;">ロボットなどの研究に使えますか？</span><a name="d3"></a><br />
+研究の用途によります。高い精度を求める研究には向いていません。そのような用途には現状では、OpenHRP3が適していると思います。私たちは、ロボカップ中型ロボットリーグのシミュレーションには使っており重宝しています。ヒューマノイドリーグでも使えるか、あるいはどう使えば良いかは今後検証していきたいと思います。ODEの精度は高くありません、これは積分の数値計算法に一次のオイラー法を使っている部分があるためです。しかし、リアルタイムより速いシミュレーションも可能です。一般的に、速度と精度はトレードオフの関係にあります。OpenHRPの精度は高いですが、速度はリアルタイムより数倍以上遅いとのことです。<br />
+なお，日本機械学会RoboMec07でトヨタF1チームのディクレタによる講演があり，現在の技術ではシミュレータだけで済ますことは不可能で，風洞実験に重きを置いているとのことでした．シミュレータだけではなく，リアルロボットで動作を検証することがロボット研究では大切だと考えます．<br />
+最後に、ODEの積分器に４次のルンゲクッタが実装される計画があります。そうなると精度の問題も改善されるでしょう。ODEはオープンソースなので、ボランティアの努力により無限の可能性を秘めているのです。</li>
+</ol>
+</li>
+</ul>
+<p style="margin-left: 40px;">
+<hr style="width: 100%; height: 2px;" />

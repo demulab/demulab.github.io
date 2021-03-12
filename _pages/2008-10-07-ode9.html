@@ -1,0 +1,92 @@
+---
+layout: page
+title: 9.  位置と姿勢
+date: 2008-10-07 18:14:06.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  _aioseop_title: ODE初級講座　８．位置と姿勢
+  _aioseop_keywords: Open Dynamics Engine, シミュレータ
+  syntaxhighlighter_encoded: '1'
+  views: '13104'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode9"
+---
+<p>[caption id="" align="alignnone" width="320"]<img src="{{ site.baseurl }}/assets/images/2008/10/rightHands.jpg" alt="ODE座標系" title="ODE座標系" width="320" height="285" /> ODE座標系　（右手系）[/caption]</p>
+<p><span style="word-spacing: 0px; text-transform: none; text-indent: 0px; white-space: normal; letter-spacing: normal; border-collapse: separate; orphans: 2; widows: 2; font-family: Arial; color: #000000;">ODE (Open Dynamics Engine) 初級講座の第９回目です。 </span></p>
+<p>今回はODEの単位系並びに座標系のお話をし、剛体の位置・姿勢を設定及び取得する方法を説明します。</p>
+<p><strong><span style="color: #000080;">単位系</span></strong></p>
+<p>ODEの単位系は基本的に何でもかまいません。ただし、角度だけはradianになっています。本講座では世界標準であるSI単位系を用います。 これは物理などで御なじみの長さはm、質量はkg、時間はsです。</p>
+<p><strong><span style="color: #000080;">座標系</span></strong></p>
+<p>ODEの座標系は上図に示すように物理や数学で一般的に使われている右手系の直交座標です。原点は９個ある小さいピラミッドの中心で、中心から赤いピラミッド方向がx軸、青いピラミッド方向がy軸、上空方向がz軸となっています。なお、単位系は何でもよいのですが、この講座ではＳＩ単位系を採用しているので、各ピラミッドは1mずつの間隔で並んでいます。</p>
+<p><strong><span style="color: #000080;">位置と姿勢の設定</span></strong></p>
+<p>剛体を３次元空間上に設定するためには、位置と姿勢を指定する必要があります。姿勢は回転変換行列で決めることができ、ODEでも以下のAPIにより設定可能です。</p>
+<ul>
+<li><strong>void dBodySetPosition(dBodyID, dReal x, dReal y, dReal z);</strong><br />
+<span style="font-weight: normal; color: #000000;">剛体dBodyIDの重心を絶対座標系の位置(x, y, z)に設定する。</span></li>
+<li><strong>void dRFromAxisAndAngle(dMatrix3 R, dReal ax, dReal ay, dReal az, dReal angle);</strong><span style="color: #000066;"><br />
+</span>回転軸ベクトル(ax, ay, az)の回りを反時計方向にangle[rad]回転したときの回転変換行列Rを取得する。</li>
+<li><strong>void dBodySetRotation(dBodyID, const dMatrix3 R); </strong><br />
+剛体dBodyIDの姿勢を回転行列Rに設定する。</li>
+</ul>
+<p>また、ＯＤＥではこのほかにクオータニオンに関するAPI、void dBodySetQuaternion (dBodyID, const dQuaternion q)もあります。</p>
+<p><strong>位置と姿勢の取得</strong></p>
+<ul>
+<li><strong>const dReal * dBodyGetPosition(dBodyID);</strong><br />
+<span style="font-weight: normal; color: #000000;">剛体dBodyIDの位置を取得する。戻り値は絶対座標系での位置が格納されている配列へのポインタ。</span></li>
+<li><strong>const dReal * dBodyGetRotation(dBodyID);</strong><br />
+<span style="font-weight: normal; color: #000000;">剛体dBodyIDの回転行列取得する。戻り値は回転行列が格納されている配列へのポインタ。</span></li>
+</ul>
+<p><strong>サンプルコード<br />
+</strong>次のサンプルコードは円柱を位置（0.0, 0.0, 1.0)、ｘ軸のまわりに４５度（M_PI/4.0)回転した姿勢に設定しています。さらに、物体の重心位置を表示する関数printPos()も追加しました。なお、円柱は姿勢を設定しないと長軸がz軸方向と一致した直立の姿勢が初期値となっています。</p>
+<pre class="brush:cpp">typedef struct {
+  dBodyID body;
+  dGeomID geom;
+} MyObject;
+
+MyObject pillar;
+
+void createPillar()
+{
+  dMass m1;
+  dReal radius = 0.1, length = 0.5, mass = 1.0; // 半径、長さ、質量
+
+  pillar.body = dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetCylinderTotal(&amp;m1,mass,3,radius,length);
+  dBodySetMass(pillar.body,&amp;m1);
+  dBodySetPosition(pillar.body,0.0,0.0,1.0); // (0.0,0.0,1.0)&#91;m&#93;に重心を設定
+
+  dMatrix3 R;
+  dRFromAxisAndAngle(R,1.0,0.0,0.0, M_PI/4.0);　//ｘ軸周りにπ/4&#91;rad&#93;回転
+  dBodySetRotation(pillar.body,R);
+  pillar.geom = dCreateCylinder(space,radius,length);
+  dGeomSetBody(pillar.geom,pillar.body);
+}
+
+void printPos(dBodyID obj_body) // 重心位置の表示
+{
+  const dReal *pos;　　// constを忘れるとエラーになる
+  dReal x, y, z;
+
+  pos = dBodyGetPosition(obj_body);　// 戻り値は配列へのconst ポインタ
+  x = pos&#91;0&#93;;　// 配列posにはx, y, zの順番で座標値が格納されている
+  y = pos&#91;1&#93;;
+  z = pos&#91;2&#93;;
+  printf("x=%f y=%f z=%f \n", x, y, z);
+}</pre>
+<p>なお、このプログラムを次からダウンロードできます。　また次回！</p>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/sample9-120904.zip">サンプルプログラム９</a></li>
+</ul>

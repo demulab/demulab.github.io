@@ -1,0 +1,74 @@
+---
+layout: post
+title: 'Ubuntu18.04: Kobukiでナビゲーション'
+date: 2020-01-30 20:07:04.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16648'
+  views: '324'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/16644.html"
+---
+<p>この回では、ROSのナビゲーションパッケージと前回作成した地図を使いKobukiを自動でナビゲーションします。ここではプログラムを一行も書かずに、パッケージとRviz上でのマウス操作でナビゲーションを実行しますが、後の回でプログラムで実行する方法も紹介しますので楽しみにしてください。</p>
+<ul>
+<li>端末を5個開き、各端末で以下のコマンドを実行する。<br />
+1. $ roslaunch turtlebot_bringup minimal.launch<br />
+2. $ rqt -s kobuki_dashboard<br />
+3. $ roslaunch turtlebot_bringup 3dsensor.launch<br />
+4. $ roslaunch turtlebot_navigation amcl_demo.launch　map_file:=/home/demulab/map/mymap.yaml<br />
+※ map_fileには使いたい地図のyamlファイルを指定する。<br />
+5. $ roslaunch turtlebot_rviz_launchers view_navigation.launch --screen</li>
+<li><strong>初期位置の設定</strong>：起動時は地図上の自己位置がわからないのでRvizを使い以下の手順でKobukiに教えてあげる。
+<ul>
+<li>RvizのGlobal OptionsのFixed Framapを"map"に設定する。</li>
+<li>"2D Pose Estimate" ボタンをクリック</li>
+<li>地図上のKobukiの位置をクリックして、Kobukiの進行方向にマウスをドラッグする。</li>
+<li>うまく位置と姿勢が設定できれば、LIDARのレーザ光の線と壁のラインが概ね一致する。一致しない場合は上の手順を繰り返す。</li>
+</ul>
+</li>
+<li><strong>ゴールの設定とナビゲーション</strong>：次の手順でrvizを使いゴールをKobukiに教える。
+<ul>
+<li>Rvizの "2D Nav Goal" をクリックする。</li>
+<li>地図にゴールの位置をクリックして、その地点でのロボットの向く方向にマウスをドラッグする。</li>
+<li>初期位置からゴールまでの経路を自動的に計算し、Kobukiをナビゲーションしてくれる。なお、障害物がある場合はそれを避けてゴールまで移動し、ゴール地点で姿勢した向きで停止する。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/01/navi.png"><img class="aligncenter size-full wp-image-16648" src="{{ site.baseurl }}/assets/images/2020/01/navi.png" alt="" width="905" height="636" /></a></p>
+<p>終わり</p>
+<p>&nbsp;</p>

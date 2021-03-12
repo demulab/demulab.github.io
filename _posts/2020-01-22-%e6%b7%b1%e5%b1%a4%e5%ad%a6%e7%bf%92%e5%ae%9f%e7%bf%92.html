@@ -1,0 +1,145 @@
+---
+layout: post
+title: 深層学習ハッカソン
+date: 2020-01-22 10:13:54.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+- education
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '14610'
+  views: '467'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/16578.html"
+---
+<p>専門ゼミ（プレゼミ）で実施する深層学習ハッカソンの実施要領。</p>
+<p><strong>ハンズオン</strong></p>
+<ul>
+<li>チーム分け
+<ul>
+<li>３チーム。各チーム３～４名。</li>
+<li>リーダは深層学習の経験、デュアルブートのPCを持っているかで決める。それ以外のメンバーは１組と2組が混成するようにくじで決める。</li>
+<li>チーム名を決めること。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>カメラの確認
+<ul>
+<li>まず、Ubuntuでノートパソコン内蔵のカメラが使えるか確認する。cheeseというソフトウェアすでにインストール済みだと思うので以下のコマンドで実行する。もし、映らない場合は内臓カメラの設定がBIOSで無効になっていないか確認する。
+<ul>
+<li>$ cheese</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>必要なパッケージのインストール
+<ul>
+<li>$ sudo apt install ros-kinetic-image-*</li>
+<li>$ sudo apt install ros-kinetic-usb-cam</li>
+</ul>
+</li>
+<li>カメラの起動 (Start up camera)
+<ul>
+<li>$ roscore</li>
+<li>$ roslaunch usb_cam usb_cam-test.launch
+<ul>
+<li>usb_cam-test.launchではカメラのデバイス名がvidoe0に指定されているので、使っているカメラのデバイス名が違う場合はlaunchファイルを編集する。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>データの記録 (Record data)
+<ul>
+<li>$ rosbag record -a</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li><a href="http://demura.net/misc/14340.html">ROS Bagデータから画像データの作成 (Extract image files form ROS bag)</a>
+<ul>
+<li><code>$  rosrun image_view extract_images _sec_per_frame:=0.05   _filename_format:=image%04d.jpg image:=/usb_cam/image_raw </code></li>
+<li>$ rosbag play bagfile_name</li>
+<li>なお、rosbagのログファイルサイズは大きいのでデスクの空き容量がなくなる場合がある。dfコマンドで空き容量を確認して、必要に応じてUSBメモリや外付けハードディ数を利用すること。</li>
+</ul>
+</li>
+<li><a href="http://demura.net/misc/14350.html">学習用データの作成 (Making data for Yolo)</a>
+<ul>
+<li>上のリンクは、アノテーションツールLabelImageを使いYolo用のデータセットを手動で作る方法を説明している。顔を識別するツールはいろいろあるので、それらを使い、自動的に学習用データセットを作成してもよい。</li>
+<li>学習用データは来年度のラボメンバーで、本日、研究所に来ている学生と教員の分だけでよい。</li>
+</ul>
+</li>
+<li><a href="https://demura.net/athome/16593.html">Yolo V3のインストール</a>
+<ul>
+<li>上のリンクは、学習に使用するYolo V3のインストール方法について説明している。学習はGPU搭載のコンピュータが必要なので研究室のマシンを使うが、推論は個人のノートパソコンを利用するのでYolo V3のインストールが必要となる。</li>
+</ul>
+</li>
+<li><a href="http://demura.net/misc/14458.html">オリジナルデータの学習 (Yolo learning using original data)</a>
+<ul>
+<li>上のリンクは、学習用データセットから具体的にYolo V3で学習する方法を説明している。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>コンテスト</strong></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>ラボメンバーを識別するシステムを開発し、識別率が最も高いチームが優勝。推論時間は問わない。以下の写真はYOLOを使った物体識別の例。これらの物体の代わりにラボメンバーを識別する。</li>
+<li>学習は研究室のGPU搭載マシンで行い、推論は各グループが所有しているノートパソコンで実施する。カメラはそのノートパソコン搭載のものを使用する。</li>
+<li>テスト時の条件
+<ul>
+<li>場所はテスト直前に示す。</li>
+<li>照明（蛍光灯の明るさ、ブラインドの開閉）を変えて複数回テストする。</li>
+<li>カメラには一度に１名しか映らないものとする。</li>
+</ul>
+</li>
+<li>各チームは５分程度、自分たちの手法をPPTを用いてプレゼンする。以下の項目は含めること。なお、darknetデフォルトを使っている場合でもハイパーパラメータ等は調べること。
+<ul>
+<li>データの取得方法（撮影方法、明るさ、顔の向き等）</li>
+<li>学習用データセットの作成方法（アノテーションツール、自動作成した場合はその方法、データ拡張等）</li>
+<li>学習データ数</li>
+<li>学習のハイパーパラメータ</li>
+<li>学習結果（Epochs数）。交差検証結果。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2018/06/7ac5d30699ea169048079f656a9bd419.png"><img class="aligncenter size-large wp-image-14610" src="{{ site.baseurl }}/assets/images/2020/01/7ac5d30699ea169048079f656a9bd419-1024x785.png" alt="" width="800" height="613" /></a></p>

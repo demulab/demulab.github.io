@@ -1,0 +1,272 @@
+---
+layout: page
+title: happymini2017
+date: 2017-07-13 13:11:19.000000000 +09:00
+type: page
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  _wp_page_template: default
+  views: '110'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/happymini2017-2"
+---
+<p><strong>The happy mini team (former demura.net) official web site</strong></p>
+<p><span style="color: #ff0000;">News: Happy mini, our human support robot, is the 3rd place in sympathy and 5th place in design rating in the @Home league in RoboCup2016 Leipzig by the research of Eva Jahn as shown in <a href="https://www.researchgate.net/publication/312948944_RoboCup_WM_2016_Leipzig_-_home_liga_-_design_and_sympathy_rating">this web site</a>.  Many wonderful robots, such as Pepper, HSR, R1, SocRob, Amigo, Tiago and so on, participated in RoboCup@Home2016.</span></p>
+<ul>
+<li><a href="https://https://youtu.be/xv_d-uRBHao">Qualification Video</a></li>
+</ul>
+<p><iframe src="https://www.youtube.com/embed/xv_d-uRBHao" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>
+<ul>
+<li><strong>Vision</strong></li>
+</ul>
+<p>The happy mini team, our former team name was demura.net, has been participating in the RoboCup@Home league of the RoboCup Japan Open since 2012, and participated in the RoboCup 2015 and 2016 world competition. The team got the 9th and 8th places in the competition, respectively.</p>
+<p>The vision of the happy mini team is “Making the World Happy by Making a Kawaii Robot.” “Kawaii'' means cute, lovely, or charming. We think that the kawaii robot can solve problems of an aging society in Japan, robots in the RoboCup@Home league should be more kawaii. Happy Mini as shown in Fig.1 is designed in the image of a little child with a lively yellow color. Happy Mini is considered to be the first kawaii designed robot in the RoboCup@Home. The software system was based on ROS, and the state of arts frame works such as Caffe, Darknet, Digits, Hark, Kaldi and so on.</p>
+<ul>
+<li><strong>Robot</strong></li>
+</ul>
+<p style="text-align: justify;">(1) Hardware</p>
+<p style="text-align: justify;">We have been developing 2 kinds of human support robots.  One is a childcare robot for children and another is a wheelchair robot for the elderly. To foster the research and development, the Demura Research Laboratory has been participating in RoboCup@Home since 2012 and Tsukuba Challenge since 2008.</p>
+<p>The design concepts of  Happy Mini are Kawaii (lovely, cute), simplicity, safety,  and usability.    <span style="color: #ff00ff;">Kawaii</span> is the most important aspect of human-robot interaction for Mini. Mini is an infant robot, and the ability is limited as well as other robots in RoboCup. So, Mini needs the help of human, that is why <span style="color: #ff00ff;">kawaii</span> of appearance and voice is crucial for Mini. The exterior of Mini is roundish and lively yellow as shown in Fig.1. The technical information of these robots is described in our team description paper(<a href="http://demura.net/happymini2017/attachment/tdp2017happymini-final-0312-2314" rel="attachment wp-att-13250">TDP2017HappyMini-final-0312-2314</a>).</p>
+<p><a href="http://demura.net/happymini2017/attachment/cad2" rel="attachment wp-att-13240"><img src="{{ site.baseurl }}/assets/images/2017/07/cad2-246x300.png" alt="" width="246" height="300" class="size-medium wp-image-13240 alignleft" /></a><img src="{{ site.baseurl }}/assets/images/2017/07/happyMiniNewArm2-156x300.jpg" alt="" width="156" height="300" class="size-medium wp-image-13239 alignleft" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="text-align: center;">Fig.1  Happy Mini (Left: CAD design,  Right: Real robot)</p>
+<p><a href="http://demura.net/robocupathome/attachment/torso" rel="attachment wp-att-12605"><img src="{{ site.baseurl }}/assets/images/2017/07/torso.jpg" alt="torso" width="470" height="321" class="aligncenter size-full wp-image-12605" /></a></p>
+<p style="text-align: center;">Fig.2   Extendable  Torso</p>
+<table>
+<tbody>
+<tr>
+<td width="153"></td>
+<td width="154">Happy Mini</td>
+</tr>
+<tr>
+<td width="153">Height [m]</td>
+<td width="154">1.10~1.50</td>
+</tr>
+<tr>
+<td width="153">Width [m]</td>
+<td width="154">0.32</td>
+</tr>
+<tr>
+<td width="153">Length [m]</td>
+<td width="154">0.32</td>
+</tr>
+<tr>
+<td width="153">Weight [kg]</td>
+<td width="154">10.0</td>
+</tr>
+<tr>
+<td width="153">Max speed [m/s]</td>
+<td width="154">0.7</td>
+</tr>
+<tr>
+<td width="153">D.O.F</td>
+<td width="154">5</td>
+</tr>
+</tbody>
+</table>
+<p>(2) Software</p>
+<p><strong>Perception:</strong> The software system is based on ROS and Caffe. Several algorithms are used for an object and human face recognition. HaarCascade classifier, Flat Clustering filtering, and Deep Neural Networks (DNNs) are used for face recognition (Fig.3). Nesterov’s accelerated gradient and Convolution DNNs are used for gender classification. We trained the network using 700 samples for each category, and accuracy of classification is about 75 %.</p>
+<p>The real-time object detection deep neural newtork, <a href="https://pjreddie.com/darknet/yolo/">YOLO (You only look once)</a> is used for person detection as shown in Fig.4. The algorithm is very fast compared to other DNNs and robust.</p>
+<p><a href="http://demura.net/robocupathome/attachment/face" rel="attachment wp-att-12616"><img src="{{ site.baseurl }}/assets/images/2017/07/face.jpg" alt="face" width="603" height="167" class="size-full wp-image-12616" /></a></p>
+<p style="text-align: center;">Fig.3   Face recognition using HarrCascade and DNN</p>
+<p style="text-align: left;"><a href="http://demura.net/happymini2017/attachment/yolo" rel="attachment wp-att-13238"><img src="{{ site.baseurl }}/assets/images/2017/07/yolo-1024x662.png" alt="" width="800" height="517" class="aligncenter size-large wp-image-13238" /></a></p>
+<p style="text-align: center;">Fig.4  Person detection</p>
+<p>S<strong>peech Recognition and Sound Localization: </strong>We have developed a speech recognition and a sound source localization system. The speech recognition system uses the <a href="http://kaldi-asr.org/">Kaldi </a>based <a href="https://github.com/alumae/kaldi-gstreamer-server">gstream server</a>. It is a real-time full-duplex speech recognition server, and<br />
+uses a DNN-based model for English trained on the TEDLIUM speech corpus.</p>
+<p>The sound source localization system is implemented using the robot auditory library <a href="http://www.hark.jp/">HARK</a>. The HARK easily be programmed by GUI as shown in Fig.5. The system takes multi-channel speech waveform data from the 8ch microphone array, calculates FFT and estimates the sound source direction by the MUSIC method.</p>
+<p><a href="http://demura.net/happymini2017/attachment/hark" rel="attachment wp-att-13247"><img src="{{ site.baseurl }}/assets/images/2017/07/hark-1024x576.png" alt="" width="800" height="450" class="aligncenter size-large wp-image-13247" /></a></p>
+<p style="text-align: center;">Fig.5  HARK</p>
+<p style="text-align: left;"><strong>Simulator:</strong> We have developed the Happy Mini simulator using the Gazebo robot simulator as shown in Fig.6. To make the 3D Happy Mini model in the simulator, we described the URDF (Universal Robot-ics Description Format) file and imported 3D meshes from the 3D CAD data. MoveIt! is easily applied to the 3D model described by the URDF</p>
+<p style="text-align: center;"><a href="http://demura.net/robocupathome/attachment/simulator" rel="attachment wp-att-12617"><img src="{{ site.baseurl }}/assets/images/2017/07/simulator.jpg" alt="simulator" width="618" height="177" class="aligncenter size-full wp-image-12617" /></a></p>
+<p style="text-align: center;">Fig.6  The Happy Mini Simulator using Gazebo</p>
+<ul>
+<li><strong>Scientific achievements</strong></li>
+</ul>
+<p><strong>Picture book reading</strong>: In the globalized modern society, the importance of acquiring English from early childhood is recognized. It is considered important to read a picture book in English. However, few Japanese speak English fluently. Thus, we have been developing a picture book reading application for children. We think that is one of the killer applications for a domestic service robot. Fig.7 shows our demonstration of picture book reading in RoboCup2016. We are planning to test the picture book reading application using Happy Mini in a real kindergarten.</p>
+<p><a href="http://demura.net/happymini2017/attachment/book2" rel="attachment wp-att-13251"><img src="{{ site.baseurl }}/assets/images/2017/07/book2.png" alt="" width="713" height="460" class="aligncenter size-full wp-image-13251" /></a></p>
+<p style="text-align: center;">Fig.7 Picture book reading demonstration in RoboCup2016</p>
+<p><strong>Road unevenness detection:</strong> We have been developing a wheelchair robot and a driver assist technology system for the elderly. The conventional wheelchair is difficult to get over small difference (about 30 [mm]) in level, and it sometimes makes a falling accident. To prevent the accident, the capability of detecting the small difference is required.  We have developed two system to solve the problem.</p>
+<p>The first system uses the Kinect V2 sensor as shown in Fig.8, and the second system uses the 3D Rolling Lidar developed by demura.net as shown in Fig.9. As far as our knowledge,  it is the most advanced technology to detect small difference in level for a wheelchair size robot.    Developing the small difference level detector for a commercial wheelchair and a mobility scooter for elderly, and applying the technology to a human support robot is our near future work.</p>
+<p><a href="http://demura.net/robocupathome/attachment/kinect_method" rel="attachment wp-att-12606"><img src="{{ site.baseurl }}/assets/images/2017/07/kinect_method.jpg" alt="kinect_method" width="616" height="197" class="aligncenter size-full wp-image-12606" /> </a>                Fig.8  The results of detection of 30 [mm] difference in level by the Kinect V2.</p>
+<p><a href="http://demura.net/robocupathome/attachment/rollinglidar" rel="attachment wp-att-12607"><img src="{{ site.baseurl }}/assets/images/2017/07/rollingLidar.jpg" alt="rollingLidar" width="661" height="224" class="aligncenter size-full wp-image-12607" /></a></p>
+<p style="text-align: center;">Fig.9 The results of detection of 25 [mm] difference in level by the Rolling 3D Lidar</p>
+<ul>
+<li> Team Description Paper
+<ul>
+<li><a href="http://demura.net/happymini2017/attachment/tdp2017happymini-final-0312-2314" rel="attachment wp-att-13250">TDP2017HappyMini-final-0312-2314</a></li>
+</ul>
+</li>
+<li>Publications
+<ul>
+<li>Journal
+<ul>
+<li style="text-align: justify;">竹井義則，小暮潔, 河並崇,中沢実, 出村公成："夢考房ジュニアにおけるロボット技術を活用した教育実践について",  KIT Progress, No.23, pp.139-148 (2015)</li>
+<li style="text-align: justify;">河並崇，竹井義則，中沢実，小暮潔, 出村公成："夢考房ジュニアにおけるICT教育", KIT Progress, No.23, pp.127-137 (2015)</li>
+<li style="text-align: justify;">出村公成，河並崇，竹井義則，中沢実，小暮潔: "夢考房ジュニアのビジョンと展望",  KIT Progress, No.23, pp.115-126 (2015)</li>
+<li style="text-align: justify;">Demura, K., Komoriya Y. “A Navigation Method using the Mutual Feedback of Waypoints and Self-positions,” Advanced Robotics, Vol.26, Issue14, pp.1677-1691 (2012) [<a href="http://demura.net/wordpress/wp-content/uploads/2015/01/demuKomoAdvancedRobotics12.pdf">Manuscript</a>]</li>
+<li style="text-align: justify;">Demura, K., Sakamoto, T., Asano, Y. and Matsuishi, M. “Enhancing Student Engineering, Personal, and Interpersonal Skills Through Yumekobo Projects,” Journal of Robotics and Mechatronics, Vol.23, No.5, pp.811-821 (2011)</li>
+<li style="text-align: justify;">出村公成，中川祐：“全方位カメラを用いたテンプレートマッチングに基づくモンテカルロ位置同定法”，日本ロボット学会誌，Vol.27，No.2，pp.249-257 (2009)</li>
+</ul>
+</li>
+<li>Book
+<ul>
+<li style="text-align: justify;">出村公成（分担執筆）：“5編2章 物理エンジン”,　日本ロボット学会編　ロボットテクノロジー，pp.216-219, オーム社　(2011)</li>
+<li style="text-align: justify;">出村公成（分担執筆）：“9.2.1節 Open Dynamics Engine”,　松原，松野，稲見，野田，大須賀編著　ロボット情報学ハンドブック，pp.582-592, ナノオプトニクスエナジー　(2010)</li>
+</ul>
+</li>
+<li>Conference
+<ul>
+<li style="text-align: justify;">出村公成，永島一輝，吉田颯，土田嵩也，木村晨次朗，榎本光洋，岩崎稜, 出村賢聖：“クローラー型パーソナルモビリティUNiMOを用いた自律移動ロボットの開発”，つくばチャレンジ2016参加レポート集，pp10-11 (2016)</li>
+<li style="text-align: justify;">浅田駿介、出村公成：“Kinect V2を用いた屋外での小さな障害物検出”, ロボティクス・メカトロニクス講演会2016, 1A1-08a3 (2016)</li>
+<li style="text-align: justify;">滝渉， 出村公成:”生活支援ロボットシミュレータとROSの連携”， 第16回計測自動制御学会システムインテグレーション部門講演会　論文集， 3F2-2 (2015)</li>
+<li style="text-align: justify;">西川徹，浅田駿介，山森清広，出村公成，河原貴軌：“つくばチャレンジ2015における金沢工業大学demura.netチームの開発”，つくばチャレンジ2015参加レポート集，pp13-15 (2015)</li>
+<li style="text-align: justify;">西川徹，出村公成：“低位置障害物検出を目的とした3次元レーザ式測域センサの開発”，第16回計測自動制御学会システムインテグレーション部門講演会，3E3-4 (2015)</li>
+<li style="text-align: justify;">西川徹，出村公成：“3次元レーザ式測域センサを用いた障害物検出システムの開発”, ロボティクス・メカトロニクス講演会2014, 3P1-X01 (2014)</li>
+<li style="text-align: justify;">菅原 啓， 市野陽太，岡本拓真，西川 徹，山岸卓央，河原貴軌，山崎亮一，出村公成 ：“つくばチャレンジ 2013における 金沢工 大 demura.netチーム の開発”, つくばチャレンジ2013参加レポート集, p.18-19 (2014)</li>
+<li style="text-align: justify;">市野陽太，出村公成：“つくばチャレンジ2013におけるロボットリモート監視システムの開発”, 第14回計測自動制御学会システムインテグレーション部門講演会論文集, 1A3-2 (2013)</li>
+<li style="text-align: justify;">菅原啓，出村公成：“道路領域検出に基づくウェイポイント推定”, 第14回計測自動制御学会システムインテグレーション部門講演会論文集, 1A1-6 (2013)</li>
+<li style="text-align: justify;">竹迫翔平，出村公成：“特徴量マッチングを用いたウェイポイント推定”, 第３０回日本ロボット学会学術講演会, 2F3-6 (2012)</li>
+<li style="text-align: justify;">出村公成:“つくばチャレンジの歩みとdemura.netチームの取り組み”, 電子情報通信学会クラウドネットワークロボット研究会, 信学技報告 Vol.112, No.105, CNR2012-2 (2012)</li>
+<li style="text-align: justify;">市野陽太，出村公成:“物理計算エンジンODEにCADデータを読込ますプログラムの開発”, ロボティクス・メカトロニクス講演会’12, 2A2-E07 (2012)</li>
+<li style="text-align: justify;">出村公成:“ロボカップジュニア理念実現のためのロボットスクール”, 第２９回日本ロボット学会学術講演会, 2C2-2 (2011)</li>
+<li style="text-align: justify;">竹迫翔平，出村公成：“ポールスターアルゴリズムの特徴量抽出を拡張した自己位置同定”, ロボティクス・メカトロニクス講演会’11, 2A1-M07 (2011)</li>
+<li style="text-align: justify;">出村公成:“物理計算エンジンにおけるOpen Dynamics Engineの位置付け”, 第11回計測自動制御学会システムインテグレーション部門講演会論文集, 1B2-1 (2010)</li>
+<li style="text-align: justify;">山澤貴史，出村公成：“自律移動ロボットの動的な走行経路生成”, 第11回計測自動制御学会システムインテグレーション部門講演会論文集, 1A3-5 (2010)</li>
+<li style="text-align: justify;">細川和真，出村公成:“動力学エンジンODE用グラフィックスライブラリの開発　-Drawstuff 上位互換ライブラリ-（第5報）, 第２８回日本ロボット学会学術講演会, 3L2-2 (2010)</li>
+<li style="text-align: justify;">市川修司，出村公成:“照明変化にロバストなロボットビジョンシステム”, 第２８回日本ロボット学会学術講演会, 3I1-3 (2010)</li>
+<li style="text-align: justify;">小林秀成，出村公成:“円検出によるセンターラインの特定を用いた自己位置同定”, 第２８回日本ロボット学会学術講演会, 2Q1-5 (2010)</li>
+<li style="text-align: justify;">出村公成：“ロボットの自己位置推定－つくばチャレンジ＆ロボカップの事例から－”，第８回レーザ計測イノベーション勉強会 (2010)</li>
+<li style="text-align: justify;">出村公成、細川和真：“動力学計算エンジンODE用グラフィクスライブラリの開発（第４報）-上位互換ライブラリirrDrawStuffのリリース-, ロボティクス・メカトロニクス講演会’10, 1P1-G28 (2010)</li>
+<li style="text-align: justify;">出村公成, 山澤貴史, 島野広之, 山内啓右:“電動車椅子をベースとした自立移動ロボットの開発”, つくばチャレンジ2009　開催記念シンポジウム参加レポート集， p.14-16 (2010)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Software
+<ul>
+<li><a href="https://github.com/demulab">Current out GitHub</a></li>
+<li>RoboCup2015 @Home League in Heifei, China (9th place)
+<ul>
+<li><a href="https://github.com/demulab">GitHub for DemuLab (demura.net)</a></li>
+</ul>
+</li>
+<li>RoboCup Japan Open 2014 @Home Simulation League  (3rd place)
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2015/01/JapanOpen2014.tar.gz">SourceCode.tgz</a> by Kensei and Kosei Demura</li>
+</ul>
+</li>
+<li>RoboCup@Home 2014: What did you say ?
+<ul>
+<li><a href="http://demura.net/robocup/11705.html">How to make a SIRI like app ?</a></li>
+</ul>
+</li>
+<li><a href="http://www.amazon.co.jp/gp/product/4627846916?ie=UTF8&amp;tag=demuranet-22&amp;linkCode=as2&amp;camp=247&amp;creative=1211&amp;creativeASIN=4627846916">The Book: Robot Simulation with Open Dynamics Engine (by Kosei Demura)</a>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2015/01/roboSimu120409.zip">Sample programs in the book</a></li>
+<li>PowerPoint for lectures
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2015/01/RoboSimuODE090109.ppt">ODE</a>,  <a href="http://demura.net/wordpress/wp-content/uploads/2015/01/RoboSimuWheeled080627.ppt">Wheeled Robot</a>, <a href="http://demura.net/wordpress/wp-content/uploads/2015/01/RoboSimuArm080627.ppt">Robot Arm</a>, <a href="http://demura.net/wordpress/wp-content/uploads/2015/01/RoboSimu4Legged080627.ppt">Legged Robot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Team
+<ul>
+<li>Adviser: Kosei Demura</li>
+<li>Member:Koyo Enomoto (Leader),  Kazuki Nagashima, Takeaki Yamakawa, Ryo Iwasaki, Syuhei Mashimo, Kensei Demura and Kosei Demura</li>
+</ul>
+</li>
+<li>Previous participation in RoboCup@Home
+<ul>
+<li>RoboCup Japan Open 2012
+<ul>
+<li>@Home: Real Robot League</li>
+</ul>
+</li>
+<li>RoboCup Japan Open 2013
+<ul>
+<li>@Home: Real Robot League</li>
+<li>@Home: Simulation League (only in Japan Open)</li>
+</ul>
+</li>
+<li>RoboCup Japan Open 2014
+<ul>
+<li>@Home: Real Robot League</li>
+<li>@Home: Simulation League (only in Japan Open): 3rd place (Team name: Yumekobo Junior)</li>
+</ul>
+</li>
+<li>RoboCup Japan Open 2015
+<ul>
+<li>@Home: Real Robot League</li>
+<li>@Home: Simulation League (only in Japan Open)</li>
+</ul>
+</li>
+<li>RoboCup 2015, Heifei,  China
+<ul>
+<li>@Home: 9th place</li>
+</ul>
+</li>
+<li>RoboCup Japan Open 2016
+<ul>
+<li>@Home: 1st place in Education League (only in Japan Open)</li>
+<li>RoboCup 2016, Leipzig, Germany<br />
+@Home: 8th place</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Our Sponsors：</strong></li>
+<li><span style="color: #000080;"><strong><span style="color: #ff0000;">The</span>  <span style="color: #ff0000;">Platinum Sponsor</span><br />
+</strong></span><span style="color: #000080;"><strong><br />
+</strong><a href="http://www.tsuzuki-mfg.co.jp/"><strong><span style="font-size: big;">株式会社　都筑製作所</span></strong></a></span><a href="http://www.tsuzuki-mfg.co.jp/"><img src="{{ site.baseurl }}/assets/images/2017/07/f165916176142e03381c6f51d52fe288.bmp" alt="都筑製作所ロゴ" width="1000" height="244" class="aligncenter wp-image-12797" /></a></li>
+<li><strong>Gold Sponsors</strong>
+<ul>
+<li><a href="http://www.sankogosei.co.jp/">三光合成株式会社</a></li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/team/attachment/%e4%b8%89%e5%85%89%e5%90%88%e6%88%90%e3%83%ad%e3%82%b4_%e3%83%95%e3%82%a9%e3%83%b3%e3%83%88%e3%82%b5%e3%82%a4%e3%82%ba%ef%bc%97%ef%bc%92" rel="attachment wp-att-12899"><img src="{{ site.baseurl }}/assets/images/2017/07/212319261951a647d78cf11053ad8bf4.png" alt="三光合成ロゴ_フォントサイズ７２" width="420" height="69" class="aligncenter wp-image-12899" /></a></p>
+<ul>
+<li><strong>Silver Sponsors</strong>
+<ul>
+<li><a href="http://www.nvidia.co.jp/page/home.html">NVIDIA合同会社</a><br />
+<a href="http://demura.net/happymini2017/attachment/nvlogo_2d_h" rel="attachment wp-att-13528"><img src="{{ site.baseurl }}/assets/images/2017/07/NVLogo_2D_H.jpg" alt="" width="370" height="80" class="aligncenter wp-image-13528" /></a></li>
+<li><a href="http://jp.robotis.com/index/index.php">株式会社 ROBOTIS</a><br />
+<a href="http://demura.net/happymini2017/attachment/robotis" rel="attachment wp-att-13529"><img src="{{ site.baseurl }}/assets/images/2017/07/robotis.png" alt="" width="339" height="87" class="aligncenter wp-image-13529" /></a></li>
+<li><a href="http://www.maspro.co.jp/">マスプロ電工株式会社<br />
+</a><a href="http://demura.net/team/attachment/kodak_logo-2" rel="attachment wp-att-12896"><img src="{{ site.baseurl }}/assets/images/2017/07/kodak_logo-1-300x183.png" alt="kodak_logo" width="300" height="183" class="aligncenter wp-image-12896 size-medium" /></a></li>
+<li></li>
+</ul>
+</li>
+<li><strong> Bronz Sponsors</strong>
+<ul>
+<li><a href="http://金沢エンジニアリングシステムズ">株式会社 金沢エンジニアリングシステムズ</a><br />
+<a href="http://demura.net/team/attachment/%e9%87%91%e6%b2%a2%e3%82%a8%e3%83%b3%e3%82%b8%e3%83%8b%e3%82%a2%e3%83%aa%e3%83%b3%e3%82%b0%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e3%82%ba%e3%83%ad%e3%82%b4-2" rel="attachment wp-att-12833"><img src="{{ site.baseurl }}/assets/images/2017/07/b4de75bdc9781ccaa299e3fa039e11f6-1-300x100.png" alt="金沢エンジニアリングシステムズロゴ" width="300" height="100" class="aligncenter size-medium wp-image-12833" /></a></li>
+<li>丸文通商株式会社<br />
+<a href="http://demura.net/team/attachment/jpeg20cm" rel="attachment wp-att-12937"><img src="{{ site.baseurl }}/assets/images/2017/07/JPEG20cm-300x34.jpg" alt="JPEG20cm" width="335" height="38" class="aligncenter wp-image-12937" /></a></li>
+<li><a href="http://www.artec-kk.co.jp/">アーテック株式会社</a></li>
+</ul>
+</li>
+</ul>
+<p><a href="http://demura.net/team/attachment/logo_ao" rel="attachment wp-att-12870"><img src="{{ site.baseurl }}/assets/images/2017/07/logo_ao-300x107.png" alt="logo_ao" width="210" height="75" class="aligncenter wp-image-12870" /></a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

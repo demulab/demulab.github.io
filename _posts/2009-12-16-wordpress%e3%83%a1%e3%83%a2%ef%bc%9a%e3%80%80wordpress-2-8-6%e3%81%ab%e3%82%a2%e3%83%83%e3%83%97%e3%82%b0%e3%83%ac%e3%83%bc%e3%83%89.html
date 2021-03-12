@@ -1,0 +1,37 @@
+---
+layout: post
+title: WordPressメモ：WordPress 2.8.6にアップグレード
+date: 2009-12-16 17:12:44.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags:
+- WordPress
+meta:
+  views: '133'
+  _edit_last: '2'
+  image: http://demura.net/wordpress/wp-content/uploads/swift_default.jpg
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/5491.html"
+---
+<p>WordPress2.9がそろそろ出そうだが，WordPress 2.7からWordPress2.8にアップグレードした．以下はそのメモ．</p>
+<p>WordPress 2.7からダッシュボード上で自動更新できるだが，トラぶった場合に普及に時間がかかるので手動アップグレードした．</p>
+<ul>
+<li>プラグインを全て停止し，データベースとファイルのバックアップを取った．</li>
+<li> wordpress/wp-content以外は新しいファイルと置き換えた．wp-contentの中のlanguages, index.phpも新しいファイルと置き換え，それ以外はそのまま再利用した．</li>
+<li>WordPress2.7で使っていたwp-config.phpとWordPress2.8のwp-config-sample.phpを見比べ，wp-config-sample.phpの中身を書き換える．wp-config-sample.phpをwp-config.phpに名前を変えアップロード．</li>
+<li>ブラウザで/wp-admin/upgrade.phpにアクセスしておしまい．</li>
+<li>プラグインを元に戻す</li>
+</ul>
+<p>ノートラブルでアップグレードできた．</p>
+<p style="text-align: right;">でむ</p>
+<p><br class="spacer_" /></p>

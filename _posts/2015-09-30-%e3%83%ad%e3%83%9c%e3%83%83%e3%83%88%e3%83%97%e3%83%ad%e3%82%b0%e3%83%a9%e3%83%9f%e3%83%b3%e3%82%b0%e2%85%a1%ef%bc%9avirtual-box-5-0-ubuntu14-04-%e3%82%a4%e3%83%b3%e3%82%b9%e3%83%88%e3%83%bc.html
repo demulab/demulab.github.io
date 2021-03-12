@@ -1,0 +1,107 @@
+---
+layout: post
+title: ロボットプログラミングⅡ：Virtual Box 5.0 + Ubuntu14.04 インストール
+date: 2015-09-30 22:38:31.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2736'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/12082.html"
+---
+<p>この記事は私が担当している講義ロボットプログラミングⅡ用です。</p>
+<p>ここでは、Virtualbox5.0+Ubuntu14.04のインストール法を紹介します。Virtualbox5.0になってから3Dアクセラレータに対応してかなり快適になりました。</p>
+<p>○　<strong>VirtualBoxのインストール</strong></p>
+<p>(1) VirtualBoxのダウンロード</p>
+<p><a href="http://download.virtualbox.org/virtualbox/5.0.4/VirtualBox-5.0.4-102546-Win.exe">ここをクリックしてVirtualBox 5.0.4 for Windows hostsのx86/amd</a> をダウンロードする。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-download.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-download-300x216.jpg" alt="vm-download" width="300" height="216" class="aligncenter size-medium wp-image-12053" /></a></p>
+<p>(2) Extention Packのダウンロード<br />
+<a href="http://download.virtualbox.org/virtualbox/5.0.4/Oracle_VM_VirtualBox_Extension_Pack-5.0.4-102546.vbox-extpack">ここをクリッしてVirtualBox 5.0.4 Oracle VM VirtualBox Extension </a>をダウンロードする。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/extention.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/extention-300x167.jpg" alt="extention" width="300" height="167" class="aligncenter size-medium wp-image-12368" /></a></p>
+<p>(3) ダウンロードしたVirtualBox-5.0.4-102546-Win.exeファイルをダブルクリックすると以下のsetup画面になる。[Next]をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-inst1.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-inst1-300x234.jpg" alt="vm-inst1" width="300" height="234" class="aligncenter size-medium wp-image-12054" /></a></p>
+<p>(4)  何もしないので、[Next]をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-inst2.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-inst2-300x237.jpg" alt="vm-inst2" width="300" height="237" class="aligncenter size-medium wp-image-12056" /></a></p>
+<p>(5) 何も変更しないで、[Next]をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-inst3.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-inst3-300x234.jpg" alt="vm-inst3" width="300" height="234" class="aligncenter size-medium wp-image-12057" /></a></p>
+<p>(6) Warning（警告）が出るかこのまま、[Yes]をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-inst4.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-inst4-300x234.jpg" alt="vm-inst4" width="300" height="234" class="aligncenter size-medium wp-image-12058" /></a></p>
+<p>(7)  インストールの準備完了。[Next]をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-inst5.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-inst5-300x234.jpg" alt="vm-inst5" width="300" height="234" class="aligncenter size-medium wp-image-12059" /></a></p>
+<p>(8) インストールが始まる。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-inst6.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-inst6-300x234.jpg" alt="vm-inst6" width="300" height="234" class="aligncenter size-medium wp-image-12060" /></a></p>
+<p><span style="color: #ff0000;">途中でウインドウが開き「このデバイスソフトウェアをインストールしますか？名前：Oracle corporation ユニバーサルシリアルパスコントローラ」などデバイスソフトウェアのインスト―ルを聞かれるので、全て「インストール」する。</span></p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/usb1.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/usb1-300x112.jpg" alt="usb" width="300" height="112" class="aligncenter size-medium wp-image-12141" /></a></p>
+<p>(9) インストールが終わったので[Finish]をクリックすると、VirtualBoxが起動する。<a href="http://demura.net/wordpress/wp-content/uploads/2014/09/vm-install8.jpg"><br />
+</a></p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-inst-end.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-inst-end-300x234.jpg" alt="vm-inst-end" width="300" height="234" class="aligncenter size-medium wp-image-12061" /></a></p>
+<p>○　<strong>拡張パッケージのインストール</strong></p>
+<p>(1) USB2.0/3.0を使えるようにダウンロードしておいたExtention Packをインストールする．</p>
+<p>ファイル→環境設定→機能拡張</p>
+<p>Oracle_VM_VirtualBox_Extension_Pack.....vbox-extpackを選択し，「OK」をクリックする．</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-extention1.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-extention1-300x202.jpg" alt="vm-extention1" width="300" height="202" class="aligncenter size-medium wp-image-12074" /></a></p>
+<p>(2) 質問のウインドウになるので，「インストール」をクリックする．</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-extention2.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-extention2-300x191.jpg" alt="vm-extention2" width="300" height="191" class="aligncenter size-medium wp-image-12075" /></a></p>
+<p>(3) 環境設定の画面が以下のようになっていたら，「OK」をクリックして終了する．<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/09/vm-extention3.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm-extention3-300x202.jpg" alt="vm-extention3" width="300" height="202" class="aligncenter size-medium wp-image-12076" /></a></p>
+<p>○　<strong>仮想ハードディスクファイルのダウンロードと解凍</strong></p>
+<p>(1)  Cドライブ直下に以下のフォルダを作成する</p>
+<ul>
+<li>c:\education\VirtualBox</li>
+</ul>
+<p>(2) 以下のサイトからVHDファイルを以下を(1)で作成したフォルダへダウンロードし、zipで圧縮されているので、適当なソフトを使い解凍する。</p>
+<ul>
+<li><a href="http://edu1.kanazawa-it.ac.jp/demura/education/robotProg2/ubuntu-ja-14.04-desktop-amd64-vhd.zip">ubuntu-ja-14.04-desktop-amd64-vhd.zip</a>(学内サイト。学外からダウンロードできません）</li>
+<li><a href="http://cdimage.ubuntulinux.jp/releases/14.04/ubuntu-ja-14.04-desktop-amd64-vhd.zip">ubuntu-ja-14.04-desktop-amd64-vhd.zip</a> (Ubuntu Japanese Teamサイト)</li>
+</ul>
+<p>○　<strong>仮想マシンの登録と起動</strong></p>
+<p>(1) VirtualBoxを起動して、左上の[新規（N)]をクリックする。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2014/09/vm1-welcome.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm1-welcome-300x204.jpg" alt="vm1-welcome" width="300" height="204" class="aligncenter size-medium wp-image-11125" /></a></p>
+<p>(2) 仮想マシンの名前を[eagle]、タイプを[Linux]、バージョンを[Ubuntu(<span style="color: #ff0000;">64-bit</span>)]に選び、「次へ」をクリック。Ubuntu(32-bit)だとインストールに失敗するのでUbuntu(64-bit)がない場合は下の注を参照。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/reg1.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/reg1-300x300.jpg" alt="reg1" width="300" height="300" class="aligncenter size-medium wp-image-12087" /></a></p>
+<p><span style="color: #ff0000;">注：ここで、Ubuntu (64-bit)がなくUbuntu(32-bit)しかない場合は、コントロールパネル」→「プログラム」→「プログラムと機能」の「Windowsの機能の有効化と無効化」をクリックし、下図のようにHyper-Vのチェックを外す。</span><br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2015/09/hyper-v.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/hyper-v-300x262.jpg" alt="hyper-v" width="300" height="262" class="aligncenter size-medium wp-image-12176" /></a></p>
+<p>(3) 仮想マシンに割り当てるメモリーサイズを、実メモリの半分にする。<br />
+私のマシンでは8192MB使えるので半分の4096MB割り当てた。<br />
+「次へ」をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/reg2.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/reg2-300x300.jpg" alt="reg2" width="300" height="300" class="aligncenter size-medium wp-image-12088" /></a></p>
+<p>(4)　仮想ハードドライブファイルを指定する。「すでにある仮想ハードドライブファイルを使用する」にチェックを入れ、Cドライブ直下の<br />
+c:\education\VirtualBoxに「ubuntu-ja-14.04-desktop-amd64.vhd」ファイルがあるので、それを指定し、[作成]をクリック。<br />
+これでVirtualBoxの設定終了。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/reg3.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/reg3-300x300.jpg" alt="reg3" width="300" height="300" class="aligncenter size-medium wp-image-12089" /></a></p>
+<p>(5) 緑矢印の「起動」をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/reg4.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/reg4-300x225.jpg" alt="reg4" width="300" height="225" class="aligncenter size-medium wp-image-12090" /></a></p>
+<p>&nbsp;</p>
+<p>(6) しばらくすると黒い画面から下図のグラフィカルの画面になる。「日本語」がオレンジ色になっていることを確認して、「続ける」をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/reg5.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/reg5-300x250.jpg" alt="reg5" width="300" height="250" class="aligncenter size-medium wp-image-12091" /></a></p>
+<p>(7)　「 どこに住んでいますか？」と聞かれるので、そのまま「続ける」をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2014/09/vm9-place.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm9-place-300x238.jpg" alt="vm9-place" width="300" height="238" class="aligncenter size-medium wp-image-11133" /></a></p>
+<p>(8) 「日本語」が選択されていることを確認して「続ける」をクリック。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/reg6.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/reg6-300x250.jpg" alt="reg6" width="300" height="250" class="aligncenter size-medium wp-image-12092" /></a></p>
+<p>(9) 「あなたの情報を入力してください」と聞かれるので次のようにする。</p>
+<p>■　あなたの名前：　ローマ字（英数半角）で苗字　名前<br />
+■　コンピュータの名前：b学籍番号<br />
+■　ユーザー名の入力：　ローマ字（英数半角）で苗字<br />
+■　パスワード：好きなパスワードを入れること。忘れないようにどこかにメモをすること。忘れた場合は、こちらでもわからないので、インストールのやり直しになる。</p>
+<p>個人でしか使わないので，「自動的にログインする」を選択する．</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/reg7.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/reg7-300x250.jpg" alt="reg7" width="300" height="250" class="aligncenter size-medium wp-image-12093" /></a></p>
+<p>(10) 設定作業が終わるまでしばらく時間がかかるので待つ。１０分もかからない。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/09/reg8.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/reg8-300x250.jpg" alt="reg8" width="300" height="250" class="aligncenter size-medium wp-image-12094" /></a></p>
+<p>(11) 　(9)で自動的にログインするを選択したので，デスクトップがすぐ開く．　左列アイコンの一番上のUbuntuのマークアイコン(Dashホーム)をクリックして、下図のように四角い入力部分に[terminal]を入力し[enterキー]を押す。terminalは端末のことで、ここにコマンドを打ち込み。この演習ではよく使う。</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2014/09/vm14-dash.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm14-dash-300x246.jpg" alt="vm14-dash" width="300" height="246" class="aligncenter size-medium wp-image-11138" /></a></p>
+<p>(12) 下図のように端末が現れたら成功。お疲れ様！</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2014/09/vm15-terminal.jpg"><img src="{{ site.baseurl }}/assets/images/2015/09/vm15-terminal-300x246.jpg" alt="vm15-terminal" width="300" height="246" class="aligncenter size-medium wp-image-11139" /></a></p>
+<p>終わり</p>
+<p>&nbsp;</p>

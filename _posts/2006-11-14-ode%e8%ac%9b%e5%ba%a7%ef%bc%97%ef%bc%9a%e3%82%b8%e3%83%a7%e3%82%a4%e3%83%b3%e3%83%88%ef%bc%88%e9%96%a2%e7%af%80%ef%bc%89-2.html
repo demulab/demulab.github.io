@@ -1,0 +1,146 @@
+---
+layout: post
+title: ODE講座７：ジョイント（関節）
+date: 2006-11-14 22:27:48.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2002'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/336.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2006/11/sample3.jpg" alt=" " width="240" height="231" /></p>
+<p>金沢もすっかり寒くなりずわいガニ、香箱ガニ（注1)が解禁され、寒鰤（かんぶり：注2）と地酒（注3）が旨い季節になってまいりました。</p>
+<p>ゲーム開発やロボットの研究者にも使われているオープンソースの物理計算エンジンODE(Open Dynamics  Engine、オープン ダイナミクスエンジン）を学ぶODE講座の第７回目です。</p>
+<p>今回はジョイント（関節）についてお話しします。 前回課題が出てていましたができましたか？　答えは、nearCallback関数の中にある<br />
+contact[i].surface.bounce = 0.0; // (0.0~1.0)   反発係数は0から1まで<br />
+contact[i].surface.bounce_vel = 0.0; // 　跳ね返りに必要な速度<br />
+の値を0.0より大きく1.0以下にすればよいのです。反発係数は衝突前と衝突後の速度比でしたね。</p>
+<p>では、ジョイントについて説明します。ジョイントは我々の周りでは、折畳み携帯のヒンジやドアの蝶番に相当します。小難しくいうと、２つのボディの位置や姿勢をある一定の関係に保つ拘束がジョイントとなのです。ＯＤＥではジョイントと拘束を同じ意味で使っています。</p>
+<p>ジョイントの使い方は以下のようになります。</p>
+<ol>
+<li><span style="color: #cc0000;"><strong>***ジョイントの生成　　　　　　dJointCreate***()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントとボディの結合　dJointAttach()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントの中心点を設定　dJointSet***Anchor()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントの回転軸を設定　dJointSet***Axis()</strong></span></li>
+</ol>
+<p>上で***にはジョイントのタイプが入ります。タイプにはHinge(ヒンジ）、Ball(ボール)、Slider(スライダー)、Universal(ユニバーサル)等があります。詳しい使い方はマニュアルを参照してください。</p>
+<p>さっそく上図に示している玉と円柱をヒンジジョイントで結合しているオブジェクトがバウンドするソースコードを以下に示します。なお、前回までと同じ関数や宣言は省略しています。<br />
+注１：香箱ガニはずわいガニのメスです。体はとても小さいのですが、卵が詰まっていて超美味です。<br />
+注２：脂が乗って美味。甘エビもおいしいですね。<br />
+注３：石川では<a href="http://www.kikuhime.co.jp/" target="_self">菊姫</a>、<a href="http://www.tengumai.co.jp/" target="_self">天狗舞</a>、<a href="http://www.manzairaku.co.jp/" target="_self">万歳楽</a>などが好きですが、福井の<a href="http://www.kokuryu.co.jp/" target="_self">黒龍</a>は本当に超お勧めです。だまされたと思ってインターネットで注文してみてはいかがですか？</p>
+<p><!--more--></p>
+<pre>[cpp]
+
+// sample3.cpp  by でむ
+#ifdef  dDOUBLE
+#define dsDrawSphere dsDrawSphereD   // 単精度と倍精度の描画関数に対応するおまじない
+#define dsDrawCapsule  dsDrawCapsuleD
+#endif
+
+typedef struct {
+  dBodyID body;   // 　ボディ（剛体）
+  dGeomID geom;　//   ジオメトリ（形状）
+  dReal   radius,　length,　mass;　// 半径[m]、　長さ[m]、　質量[kg]
+} myLink;
+
+myLink ball, pole;
+
+// simLoopはこのソースではわからないがwhileループに入っていて、シミュレーションの各ステップで実行される。
+
+static void simLoop (int pause)
+{
+  const dReal *pos1,*R1,*pos2,*R2;　// 配列へのポインタが代入される
+
+  dSpaceCollide(space,0,&amp;nearCallback); 　// 衝突検出計算
+  dWorldStep(world,0.01);　// 動力学計算を１ステップ(ここでは0.01秒）進める
+  dJointGroupEmpty(contactgroup);       // 　接触点グループの後始末
+
+  // ボールの描画
+  dsSetColor(1.0,0.0,0.0);　       // 赤色の設定
+  pos1 = dBodyGetPosition(ball.body);　// pos1（位置）は配列のポインターになっている
+  R1   = dBodyGetRotation(ball.body);　//  回転行列の取得
+  dsDrawSphere(pos1,R1,ball.radius);　// 球の描画
+
+  // 円柱の描画
+  pos2 = dBodyGetPosition(pole.body);　// 位置の取得
+  R2   = dBodyGetRotation(pole.body);　// 姿勢の取得
+  dsDrawCapsule(pos2,R2,pole.length,pole.radius);　// カプセルの描画
+}
+
+// オブジェクトの作成
+void createBallPole() {
+  dMass m1;
+  dReal x0 = 0.0, y0 = 0.0, z0 = 2.5;
+
+  //玉
+  ball.radius = 0.2;  ball.mass   = 1.0;
+  ball.body = dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetSphereTotal(&amp;m1,ball.mass,ball.radius);
+  dBodySetMass(ball.body,&amp;m1);
+  dBodySetPosition(ball.body, x0, y0, z0);
+  ball.geom = dCreateSphere(space,ball.radius);
+  dGeomSetBody(ball.geom,ball.body);
+
+  // 　カプセル
+  pole.radius = 0.025;  pole.length = 1.0;  pole.mass   = 1.0;
+  pole.body =  dBodyCreate(world);
+  dMassSetZero(&amp;m1);
+  dMassSetCapsuleTotal(&amp;m1,pole.mass,3,pole.radius,pole.length);
+  dBodySetMass(pole.body,&amp;m1);
+  dBodySetPosition(pole.body, x0, y0, z0 - 0.5 * pole.length);
+  pole.geom =  dCreateCapsule(space,pole.radius,pole.length);
+  dGeomSetBody(pole.geom,pole.body);
+
+  // ヒンジジョイント
+  joint = dJointCreateHinge(world, 0);　　　　　　　　　　　// ヒンジジョイントの生成
+  dJointAttach(joint, ball.body,pole.body);　　　　　　// 玉のボディと円柱のボディをジョイントで結合
+  dJointSetHingeAnchor(joint, x0, y0, z0 - ball.radius);　// ヒンジジョイントのアンカー(中心点）を設定
+  dJointSetHingeAxis(joint, 1, 0, 0);　　　　　　　　　　　　// ヒンジジョイントの回転軸ベクトルを設定(1,0,0)
+}
+
+int main (int argc, char **argv)
+{
+  setDrawStuff();　　// 描画関数の設定
+  world = dWorldCreate();　// 動力学ワールドの生成
+  space = dHashSpaceCreate(0);　// 衝突計算スペースの生成
+  contactgroup = dJointGroupCreate(0);　// 接触点グループの生成
+  dWorldSetGravity(world,0,0,-9.8);       // 重力加速度の設定
+  ground = dCreatePlane(space,0,0,1,0);     // 地面用平面ジオメトリの生成
+  createBallPole();　// 玉とカプセルの生成
+  dsSimulationLoop (argc,argv,352,288,&amp;fn);  // シミュレーションループ
+  dWorldDestroy (world);　// ワールドの破壊
+
+  return 0;
+}
+[/cpp]</pre>
+<p>この例では玉と円柱のボディをヒンジジョイントで結びつけています。</p>
+<p>ではソースコードを読みましょう。createBallandPall関数ではまず玉を作り、その後、円柱を作り、それからヒンジジョイントを dJointCreateHinge()で 生成し、dJointAttach()で２つのボディをヒンジジョイントで結合します。その後のdSetHingeAnchor()はジョイントの回転中 心点の位置を設定し、dJointSetHingeAxis()で回転軸ベクトル を設定します。この例では回転軸ベクトルは(1,0,0)なのでｘ軸方向となります。詳しくはマニュアルを参照。</p>
+<p>これでジョイントの生成は終わりです。今回は簡単のためにジョイントのパラメータを設定しませんでしたが、可動域や最大トルク、最大角速度の設定なども可能です。<a href="http://demura.net/archives/images/ode/sample3-2006.tgz">ここをクリック</a>してサンプルプログラムをダウンロードして遊んでください。</p>
+<p>次回は関節の動かし方やパラメータの設定方法を説明します。なお、説明でわかりずらい箇所や質問があればコメントを投稿してください。</p>
+<p><strong>今回登場したAPI</strong></p>
+<ul>
+<li> <strong>void dJointAttach(dJointID joint, dBodyID body1, dBodyID dBody2</strong>)<br />
+剛体body1とbody2にジョイントjointを取り付ける</li>
+<li><strong>dJointID dJointCreateHinge(dWorldID world, dJointGroupID)</strong><br />
+worldにヒンジジョイントを生成し、そのＩＤ番号を返す。dJointGroupIDには0を入れる。</li>
+<li><strong>void dJointSetHingeAnchor(dJointID joint, dReal x, dReal y, dReal z)</strong><br />
+ヒンジジョイントの回転軸の中心点(x,y,z)を設定する。</li>
+<li><strong> void dJointSetHingeAxis(dJointID joint, dReal x, dReal y, dReal z)</strong><br />
+ヒンジジョイントの回転軸ベクトル(x,y,z)を設定する。</li>
+</ul>
+<hr /><strong>更新履歴</strong><br />
+2007-1-22:  本文の説明を強化し、サンプルプログラムで新しく登場したAPI集を掲載した。</p>

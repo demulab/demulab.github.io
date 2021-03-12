@@ -1,0 +1,203 @@
+---
+layout: post
+title: DNN：Detectron2 インストール
+date: 2020-02-22 19:05:48.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16803'
+  views: '3077'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16791.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/detectron-ike.png"><img class="aligncenter size-large wp-image-16803" src="{{ site.baseurl }}/assets/images/2020/02/detectron-ike-1024x832.png" alt="" width="1024" height="832" /></a></p>
+<p>Facebook人工知能が開発している最新の物体検出アルゴリズムを実装しているソフトウェアシステムDetectron2のインストールメモ。Detectron2をインストールする前にPyTorchをインストールする。PyTorchはDeep Learningのフレームワークで、2019年12月にPreferred Networksが自前のフレームワークChainerの開発をやめて、PyTorchに乗り換えたことで日本でも注目を集めている。Detectron2のインストールはpipなのでとても簡単。なお、上の写真は先日、ラボのメンバーと池の平温泉スキー場へ行ったときの写真に物体検出アルゴリズム(Mask R-CNN)をかけたもの。Truck以外はほぼ正解。</p>
+<p><strong>PyTorch</strong></p>
+<ul>
+<li>インストール
+<ul>
+<li>$ pip3 install torch torchvision</li>
+</ul>
+</li>
+<li>検証
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>次のコマンドを実行して正常にインストールされているか試す</li>
+</ul>
+</li>
+</ul>
+<p><code>demulab@razer:~/$ python3<br />
+Python 3.6.9 (default, Nov 7 2019, 10:44:02)<br />
+[GCC 8.3.0] on linux<br />
+Type "help", "copyright", "credits" or "license" for more information.<br />
+&gt;&gt;&gt; from __future__ import print_function<br />
+&gt;&gt;&gt; import torch<br />
+&gt;&gt;&gt; x = torch.rand(5, 3)<br />
+&gt;&gt;&gt; print(x)<br />
+tensor([[0.9640, 0.3798, 0.5884],<br />
+[0.5195, 0.4264, 0.5103],<br />
+[0.3345, 0.3081, 0.1180],<br />
+[0.4120, 0.9787, 0.6587],<br />
+[0.7861, 0.1901, 0.9091]])<br />
+&gt;&gt;&gt; torch.cuda.is_available()<br />
+True<br />
+&gt;&gt;&gt;</code></li>
+</ul>
+<p><strong>Detectron2</strong></p>
+<ul>
+<li> 本記事はメモなので以下の説明に従ってインストール等をすることを勧める。
+<ul>
+<li><a href="https://github.com/facebookresearch/detectron2">https://github.com/facebookresearch/detectron2</a></li>
+</ul>
+</li>
+<li> 環境
+<ul>
+<li>Python 3.6.9</li>
+<li>PyTorch 1.4</li>
+<li>CUDA 10.2</li>
+</ul>
+</li>
+<li> 準備
+<ul>
+<li>$ pip3 install cython</li>
+<li>$ pip3 install pycocotools</li>
+</ul>
+</li>
+<li> インストール
+<ul>
+<li> インストール済みのCUDAのバージョンが10.2だったので以下のコマンドでソースからビルドした。Prebuild版はCUDA 10.1に対応している。
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/facebookresearch/detectron2.git</code></li>
+<li><code>$ cd detectron2</code></li>
+<li><code>$ pip3 install -e .</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>はじめよう！
+<ul>
+<li>チュートリアル
+<ul>
+<li><a href="https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5">Detectron2 Beginner's Tutorial</a></li>
+<li><a href="https://detectron2.readthedocs.io/tutorials/index.html">Detectron2 Tutrorials</a></li>
+</ul>
+</li>
+<li>訓練済みモデルによる推論デモ（コマンドによる実行）
+<ul>
+<li><code>$ cd ~/src/detectron2</code></li>
+<li>画像ファイルからの推論
+<ul>
+<li><code>$ wget http://images.cocodataset.org/val2017/000000439715.jpg -O input.jpg</code></li>
+<li><code>$ python3 demo/demo.py --config-file configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml --input input.jpg  --opts MODEL.WEIGHTS detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl</code></li>
+<li>成功すると下図のようなウインドウが表示される。なお、demo.pyの使い方は次のコマンドで調べることができる。</li>
+<li>$ python3 demo/demo.py -h<br />
+<code><code><code>usage: demo.py [-h] [--config-file FILE] [--webcam]<br />
+[--video-input VIDEO_INPUT] [--input INPUT [INPUT ...]]<br />
+[--output OUTPUT] [--confidence-threshold CONFIDENCE_THRESHOLD]<br />
+[--opts ...]Detectron2 demo for builtin models</code></code></code></li>
+</ul>
+</li>
+<li>ウェブカメラからの推論：<code>--webcam</code>のオプションをつける
+<ul>
+<li><code>$ python3 demo/demo.py --config-file configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml --webcam  --opts MODEL.WEIGHTS detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl</code></li>
+</ul>
+</li>
+<li>動画からの推論：<code>--video-input</code>のオプションをつける
+<ul>
+<li><code>$ python3 demo/demo.py --config-file configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml --video-input input.mp4  --opts MODEL.WEIGHTS detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>訓練済みモデルによる推論デモ（プログラムによる実行）
+<ul>
+<li>上のコマンドの代わりにプログラムで実行するためには以下のようなコードが必要となる。</li>
+<li>
+<pre class="brush:cpp;"># detectron2で使うモジュールのインポート
+from detectron2.engine import DefaultPredictor
+from detectron2.config import get_cfg
+from detectron2.utils.visualizer import Visualizer
+from detectron2.data import MetadataCatalog
+import cv2
+
+# 画像の読み込み
+im = cv2.imread("./input.jpg")
+
+# ネットワークの設定
+cfg = get_cfg()
+cfg.merge_from_file("./configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # set threshold for this model
+cfg.MODEL.WEIGHTS = "detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl"
+
+# 推論
+predictor = DefaultPredictor(cfg)
+outputs   = predictor(im)
+
+# 結果の表示
+v = Visualizer(im[:, :, ::-1], MetadataCatalog.get(cfg.DATASETS.TRAIN[0]), scale=1.2)
+v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+cv2.imshow('Results', v.get_image()[:, :, ::-1])
+cv2.waitKey(0) 
+cv2.destroyAllWindows()
+</pre>
+</li>
+</ul>
+<p>&nbsp;</li>
+<li>このコードをtest.pyとして~/src/detectron2/myprogディレクトリ下に保存する。myprogフォルダはないので事前に次のコマンド作成する。
+<ul>
+<li>$ mkdir  ~/src/detectron2/myprog</li>
+</ul>
+</li>
+<li>次のコマンドを実行すると上図のウインドウが表示される。ウインドウ上にマウスのポインタをもっていき、何かキーを押すとプログラムは終了する。
+<ul>
+<li>$  cd ~/src/detectron2</li>
+<li>$ python3  myprog/test.py</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/detectron2-1.png"><img class="aligncenter size-full wp-image-16796" src="{{ site.baseurl }}/assets/images/2020/02/detectron2-1.png" alt="" width="768" height="648" /></a></p>

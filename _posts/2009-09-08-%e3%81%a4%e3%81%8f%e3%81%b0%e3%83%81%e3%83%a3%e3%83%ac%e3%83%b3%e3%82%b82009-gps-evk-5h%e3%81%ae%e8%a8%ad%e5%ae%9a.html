@@ -1,0 +1,42 @@
+---
+layout: post
+title: 'つくばチャレンジ2009: GPS  EVK-5Hの設定'
+date: 2009-09-08 22:30:40.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '454'
+  image: http://demura.net/wordpress/wp-content/uploads/swift_default.jpg
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/4809.html"
+---
+<p>プアマンズGPSこと，EVK-5Hを今までWindowsで使っていましたが，Linuxで使う際，NMEAのライブラリを用いた自作のプログラムではなかなかデータを読み込んでくれませんでした．そこで，以下の項目についてEVK-5Hの設定をU-Centerから変更したら問題が解決しました．</p>
+<ul>
+<li>PRT(Ports)
+<ul>
+<li>Protocol in: NMEA</li>
+<li>Protocol out: NMEA</li>
+<li>USB baud rate  19200</li>
+</ul>
+</li>
+<li>NMEA
+<ul>
+<li>レ　Enable compatibility mode</li>
+<li>Version 2.1</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 30px; text-align: right;">でむ</p>

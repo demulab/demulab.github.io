@@ -1,0 +1,100 @@
+---
+layout: post
+title: How to make a SIRI like app in your laptop ?
+date: 2015-03-12 00:39:02.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '342'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/11705.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/03/jasper1.png"><img src="{{ site.baseurl }}/assets/images/2015/03/jasper1.png" alt="jasper" width="706" height="371" class="aligncenter size-full wp-image-11707" /></a></p>
+<p>This page instructs how to make a SIRI like app, and solve the task, what did you say ?, in the Basic Functionalities written in the RoboCup@Home 2014 Rule and regulation.  We use the <a href="https://jasperproject.github.io/">Jasper</a> for it. Jasper is an open source platform for voice controlled apps, and  originally for the Raspberry Pi, however, it also works in Ubuntu14.04. I introduce the procedure about it.</p>
+<ul>
+<li>Preparation
+<ul>
+<li>sudo apt-get update</li>
+<li>sudo apt-get install vim git-core python-dev python-pip bison libasound2-dev libportaudio-dev python-pyaudio --yes</li>
+</ul>
+</li>
+<li>Jasper Installation:
+<ul>
+<li>cd</li>
+<li>mkdir src</li>
+<li>cd src</li>
+<li>git clone https://github.com/jasperproject/jasper-client.git jasper</li>
+<li>sudo pip install --upgrade setuptools</li>
+<li>sudo pip install -r jasper/client/requirements.txt</li>
+<li>chmod +x jasper/jasper.py</li>
+</ul>
+</li>
+<li>Installing dependencies
+<ul>
+<li>The following software are installed from sources. Please read <a href="http://jasperproject.github.io/documentation/installation/#installing-dependencies">this link</a> for procedures.
+<ul>
+<li>PocketSphinx STT engine</li>
+<li>Julius STT engine</li>
+<li>eSpeak TTS engine</li>
+<li>Festival TTS engine</li>
+<li>Flite TTS engine</li>
+<li>SVOX Pivo TTS engine</li>
+<li>Google TTS engine</li>
+</ul>
+</li>
+<li>There is a problem about the version of pip installed above and Ubuntu14.04. The following procedures are need. The version of pip is pip 6.0.8。
+<ul>
+<li>sudo apt-get remove python-pip</li>
+<li>sudo easy_install pip</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Installation related module
+<ul>
+<li>A Cloud AI engine is need to realize the function of the Siri. Jasper can use the WolframAlpha module.</li>
+<li>Installation the WolframAlpha package.
+<ul>
+<li>sudo easy_install wolframalpha</li>
+</ul>
+</li>
+<li>Copy the knowledged.py from the Jasper website : <a href="http://jasperproject.github.io/documentation/modules/">Third party modules</a> WolframAlpha to ~/src/jasper/client/modules.</li>
+<li>Add the following to ~/.jasper/profile.yml.<br />
+XXYYXXX-XXXXXVVVV is the API key obtained from <a href="http://products.wolframalpha.com/developers/">the Developer website.</a></p>
+<ul>
+<li>keys:<br />
+WOLFRAMALPHA: XXYXXX-XXXXXVVVV</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Execution
+<ul>
+<li>~/src/jasper/jasper.py</li>
+<li>Examples are following,
+<ul>
+<li>You: Jasper</li>
+<li>Jasper: beep</li>
+<li>You: Search</li>
+<li>Jasper: what are you looking for ?</li>
+<li>You: What is the highest mountain in the world ?</li>
+<li>Jasper: Mount Everest (8848 meters).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>That's all.</p>
+<p>Enjoy Jasper and RoboCup@Home !</p>

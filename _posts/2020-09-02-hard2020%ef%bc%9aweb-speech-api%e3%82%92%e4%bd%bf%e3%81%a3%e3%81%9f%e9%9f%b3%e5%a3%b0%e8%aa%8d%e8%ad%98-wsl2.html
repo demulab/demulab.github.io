@@ -1,0 +1,184 @@
+---
+layout: post
+title: HARD2020：Web Speech APIを使った音声認識 (WSL2)
+date: 2020-09-02 22:16:13.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '15977'
+  views: '157'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19012.html"
+---
+<p>この記事はHARD2020（Home AI Robot Development)ワークショップ用です。 今回はSpeech APIを使ったROSの音声認識パッケージrwt_speech_recognitionをWSL2で使用する方法を紹介します。ネイティブUbuntuの方は別のページをご覧ください。開発者furushchevさんの詳しい日本語の解説記事もありますので参考リンクもご覧ください。なお、WSL2でrwt_speech_recognitionを使うための手法を追加している部分はオリジナルとなります。</p>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li><a href="https://qiita.com/furushchev/items/47d4746bf17ce4589f58">ROSを使ってWebインターフェース経由で音声認識する</a> by @furushchevさん</li>
+<li><a href="https://github.com/tork-a/visualization_rwt">https://github.com/tork-a/visualization_rwt</a> by Tokyo Opensource Robotics Kyokai Association</li>
+<li>Web Speech API
+<ul>
+<li><a href="https://wicg.github.io/speech-api/">Web Speech API, Draft Community Group Report, 21 January 2020</a></li>
+<li><a href="https://qiita.com/hmmrjn/items/be29c62ba4e4a02d305c">Webページでブラウザの音声合成機能を使おう - Web Speech API Speech Synthesis</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>作業環境</strong></p>
+<ul>
+<li>Windows10 WSL2のUbuntu18.04</li>
+<li>ROS Melodic</li>
+<li>Google Chrome 85.0.4183.83（Official Build）64 ビット）(他のブラウザは対応してないようです)</li>
+<li>Webカメラ：ロジクールStream CAMとASUS ROG EYEで確認済み(私のPC内臓マイクでは動作しませんでした）</li>
+</ul>
+<p><strong>準備</strong></p>
+<ul>
+<li>以下のサイトの説明に従い、アプリ「リモートデスクトップ(WebSocket)」のプライベートとパブリックにチェックを入れて、ファイアウォール経由の通信を許可する。なお、Windows10 Homeの場合はリモートデスクトップ(WebSocket)がないので、音声認識のときだけ一時的にファイアウォールを無効にしてください。
+<ul>
+<li><a href="https://www.buffalo.jp/support/faq/detail/792.html">Windowsファイアウォールの例外にアプリケーションを追加する方法</a><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_コントロール-パネルシステムとセキュリティWindows-Defender-ファイアウォール許可されたアプリ_2020-9-2_22-8-33_No-00.png"><img class="aligncenter size-full wp-image-19120" src="{{ site.baseurl }}/assets/images/2020/09/SnapCrab_&#12467;&#12531;&#12488;&#12525;&#12540;&#12523;-&#12497;&#12493;&#12523;&#12471;&#12473;&#12486;&#12512;&#12392;&#12475;&#12461;&#12517;&#12522;&#12486;&#12451;Windows-Defender-&#12501;&#12449;&#12452;&#12450;&#12454;&#12457;&#12540;&#12523;&#35377;&#21487;&#12373;&#12428;&#12383;&#12450;&#12503;&#12522;_2020-9-2_22-8-33_No-00.png" alt="" width="986" height="628" /></a></li>
+</ul>
+</li>
+<li>Windowsのアプリと通信するために環境変数を設定する。~/.bashrcに以下を追加する。ROS_MASTER_URIはROSノードを複数のネットワークで使用する場合に必要になる。
+<ul>
+<li><code>export ROS_MASTER_URI=http://$(ifconfig | grep 'inet 172.26' | awk '{print $2}'):11311/</code></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>インストール</strong></p>
+<ol>
+<li>以下のサイトのとおり実施した。推奨されているaptでのインストールはmelodic用のパッケージが見つけられなかったのでソースからビルドした。wstoolはワークスペースのバージョン管理システム。<a href="https://github.com/tork-a/visualization_rwt">https://github.com/tork-a/visualization_rwt</a></li>
+<li>ワークスペースを初期化する。
+<ul>
+<li><code>$ cd ~/catkin</code></li>
+<li><code>$ wstool init src</code></li>
+</ul>
+</li>
+<li>ワークスペースに新しいリポジトリを設定する。
+<ul>
+<li><code>$ cd src</code></li>
+<li><code>$ wstool set visualization_rwt --git https://github.com/tork-a/visualization_rwt/</code></li>
+</ul>
+</li>
+<li>ワークスペースのリポジトリをアップデートする。
+<ul>
+<li><code>$ wstool update</code></li>
+</ul>
+</li>
+<li>依存関係の解消
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ rosdep install --from-paths src --ignore-src --rosdistro  ${ROS_DISTRO} -r -y</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ catkin build visualization_rwt</code><code></code></li>
+</ul>
+</li>
+</ol>
+<p><strong>実行</strong></p>
+<ol>
+<li>rwt_speech_recognitionノードの実行（Ubuntuでの実行)
+<ul>
+<li> Ubuntu端末を開き、以下のコマンドを実行する
+<ul>
+<li><code>$ roslaunch rwt_speech_recognition rwt_speech_recognition.launch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Chromeブラウザの起動（Windowsでの実行）
+<ul>
+<li> 以下のリンクをクリックするかChromeブラウザを起動し以下のアドレスを検索窓に入れる。これを実施する間に実行１のrwt_speech_recognitionノードを実行しておかねばならない。
+<ul>
+<li><a href="http://localhost:8000/rwt_speech_recognition/">http://localhost:8000/rwt_speech_recognition/</a></li>
+</ul>
+</li>
+<li>音声認識をスタートさせるためには、以下のChrome画面で緑に塗られているStartボタンをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/08/Screenshot_2019-08-05_11-16-36.png"><img class="aligncenter size-large wp-image-15977" src="{{ site.baseurl }}/assets/images/2020/09/Screenshot_2019-08-05_11-16-36-1024x516.png" alt="" width="1024" height="516" /></a></li>
+<li>Chromeの画面のマイクに英語で話しかけ、認識結果が表示されていれば成功。日本語で話しかけたい場合はブラウザのLanguageを日本語にすればよい。デフォルトではROSのトピック名が/Tablet/voiceになっているが、この画面から自由に変更できる。なお、連続して音声認識をしたい場合はModeをContinuousにすればよい。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2019/08/Screenshot_2019-08-05_11-22-15-1.png"><img class="aligncenter size-large wp-image-15979" src="{{ site.baseurl }}/assets/images/2020/09/Screenshot_2019-08-05_11-22-15-1-1024x792.png" alt="" width="1024" height="792" /></a></li>
+</ul>
+</li>
+<li>トピックの確認（Ubuntuでの実行）
+<ul>
+<li> では、最後にトピックを確認しよう。別の端末を開き、以下のコマンドで認識結果のトピック/Tablet/voiceを表示する。
+<ul>
+<li><code>$ rostopic echo /Tablet/voice</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p style="padding-left: 40px;"><a href="https://demura.net/wordpress/wp-content/uploads/2019/08/Screenshot_2019-08-05_11-22-30.png"><img class="aligncenter size-full wp-image-15980" src="{{ site.baseurl }}/assets/images/2020/09/Screenshot_2019-08-05_11-22-30.png" alt="" width="762" height="842" /></a></p>
+<ol>
+<li style="list-style-type: none;">
+<ul>
+<li>うまくいかない場合は、インストールの作業を繰り返してみよう。私の環境ではそれで問題が解決した。</li>
+</ul>
+</li>
+<li>カスタマイズ
+<ul>
+<li>デフォルトではトピック名が"/Tablet/voice"になっているが、このワークショップの他のトピック名と合わせるために"/create1/speech_result"に変更する。具体的な作業としては、以下のファイル29行目のvalueの値を"/create1/speech_result"に変更する。
+<ul>
+<li>~/catkin_ws/src/visualization_rwt/rwt_speech_recognition/www/index.html</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>エラー処理</strong></p>
+<ul>
+<li>次のようなdbus errorと出た場合は、dbusが起動していないので次のコマンドを実行してdbusをスタートさせる。
+<ul>
+<li>Failed to connect to system bus: Failed to connect to socket /var/run/dbus/system_bus_socket
+<ul>
+<li><code>$ sudo /etc/init.d/dbus start</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>それでも動かないとき
+<ul>
+<li>一時的にWindows Defender ファイヤウォールを無効にする。</li>
+</ul>
+</li>
+</ul>
+<p>お疲れさま！</p>
+<p>終わり</p>

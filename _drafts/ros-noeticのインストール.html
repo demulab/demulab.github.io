@@ -1,0 +1,76 @@
+---
+layout: post
+title: ROS Noeticのインストール
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-03-07 23:40:23'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  views: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>Ubuntu20.04にROS Noeticのインストールメモです。</p>
+<p>この記事はROS のオフィシャルウェブサイトの次の日本語記事を簡略化しています。詳しい説明は次のリンクをご覧ください。なお、firewall外の環境を前提にしています。</p>
+<p><a href="http://wiki.ros.org/noetic/Installation/Ubuntu">Ubuntu install of ROS Noetic</a></p>
+<p>----------------------------------------------------------------------------------------------</p>
+<p>１．準備</p>
+<p>(1) 端末(ターミナル、terminal)を開いて、以下のコマンドをコピペして、Enterキーを押し実行する。パスワードを聞かれたら入力する。</p>
+<p>$  <code>sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'</code></p>
+<p>(2)  同様にして以下のコマンドを実行する。</p>
+<p>$ <code>sudo apt install curl</code><br />
+$ <code>curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&amp;search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | sudo apt-key add -</code></p>
+<p>2. インストール</p>
+<p>(1)  以下のコマンドでインストール先をアップデートし、ソフトウェアを最新バージョンにする。</p>
+<p>$ sudo apt update<br />
+$ sudo apt upgrade</p>
+<p>(2)  ROS Noeticのインストール</p>
+<p>$ <code>sudo apt install ros-noetic-desktop-full</code></p>
+<p>3. 初期設定</p>
+<p>(1) 環境設定。楽をするための設定。以下のコマンドを端末にコピペしてEnterキーを押す。1行ずつ実施すること。</p>
+<p>$ <code> cd</code><br />
+$ <code> echo "source /opt/ros/noetic/setup.bash" >>  ~/.bashrc</code><br />
+$ <code>source ~/.bashrc</code></p>
+<p>(2) ビルドに必要なファイルのインストール</p>
+<p>$ <code>sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential</code></p>
+<p>(3) rosdepの初期化</p>
+<p>$ <code>sudo apt install python3-rosdep</code><br />
+$ <code>sudo rosdep init</code><br />
+$ <code> rosdep update</code></p>
+<p>終わり</p>

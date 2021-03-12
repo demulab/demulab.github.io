@@ -1,0 +1,118 @@
+---
+layout: post
+title: 'ODE Tutorial 6: Collision Detection'
+date: 2006-11-28 22:00:11.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1566'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/347.html"
+---
+<p><span style="color: #000099;"><br />
+</span></p>
+<p><img src="{{ site.baseurl }}/assets/images/2006/11/sample2.jpg" alt="" width="280" height="269" /></p>
+<p>This is 6th tutorial about ODE (Open Dynamics Engine). In this tutorial,  we add learn collision detection function on the last tutorial's sample program.</p>
+<p>The source code is shown below. Just the place where it is different from the previous program comment is being inserted.  Because only summary it explains concerning API, please read the document of the birthplace web sight of ODE concerning details.</p>
+<p>Well, the source code will be read right away.  Furthermore, it does not publish the completely same START  function as previous sample1.</p>
+<p><!-- ▼追記▼ --></p>
+<p>[code]<br />
+// sample2.cpp by Kosei Demura<br />
+#include<br />
+#include<br />
+#ifdef dDOUBLE<br />
+#define dsDrawSphere dsDrawSphereD<br />
+#endif</p>
+<p>static dWorldID world; // World for kinetics calculation<br />
+static dSpaceID space; // Space for collision detection<br />
+static dGeomID ground;<br />
+static dJointGroupID contactgroup; // As for contact group details ODE manual<br />
+dsFunctions fn;<br />
+const dReal radius = 0.2, mass = 1.0; // Radius [ m ] and mass [ m ]</p>
+<p>// The last time was just body for kinetics calculation, but this time it meaning that geom for collision detection joins it defined ball object with structure.<br />
+typedef struct {<br />
+dBodyID body; // For kinetics calculation<br />
+dGeomID geom; // For collision detection<br />
+} MyObject;<br />
+MyObject ball; // Ball object</p>
+<p>// Call-back function of collision detection<br />
+static void nearCallback (void *data and dGeomID o1, dGeomID o2)<br />
+{<br />
+static const int N = 4; // As for the upper limit of contact score without forgetting 4 static, attaching.</p>
+<p>dContact contact [ N ];</p>
+<p>int isGround = ((ground == o1) || (ground == o2));<br />
+int n = dCollide (o1, o2, N and &amp;contact [ 0 ] geom, sizeof (dContact)); // As for n collision score<br />
+if (isGround) { //the flag of the ground stands, collision detection function can be used<br />
+for (int i = 0; I &lt; n; I++) {<br />
+contact [ i ] surface.mode = dContactBounce; // Setting the coefficient of rebound of the land<br />
+contact [ i ] surface.bounce = 0.0; // (0.0 - 1.0) as for coefficient of rebound from 0 up to 1<br />
+contact [ i ] surface.bounce_vel = 0.0; // (0.0 or more) the lowest speed which is necessary for rally</p>
+<p>/ / Contact joint formation<br />
+dJointID c = dJointCreateContact (world, contactgroup and &amp;contact [ i ]);<br />
+// Restraining two geometry which contact with the contact joint<br />
+dJointAttach (c, dGeomGetBody (contact [ i ] geom.g1),<br />
+dGeomGetBody (contact [ i ] geom.g2));<br />
+}<br />
+}<br />
+}</p>
+<p>static void simLoop (int pause)<br />
+{<br />
+const dReal *pos and *R;</p>
+<p>dSpaceCollide (space,0, &amp;nearCallback); // Collision decision, most first write this.<br />
+dWorldStep (world,0.01); // Simulation 1 step is advanced<br />
+dJointGroupEmpty (contactgroup); // The joint group is designated as the sky<br />
+dsSetColor (1.0,0.0,0.0); // Setting of red<br />
+pos = dBodyGetPosition (ball.body); // Position<br />
+R = dBodyGetRotation (ball.body); // Revolution queue<br />
+dsDrawSphere (pos, R and radius); // Drawing of sphere<br />
+}</p>
+<p>void prepDrawStuff () {<br />
+fn.version = DS_VERSION;<br />
+fn.start = &amp;start;<br />
+fn.step = &amp;simLoop;<br />
+fn.command = NULL;<br />
+fn.stop = NULL;<br />
+fn.path_to_textures = “../.. /drawstuff/textures”;<br />
+}</p>
+<p>int main (int argc and char **argv)<br />
+{<br />
+dReal x0 = 0.0, y0 = 0.0, z0 = 2.0;<br />
+dMass m1;</p>
+<p>prepDrawStuff ();</p>
+<p>world = dWorldCreate ();<br />
+space = dHashSpaceCreate (0);<br />
+contactgroup = dJointGroupCreate (0); // Formation of contact group</p>
+<p>dWorldSetGravity (world,0,0, -0.5);</p>
+<p>// Create a ground<br />
+ground = dCreatePlane (space,0,0,1,0);</p>
+<p>// Create a ball<br />
+ball.body = dBodyCreate (world);<br />
+dMassSetZero (&amp;m1);<br />
+dMassSetSphereTotal (&amp;m1, mass and radius);<br />
+dBodySetMass (ball.body and &amp;m1);<br />
+dBodySetPosition (ball.body and x0, y0, z0);</p>
+<p>ball.geom = dCreateSphere (space and radius); // Formation of ball geometry<br />
+dGeomSetBody (ball.geom and ball.body); // Setting geom to body</p>
+<p>dsSimulationLoop (argc and argv,352,288, &amp;fn);</p>
+<p>dWorldDestroy (world);<br />
+return 0;<br />
+}<br />
+[/code]</p>
+<p>With ODE kinetics calculation and collision  detection calculation it is mounted separately. Because this  time collision detection function is necessary, first, the space space for collision detection calculation must be made. Object body  for kinetics calculation (the body) other things geom (geometry) it is necessary to set in one for the collision detection calculation.  With the MyObject structure that the sea urchin defining the  member, now the shank.</p>
+<p>Geom of ball object dCreateSphere () with is made in main  function, it is relation to have attached body and geom with  dGeomSetBody and position and attitude of object if sets with just  body, are OK. Unless this is done, it falls to 幽 body  secession phenomenon.</p>
+<p>Opposition sudden detection function dSpaceCollide is  called in the simLoop function which is executed with each step of  simulation. Please call necessary most with beginning the ず  simLoop as the point which notes. When it keeps having this in  direction after, the ball penetrates the land. dSpaceCollide, a callback function, is called. When this is  explained, being to become too long, this time it makes here.</p>
+<p>So,downloading<a href="http://demura.net/archives/images/ode/sample2-2006.tgz"> the source code </a> from here, and execute. This time  it is the expectation which does not penetrate the land. Manner  of execution almost is the same as the last time. Please read  sample1 sample2 and change.</p>
+<p>1 topics are put out. When sample2 is executed, we  like the ground, whether or not is, it is not understood well, but the ball does not bounce completely. Please solve this problem.</p>
+<p>See you next time !</p>

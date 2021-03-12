@@ -1,0 +1,143 @@
+---
+layout: post
+title: 'ODE Tutorial 8: Joint Motion'
+date: 2006-11-28 22:15:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1513'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/349.html"
+---
+<p>This page was translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.<br />
+ <img title="Sample four" src="{{ site.baseurl }}/assets/images/2006/11/sample4.jpg" alt="Sample four" width="224" height="217" align="middle" /></p>
+<p>ODE (Open Dynamics Engine) lecture time it is 8th.  This time the waist joint which the last time was made (the hip  joint) it will move.</p>
+<p>It moves the joint with procedure below.</p>
+<ol>
+<li>The movable limits of the joint are set<br />
+ dJointSetHingeParam (the lower limit of dJointID,  dParamLoStop and movable limits);<br />
+ dJointSetHingeParam (the upper limit of dJointID, dParamHiStop  and movable limits);</li>
+<li>Target angular velocity of the joint largest torque  because it actualizes that is set<br />
+ dJointSetHingeParam (dJointID, dParamVel and  target angular velocity);<br />
+ dJointSetHingeParam (dJointID and dParamFMax, largest torque)</li>
+</ol>
+<p>With ODE being there is no API which appoints the  target angle of the joint directly, in order to keep having joint  angle in target angle, until you acquire present joint angle with  dJointGetHingeAngle, become that angle using dJointSetHingeParam, when it gives angular velocity to the joint and becomes target angle the  method is used of designating angular velocity as 0.</p>
+<p>So, source code is shown below. Object the body (torso), on thign, it has modified the difference with the last time in  1 foot robot MonoBot which has the below the knee. Degree of  freedom the waist joint (hip joint) 1, the knee joint (knee joint)  total 2 of 1 it has become degree of freedom, but this time just the  waist joint moves.</p>
+<p><!-- ▼追記▼ --></p>
+<div class="entry-more">
+<p>[code]<br />
+ // sample4.cpp  by Kosei Demura</p>
+<p>#ifdef  dDOUBLE<br />
+ #define dsDrawSphere   dsDrawSphereD<br />
+ #define dsDrawCapsule  dsDrawCapsuleD<br />
+ #endif</p>
+<p>MyLink torso and leg [ 2 ];<br />
+ dJointID joint [ 2 ];</p>
+<p>enum jointNo {<br />
+ HIP,<br />
+ KNEE<br />
+ };</p>
+<p>//  Control of joint<br />
+ void control ()<br />
+ {<br />
+ double velCoeff = 1.0; // Proportional constant<br />
+ double p;   // Present joint angle<br />
+ static double angle = 0.5 * M_PI;</p>
+<p>p =  dJointGetHingeAngle (joint [ HIP ]);  // acquisition of present joint angle<br />
+ dReal z = angle  -  p;  // As for angle target angle<br />
+ if (p &gt; 0.24 * M_PI) angle = - 0.25 * M_PI;<br />
+ else {<br />
+ if (p &lt; - 0.24 * M_PI) angle = 0.25 * M_PI;<br />
+ }<br />
+ dJointSetHingeParam (joint [ HIP ], dParamVel and  velCoeff*z);  // Setting of target angular velocity<br />
+ dJointSetHingeParam (joint [ HIP ], dParamFMax, 100);  // Setting of max torque<br />
+ }</p>
+<p>static void simLoop (int pause)<br />
+ {<br />
+ const dReal *pos1, *R1, *pos2, *R2;</p>
+<p>time++;<br />
+ control ();   // Control of joint<br />
+ dSpaceCollide (space,0, &amp;nearCallback);<br />
+ dWorldStep (world,0.01);<br />
+ dJointGroupEmpty (contactgroup);<br />
+ dsSetColor (1.0,0.0,0.0);</p>
+<p>// Drawing the draw   a torso body<br />
+ pos1 = dBodyGetPosition (torso.body);<br />
+ R1   = dBodyGetRotation (torso.body);<br />
+ dsDrawSphere (pos1, R1, torso.radius);</p>
+<p>// Draw  legs<br />
+ for (int i = 0; I&lt; 2; I++) {<br />
+ pos2 = dBodyGetPosition (leg [ i ] body);<br />
+ R2   = dBodyGetRotation (leg [ i ] body);<br />
+ dsDrawCapsule (pos2, R2, leg [ i ] length, leg [ i ] radius);<br />
+ }<br />
+ }</p>
+<p>// Formation of Create  a monobot one foot robot<br />
+ void createMonoBot () {<br />
+ dMass m1;<br />
+ DReal x0 = 0.0, y0 = 0.0, z0 = 2.5;</p>
+<p>//  Torso   body<br />
+ torso.radius = 0.2;<br />
+ torso.mass   = 10.0;<br />
+ torso.body = dBodyCreate (world);<br />
+ dMassSetZero (&amp;m1);<br />
+ dMassSetSphereTotal (&amp;m1, torso.mass and torso.radius);<br />
+ dBodySetMass (torso.body and &amp;m1);<br />
+ dBodySetPosition (torso.body and x0, y0, z0);<br />
+ torso.geom = dCreateSphere (space and torso.radius);<br />
+ dGeomSetBody (torso.geom and torso.body);</p>
+<p>for (int i = 0; I &lt; 2; I++) {<br />
+ leg [ i ] radius = 0.025;    Leg [ i ] length = 0.5; Leg [ i ] mass   = 1.0;<br />
+ leg [ i ] body = dBodyCreate (world);<br />
+ dMassSetZero (&amp;m1);<br />
+ dMassSetCapsuleTotal (&amp;m1, leg [ i ] mass,3, leg [ i ] radius, leg [ i ] length);<br />
+ dBodySetMass (leg [ i ] body, &amp;m1);<br />
+ dBodySetPosition (leg [ i ] body, x0, y0, z0 -torso.radius<br />
+ - 0.5 * (2 * i + 1) *leg [ i ] length);<br />
+ leg [ i ] geom = dCreateCapsule (space and leg [ i ] radius, leg [ i ] length);<br />
+ dGeomSetBody (leg [ i ] geom, leg [ i ] body);<br />
+ }</p>
+<p>joint [ HIP ] = dJointCreateHinge (world, 0);<br />
+ dJointAttach (joint [ HIP ], torso.body and leg [ 0 ] body);<br />
+ dJointSetHingeAnchor (joint [ HIP ], x0, y0, z0 - torso.radius);<br />
+ dJointSetHingeAxis (joint [ HIP ], 1, 0, 0);<br />
+ dJointSetHingeParam (joint [ HIP ], dParamLoStop, -0.25 * M_PI);  // The movable limits setting lower limit<br />
+ dJointSetHingeParam (joint [ HIP ], dParamHiStop,  0.25 * M_PI);  // As for upper limit unit radian</p>
+<p>// Knee joint    knee joint<br />
+ joint [ KNEE ] = dJointCreateHinge (world, 0);<br />
+ dJointAttach (joint [ KNEE ], leg [ 0 ] body, leg [ 1 ] body);<br />
+ dJointSetHingeAnchor (joint [ KNEE ], x0, y0, z0 - torso.radius - leg [ 0 ] length);<br />
+ dJointSetHingeAxis (joint [ KNEE ], 1, 0, 0);<br />
+ dJointSetHingeParam (joint [ KNEE ],      dParamLoStop, 0.0 * M_PI);  // Movable limits<br />
+ dJointSetHingeParam (joint [ KNEE ], dParamHiStop, 0.0 * M_PI);  // As for M_PI piπ(pie)</p>
+<p>}</p>
+<p>int main (int argc, char *argv[])<br />
+ {<br />
+ setDrawStuff ();</p>
+<p>world = dWorldCreate ();<br />
+ space = dHashSpaceCreate (0);<br />
+ contactgroup = dJointGroupCreate (0);</p>
+<p>dWorldSetGravity (world,0,0, -9.8);<br />
+ ground = dCreatePlane (space,0,0,1,0);<br />
+ createMonoBot ();  // Formation of one foot robot<br />
+ dsSimulationLoop (argc and argv,352,288, &amp;fn);<br />
+ dWorldDestroy (world);<br />
+ return 0;<br />
+ }<br />
+ [/code]</p>
+<p>The function control which is moving joint set point and presently being proportionate to the  difference of value, has become the P control which it controls.  As for parameter dParamVel of the joint at target angular  velocity, as for dParamFMax it is the largest torque which can show  the joint because that angular velocity is actualized. When this value is set to 0, setting target angular velocity, torque 0 being to  be, it does not move with the joint.</p>
+<p>You can download the above source code form <a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fsample4-2006.tgz">here.</a> Please enjoy it.</p>
+<p>To be continued.</p>
+</div>

@@ -1,0 +1,54 @@
+---
+layout: post
+title: 'JetsonTX2:  USB3.0のSSDからブートする'
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  _oembed_7ad4eb0815914da01bd919c7c0e4274b: '<blockquote class="wp-embedded-content"
+    data-secret="qH39Vybdb5"><a href="http://www.jetsonhacks.com/2017/08/05/develop-on-ssd-nvidia-jetson-tx1-and-jetson-tx2/">Develop
+    on SSD &#8211; NVIDIA Jetson TX1 and Jetson TX2</a></blockquote><iframe class="wp-embedded-content"
+    sandbox="allow-scripts" security="restricted" style="position: absolute; clip:
+    rect(1px, 1px, 1px, 1px);" src="http://www.jetsonhacks.com/2017/08/05/develop-on-ssd-nvidia-jetson-tx1-and-jetson-tx2/embed/#?secret=qH39Vybdb5"
+    data-secret="qH39Vybdb5" width="600" height="338" title="&#8220;Develop on SSD
+    &#8211; NVIDIA Jetson TX1 and Jetson TX2&#8221; &#8212; JetsonHacks" frameborder="0"
+    marginwidth="0" marginheight="0" scrolling="no"></iframe>'
+  _oembed_time_7ad4eb0815914da01bd919c7c0e4274b: '1509106051'
+  views: '5'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/13796.html"
+---
+<p>Jetson TX2をUSB3.0に接続したSSDからブートしたときのメモ。</p>
+<p>Jetson TX2をUSB3.0に接続したSSDからブート事例は検索するとすぐ見つかり、しかも、JetsonHacksの次の記事で動画で詳しい手順がわかる。</p>
+<ul>
+<li><a href="http://www.jetsonhacks.com/2017/08/05/develop-on-ssd-nvidia-jetson-tx1-and-jetson-tx2/">Develop on SSD – NVIDIA Jetson TX1 and Jetson TX2</a></li>
+</ul>
+<p>楽勝だと思ったがうまくいかない。6月から散々調べ、原因を考えた結果。Jetson TX2に使っているキャリアボード　ConnectTechのOrbitty Carrierのファームウェアの問題だと今日(2017-10/27)わかる。CTI-L4T-V103 (2017-6/26)をTX2にフラッシュしたら解決した。以下にその方法を紹介する。</p>
+<p>インストールとフラッシュ</p>
+<p>1.BSP(Board Support Package)をインストールする前にJetpack 3.1を x86ホストコンピュータにインストールする。</p>
+<p>2.<a href="http://connecttech.com/support/resource-center/nvidia-jetson-tx2-tx1-product-support/"> ConnectTechのウェブサイト</a>からCTI-L4T-V103.tgz をダウンロードし、 &lt;install_dir&gt;/64_TX2/Linux_for_Tegra/の下にコピーする。</p>
+<p>3. BSPを解凍する。なお、V103はL4T r27.1.0用なので、自分のバージョンに合わせて適切なファイル名をダウンロードする。:<br />
+$ tar -xzf CTI-L4T-V103.tgz</p>
+<p>3. CTI-L4Tディレクトリに移動する。<br />
+$ cd ./CTI-L4T</p>
+<p>4. 次のインストールススクリプトでBSPファイルが適切な場所にインストールされる。<br />
+$ sudo ./install.sh</p>
+<p>5.  TX2の電源を切る。次に、TX2とコンピュータをUSBケーブルで接続する。TX2のキャリボード側はUSBのマイクロコネクタ（小さい方）に接続する。TX2の電源を入れる。</p>
+<p>６. TX2をリカバリモードにするために次の操作をする。Powerボタンを押す。次に、Recoveryボタンを押しながら、RESETボタンを押して放す。その２秒後にRECOVERYボタンを放す。Jetsonがリカバリモードかどうかは、ホストコンピュータでlsusbコマンドを実行し、NVIDIA Corpと表示されていれば成功。作業をやり直す。</p>
+<p>7. 準備ができたのでTX2を次のコマンドでフラッシュする。フラッシュが終わるとTX2が再起動する。</p>
+<p>$ cd ..<br />
+$ sudo ./flash.sh orbitty mmcblk0p1</p>
+<p>この作業後に、JetsonHackのウェブサイトどおりに作業したらUSB3.0に接続したSSD(Samsung SSD 500GB 850 EVO)からブートできた。</p>
+<p>終わり</p>

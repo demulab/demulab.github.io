@@ -1,0 +1,190 @@
+---
+layout: post
+title: 'RobotVision勉強会5: フィルタ処理'
+date: 2017-11-30 16:10:04.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  views: '320'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/14021.html"
+---
+<p>&nbsp;</p>
+<p><a href="http://demura.net/%e6%9c%aa%e5%88%86%e9%a1%9e/14021.html/attachment/sobel" rel="attachment wp-att-14023"><img src="{{ site.baseurl }}/assets/images/2017/11/sobel.png" alt="" width="642" height="557" class="aligncenter size-full wp-image-14023" /></a></p>
+<p>RobotVision勉強会第５回の内容メモです。開発環境はUbuntu16.04、OpenCV3.2.0です。第５回はフィルタ処理です。平滑化フィルタとソーベルフィルタをC++言語とOpenCV APIで実装しましょう。</p>
+<p>以下のサンプルプログラムは「OpenCVによる画像処理入門、小枝、上田、中村著、講談社」のサンプルコードを参考に作成しました。ここでは平滑化フィルタとして平均化オペレータを使っています。平均化オペレータは注目している画素値とその近傍の画素値の平均を、注目している画素の新しい画素値とします。</p>
+<p>ソーベル(sobel)フィルタは微分フィルタと平滑化フィルタを組み合わせたもので、輪郭検出に使われます。<br />
+この本教科書のサンプルプログラムではソーベルフィルタは横方向オペレータだけですが、ここでは縦方向のオペレータも加えており、横方向と縦方向のエッジを検出できます。</p>
+<p>なお、エッジ検出にはソーベルよりノイズに強く、エッジがきれいに抽出できるCannyフィルタが良く使われます。</p>
+<p><strong>1．サンプルコード</strong></p>
+<pre class="brush:cpp;">// Robot Vision勉強会 sample5.cpp
+// 2017-11-16
+// フィルタ処理のサンプルプログラム 
+
+#include &#60;opencv2/imgproc.hpp&#62;
+#include &#60;opencv2/highgui.hpp&#62;
+#include &#60;opencv2/core/core.hpp&#62;
+#include &#60;iostream&#62;
+
+// 平滑化フィルタ
+void myAverageFilter(cv::Mat img_src, cv::Mat&amp; img_dst)
+{
+  double op&#91;3&#93;&#91;3&#93; = {{1.0/9.0, 1.0/9.0, 1.0/9.0},
+		     {1.0/9.0, 1.0/9.0, 1.0/9.0},
+		     {1.0/9.0, 1.0/9.0, 1.0/9.0}};
+  double sum = 0.0;
+
+  int height = img_src.rows;       // 画像の高さ&#91;pixel&#93;
+  int width  = img_src.cols;       // 画像の幅&#91;pixel&#93; 
+  
+  for (int y =0; y &#60; height; y++) {
+    for (int x = 0; x &#60; width; x++) {
+      sum = 0.0;
+      for (int m = -1; m &#60;= 1; m++) {
+	if (y + m &#60; 0) continue;
+	if (y + m &#62;= height) continue;
+	for (int n = -1; n &#60;=1; n++) {
+	  if (x + n &#60; 0) continue;
+	  if (x + n &#62;= width) continue;
+	  sum += img_src.data&#91;(y + m) * width + (x + n)&#93; * op&#91;m + 1&#93;&#91;n + 1&#93;;
+	}
+      }
+      img_dst.data&#91;y * width + x&#93; = sum;
+    }
+  }
+}
+
+// ソーベルフィルタ
+void mySobelFilter(cv::Mat img_src, cv::Mat&amp; img_dst)
+{
+  double op_x&#91;3&#93;&#91;3&#93; = {{-1.0, 0.0, 1.0},
+		       {-2.0, 0.0, 2.0},
+		       {-1.0, 0.0, 1.0}};
+  double op_y&#91;3&#93;&#91;3&#93; = {{-1.0,-2.0,-1.0},
+		       { 0.0, 0.0, 0.0},
+		       { 1.0, 2.0, 1.0}};
+  
+  double sum, sum_x = 0, sum_y = 0, min = 0, max = 0;
+
+  int height = img_src.rows;       // 画像の高さ&#91;pixel&#93;
+  int width  = img_src.cols;       // 画像の幅&#91;pixel&#93;
+
+  cv::Mat img_tmp = cv::Mat::zeros(height, width, CV_8U);
+  
+  for (int y =0; y &#60; height; y++) {
+    for (int x = 0; x &#60; width; x++) {
+      sum_x = 0;
+      sum_y = 0;
+      for (int m = -1; m &#60;= 1; m++) {
+	if (y + m &#60; 0) continue;
+	if (y + m &#62;= height) continue;
+	for (int n = -1; n &#60;=1; n++) {
+	  if (x + n &#60; 0) continue;
+	  if (x + n &#62;= width) continue;
+	  sum_x += img_src.data&#91;(y + m) * width + (x + n)&#93; * op_x&#91;m + 1&#93;&#91;n + 1&#93;;
+	  sum_y += img_src.data&#91;(y + m) * width + (x + n)&#93; * op_y&#91;m + 1&#93;&#91;n + 1&#93;;
+	}
+      }
+      sum = sqrt(sum_x * sum_x + sum_y * sum_y);
+      img_tmp.data&#91;y * width + x&#93; =  sum;
+      if (sum &#60; min) min = sum;
+      if (sum &#62; max) max = sum;
+    }
+  }
+  
+  for (int i=0; i &#60; width * height; i++) {
+    if (max - min == 0) continue;
+    double val = (double) (img_tmp.data&#91;i&#93; - min)/(max - min)*255.0;
+    img_dst.data&#91;i&#93; =  (unsigned char) val;
+  }
+}
+
+
+int main(void)
+{
+  cv::Mat src;
+
+  std::string WINDOW_NAME_ORG        = "Original image";
+  std::string WINDOW_NAME_GRAY       = "Gray scale";
+  std::string WINDOW_NAME_AVERAGE    = "Average Filter";
+  std::string WINDOW_NAME_SOBEL      = "Sobel Filter";
+  std::string WINDOW_NAME_MY_AVERAGE = "My Average Filter";
+  std::string WINDOW_NAME_MY_SOBEL   = "My Sobel Filter";
+  
+  
+  // 画像のロード
+  src = cv::imread("winkit2.jpg", cv::IMREAD_COLOR);
+  if(src.empty()) {
+    std::cerr &#60;&#60; "Failed to open image file." &#60;&#60; std::endl;
+    return -1;
+  }
+
+  int height = src.rows;       // 画像の高さ&#91;pixel&#93;
+  int width  = src.cols;       // 画像の幅&#91;pixel&#93;
+  int step   = src.step;       // 1行のチャンネル総数
+  int c      = src.channels(); // チャンネル数   
+
+  cv::Mat tmp = src.clone();
+  cv::Mat gray_img;
+  
+  // ウィンドウの生成
+  cv::namedWindow(WINDOW_NAME_ORG,        CV_WINDOW_AUTOSIZE);
+  cv::namedWindow(WINDOW_NAME_GRAY,       CV_WINDOW_AUTOSIZE);
+  cv::namedWindow(WINDOW_NAME_AVERAGE,    CV_WINDOW_AUTOSIZE);
+  cv::namedWindow(WINDOW_NAME_MY_AVERAGE, CV_WINDOW_AUTOSIZE);
+  cv::namedWindow(WINDOW_NAME_SOBEL,      CV_WINDOW_AUTOSIZE);
+  cv::namedWindow(WINDOW_NAME_MY_AVERAGE, CV_WINDOW_AUTOSIZE);
+
+  
+  while (true){
+    src.copyTo(tmp);
+    cvtColor(tmp, gray_img, CV_RGB2GRAY);
+    
+    cv::Mat average_img;
+    cv::Mat sobel_img;  
+    cv::Mat my_average_img  = cv::Mat::zeros(height, width, CV_8U);
+    cv::Mat my_sobel_img    = cv::Mat::zeros(height, width, CV_8U);
+    
+    myAverageFilter(gray_img, my_average_img);
+    mySobelFilter(gray_img, my_sobel_img);
+
+    cv::blur(gray_img,average_img, cv::Size(3, 3));
+    cv::Mat tmp_img;
+    cv::Sobel(gray_img, tmp_img, CV_32F, 1, 0, 3);
+    cv::convertScaleAbs(tmp_img, sobel_img,1, 0);
+
+    cv::imshow(WINDOW_NAME_ORG, tmp);
+    cv::imshow(WINDOW_NAME_GRAY, gray_img);
+    cv::imshow(WINDOW_NAME_AVERAGE,    average_img);
+    cv::imshow(WINDOW_NAME_MY_AVERAGE, my_average_img);
+    cv::imshow(WINDOW_NAME_SOBEL,      sobel_img);
+    cv::imshow(WINDOW_NAME_MY_SOBEL,   my_sobel_img);
+    
+    cv::waitKey(1);
+
+  }
+
+  return 0;
+}
+</pre>
+<p>２．ハンズオン</p>
+<p>(1) このソースコード<a href="http://demura.net/%e6%9c%aa%e5%88%86%e9%a1%9e/14021.html/attachment/sample5" rel="attachment wp-att-14027">sample5.tgz</a>をダウンロードして次のコマンドで解凍、コンパイルして実行しよう。</p>
+<p>$ tar xvzf sample5.tgz<br />
+$ cd sample5<br />
+$ cmake .<br />
+$ make<br />
+./sample5</p>
+<p>(2) メディアン（median, 中央値）フィルタを実装してみよう。</p>
+<p>(3) cannyフィルタを調べて実装してみよう。</p>

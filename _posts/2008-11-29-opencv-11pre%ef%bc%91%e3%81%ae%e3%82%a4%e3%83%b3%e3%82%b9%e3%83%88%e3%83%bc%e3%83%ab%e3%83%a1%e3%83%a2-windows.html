@@ -1,0 +1,58 @@
+---
+layout: post
+title: OpenCV 1.0のインストールメモ (Windows)
+date: 2008-11-29 22:05:46.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '9154'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/2838.html"
+---
+<div id="attachment_1598" class="wp-caption alignnone" style="border: 1px solid #dddddd; margin: 10px; width: 510px; text-align: center; background-color: #f3f3f3; padding-top: 4px;"><a style="color: #990000; text-decoration: underline;" href="http://demura.net/wordpress/wp-content/uploads/2008/08/opencv.jpg"><img class="size-full wp-image-1598" style="border-style: none; border-width: 0px; margin: 0px; padding: 0px;" title="opencv" src="{{ site.baseurl }}/assets/images/2008/11/opencv.jpg" alt="OpenCV： ハフ変換による直線検出のサンプルプログラム" width="500" height="199" /></a></p>
+<p>OpenCV:　ハフ変換による直線検出のサンプルプログラム</p>
+</div>
+<p>OpenCV1.0をWindows Vistaにインストールしたときの個人用メモです．OpenCV1.1preをインストールしましたが，OpenCVプログラミングブックのサンプルプログラムが動かなかったのでアンインストールし，1.0をインストールしました．</p>
+<p><strong>A. OpenCVのインストール</strong></p>
+<ol>
+<li><a href="http://sourceforge.net/projects/opencvlibrary/">http://sourceforge.net/projects/opencvlibrary/</a>のopencv-winをクリックすると色々なバージョンが表示される．そのなかで，1.0をクリックし，OpenCV _1.0.exeをダウンロードする．</li>
+<li>ダウンロードしたOpenCV_1.0.exeをダブルクリックする．</li>
+<li>指示に従ってインストールする．ここでのインストール先はWindowsで標準的な以下のパスとする．
+<pre>C:\Program Files\OpenCV</pre>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2008/11/opencv-location.jpg"><img class="alignnone size-medium wp-image-2901" title="opencv-location" src="{{ site.baseurl }}/assets/images/2008/11/opencv-location-300x227.jpg" alt="" width="300" height="227" /></a><br />
+ システムパスにOpenCVのbinフォルダを追加するので，次の画面のようにチェックを入れる．<br />
+ <a href="http://demura.net/wordpress/wp-content/uploads/2008/11/opencv-add.jpg"><img class="alignnone size-medium wp-image-2902" title="opencv-add" src="{{ site.baseurl }}/assets/images/2008/11/opencv-add-300x227.jpg" alt="" width="300" height="227" /></a><br />
+ Ready to Installの画面になるのでInstallをクリック．<br />
+ <a href="http://demura.net/wordpress/wp-content/uploads/2008/11/opencv-install.jpg"><img class="alignnone size-medium wp-image-2903" title="opencv-install" src="{{ site.baseurl }}/assets/images/2008/11/opencv-install-300x227.jpg" alt="" width="300" height="227" /></a><br />
+ 次の窓が開き，インストールは終わりです．ごくろうさまでした．<br />
+ <a href="http://demura.net/wordpress/wp-content/uploads/2008/11/opencv-end.jpg"><img class="alignnone size-medium wp-image-2904" title="opencv-end" src="{{ site.baseurl }}/assets/images/2008/11/opencv-end-300x227.jpg" alt="" width="300" height="227" /></a></p>
+</li>
+<li>サンプルプログラムを動作させるためにPathを設定する．
+<ul>
+<li> スタート→コントロールパネル→システムとメンテナンス→システム<br />
+ <a href="http://demura.net/wordpress/wp-content/uploads/2008/11/opencv1.jpg"><img class="alignnone size-medium wp-image-2875" title="opencv1" src="{{ site.baseurl }}/assets/images/2008/11/opencv1-300x152.jpg" alt="" width="300" height="152" /></a></li>
+<li>システムの詳細設定<br />
+ <a href="http://demura.net/wordpress/wp-content/uploads/2008/11/opencv2.jpg"><img class="alignnone size-medium wp-image-2876" title="opencv2" src="{{ site.baseurl }}/assets/images/2008/11/opencv2-300x293.jpg" alt="" width="300" height="293" /></a></li>
+<li>環境変数：システム環境変数のPathに以下を追加する．
+<pre>;C:\Program Files\OpenCV\bin</pre>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2008/11/opencv3.jpg"><img class="alignnone size-medium wp-image-2877" title="opencv3" src="{{ site.baseurl }}/assets/images/2008/11/opencv3-300x293.jpg" alt="" width="300" height="293" /></a></p>
+</li>
+</ul>
+</li>
+<li>次のサンプルプログラムを起動し，一番上のハフ変換のウインドウが開いたら成功．
+<pre>C:\Program Files\OpenCV\samples\c\houghlines.exe </pre>
+</li>
+</ol>
+<p>これで終わりです．ご苦労様．</p>

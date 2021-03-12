@@ -1,0 +1,87 @@
+---
+layout: post
+title: Open3D： インストールメモ
+date: 2020-03-29 10:51:28.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '2101'
+  _thumbnail_id: '17451'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/17449.html"
+---
+<p>３次元データ処理のオープンソースライブラリOpen3Dのインストールメモ。３次元データ処理ライブラリとしてはPCLが有名だが、Open3Dの方が簡単でコードも短くて済む。言語はpythonとC++をサポートしており、ライセンスは<a href="https://opensource.org/licenses/MIT">MIT</a>。</p>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li><a href="http://www.open3d.org/">Open3D: A Modern Library for 3D Data Processing</a></li>
+<li><a href="http://www.open3d.org/docs/release/index.html">Open3D: Documents</a></li>
+<li><a href="https://github.com/intel-isl/Open3D/tree/master">Open3D github</a></li>
+</ul>
+<p><strong>環境</strong></p>
+<ul>
+<li>Ubuntu 18.04</li>
+<li>Python 3.6</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>$ pip3 install open3d
+<ul>
+<li>2020-03-29時点ではバージョン0.9.0がインストールされる。</li>
+</ul>
+</li>
+</ul>
+<p><strong>テスト</strong></p>
+<ul>
+<li>以下のコマンドが実行できればインストール成功。
+<ul>
+<li>$ python3 -c "import open3d"</li>
+</ul>
+</li>
+</ul>
+<p><strong>サンプルプログラムの実行</strong></p>
+<ul>
+<li>$ cd  src</li>
+<li>$ git clone https://github.com/intel-isl/Open3D.git</li>
+<li>$ cd Open3D/examples/Python/Basic</li>
+<li>$ python3 rgbd_redwood.py
+<ul>
+<li>上のコマンドを実行すると以下のウインドウが開き、画像が表示されたら成功。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/03/open3d1.png"><img class="size-full wp-image-17451 aligncenter" src="{{ site.baseurl }}/assets/images/2020/03/open3d1.png" alt="" width="640" height="566" /></a></li>
+</ul>
+</li>
+<li></li>
+</ul>
+<p>終わり</p>

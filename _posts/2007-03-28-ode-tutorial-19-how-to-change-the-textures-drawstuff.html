@@ -1,0 +1,73 @@
+---
+layout: post
+title: 'ODE Tutorial 19: How to change the textures (drawstuff)'
+date: 2007-03-28 10:44:15.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1242'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/386.html"
+---
+<p>Most of this page was translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.<br />
+ Sorry for strange and funny English from "<a href="http://en.wikipedia.org/wiki/Chinese_room">the Chinese room</a>".</p>
+<p><!-- ▲エントリタイトル▲ --><!-- ▼エントリ▼ --></p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/fire3s.jpg" alt="" /></p>
+<p>A sample screenshot of modified texures (details on <a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fwww.ohmsha.co.jp%2frobocon%2f"> RoboCon Magazine</a>No.50)</p>
+<p>This is 19th article about ODE (Open Dynamics Engine) Tutorial. ODE is an open source physics libary, and it is widely used  in various game software, and simulators in research.</p>
+<p>This time, I explain how to customize the drawstuff , the 3D graphics library, which has  been attached to ODE with a free gift. Drawstuff being to be the  very used OpenGL simple library is useful to also the study of OpenGL. You viewing one time source code, how, probably will be?</p>
+<p><strong>3 kinds of textures<br />
+ </strong>In the draw staff just texture of 3 types which  are shown in the rough sketch is used. As for these filesusingstandard ones which are called <a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fen.wikipedia.org%2fwiki%2fPortable_Pixmap_file_format"> ppm</a> (portable pixmap) format, it is under  ode-0.8/drawstuff/textures. The user does not appoint the  texture of the sky and the ground, it is applied  automatically, but, using dsSetTexture (DS_WOOD), it sets the texture  of the object. When cancelling setting, dsSetTexture (DS_NONE)  is used.</p>
+<ul>
+<li>Texture of the sky:     Sky.ppm</li>
+<li>Texture of the ground:  Ground.ppm</li>
+<li>Texture of objects:  Wood.ppm</li>
+</ul>
+<table style="width: 529px; height: 162px;" border="0" cellspacing="2" cellpadding="2" align="center">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/images/2007/03/sky.jpg" alt="" width="128" height="128" /></p>
+<p><br class="spacer_" /></p>
+<p>Texture of the sky</p>
+</td>
+<td><img src="{{ site.baseurl }}/assets/images/2007/03/ground.jpg" alt="" width="126" height="127" /></p>
+<p><br class="spacer_" /></p>
+<p>Texture of  the ground</p>
+</td>
+<td><img src="{{ site.baseurl }}/assets/images/2007/03/wood.jpg" alt="" width="126" height="126" /></p>
+<p><br class="spacer_" /></p>
+<p>Texture of objects</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note: It has converted texture in the upper  figures to jpg format in order to indicate with the browser.<br />
+ <!-- ▼追記▼ --></p>
+<p><strong>Modification method of texture<br />
+ </strong>When using the <a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fwww.gimp.org%2f"> GIMP</a>, the GNU image maniplulation program, you can save the texture file as  raw  (raw) mode of ppm type, and overwrite the texture file on the original texture file. The new teture  becomes effective. As for size sky.ppm 128x128 pixel, ground.ppm and wood.ppm has become 256x256 pixel.</p>
+<p><strong>Advanced modification<br />
+ </strong>Being to be able to modify, it does, texture with  this but, being boundary of the land and the sky continues to be the  standard color grey a little it becomes matter of concern. In  order to modify this color, it is necessary to rewrite the source code of drawstuff. Until now, the source code is rewritten, please  try challenging also the one which you think that how it is awesome.  The fact that the source code is customized steadily is Daigo  taste of the open source.</p>
+<ul>
+<li>The file ode-0.8/drawstuff/drawstuff.cpp which modifies<br />
+ It meaning that 1123rd line glClearColor (0.5, 0.5, 0.5, 0) has decided boundary color, when it modifies 3 arguments (red  component, green component and blue component) of beginning in the  color which by your like, make does again to do ode it is reflected.  Each color component of glClearColor is the range up to 1 from 0 as the point where you note.</li>
+<li>Sampling process of color<br />
+ If boundary color is possible, don't you think? it is to do it is potato in the same type color as the texture of the land.  The software of of free color of the place where we like on the  picture is extracted is found if it searches with google, simply.  As for me GetColor has been used, but if you search, you think  that there is a variety.</li>
+<li>In order to gradate the horizon,<br />
+ In the actual world as for horizon with such as dust in  the atmosphere being visible in clearing it is rare. In order to simulate this, if there is a fog, the horizon becomes blurred, don't  you think?. In order to actualize this, if the comment of 1016th line is removed from the 1006th line of drawstuff.cpp, it is OK.  However, there is a problem with some graphics boards.</li>
+</ul>
+<hr style="width: 100%; height: 2px;" />
+<p>This time with this end.</p>
+<p><br class="spacer_" /></p>

@@ -1,0 +1,85 @@
+---
+layout: post
+title: ODE講座３：インストール(Windows+Cygwin編）
+date: 2005-09-28 11:38:52.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2397'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/251.html"
+---
+<p>ODE(Open Dynamics Engine)講座の第３回目です。今回はWindowsにCygwinをインストールしてWindows上でUNIXとほぼ同じ環境を実現します。以下の方法では約４００MBハードディスクの容量が必要となります。</p>
+<p><strong>A.. Cygwinのインストール</strong><br />
+１． Setup.exeのダウンロード。<a href="http://www.cygwin.com/">Cygwinのウェブサイトトップページ</a>の中ほどにあるInstall or Update Now!をクリックしてSetup.exeをダウンロードする。</p>
+<p>２． ダウンロードしたSetup.exeをダブルクリックする。下のウインドウが開くので「次へ」をクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin1.jpg" alt="cygwin" width="320" /><br />
+３．Choose A Download SourceではInstall from Internetにチェックがついているので「次へ」をクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin2.jpg" alt="cygwin" width="320" /><br />
+<!--more--><br />
+４． Select Root Install Directoryではインストール先、インストールの対象、テキストのファイルタイプを聞いてきます。この講座ではcygwinをC:\cygwinにインストールすることを前提に説明しますのでRoot Directorを変えずに、Insall For, Default Text File Typeは推奨のAll UsersとUNIX/binaryを選択して｢次へ」をクリックしてください。<br />
+なお、All Usersでインストールするためにはコンピュータの管理者の権限でログインする必要があります。File TypeをUNIXにする理由は<a href="http://www.cygwin.com/">cygwinのウェブサイト</a>に詳しく記述してありますが、UNIXと互換性を高くするためです。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin3.jpg" alt="cygwin" width="320" /><br />
+５． Local Package Directoryはどこでも良いですがここではC:\tempにし、「次へ」をクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin4.jpg" alt="cygwin" width="320" /><br />
+６．Select Your Internet ConnectionではInternet Explorerを使っている人はUse IE5 Settingsを選び、その他の人は御自分の環境を選び「次へ」をクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin5.jpg" alt="cygwin" width="320" /><br />
+７．ダウンロード先を選びます。私の場合はご近所のftp.jaist.ac.jpを選び「次へ」をクリック。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin6.jpg" alt="cygwin" width="320" /><br />
+８．パッケージを選びます。C、C++の開発環境、X　Windowsを選択します。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin8.jpg" alt="cygwin" width="320" /><br />
+左側にある田印をクリックすると以下のように詳細が表示されNameの列をクリックすると選択できます。以下のパッケージを選択したら「次へ」をクリック。<br />
+<strong>Devel</strong>: gcc,gcc-core, gcc-g++,gcc-mingw-core,gcc-mingw-g++,make<br />
+<strong>Editors</strong>:emacs,emacs-el,nedit,vim<br />
+<strong>X11</strong>:WindowMaker, nedit, openbox,xorgで始まるもの全て選択<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin9.jpg" alt="cygwin" width="320" /><br />
+９．依存関係で不足があれば表示されるので「次へ」をクリック。私の環境では９分程度でインストールが終わりました。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin12.jpg" alt="cygwin" width="320" /><br />
+１０．アイコンをデスクトップに作ります。「完了」をクリックしてインストールを完了しましょう。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin15.jpg" alt="cygwin" width="320" /><br />
+１1．インストールが完了しました。「OK」をクリックして終わりです。次はODEをインストールします。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/cygwin16.jpg" alt="cygwin" /></p>
+<p><strong>B. ODEのダウンロード</strong><br />
+<a href="http://ode.org/">ODEのウェブサイト</a>の左メニューバーにあるdownloadをたどって<a href="http://prdownloads.sourceforge.net/opende/ode-0.5.tgz?download">ode-0.5.tgz</a>をダウンロードします。日本のミラーサイト（例えばJAIST）を選び、ダウンロード先はc:\cygwin\home\ユーザ名の下にしてください。</p>
+<p><strong>C. ODEのインストール</strong><br />
+これからの作業はUNIXのコマンドを知っていることを前提とします。UNIXやLinuxを今まで使ったことがない人は面食らうかもしれませんが例のとおり入力してください。</p>
+<p>1. cygwinアイコンをダブルクリックしてcygwinターミナルを開きます。以下のコマンドはこのターミナルで実行してください。<br />
+2. ホームディレクトリへ移動　　　　　<br />
+　　$ cd<br />
+3. ホームディレクトリにsrcディレクトリを作成<br />
+　　$ mkdir src<br />
+4. ode-0.5.tgzを展開（解凍）するとode-0.5ディレクトリが作成される<br />
+　　$ cd ~/src<br />
+　　$ tar xvzf ode-0.5.tgz<br />
+5. ode-0.5ディレクトリへ移動<br />
+　　$cd ode-0.5<br />
+6. configファイルの設定<br />
+/home/ユーザ名/src/ode-0.5/config/user-settingsの編集<br />
+　　$ cd config<br />
+メモ帳や秀丸などのエディターでuser-settingsの１４行目を以下のように変更しSAVEする。<br />
+　　PLATFORM=cygwin<br />
+7. makeの実施(実行ファイルを作成）<br />
+　　$ cd ~/src/ode-0.5<br />
+　　$ make configure<br />
+　　$ make ode-lib<br />
+　　$ make drawstuff-lib<br />
+　　$ make ode-test<br />
+　　$ make drawstuff-test<br />
+8. テスト<br />
+　　$ cd ~/src/ode-0.5/ode/test<br />
+　　$ ./test_buggy.exe</p>
+<p>Simulation test environment v0.02のウインドウが開きバギーが表示されたら成功です。ごくろうさま！'a'キーを押すと前進、'z'キーで後進、','キーで左折、'.'キーで右折します。次回のODE講座はLinux環境下でのODEのインストールを説明します。<br />
+<img src="{{ site.baseurl }}/assets/images/2005/09/buggy.jpg" alt="ODE" width="320" height="300" /><br />
+ODE付属プログラムtest_buggy.exeのスクリーンショット</p>

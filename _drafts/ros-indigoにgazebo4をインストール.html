@@ -1,0 +1,41 @@
+---
+layout: post
+title: ROS Indigoにgazebo4をインストール
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>ROS Indigoの標準ではgazebo2が入るが古いのでgazebo4にバージョンアップする。</p>
+<ul>
+<li>sudo apt-get install ros-indigo-viz</li>
+<li> rosのgazebo2関連パッケージをアンインストールする
+<ul>
+<li>apt-get remove ros-indigo-gazebo-*</li>
+</ul>
+</li>
+<li>gazebo4をインストールする。
+<ul>
+<li>wget -O /tmp/gazebo4_install.sh http://osrf-distributions.s3.amazonaws.com/gazebo/gazebo4_install.sh; sudo sh /tmp/gazebo4_install.sh</li>
+</ul>
+</li>
+<li>rosのgazebo4関連パッケージをインストールする。apt-getだと依存関係をうまく解決できないので、aptitudeを使う。aptitudeがない場合はapt-get install aptitudeでインストールする。
+<ul>
+<li>sudo aptitude install ros-indigo-gazebo4-ros</li>
+</ul>
+</li>
+</ul>

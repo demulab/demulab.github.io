@@ -1,0 +1,64 @@
+---
+layout: post
+title: irrDrawstuff0.0.1公開
+date: 2010-01-18 23:54:10.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  views: '473'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/5892.html"
+---
+<p>demura.netで開発しているODE用3Dグラフィクスライブラリの上位互換であるirrDrawstuff0.0.1を公開します。Nobuさんやひびきのさんからのフィードバックがあったので修正しました。もう少しでdrawstuffの代わりに利用できると思います．Version 0.0と比較して変更履歴以下の点が改善されています。</p>
+<p>なお、デモプログラムpk.cppが非常に遅かった原因はdiDrawLineの実装に問題があったので少し高速化した。私の環境では描画速度が3FPSから12FPSと約４倍高速になった。全般的に高速化のためのチューニングはほとんど行っていないので今後に期待してください。drawstufffと遜色のないレベルにはなると思います。近いうちに描画速度の比較結果を報告します。</p>
+<p><strong>ダウンロード</strong></p>
+<ul>
+<li><strong><a href="http://demura.net/dl">このページからお願いします。</a></strong></li>
+</ul>
+<p><strong>インストール法</strong></p>
+<ul>
+<li>Windows
+<ul>
+<li><a href="http://demura.net/9ode/5828.html">VC++2008 EE</a></li>
+</ul>
+</li>
+<li>Linux
+<ul>
+<li>g++</li>
+</ul>
+</li>
+</ul>
+<p><br class="spacer_" /></p>
+<p><strong>変更履歴　Version 0.0.1</strong></p>
+<ul>
+<li>Ctrlキーとキー(t, x, p, o, v)を同時に押すことによりテクスチャのON/OFF, 終了、一時停止、ステップ実行,      　視点と視線の表示を可能とした</li>
+<li>diDrawConvexの実装</li>
+<li> リリース用ライブラリRelease Libの追加</li>
+<li> diDrawLineの高速化</li>
+<li> デモプログラムpk.cppでのテクスチャファイルの修正</li>
+<li> ファイル名をirrstuff.h, irrstuff.cppからirrdrawstuff.h, irrdrawstuff.cppに変更</li>
+</ul>
+<p><strong>To Do リスト</strong></p>
+<ul>
+<li>視線方向の設定がODEと違う</li>
+<li> 影が表示されない</li>
+<li>ウインドウの大きさを変更できない</li>
+<li>メニューバーがない</li>
+<li> 頂点数の制限があり65536個より大きい3Dオブジェクトファイルを表示できない</li>
+<li> 3Dオブジェクトファイルから読み込んだジオメトリの衝突検出が不完全</li>
+<li> DirectXへの対応。現状ではCould not get lower surface level for mip map generation,     DIRECT3D9 begin scene failedとエラー表示されウインドウが固まるバグあり。</li>
+<li>より高速化</li>
+<li>チュートリアル、マニュアルの作成</li>
+</ul>

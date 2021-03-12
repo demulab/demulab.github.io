@@ -1,0 +1,91 @@
+---
+layout: post
+title: 'ODEで学ぶC言語　[Step6: 構造体の配列]'
+date: 2009-07-17 08:17:46.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags:
+- ODE
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '1941'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/4431.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2009/07/step6.jpg"><img class="aligncenter size-medium wp-image-4439" title="step6サンプルプログラムの実行画面" src="{{ site.baseurl }}/assets/images/2009/07/step6-300x241.jpg" alt="step6サンプルプログラムの実行画面" width="300" height="241" /></a></p>
+<p>Step5ではボディ，ジオメトリ，位置，姿勢，質量，サイズなどの物体の属性をまとめて扱うために構造体を使いました．Step6では構造体の便利さを実感しましょう．</p>
+<p>Step5のサンプルプログラムでは球１個のバウンドのシミュレーションをしましたが，ここでは9個のシミュレーションを実現します．そのためのStep5からの変更点を以下に示します．変更点はたったこれしかありません．</p>
+<p><!--more--></p>
+<p>まず，構造体変数の変更部分です．appleをapple[NUM]，つまり構造体の配列にしただけです．構造体の配列といえども恐れるにたらず普通の配列のように宣言すれば良いだけです．</p>
+<pre class="brush:cpp">#define NUM 9
+
+MyObject apple&#91;NUM&#93;;
+</pre>
+<p>main関数の変更部分です．リンゴを9個作るために，forループを９回しています．dmSphereCreate（）の変更点は１番目の引数がappleからapple[i]に変わっている点です．</p>
+<pre class="brush:cpp">   for (i = 0; i &#60; NUM; i++) {
+  	p&#91;1&#93; += 0.5;
+	dmSphereCreate(&amp;apple&#91;i&#93;,p,R,m,r,color); // リンゴの生成
+  }
+</pre>
+<p>simLoop関数の変更部分も同様です．NUM回描画するためにforループで回しています．</p>
+<pre class="brush:cpp">   for (i = 0; i &#60; NUM; i++) {
+	dmDraw(apple&#91;i&#93;); //  物体の描画
+  }
+</pre>
+<p>これから構造体の配列とは関係ありません．Step5で説明を省略したコールバック関数を説明します．コールバック関数とは電話で「コールバックしてね」と同じように，必要になったら呼び出される関数です．ここでは，２つのジオメトリが衝突しそうになったらdSpaceCollide()関数により呼び出されます．つまり，ユーザーはnearCallback関数を使う時を考えなくて済むのでプログラムはとても楽です．</p>
+<p>nearCallback関数の1番目の引数dataはdSpaceCollide()の２番目の引数です．ここではありません．２番目と３番目の引数は衝突する可能性のある２つのジオメトリです．４行目で接触点数の上限を設定しています．ポリゴンなど複雑なジオメトリを扱わない限り１０で十分です．５行目のcontact[N]には接触点が格納されます．８行目のisGroundは衝突する可能性のある（つまり，まだ衝突しているとは限りません）ジオメトリのどちらかがground（地面）だったら１にセットされます．</p>
+<p>１１行目のdCollide()で接触点の情報を生成します．戻り値は接触点数です．つまり，この接触点数nが１以上だったら接触しているわけです．１２行目のif文は，接触している２つの物体のうちどちらかが地面の場合だけ以下の処理をします．１４行目で反発性を設定し，１５行目で具体的な反発係数を設定しています．１６行目のbounce_velは反発するために必要な最低速度です．ODEでは接触点がジョイント，つまり拘束と考えて計算します．そのため，接触ジョイントを作り，２つの剛体を接触ジョイントで結合しているのです．</p>
+<pre class="brush:cpp">// コールバック関数
+void nearCallback(void *data, dGeomID o1, dGeomID o2)
+{
+  static const int N = 10; // 接触点数の最大値
+  dContact contact&#91;N&#93;;     // 接触点
+
+  // 接触している物体のどちらかが地面ならisGroundに非0をセット
+  int isGround = ((ground == o1) || (ground == o2));
+
+  // 衝突情報の生成 nは衝突点数
+  int n = dCollide(o1,o2,N,&amp;contact&#91;0&#93;.geom,sizeof(dContact));
+  if (isGround)  {
+    for (int i = 0; i &#60; n; i++) {
+      contact&#91;i&#93;.surface.mode = dContactBounce; // 反発性の設定
+      contact&#91;i&#93;.surface.bounce = 1.0;     // 反発係数(0.0から1.0)
+      contact&#91;i&#93;.surface.bounce_vel = 0.0; // 反発に必要な最低速度
+
+      // 接触ジョイントの生成
+      dJointID c = dJointCreateContact(world,contactgroup,
+                                                &amp;contact&#91;i&#93;);
+      // 接触している２つの剛体を接触ジョイントにより拘束
+      dJointAttach(c,dGeomGetBody(contact&#91;i&#93;.geom.g1),
+                     dGeomGetBody(contact&#91;i&#93;.geom.g2));
+    }
+  }
+}
+</pre>
+<p>ホームワーク</p>
+<ol>
+<li>サンプルコード<a href="http://demura.net/wordpress/wp-content/uploads/2009/07/step6-090717.zip">step6-090717.zip</a>をダウンロードして実行しよう．</li>
+<li>ドミノ倒し
+<ul>
+<li>球を細長い直方体に変更し，それを100個生成し，ドミノ倒しができるように地面の上に１列に並べる
+<ul>
+<li>ヒント　MyObject構造体のメンバーに直方体のサイズを表す*sidesを追加すると簡単．初期値の設定は同じメンバーである位置*pをまねること．<br />
+ sidesをsides[3]としても良いが初期化の方法が違うので注意．その場合，apple[i].sides = sides;とするとエラーになります．配列はアドレスでコピーできませんでしたね．</li>
+</ul>
+</li>
+<li>一番端のドミノに力を加えて転倒させる．ヒント　ODE本101ページにある力やトルクを加えるにあるAPIを使ってください．</li>
+<li>ドミノ倒しを鑑賞し楽しむ！</li>
+</ul>
+</li>
+</ol>

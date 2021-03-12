@@ -1,0 +1,48 @@
+---
+layout: post
+title: 'つくばチャレンジ2009: これは使える!?電子コンパスAzimuth1000'
+date: 2009-10-21 00:01:29.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- つくばチャレンジ
+tags: []
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '1144'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/tukuba-challenge/4948.html"
+---
+<p><span style="background-color: #ffffff;">今回アメリカのebayから購入した電子コンパスは<a href="http://www.kvh.com/products/product.asp?id=25">EVK社のAzimuth1000</a>です。これはカタログには誤差1度と謳っておりアメリカではパワーボードで良く使われているそうです。</span></p>
+<p><span style="background-color: #ffffff;"><!--more--><br />
+ </span></p>
+<p>[caption id="attachment_4942" align="aligncenter" width="600" caption="けんせいちゃん２号機：左端が電子コンパスAzimuth1000"]<a href="http://demura.net/wordpress/wp-content/uploads/2009/10/compass.jpg"><img class="size-full wp-image-4942" title="けんせいちゃん２号機：左端が電子コンパス" src="{{ site.baseurl }}/assets/images/2009/10/compass.jpg" alt="けんせいちゃん２号機：左端が電子コンパス" width="550" height="413" /></a>[/caption]</p>
+<p>このセンサの利点は、方位がデジタル表示され目で確認できることと、コンピュータと接続できることです。インタフェースはGPSではお馴染みのNMEA0183です。これはデータのフォーマットだけではなくインタフェースの規格も同時に設定されており、船の機器では良く使われています。</p>
+<p>コンピュータと接続するためにはNMEA0183専用機器もありますが、RS232Cと互換性があり簡単に接続することができるので特別な機器を購入する必要もありません。RS232Cとの接続は具体的には次のようにします。</p>
+<ul>
+<li>NMEA 0183 Out(+) green  ＝　RS232C DSUB ２番ピン（受信）</li>
+<li>NMEA 0183 Out(－) brown =  RS232C DSUB ５番ピン（信号用グランド）</li>
+</ul>
+<p>RS232Cの通信設定は８ビット、ノンパリティ、４８００ボー、ストップビット１となります。linuxでは次のように端末を設定します。以下の例はデバイス名が/dev/ttyUSB1の場合です。</p>
+<ul>
+<li>stty -F /dev/ttyUSB1 4800  cs8 ignpar -cstopb</li>
+</ul>
+<p>また，電子コンパス用のNMEAセンテンスは以下になります．</p>
+<ul>
+<li>$HCHDM, abc.d,M*<checksumms><checksumls><cr><lf /></cr></checksumls></checksumms></li>
+</ul>
+<p>ここで，abc.dは角度[°]，checksumMSはチェックサムの最上位４ビット，checksumLSは最下位4ビットとなっています．特別なパーサーを使わなくても簡単な文字列処理で角度を取得できます．</p>
+<p>使ってみてこのセンサの良いところはオートキャリブレーション機能と地下に電線が埋まっているところをとおるとエラーを表示してくれるところです。センサで一番困ることは真値とは異なった値を出しているにもかかわらずエラー表示してくれないところです。その点、このセンサはエラー表示してくれまるし、オートキャリブレーションでそのエラーもすぐ補正してくれるので使いやすいです．</p>
+<p>２３日の試走会で評価して、つくばチャレンジの環境で使えるか確かめます。</p>
+<p>でむ</p>
+<p><br class="spacer_" /></p>
+<p><br class="spacer_" /></p>

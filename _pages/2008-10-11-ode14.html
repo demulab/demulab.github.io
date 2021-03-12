@@ -1,0 +1,74 @@
+---
+layout: page
+title: 14.  Speed-up your simulation
+date: 2008-10-11 15:08:14.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1521'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode14"
+---
+<p>&nbsp;</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/sample14.jpg"><img src="{{ site.baseurl }}/assets/images/2008/10/sample14.jpg" alt="" title="sample14" width="500" height="363" class="alignnone size-full wp-image-2203" /></a></p>
+<p style="margin: 0px 0px 15px;">This 14th tutorial explains how to speed-up without using Drawstuff, the 3D graphics library,  for your simulation.</p>
+<p style="margin: 0px 0px 15px;">Drawstuff is not part of ODE, it is, however, used to show demo programs of ODE. It is implemented  based on OpenGL, and it is very simple so it is a very good educational materials to learn OpenGL.</p>
+<p style="margin: 0px 0px 15px;">Without using Drawstuff is very easy, just do not call <strong>d</strong><strong>sSimulationLoop</strong> in the main function and functions related drawing .</p>
+<p>Please read the following sample code.</p>
+<hr />
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>If you want to draw</strong></li>
+</ul>
+<pre class="brush:cpp">static void simLoop (int pause)
+{
+  // Write necessary codes for your simulation
+  dSpaceCollide(space,0,&amp;nearCallback);
+  dWorldStep(world,0.01);
+  dJointGroupEmpty(contactgroup);
+  drawSphere(torso.geom);
+}
+
+int  main(int argc, char *argv&#91;&#93;)
+{
+  // Omit
+  dsSimulationLoop(argc, argv, 640, 480,  &amp;fn);
+  // Omit
+}</pre>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>If you do not want to draw</strong></li>
+</ul>
+<pre class="brush:cpp">static void simLoop (int pause)
+{
+  // Write necessary codes for your simulation
+  dSpaceCollide(space,0,&amp;nearCallback);
+  dWorldStep(world,0.01);
+  dJointGroupEmpty(contactgroup);
+}
+
+int  main(int argc, char *argv&#91;&#93;)
+{
+  // Omit
+  while (1) {
+    simLoop(0);  // The argument must set to be 0
+  }
+  // Omit
+}</pre>
+<p style="margin: 0px 0px 15px;">The sample program does not draw anything, if you want to use Drawstuff, comment out the line 13 below.</p>
+<p style="margin: 0px 0px 15px;">// # Define DRAW Back to the drawing off the comments.</p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><a style="color: #990000; text-decoration: none;" href="http://demura.net/downloads/odesample/sample14-110105.zip">Download a sample program, sample14.cpp (sample14-110105.zip), from here.</a></li>
+</ul>
+<p style="margin: 0px 0px 15px;">That's all.  See you !</p>
+<p style="margin: 0px 0px 15px;">demu</p>

@@ -1,0 +1,101 @@
+---
+layout: post
+title: 'Folding@home: Top500の日本チームを表示するスクリプト'
+date: 2020-07-24 00:41:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '18463'
+  views: '189'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/18461.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/07/SnapCrab_demulab@EARTH-srcfah_2020-7-24_8-40-59_No-00.png"><img class="aligncenter size-full wp-image-18476" src="{{ site.baseurl }}/assets/images/2020/07/SnapCrab_demulab@EARTH-srcfah_2020-7-24_8-40-59_No-00.png" alt="" width="998" height="534" /></a></p>
+<p>&nbsp;</p>
+<p>Folding@home Top 500に入っている日本チームを手動でリストアップするのは辛いのでPythonスクリプトを書こうと思い調べたら<a href="https://api.foldingathome.org/">Folding@home API</a>があった。</p>
+<p><strong>Folding@home API </strong></p>
+<ul>
+<li>URL: <a href="https://api.foldingathome.org/">https://api.foldingathome.org/</a></li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/07/SnapCrab_NoName_2020-7-24_0-20-2_No-00.png"><img class="aligncenter size-full wp-image-18462" src="{{ site.baseurl }}/assets/images/2020/07/SnapCrab_NoName_2020-7-24_0-20-2_No-00.png" alt="" width="694" height="193" /></a></p>
+<p>curlコマンドを使う場合は次のようになる。ここでteamの後の番号はチームIDである。</p>
+<ul>
+<li>$ curl -G https://api.foldingathome.org/team/257261</li>
+</ul>
+<p><strong>ソースコード</strong></p>
+<p>Pythonのrequestsモジュールを使い書き換え、次のコードを作成した。Folding@homeでは国別の統計データがないのでトップ500のチームはチーム名、URLやその他情報を元に選んだ。抜けている場合は連絡頂ければありがたい。なお、新たなチームの追加や削除は8行目のjapan_team_idsを変更すればよい。</p>
+<pre>import datetime
+import json
+import re
+import requests
+from operator import attrgetter
+japan_team_ids = [162, 222, 106346, 252872, 253284, 254402, 255396, 257002, 257261, \
+257728, 258804, 259660, 260900, 261481, 263245, 263536, 263798, 264491]
+
+class JapanTeam:
+    def __init__(self, id, rank, name, founder, wus, score):
+    self.id = id
+    self.rank = rank
+    self.name = name
+    self.founder = founder
+    self.wus = wus
+    self.score = score
+
+teams = []
+
+for id in japan_team_ids:
+    url = 'https://api.foldingathome.org/team/' + str(id)
+    response = requests.get(url)
+    dict = json.loads(response.text)
+    teams.append(JapanTeam(dict['id'],dict['rank'],dict['name'],dict['founder'], \
+dict['wus'], dict['score']))
+
+teams = sorted(teams, key=attrgetter('rank'))
+date = datetime.datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')
+
+print(" *** Folding@home Ranking in Japan (",date,") ***")
+print(" No Rank Name ID Score Works")
+for i in range(0, len(teams)):
+    print('{0:&gt;3} {1:&gt;4} {2:&lt;25} {3:&gt;8} {4:&gt;13} {5:&gt;10}'.format(i+1, teams[i].rank, teams[i].name, teams[i].id, teams[i].score, teams[i].wus))</pre>
+<p><strong>実行方法</strong></p>
+<ul>
+<li>上のコードにrank.pyと名前を付けて保存し、次のコマンドを実行する。実行結果は上の図である。</li>
+<li>$ python3 rank.py</li>
+</ul>
+<p>問題点としては、チーム数(現在、１７）だけHTTPリクエスト・レスポンスを処理しているので30秒ほど時間がかかることである。</p>

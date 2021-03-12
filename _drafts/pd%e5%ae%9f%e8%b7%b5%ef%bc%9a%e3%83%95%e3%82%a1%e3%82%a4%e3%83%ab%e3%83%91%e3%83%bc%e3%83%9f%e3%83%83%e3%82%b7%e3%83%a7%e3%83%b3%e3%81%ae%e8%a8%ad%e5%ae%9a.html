@@ -1,0 +1,138 @@
+---
+layout: post
+title: PD実践：ファイルパーミッションの設定
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '19493'
+  views: '517'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/pdpractice/19492.html"
+---
+<p>WSLデフォルト（規定設定）では、Linuxのchmodコマンドを使ってパーミッション（ファイルアクセス許可）を細かく変更できません。また、PD実践の授業では簡単のために、Cドライブ直下にeduというフォルダを作り、その中にworkspaceを作っています。以下の設定により通常のLinuxと同じようにパーミッションを設定できるようにします。</p>
+<ul>
+<li>Windowsの設定
+<ul>
+<li>エクスプローラー上でC:\eduを右クリックして「プロパティ」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/permission1.png"><img class="aligncenter wp-image-19493 size-medium" src="{{ site.baseurl }}/assets/images/permission1-205x300.png" alt="" width="205" height="300" /></a></li>
+<li>「セキュリティ」タブをクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/permission2.png"><img class="aligncenter wp-image-19494 size-medium" src="{{ site.baseurl }}/assets/images/permission2-205x300.png" alt="" width="205" height="300" /></a></li>
+<li>「eduのアクセス許可」ウインドウが開くので、「Users」をクリックして、「アクセス許可」の「フルコントロール」の「許可」にチェックを入れて「適用」をクリックする。セキュリティの更新が終わったら「OK」をクリックしてウインドウを閉じる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/permission3-3.png"><img class="aligncenter size-medium wp-image-19498" src="{{ site.baseurl }}/assets/images/permission3-3-218x300.png" alt="" width="218" height="300" /></a></li>
+</ul>
+</li>
+<li>WSLの設定
+<ul>
+<li>以下の２行の内容のファイルwsl.confをnanoエディタで作り保存する。
+<ul>
+<li><code>$ cd</code></li>
+<li><code>$ nano wsl.conf</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre style="padding-left: 120px;">[automount]
+options = "metadata"</pre>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li> 保存したwsl.confを/etc/wsl.confにコピーする。
+<ul>
+<li><code>$ sudo cp wsl.conf /etc</code></li>
+</ul>
+</li>
+<li>ファイルができたか以下のファイルの中身を表示するlessコマンドで確認する。下図のように表示されれば成功。失敗した場合は、上の作業をやり直す。lessコマンドから抜けるときは'q'キーを押す。
+<ul>
+<li><code>$ less /etc/wsl.conf</code><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_demura@EARTH-_2020-9-22_9-16-56_No-00.png"><img class="aligncenter size-full wp-image-19499" src="{{ site.baseurl }}/assets/images/SnapCrab_demura@EARTH-_2020-9-22_9-16-56_No-00.png" alt="" width="818" height="156" /></a></li>
+</ul>
+</li>
+<li>Windowsを再起動する。</li>
+</ul>
+</li>
+<li>Workspaceのパーミッション変更
+<ul>
+<li>PD実践での作業場所となるWorkspaceのパーミッションを通常のLinxuと同じになるよう変更する。</li>
+<li>以下のコマンドを実行して現在のパーミッションを確認する。
+<ul>
+<li><code>$ cd -P ~/workspace</code></li>
+<li><code>$ cd ..</code></li>
+<li><code>$ ls -al</code><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/permission4.png"><img class="aligncenter size-full wp-image-19501" src="{{ site.baseurl }}/assets/images/permission4.png" alt="" width="891" height="336" /></a></li>
+<li>上図で赤枠で囲んだ一番左が次のようになっている。一番左の'd'はディレクトリを表し、次の'r'は読み取り許可、'w'は書き込み許可、'x'は実行許可を表している。始めのrwxはユーザ、次のrwxはグループ、最後のrwxはその他のユーザを表している。つまり、この設定ではこのディレクトリに関して誰でも読み、書き、実行を許可している。次のdemuraはユーザ名、その次はグループ名です。グループを特に設定していないのでユーザ名と同じになっています。
+<ul>
+<li>drwxrwxrwx 1 demura demura</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>次のコマンドでパーミッションを変更しましょう！chmodはパーミッションを変更するコマンド。-Rはworkspace以下の全てのディレクトリとファイルに適応するオプション。755はユーザのパーミッションをrwx、グループとその他ユーザをr-xにするという意味。
+<ul>
+<li><code>$ cd -P ~/workspace</code></li>
+<li><code>$ cd ..</code></li>
+<li><code>$ chmod -R 755 ~/workspace</code></li>
+</ul>
+</li>
+<li>では、変更されたか次のコマンドで確認しよう。
+<ul>
+<li><code>$ ls -al</code><br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/permission5.png"><img class="aligncenter size-full wp-image-19502" src="{{ site.baseurl }}/assets/images/permission5.png" alt="" width="891" height="336" /></a></li>
+<li>上図のように赤枠の左が以下のなっていると思う。これでworkspaceディレクトリはユーザはフルコントール、グループと他のユーザは読み取りと実行だけが許可になっていることがわかる。
+<ul>
+<li>drwxr-xr-x 1 demura demura</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>参考サイト
+<ul>
+<li>以下のサイトを参考にした。
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/windows/wsl/wsl-config">Manage and configure Windows Subsystem for Linux</a></li>
+<li><a href="https://sig9.hatenablog.com/entry/2020/02/19/000000">WSL でマウントしたファイルシステムでもパーミッションを扱えるようにする</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

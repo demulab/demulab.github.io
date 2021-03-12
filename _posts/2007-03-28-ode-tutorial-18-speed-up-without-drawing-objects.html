@@ -1,0 +1,73 @@
+---
+layout: post
+title: 'ODE Tutorial 18: Speed Up without drawing objects'
+date: 2007-03-28 10:29:16.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '732'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/385.html"
+---
+<p>Most of this page was translated from http://demura.net/category/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>. Sorry for strange and funny English from "<a href="http://en.wikipedia.org/wiki/Chinese_room">the Chinese room</a>".</p>
+<p>This is 18th article about ODE (Open Dynamics Engine) Tutorial. ODE is an open source physics libary, and it is widely used  in various game software, and simulators in research.</p>
+<p>This time, I explain the method of speed up a simulation without using the drawstuff, the 3D  graphics engine, which is attached  to ODE.</p>
+<p>Drawstuff based on OpenGL is not the portion of ODE, it is only provided to show demo programs. I think drawstuff is very good for education purpose, because the library is very simple and it helps to study OpenGL.</p>
+<p>The method of not using drawstuff is very simple. In the  test program dsSimulationLoop is called in main function. This  part to call the drawing loop, because it draws with each step of  simulation and event processing from the keyboard. Functions of drawstuff begin with the letter "ds".</p>
+<p>That is, do not call dsSimulationLoop and other functions of drawstuff. Please see the following sample codes.</p>
+<p><strong>With drawing</strong></p>
+<pre class="brush:cpp">
+void simLoop (int pause)
+{
+  // Write some necessary codes here
+  dSpaceCollide(space,0,&amp;nearCallback);
+  dWorldStep(world,0.01);
+  dJointGroupEmpty(contactgroup);
+  const dReal *pos=dBodyGetPosition(apple);
+  const dReal *R=dBodyGetRotation(apple);
+  dsDrawSphere(pos, R, r);
+}
+
+int  main(int argc, char *argv&#91;&#93;)
+{
+  // omission
+  dsSimulationLoop(argc, argv, 640, 480,  &amp;fn);
+  // omission
+}
+</pre>
+<p><strong>Without drawing</strong></p>
+<pre class="brush:cpp">
+static void simLoop (int pause)
+{
+  // Write some necessary codes here
+  dSpaceCollide(space,0,&amp;nearCallback);
+  dWorldStep(world,0.01);
+  dJointGroupEmpty(contactgroup);
+  // const dReal *pos=dBodyGetPosition(apple);
+  // const dReal *R=dBodyGetRotation(apple);
+  //dsDrawSphere(pos, R, r); // without drawing
+}
+
+int  main(int argc, char *argv&#91;&#93;)
+{
+  // omission
+  while (1) {
+    simLoop(0);  //  the argument must set to 0
+  }
+  // omission
+}
+</pre>
+<p>To be continued.</p>

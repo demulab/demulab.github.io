@@ -1,0 +1,65 @@
+---
+layout: post
+title: 'Ubuntu18.04: ROS Melodicを入れるとPython3でOpenCVがエラーになる問題'
+date: 2020-01-28 16:58:52.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1043'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_main_category: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/16601.html"
+---
+<p>私の環境では問題がないのですが、Ubuntu18.04でOpenCVをインストールしてからROS Melodicを入れると以下のエラーになるようです。</p>
+<p><code><br />
+happyrobot@razer:~/Documents$ python3<br />
+Python 3.6.9 (default, Nov 7 2019, 10:44:02)<br />
+&gt;&gt;&gt; import cv2<br />
+Traceback (most recent call last):<br />
+File "&lt;stdin&gt;", line 1, in &lt;module&gt;<br />
+ImportError: /opt/ros/melodic/lib/python2.7/dist-packages/cv2.so: undefined symbol: PyCObject_Type<br />
+</code></p>
+<p><strong>解決方法</strong><br />
+python3を実行しているのにmelodicのpython2.7を読みにいっている。以下のように、Pythonスクリプトの先頭部分にあるimport cv2の上に、sys.path.remove('/opt/ros/melodic/lib/python2.7/dist-packages')を挿入する。これで、/opt/ros/melodic/lib/python2.7/dist-packages/cv2.soをpathから取り除く。</p>
+<p><code><br />
+import os<br />
+import sys<br />
+sys.path.remove('/opt/ros/melodic/lib/python2.7/dist-packages')<br />
+import cv2<br />
+</code></p>

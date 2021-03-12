@@ -1,0 +1,98 @@
+---
+layout: post
+title: 'Folding@home: Top500の日本チームを表示する改良版スクリプト'
+date: 2020-07-25 09:44:19.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18476'
+  views: '106'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/18481.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/07/SnapCrab_demulab@EARTH-srcfah_2020-7-25_9-40-35_No-00.png"><img class="aligncenter size-full wp-image-18486" src="{{ site.baseurl }}/assets/images/2020/07/SnapCrab_demulab@EARTH-srcfah_2020-7-25_9-40-35_No-00.png" alt="" width="827" height="569" /></a></p>
+<p>Folding@home Top 500に入っている日本チームをリストアップするPythonスクリプトを書いたが処理に30秒ぐらいかかる問題点があるとSNSで呟いたところ、チームKanazawaのメンバーNinjaさんからaiohttpとasyncioを使った並列処理プログラムを送って頂いた。許可を得て公開する。処理速度が3秒になり10倍高速になっている。チーム数がこれ以上増えた場合は、同時アクセス数を制限する必要が出てくるかもしれないという注意も頂いている。</p>
+<p><strong>ソースコード</strong></p>
+<pre>import aiohttp
+import asyncio
+import json
+
+JAPAN_TEAM_IDS = [162, 222, 106346, 252872, 253284, 254402, 255396, 257002,
+                       257261, 257728, 258804, 259660, 260900, 261481, 263245,
+                       263536, 263798, 264491]
+FORMAT = '{0:&gt;3} {1:&gt;4} {2:&lt;25} {3:&gt;8} {4:&gt;13} {5:&gt;10}'
+
+# cf. https://stackoverflow.com/questions/35879769/
+
+async def fetch(session, url):
+    async with session.get(url) as response:
+        if response.status == 200:
+            return await response.read()
+        else:
+            response.raise_for_status()
+
+async def fetch_all(session, urls):
+    tasks = [asyncio.create_task(fetch(session, url)) for url in urls]
+    return await asyncio.gather(*tasks)
+
+async def main():
+    urls = [f'https://api.foldingathome.org/team/{team_id}'
+            for team_id in JAPAN_TEAM_IDS]
+    async with aiohttp.ClientSession() as session:
+        teams = await fetch_all(session, urls)
+        teams = [json.loads(team) for team in teams]
+        teams = sorted(teams, key=lambda d: d['rank'])
+
+        print(FORMAT.format('No', 'Rank', 'Name', 'ID', 'Score', 'Works'))
+        for i, team in enumerate(teams, 1):
+            if team['rank'] &lt;= 500:
+                print(FORMAT.format(i, team['rank'], team['name'], team['id'],team['score'], team['wus']))
+
+if __name__ == '__main__':
+    asyncio.run(main())
+</pre>
+<p><strong>実行方法</strong></p>
+<ul>
+<li>上のコードにasync_folding.pyと名前を付けて保存し、次のコマンドを実行する。実行結果は上の図である。ただし、Pythonのバージョンは3.7でなければ動かない。
+<ul>
+<li>$ python3 rank.py</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

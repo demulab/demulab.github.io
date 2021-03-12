@@ -1,0 +1,114 @@
+---
+layout: post
+title: 3DグラフィクスライブラリIrrlichtのインストールとプログラム作成
+date: 2008-07-11 18:50:48.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2743'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/558.html"
+---
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/irr12.jpg" alt="irr12.jpg" /></p>
+<p>疾走しているシドニー嬢．Irrlichtでは簡単に作れます．</p>
+<p>ODE付属の簡易3Dライブラリでは，物体のテクスチャを任意に変えたり，画面に文字を表示させたり，あるいは3DSのような3Dオブジェクトファイルを読み込むことができません．そこで，<a href="http://irrlicht.sourceforge.net/">Irrlicht</a>を使うことにします．<a href="http://www.openscenegraph.org/projects/osg">OpenSceneGraph</a>という選択もありましたが，学生にインストールしてもらおうと思ったところ「makeがどうしても通りません．」という泣きが入り，しかも多くのライブラリが必要なうえ，日本語の資料も少なく初心者には無理だと判断しました．</p>
+<p>まずは，Irrlichtを使ってdrawstuffのクローン（同じインタフェース）を作り，その後，物理計算エンジンと3Dグラフィクスライブラリを統合したミドルウェアに発展していきたいと考えています．本格的なロボットシミュレータには日本が誇る<a href="http://www.openrtp.jp/openhrp3/jp/">OpenHRP3</a>があるので，demura.netでは初心者に優しく，卒研などで簡単に使って頂ける教育用途のシミュレータを作って行きたいと考えています．</p>
+<p>今回は，開発するためのツールとなるC/C++開発統合環境<a href="http://www.codeblocks.org/">Code::blocks</a>を使って自作Irrlichtプログラムを作成する方法を解説します．なお，<a href="http://demura.net/9ode/523.html">Code::blocksのインストールはこちらをご覧ください．</a></p>
+<p><!--more--></p>
+<ul>
+<li>Irrlichtのインストール
+<ul>
+<li>Irrlicht SDK 1.4.1を<a href="http://irrlicht.sourceforge.net/downloads.html">ここ</a>からダウンロードする．</li>
+<li>Cドライブのトップに解凍する．つまり，以下のディレクトリ構成
+<ul>
+<li>C:\irrlicht-1.4.1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Windowsの環境設定
+<ul>
+<li>Code::blocksで常に実行する場合は必要ありませんが，単独で実行したいときはライブラリの場所をシステムに教える必要があります．</li>
+<li>コントロールパネルの中の「システムとメンテナンス」→「システム」→「システムの詳細設定」→「環境変数」のPathに以下を追加する．
+<ul>
+<li>; c:\irrlicht-1.4.1\bin\Win32-gcc</li>
+</ul>
+</li>
+<li><img src="{{ site.baseurl }}/assets/images/2008/07/irr0.jpg" alt="irr0.jpg" /></li>
+</ul>
+</li>
+<li>Code::blocksの環境設定
+<ul>
+<li>Code::blocksを起動</li>
+<li>「設定（Ｓ）」→ 「コンパイラとデバッガ(C)」<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/07/irr1.jpg" alt="irr1.jpg" /></p>
+<p><br class="spacer_" /></p>
+<ul>
+<li>「グローバルなコンパイラ設定」を選択</li>
+<li>リンカ設定：リンクするライブラリ
+<ul>
+<li>C:\irrlicht-1.4.1\lib\Win32-gcc\libIrrlicht.a</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/irr2.jpg" alt="irr2.jpg" /></p>
+</li>
+<li>ディレクトリの検索
+<ul>
+<li>C:\irrlicht-1.4.1\include</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/irr3.jpg" alt="irr3.jpg" /></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>自作プログラムのビルド法
+<ul>
+<li>Code::blocksには便利なことに標準でirrlichtのプロジェクトファイルがあります．それを使うことによってとっても簡単にプログラムを作ることができます．</li>
+<li>ここでは「ドキュメント」の下にsrc\irrlicht\myprogというフォルダを作り，その中に作成することにします．Vistaの場合は以下のようなパスになります．
+<ul>
+<li>C:\Users\ユーザ名\Documents\src\irrlicht\myprog</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Code::Blocksを起動します．</li>
+<li>「ファイル」→「新規」→「プロジェクト」<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/07/irr4.jpg" alt="irr4.jpg" /></li>
+<li>Irrlicht Projectを選択<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/07/irr5.jpg" alt="irr5.jpg" /></li>
+<li>Irrlicht Projectのウインドウが開くので「次へ」をクリック<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/07/irr6.jpg" alt="irr6.jpg" /></li>
+<li>以下を入力する．
+<ul>
+<li>プロジェクトタイトル：　sample</li>
+<li>プロジェクトを作成するフォルダ：　C\Users\ユーザ名\Documents\src\irrlicht\myprog\</li>
+<li>プロジェクトファイル名: sample.cbp</li>
+<li>出力ファイル名：自動生成されるので必要があれば変更</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/irr7.jpg" alt="irr7.jpg" /></p>
+</li>
+<li>Irrlichtの場所を聞かれるのでc:\irrlicht-1.4.1と入力<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/07/irr8.jpg" alt="irr8.jpg" /></li>
+<li>ターゲットを聞かれるので，sampleと入力<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/07/irr9.jpg" alt="irr9.jpg" /></li>
+<li>準備ができたので早速実行しましょう．｢ビルド」→「ビルドして実行」を選択<br />
+ <img src="{{ site.baseurl }}/assets/images/2008/07/irr10.jpg" alt="irr10.jpg" /></li>
+<li>エラーがなければ一番トップの画像のような窓が開き，シドニー嬢がアクションします．なお，自分でプログラムを作るときは，sampleフォルダーの中にmain.cppという雛形があるので，これをベースに書くと楽できます．</li>
+<li>今回は本当に簡単でしたね．</li>
+</ul>
+</li>
+</ul>
+<p>でむ</p>

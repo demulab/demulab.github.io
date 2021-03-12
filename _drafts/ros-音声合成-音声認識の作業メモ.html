@@ -1,0 +1,63 @@
+---
+layout: post
+title: 'ROS: 音声合成、音声認識の作業メモ'
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>ROS Indigo + Ubuntu14.04  音声合成・音声認識の作業メモ</p>
+<ul>
+<li>音声合成パッケージインストール
+<ul>
+<li>sudo apt-get install ros-indigo-sound-play</li>
+</ul>
+</li>
+<li>音声認識関連パッケージインストール
+<ul>
+<li>sudo apt-get install ros-indigo-pocketsphinx</li>
+<li>sudo apt-get install gstreamer0.10-pocketsphinx</li>
+<li><span class="pln">sudo apt</span><span class="pun">-</span><span class="kwd">get</span><span class="pln"> install ros</span><span class="pun">-</span><span class="pln">indigo</span><span class="pun">-</span><span class="pln">audio</span><span class="pun">-</span><span class="pln">common</span></li>
+</ul>
+</li>
+<li>環境設定
+<ul>
+<li>.bashrcの最後に以下を追加. ~/myprog/srcはパッケージのあるディレクトリに変更する。</li>
+<li>export ROS_PACKAGE_PATH=~/myprog/src:$ROS_PACKAGE_PATH</li>
+</ul>
+</li>
+<li>音声認識
+<ul>
+<li>コーパス作成にテキストファイル(followme.txt)を作成し認識させたい単語やフレーズを１行ずつ入れる<br />
+pause speech<br />
+continue speech<br />
+kenseiko<br />
+follow me<br />
+leave the elevator</li>
+<li>コーパスから辞書ファイル(.dic)と音声モデルファイル(.lm)を以下のウエブサイトで作成。ファイル名が４桁の数字なのでわかりやすい名前に変換する。例えば、followme.dic、followme.lmなど。<br />
+<a href="http://www.speech.cs.cmu.edu/tools/lmtool-new.html" target="_blank">http://www.speech.cs.cmu.edu/tools/lmtool-new.html</a></li>
+<li>以下の内容のlaunchファイルの作成。ここでは、voice_recog.launchと命名。<br />
+&lt;launch&gt;<br />
+&lt;node name="recognizer" pkg="pocketsphinx" type="recognizer.py" output="screen"&gt;<br />
+&lt;param name="lm" value="$(find dfollow3)/launch/followme.lm"/&gt;<br />
+&lt;param name="dict" value="$(find dfollow3)/launch/followme.dic"/&gt;<br />
+&lt;/node&gt;<br />
+&lt;/launch&gt;</li>
+</ul>
+</li>
+</ul>

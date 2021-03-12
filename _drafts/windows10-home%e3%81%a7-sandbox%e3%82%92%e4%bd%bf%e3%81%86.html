@@ -1,0 +1,74 @@
+---
+layout: post
+title: Windows10 Homeで Sandboxを使う
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '17608'
+  views: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/sandbox-1583289_1280.jpg"><img class="aligncenter size-large wp-image-17608" src="{{ site.baseurl }}/assets/images/sandbox-1583289_1280-1024x454.jpg" alt="" width="1024" height="454" /></a></p>
+<p style="text-align: right;">Image by <a href="https://pixabay.com/users/RAMillu-840948/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1583289">rein schoondorp</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1583289">Pixabay</a></p>
+<p>Windows Sandboxはシステムを怪しいソフトから守るための軽量な仮想マシンであり、Windows10 ProやWindows 10 Enterpriseなら使用できる。ただ、Windows Homeを使っている方も多いと思う。僕のPCもWindows Homeだが、Windows SandboxをFolding@Homeで試してみたかった。いろいろ調べてみるとパッチを当てると使えるようなので試してみた。なお、Windowsのオフィシャルではないので、試される方は自己責任となる。この記事は以下の参考サイトを要約しているだけ。</p>
+<p><strong>参考サイト</strong></p>
+<ul>
+<li><a href="https://www.tenforums.com/tutorials/131437-enable-windows-sandbox-feature-windows-10-home-edition.html">Enable Windows Sandbox Feature in Windows 10 Home Edition by Windows TenForums</a></li>
+</ul>
+<p><strong>ダウンロード</strong></p>
+<ul>
+<li>sandbox-install.zipをDeskmodderからダウンロードする。<a href="https://www.tenforums.com/attachments/tutorials/231599d1556122687-enable-windows-sandbox-feature-windows-10-home-edition-sandbox-installer.zip">ここをクリック。</a></li>
+<li>sandbox-install.zipを解凍すると、sandbox-insallディレクトリができて、その中にSandbox Installer.batファイルが生成される。そのファイルをダブルクリックする。</li>
+<li>インストーラーが起動して作業が行われ、終了すると以下の文が表示されるので"Y"をキー入力してEnterキーを押す。コンピュータが再起動する。
+<ul>
+<li>Do you want to restart the computer now? (Y/N)</li>
+</ul>
+</li>
+</ul>
+<p><strong>確　認</strong></p>
+<ul>
+<li>WindowsキーとRキーを同時に押す。「ファイル名を指定して実行」ウインドウが開くので以下を入力して、"OK"をクリックする。
+<ul>
+<li>OptionalFeatures.exe</li>
+</ul>
+</li>
+<li>「Windowsの機能」ウインドウが開くので、以下のように「Windows Sandbox」にチェックが入っていることを確認する。これでOK！<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/04/SnapCrab_Windows-の機能_2020-4-9_0-8-49_No-00.png"><img class="aligncenter size-full wp-image-17607" src="{{ site.baseurl }}/assets/images/SnapCrab_Windows-&#12398;&#27231;&#33021;_2020-4-9_0-8-49_No-00.png" alt="" width="455" height="689" /></a></li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

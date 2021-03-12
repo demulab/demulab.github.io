@@ -1,0 +1,153 @@
+---
+layout: post
+title: RealSense D435をROSで使う
+date: 2018-08-14 20:59:27.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1302'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/14741.html"
+---
+<p><!-- wp:image {"id":14746} --></p>
+<figure class="wp-block-image"><img src="{{ site.baseurl }}/assets/images/2018/08/6c9fd55dd306850edfdfcc5038e8d4d4-1.png" alt="" class="wp-image-14746" /></figure>
+<p><!-- /wp:image --></p>
+<p><!-- wp:paragraph --></p>
+<p>RealSense D435をROSで使うメモ。RealSense SDKはaptでインストールできるのでとても簡単だった。ROSのラッパーもすでに提供されているのですぐ使える。このメモはカラー画像の表示まで。</p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>環 境</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li>Razer Blade 15</li>
+<li>Ubuntu16.04</li>
+<li>ROS Kinetic</li>
+<li>RealSense SDK 2.0</li>
+<li>ROS Wrapper: build 2.0.3</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>RealSense SDKのインストール</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><a href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md">このページのとおり実施すればよい。</a>以下の手順はその簡単な日本語訳。</li>
+<li>サーバーの公開鍵を登録
+<ul>
+<li><code>sudo apt-key adv --keyserver keys.gnupg.net --recv-key C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C8B3A55A6F3EFCDE</code></li>
+</ul>
+</li>
+<li>リポジトリにIntelサーバーを追加
+<ul>
+<li><code>sudo add-apt-repository "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo xenial main" -u</code></li>
+</ul>
+</li>
+<li>アップグレードするときは、以下を実行する。今回は初めてインストールするので、以下は実行しない。
+<ul>
+<li>sudo rm -f /etc/apt/sources.list.d/realsense-public.list</li>
+</ul>
+</li>
+<li> リポジトリのリストと使えるパッケージをリフレッシュする
+<ul>
+<li>sudo apt update</li>
+</ul>
+</li>
+<li>デモを実行できるようにインストールする
+<ul>
+<li>sudo apt install librealsense2-dkms</li>
+<li>sudo apt install librealsense2-utils</li>
+</ul>
+</li>
+<li>開発用に追加のパッケージをインストールする
+<ul>
+<li><code>sudo apt install librealsense2-dev</code></li>
+<li><code>sudo apt install librealsense2-dbg</code></li>
+</ul>
+</li>
+<li><code>RealSenseのUSBケーブルを抜き差しして以下のコマンドを実行する。ウインドウが開くので、左サイドバーにあるStereo Moduleをoffからonにすると、上のような画像が現れる。</code>
+<ul>
+<li>realsense-viewer<code></code></li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>ROSラッパーのインストール</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><a href="https://github.com/intel-ros/realsense/releases">https://github.com/intel-ros/realsense/releases</a>　からSource code (realsense-2.0.3.tar.gz)を~/catkin_ws/srcにダウンロードする</li>
+<li>cd ~/catkin_ws/src</li>
+<li>tar xvzf realsense-2.0.3.tar.gz</li>
+<li>cd ~/catkin_ws</li>
+<li>catkin_make -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release
+<ul>
+<li>usr/lib/libusb.aがないと怒られたら、次のコマンドを実施する。
+<ul>
+<li>sudo apt install libusb-dev</li>
+</ul>
+</li>
+<li>以下のエラーで怒られた場合
+<ul>
+<li><code>[realsense/realsense2_camera/CMakeFiles/realsense2_camera.dir/src/base_realsense_node.cpp.o] Error 1<br />
+CMakeFiles/Makefile2:1188: recipe for target 'realsense/realsense2_camera/CMakeFiles/realsense2_camera.dir/all' failed<br />
+make[1]: *** [realsense/realsense2_camera/CMakeFiles/realsense2_camera.dir/all] Error </code></li>
+<li>パッケージをダウングレードする。
+<ul>
+<li>ver="2.15.0-0~realsense0.83"</li>
+<li>sudo apt-get install librealsense2-dkms</li>
+<li>sudo apt-get install librealsense2-utils=${ver}</li>
+<li>sudo apt-get install librealsense2-dev=${ver}</li>
+<li>sudo apt-get install librealsense2-dbg=${ver}</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>catkin_make install</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>実行</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><code>roslaunch realsense2_camera rs_camera.launch</code></p>
+<ul>
+<li>解像度は640x480 pixel。変更したいときはrs_camera.launchの中を書き換える。</li>
+</ul>
+</li>
+<li><code>rosrun image_view image_view  image:=/camera/color/image_raw</code>
+<ul>
+<li>画像が表示されれば成功。</li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>トピック</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p>~/catkin_ws$ rostopic list<br />/camera/color/camera_info<br />/camera/color/image_raw<br />/camera/color/image_raw/compressed<br />/camera/color/image_raw/compressed/parameter_descriptions<br />/camera/color/image_raw/compressed/parameter_updates<br />/camera/color/image_raw/compressedDepth<br />/camera/color/image_raw/compressedDepth/parameter_descriptions<br />/camera/color/image_raw/compressedDepth/parameter_updates<br />/camera/color/image_raw/theora<br />/camera/color/image_raw/theora/parameter_descriptions<br />/camera/color/image_raw/theora/parameter_updates<br />/camera/depth/camera_info<br />/camera/depth/image_rect_raw<br />/camera/depth/image_rect_raw/compressed<br />/camera/depth/image_rect_raw/compressed/parameter_descriptions<br />/camera/depth/image_rect_raw/compressed/parameter_updates<br />/camera/depth/image_rect_raw/compressedDepth<br />/camera/depth/image_rect_raw/compressedDepth/parameter_descriptions<br />/camera/depth/image_rect_raw/compressedDepth/parameter_updates<br />/camera/depth/image_rect_raw/theora<br />/camera/depth/image_rect_raw/theora/parameter_descriptions<br />/camera/depth/image_rect_raw/theora/parameter_updates<br />/camera/extrinsics/depth_to_color<br />/camera/extrinsics/depth_to_infra1<br />/camera/extrinsics/depth_to_infra2<br />/camera/infra1/camera_info<br />/camera/infra1/image_rect_raw<br />/camera/infra1/image_rect_raw/compressed<br />/camera/infra1/image_rect_raw/compressed/parameter_descriptions<br />/camera/infra1/image_rect_raw/compressed/parameter_updates<br />/camera/infra1/image_rect_raw/compressedDepth<br />/camera/infra1/image_rect_raw/compressedDepth/parameter_descriptions<br />/camera/infra1/image_rect_raw/compressedDepth/parameter_updates<br />/camera/infra1/image_rect_raw/theora<br />/camera/infra1/image_rect_raw/theora/parameter_descriptions<br />/camera/infra1/image_rect_raw/theora/parameter_updates<br />/camera/infra2/camera_info<br />/camera/infra2/image_rect_raw<br />/camera/infra2/image_rect_raw/compressed<br />/camera/infra2/image_rect_raw/compressed/parameter_descriptions<br />/camera/infra2/image_rect_raw/compressed/parameter_updates<br />/camera/infra2/image_rect_raw/compressedDepth<br />/camera/infra2/image_rect_raw/compressedDepth/parameter_descriptions<br />/camera/infra2/image_rect_raw/compressedDepth/parameter_updates<br />/camera/infra2/image_rect_raw/theora<br />/camera/infra2/image_rect_raw/theora/parameter_descriptions<br />/camera/infra2/image_rect_raw/theora/parameter_updates<br />/camera/realsense_ros_camera_manager/bond<br />/camera/realsense_ros_camera_manager/parameter_descriptions<br />/camera/realsense_ros_camera_manager/parameter_updates<br />/rosout<br />/rosout_agg<br />/tf_static</p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p>以上</p>
+<p><!-- /wp:paragraph --></p>

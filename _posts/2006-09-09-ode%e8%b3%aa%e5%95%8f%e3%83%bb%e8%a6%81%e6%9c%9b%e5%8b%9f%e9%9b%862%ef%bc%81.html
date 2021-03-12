@@ -1,0 +1,61 @@
+---
+layout: post
+title: ODE質問・要望募集2！
+date: 2006-09-09 09:42:03.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE質問
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1490'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/318.html"
+---
+<p><span style="font-size: x-small;">ODEの質問・要望募集のコメント総数が５０件を超えました．本当にありがとうございます．コメントが長くなり読みづらくなりましたので新たな質問・要望は最新のODE質問・要望募集○！に投稿してください．</span></p>
+<p><span style="font-size: x-small;">なお，延び延びになっていた初心者用ODE本の原稿脱稿が９月末となりました．できるだけ良い本にしたいので説明して欲しいところがあればコメントして頂ければありがたいです．</span></p>
+<p><span style="font-size: x-small;"> さっそく，以下に掲載したうえのさんのご質問に回答していきたいと思います．</span></p>
+<table style="background-color: #ccffff; height: 482px;" border="0" width="333">
+<tbody>
+<tr>
+<td><span style="font-size: x-small;">こんばんは。</span></p>
+<p><span style="font-size: x-small;">物体と物体のコンタクト時での<br />
+FDir1（direction1）の設定についての質問です。</span></p>
+<p><span style="font-size: x-small;">動いてる細長い板(Trimesh)の縦長の面を常に<br />
+FDir1に設定したいのですがどのようにしたら<br />
+いいのか悩んでいます。<br />
+（目的は板の方向を元にしてその時々の<br />
+mu2を設定することです。）</span></p>
+<p>まず板の姿勢をdBodyGetRotationで<br />
+獲得し、その情報からFDir1[0]　～　[2]を<br />
+設定しようとしたのですがうまくいかない状況です。</p>
+<p>①FDir1の型はdVector3ということなのですが<br />
+これはオイラー角での姿勢表現で<br />
+3つのパラメーターを用いているのでしょうか？</p>
+<p><span style="font-size: x-small;">②動いている物体を元にしてFDir1を設定するには<br />
+やはりdBodyGetRotation　が有効なのでしょうか？</span></p>
+<p><span style="font-size: x-small;">②もしかして、そもそもFDir1を動いている<br />
+物体に合わせて変える、ということは<br />
+一般的ではないのでしょうか？</span></p>
+<p>以上、ちょっとわかりにくい文章かつ、<br />
+初歩的な質問ですがよろしく御願いします。ｍ（＿＿）ｍ</p>
+<p><span style="font-size: x-small;">うえの</span></td>
+</tr>
+</tbody>
+</table>
+<p><!--more--></p>
+<p>うえのさん，毎度ありがとうございます．</p>
+<p>①の回答：fdir1は第１摩擦方向で，単位ベクトルかつ接触点の法線方向と垂直でなければなりません．成分は３つあり，その単位ベクトルのx,y,z軸成分です．また，これを設定するためにはdContactFdir1のフラグを立てておく必要があります．</p>
+<p>②の回答： いろいろな方法があるかとは思いますが姿勢を知るにはdBodyGetRotationかdBodyGetQuaternionを通常使用すると思います．その他，ボディにヒンジジョイントがあるなら軸の方向ベクトルを利用することもできます．</p>
+<p>③の回答： 一般的かどうかわかりませんが，全方向移動ロボットのシミュレータを作成するときにfdir1を設定したことがあります．</p>
+<p>以上です．</p>

@@ -1,0 +1,89 @@
+---
+layout: post
+title: 'Ubuntu16.04: OpenCV3.4.1のインストール'
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '3'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/14574.html"
+---
+<p>Ubuntu16.04にOpenCV3.4.1をAlienwareにソースからビルドしインストールしたときのメモ。</p>
+<p><a href="http://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html">http://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html</a></p>
+<p>環境</p>
+<ul>
+<li>DELL Alienware R4<br />
+(CPU: Intel i7-8750K, Memory:16GB, GPU: Nvidia 1070, Memory: 8GB)</li>
+<li>xubunut16.04.2</li>
+<li>Kernel 4.13.0-43-generic</li>
+<li>gcc/g++ 5.4.0</li>
+</ul>
+<p>準備</p>
+<ul>
+<li>sudo apt-get update</li>
+<li>sudo apt-get upgrade</li>
+<li>sudo apt-get install build-essential</li>
+<li>sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev</li>
+<li>sudo apt install checkinstall auto-apt ccache</li>
+<li>sudo apt-get install -y libprotobuf-dev libleveldb-dev libsnappy-dev libhdf5-serial-dev protobuf-compiler</li>
+<li>sudo apt-get install -y libatlas-base-dev</li>
+<li>sudo apt-get install -y --no-install-recommends libboost-all-dev</li>
+<li>sudo apt-get install -y libgflags-dev libgoogle-glog-dev liblmdb-dev</li>
+<li>sudo apt install libv4l-dev v4l-utils</li>
+</ul>
+<p>ソースコードのダウンロード</p>
+<ul>
+<li>cd</li>
+<li>mkdir src</li>
+<li>cd src</li>
+<li>以下をクリックしてopencv-3.4.1をダウンロードする。
+<ul>
+<li><a href="https://sourceforge.net/projects/opencvlibrary/files/opencv-unix/3.4.1/opencv-3.4.1.zip">opencv-3.4.1.zip</a></li>
+</ul>
+</li>
+<li>unzip xvzf opencv-3.4.1.zip</li>
+<li>ln -s opencv-3.4.1  opencv</li>
+<li> 以下をクリックしてopencv_contrib-3.4.1をダウンロードする。
+<ul>
+<li><a href="https://github.com/opencv/opencv_contrib/archive/3.4.1.tar.gz">opencv_contrib-3.4.1.tar.gz</a></li>
+</ul>
+</li>
+<li>tar xvzf opencv_contrib-3.4.1.tar.gz</li>
+<li>ln -s opencv_contrib-3.4.1 opencv_contrib</li>
+</ul>
+<p>ソースのビルド</p>
+<ul>
+<li>cd ~/src/opencv</li>
+<li>mkdir build</li>
+<li>cd build</li>
+<li>cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=~/src/opencv_contrib/modules  -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D WITH_VTK=ON -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D ENABLE_FAST_MATH=1 -D CUDA_FAST_MATH=1 -D WITH_CUBLAS=1 -D WITH_OPENGL=ON -D WITH_CUDA=ON -D CUDA_ARCH_BIN="6.1" -D CUDA_ARCH_PTX="6.1" ..</li>
+<li>make -j 6
+<ul>
+<li>コンパイルが終わるまで３０分ぐらいかかりました。</li>
+</ul>
+</li>
+<li>sudo make install</li>
+<li>sudo /bin/bash -c 'echo "/usr/local/lib" &gt; /etc/ld.so.conf.d/opencv.conf'</li>
+<li>sudo  ldconfig</li>
+</ul>
+<p>テスト</p>
+<ul>
+<li>cd ~/src/opencv/samples/data</li>
+<li>~/src/opencv/build/bin/example_cpp_facedetect lena.jpg</li>
+<li>下の出力されれば成功。お疲れ様！</li>
+</ul>
+<p>&nbsp;</p>
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2017/12/face_detect-1.png"><img src="{{ site.baseurl }}/assets/images/face_detect-1-287x300.png" alt="" width="287" height="300" class="aligncenter size-medium wp-image-14126" /></a></p>

@@ -1,0 +1,84 @@
+---
+layout: post
+title: 'Jetson Xavier: Jetpack4.1.1インストール後の作業'
+date: 2018-12-20 07:30:01.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  classic-editor-remember: classic-editor
+  _edit_last: '2'
+  views: '876'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/15471.html"
+---
+<p>Jetson xavierにJetPack4.1.1をインストールした後の作業メモ</p>
+<ul>
+<li>ユーザの作成
+<ul>
+<li>System Settings -&gt; User Accounts でMy Accountsを作る。この例ではアカウント名をここではhappyminiとする。</li>
+<li>/etc/groupのvideoにアカウント名を加える。この例では以下になる。この作業をしないとそのアカウント名でloginできない。
+<ul>
+<li>video:x:44:ubuntu,nvidia,happymini</li>
+</ul>
+</li>
+<li>新しく作成したアカウントでログインしたら、端末を開き、次のコマンドでnvidiaアカウントの.bashrcをコピーする。
+<ul>
+<li>$ cd</li>
+<li>$ cp /home/nvidia/.bashrc .</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>unityは重いのでxfceを利用する
+<ul>
+<li>$ sudo apt-get install xubuntu-desktop</li>
+<li>$ sudo apt-get install xfce4 xfce4-goodies</li>
+</ul>
+</li>
+<li> ウェブブラウザのインストール
+<ul>
+<li>$ sudo apt-get install chromium-browser</li>
+</ul>
+</li>
+<li>ROSのインストール
+<ul>
+<li>$ mkdir  src</li>
+<li>$ cd src</li>
+<li>$ git clone https://github.com/jetsonhacks/installROSXavier.git</li>
+<li>$ cd installROSXavier</li>
+<li>$ ./installROS.sh</li>
+<li>$ ./installROS.sh  -p ros-melodic-desktop-full</li>
+<li>$ ./setupCatkinWorkspace.sh</li>
+</ul>
+</li>
+<li>温度測定とGUI表示ツールをインストール
+<ul>
+<li>$ sudo apt install lm-sensors</li>
+<li>$ sudo apt install psensor</li>
+</ul>
+</li>
+<li>各種アプリケーションをインストール
+<ul>
+<li>$ sudo apt install emacs</li>
+<li>$ sudo apt install htop</li>
+</ul>
+</li>
+<li>日本語入力
+<ul>
+<li>$ sudo apt install language-pack-ja-base  language-pack-ja</li>
+<li>$ sudo apt install ibus-mozc</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

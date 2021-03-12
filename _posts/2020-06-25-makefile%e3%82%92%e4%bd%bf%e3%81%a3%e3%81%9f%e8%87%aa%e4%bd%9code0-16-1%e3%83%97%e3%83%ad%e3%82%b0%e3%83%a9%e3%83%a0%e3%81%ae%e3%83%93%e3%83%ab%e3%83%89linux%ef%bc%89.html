@@ -1,0 +1,158 @@
+---
+layout: post
+title: Makefileを使った自作ODE0.16.1プログラムのビルド(Linux）
+date: 2020-06-25 17:29:21.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18301'
+  views: '277'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/18304.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_Simulation_2020-6-25_16-45-10_No-00.png"><img class="aligncenter size-full wp-image-18301" src="{{ site.baseurl }}/assets/images/2020/06/SnapCrab_Simulation_2020-6-25_16-45-10_No-00.png" alt="" width="682" height="552" /></a></p>
+<p>自分で作成したODE0.16.1を使ったプログラムのビルド法を説明します。環境はLinuxでMakefileを使います。</p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>テンプレートプログラムのビルド法
+<ul>
+<li>まず、自作プログラムを作業ディレクトリを作ります。
+<ul>
+<li>$mkdir /home/ユーザ名/src/ode-0.16.1/myprog</li>
+</ul>
+</li>
+<li>次に、自作プログラムのテンプレートなる次のファイルをmyprogフォルダの中に次のファイルをダウンロードします。
+<ul>
+<li><strong>ダウンロードファイル：</strong> <a href="https://demura.net/wordpress/wp-content/uploads/2020/06/template_linux200625.tar">template_linux200625.tar</a></li>
+</ul>
+</li>
+<li>その場所に展開します。 /home/ユーザ名/src/ode-0.16.1/myprog/templateというディレクトリが作成されます。
+<ul>
+<li>$ cd /home/ユーザ名/src/ode-0.16.1/myprog</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>$ tar xvf template_linux200625.tar</li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ cd template</li>
+<li>$ make</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>$ ./template</li>
+<li>うまくいくと上図のような赤玉が落下します。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>自作プログラムのビルド法
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>テンプレートディレクトリをコピーして好きな名前変えます。ここではhelloにします。
+<ul>
+<li>$ cd /home/ユーザ名/src/ode-0.16.1/myprog</li>
+<li>$ cp -r  template hello</li>
+</ul>
+</li>
+<li>テンプレートディレクトリには以下の３つのファイルがあります。
+<ul>
+<li>Makefile</li>
+<li>template.cpp</li>
+<li>template.h</li>
+</ul>
+</li>
+<li>template.cppとtemplate.hを好きな名前に変えます。ここではhello.cppとhello.h
+<ul>
+<li>$ cd /home/ユーザ名/src/ode-0.16.1/myprog/hello</li>
+<li>$ mv template.cpp hello.cpp</li>
+<li>$ mv template.h  hello.h</li>
+</ul>
+</li>
+<li>ビルド用の設定ファイルMakefileの12行目を中を上で変更した名前に変更して保存します。このMakefileはソースファイルが1個しかない場合なので複数ある場合は、Makefileのフォーマットに従って書き換える必要があります。</li>
+</ul>
+</li>
+</ul>
+<pre># Makefile
+
+CXX = g++
+CFLAGS = -g 
+
+LIB = -lode -ldrawstuff -lGL -lGLU -lX11 -lrt -lm -lpthread -lstdc++
+LIBDIR = -L/usr/lib/x86_64-linux-gnu -L../../drawstuff/src/.libs  -L../../ode/src/.libs -L/usr/lib 
+INCDIR = -I../../include -I../../ode/src -I/usr/include
+
+# 以下のtemplateを好きなファイル名に変更する。
+OUT  = template
+OBJS = $(OUT).o
+
+all: $(OUT)
+
+$(OUT): $(OBJS)
+	$(CXX) $(CFLAGS) -o $@ $(OBJS) $(INCDIR) $(LIBDIR) $(LIB) 
+
+$(OUT).o: $(OUT).cpp template.h
+	$(CXX) $(CFLAGS) -c $&lt; $(INCDIR) $(LIBDIR) $(LIB) 
+
+clean: 
+	rm -f $(OUT)   
+	rm -r $(OBJS)  
+
+.PHONY: all clean</pre>
+<ul>
+<li>ビルド
+<ul>
+<li>$ make</li>
+<li>なお、ビルドしてエラーが出る場合は、ODEとDrawstuffのライブラリの位置が違うかもしれません。ライブラリの場所を相対パスで指定しているので、自作のファイルの配置される場所によってライブラリを読めなくなります。その場合は7、８行目のパスを変更してください。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

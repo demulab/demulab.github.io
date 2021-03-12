@@ -1,0 +1,265 @@
+---
+layout: post
+title: 仮想シミュレーション環境「箱庭」のインストールメモ(ARM版、Windows)
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- education
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18393'
+  views: '3'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>仮想シミュレーション環境「箱庭」のインストールメモ。ターゲットCPUはARM。</p>
+<p>参考サイト</p>
+<ul>
+<li><a href="https://toppers.github.io/hakoniwa/prototypes/single-robot/">TOPPERS/箱庭デモ ETロボコンシミュレータ</a></li>
+</ul>
+<p>インストール</p>
+<ul>
+<li>開発環境 (WSL + Ubuntu18.04)
+<ul>
+<li>WSLのインストール</li>
+<li>Athrill2のインストール
+<ul>
+<li>端末を起動する。</li>
+<li>ダウンロード
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/toppers/athrill.git</code></li>
+<li><code>$ git clone https://github.com/toppers/athrill-target-ARMv7-A.git</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ sudo apt install build-essential</code></li>
+<li><code>$ cd ~/src/athrill-target-ARMv7-A/build_linux</code></li>
+<li><code>$ make timer32=true clean</code></li>
+<li><code>$ make timer32=true</code></li>
+<li>ファイルの確認
+<ul>
+<li><code>$ ls -l ../../athrill/bin/linux/athrill2</code></li>
+<li>上のコマンドを実行して、以下のように表示されば成功
+<ul>
+<li>-rwxr-xr-x 1 user group 3889056 7月 1 11:04 ../../athrill/bin/linux/athrill2*</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>設定
+<ul>
+<li>エディタで~/.bashrcを開き以下の行を末尾に加え保存する。
+<ul>
+<li>export PATH=/home/ユーザ名/src/athrill/bin/linux:${PATH}</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>linux版64bit gccコンパイラのインストール
+<ul>
+<li>ARM用コンパイラのインストール
+<ul>
+<li><code>$ sudo apt install gcc-arm-none-eabi</code></li>
+</ul>
+</li>
+<li>動作確認
+<ul>
+<li>以下のコマンドを実行して、
+<ul>
+<li><code>$ arm-none-eabi-gcc --version</code></li>
+</ul>
+</li>
+<li>下図のように表示されれば成功。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/SnapCrab_demulab@EARTH-_2020-7-14_16-58-28_No-00.png"><img class="aligncenter size-full wp-image-18393" src="{{ site.baseurl }}/assets/images/SnapCrab_demulab@EARTH-_2020-7-14_16-58-28_No-00.png" alt="" width="827" height="259" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>箱庭用EV3RT開発環境のインストール
+<ul>
+<li>ダウンロード・インストール
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/toppers/ev3rt-athrill-ARMv7-A.git</code></li>
+</ul>
+</li>
+<li>EV3ロボット制御プログラム
+<ul>
+<li>作業ディレクトリと作業ファイルは以下となります。</li>
+<li> 作業ディレクトリ
+<ul>
+<li>~/src/ev3rt-athrill-ARMv7-A/sdk/OBJ1.1</li>
+</ul>
+</li>
+<li>作業ファイル
+<ul>
+<li>~/src/ev3rt-athrill-ARMv7-A/sdk/OBJ1.1/app.c</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Unityのインストール・パッケージのインストール・通信方式の切り替え
+<ul>
+<li>Unity のインストール
+<ul>
+<li><a href="https://unity3d.com/jp/get-unity/download">この公式サイト</a>から「Unityを選択+ダウンロード」を選択する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity1-1.png"><img class="aligncenter size-large wp-image-18398" src="{{ site.baseurl }}/assets/images/unity1-1-1024x561.png" alt="" width="1024" height="561" /></a></li>
+<li>「個人向け」→「Personal」→「はじめる」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity2.png"><img class="aligncenter size-large wp-image-18399" src="{{ site.baseurl }}/assets/images/unity2-1024x647.png" alt="" width="1024" height="647" /></a></li>
+<li> 「リピートユーザー」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity3.png"><img class="aligncenter size-large wp-image-18400" src="{{ site.baseurl }}/assets/images/unity3-1024x647.png" alt="" width="1024" height="647" /></a></li>
+<li>Accept termsにチェックを入れて「Download Unity Hub」をクリックしてUnityHubSetup.exeをデスクトップにダウンロードする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity4.png"><img class="aligncenter size-large wp-image-18401" src="{{ site.baseurl }}/assets/images/unity4-1024x886.png" alt="" width="1024" height="886" /></a></li>
+<li>ダウンロードしたUnityHubSetup.exeをダブルクリックして起動する。「同意する」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity6.png"><img class="aligncenter size-full wp-image-18403" src="{{ site.baseurl }}/assets/images/unity6.png" alt="" width="579" height="356" /></a></li>
+<li>インストール先はデフォルトのまま、「インストール」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity7.png"><img class="aligncenter size-full wp-image-18404" src="{{ site.baseurl }}/assets/images/unity7.png" alt="" width="621" height="400" /></a></li>
+<li>以下の画面になるので「完了」をクリックするとUnity Hubが起動する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity8.png"><img class="aligncenter size-full wp-image-18405" src="{{ site.baseurl }}/assets/images/unity8.png" alt="" width="621" height="400" /></a></li>
+<li>Unity Hubが起動すると「Windowsセキュリティの重要な警告」画面が開くので「プライベートネットワーク」にチェックを入れ、「パブリックネットワーク」のチェックを外してから「アクセスを許可する」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity9.png"><img class="aligncenter size-full wp-image-18406" src="{{ site.baseurl }}/assets/images/unity9.png" alt="" width="655" height="497" /></a></li>
+<li>Unity Hubが起動する。</li>
+<li>サインイン
+<ul>
+<li>次のウインドウになるので、右上の人型アイコンをクリックし、サインインをクリックする。</li>
+<li>Unity IDでサインインの画面になるので、IDがない人は、「Unity IDをお持ちでない場合、こちらでIDを作成してください。」かGoogle、Facebookでサインインする。</li>
+</ul>
+</li>
+<li>ライセンス認証
+<ul>
+<li>歯車アイコンをクリックして、「ライセンス管理」をクリックする。</li>
+<li>「新規ラインセンスの認証」をクリックして、</li>
+<li>「Unity Personal」「Unityを業務に関連した用途に使用しません。」をクリックする。</li>
+</ul>
+</li>
+<li>インストール
+<ul>
+<li>まだ、Unityはインストールされていないので、「インストール」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity10.png"><img class="aligncenter size-full wp-image-18408" src="{{ site.baseurl }}/assets/images/unity10.png" alt="" width="1006" height="633" /></a></li>
+<li>最新正式リリース　Unity 2019.4.3.f1 (LTS)にチェックを入れて「次へ」をクリック。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity11.png"><img class="aligncenter size-full wp-image-18409" src="{{ site.baseurl }}/assets/images/unity11.png" alt="" width="1006" height="633" /></a></li>
+<li>「Unityバージョンを加える」画面になる。
+<ul>
+<li>「Documentation」と「日本語」にチェックが入っていることを確認して、「実行」をクリックする。インストールが始まる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity12.png"><img class="aligncenter size-full wp-image-18410" src="{{ site.baseurl }}/assets/images/unity12.png" alt="" width="1006" height="633" /></a></li>
+</ul>
+</li>
+<li>「インストール」にしばらく時間がかかる。私の環境では10分程度かかった。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity14.png"><img class="aligncenter size-full wp-image-18411" src="{{ site.baseurl }}/assets/images/unity14.png" alt="" width="1006" height="633" /></a></li>
+<li>インストールが終了すると次の画面のように2019.4.3f1 LTSがインストールされていることがわかる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity15.png"><img class="aligncenter size-full wp-image-18413" src="{{ site.baseurl }}/assets/images/unity15.png" alt="" width="1006" height="633" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Unityパッケージのダウンロード
+<ul>
+<li>Cドライブ直下にUnityというフォルダーを作成する。</li>
+<li> 以下のパッケージをUnityフォルダーにダウンロードする。
+<ul>
+<li>single-robot-HackEV.unitypackage：HackEVを模した走行体モデル</li>
+<li><a href="https://github.com/toppers/hakoniwa-Unity-HackEV/releases">https://github.com/toppers/hakoniwa-Unity-HackEV/releases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>新規プロジェクトの作成
+<ul>
+<li>Unityの左欄の「プロジェクト」をクリックすると次の画面になるので「新規作成」をクリックして新しいプロジェクトを作成する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity16-1.png"><img class="aligncenter size-full wp-image-18416" src="{{ site.baseurl }}/assets/images/unity16-1.png" alt="" width="1006" height="633" /></a></li>
+<li>次の画面になるので、「3D」が選択されていることを確認し、プロジェクト名に「test」、保存先は「C:\Unity」にして「作成」をクリックして新しいプロジェクトを作成する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity21.png"><img class="aligncenter size-full wp-image-18421" src="{{ site.baseurl }}/assets/images/unity21.png" alt="" width="886" height="524" /></a></li>
+<li>次のようにUnityが起動する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity18.png"><img class="aligncenter size-large wp-image-18418" src="{{ site.baseurl }}/assets/images/unity18-1024x520.png" alt="" width="1024" height="520" /></a></li>
+</ul>
+</li>
+<li>Unityのメニュバーから「Assets」→「Import package」→「Custom package...」をクリックして、先ほどダウンロードしたパッケージ「single-robot-HackEV.unitypackage」を開く。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity1-2.png"><img class="aligncenter size-full wp-image-18489" src="{{ site.baseurl }}/assets/images/unity1-2.png" alt="" width="986" height="573" /></a></li>
+<li>Import Unity Package画面が開くので、そのまま「Import」をクリックする。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity20.png"><img class="aligncenter size-full wp-image-18420" src="{{ site.baseurl }}/assets/images/unity20.png" alt="" width="390" height="621" /></a></li>
+<li>「Scenes」のToopers_Courseをダブルクリックするとコースが現れる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/untity2.png"><img class="aligncenter size-large wp-image-18491" src="{{ site.baseurl }}/assets/images/untity2-1024x593.png" alt="" width="1024" height="593" /></a></li>
+<li>「Edit」→「Project Setting」のFixed timestepとTime Scaleを以下のように変える。
+<ul>
+<li>Fixed Timestep: 0.001</li>
+<li>Time Scale: 0.6<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity3-1.png"><img class="aligncenter size-full wp-image-18492" src="{{ site.baseurl }}/assets/images/unity3-1.png" alt="" width="683" height="545" /></a></li>
+</ul>
+</li>
+<li>同じく「Project Settings」の「Quality」をクリックして、Vsync Countを以下のように変える。
+<ul>
+<li>VSync Count: Don't Sync<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity4-1.png"><img class="aligncenter size-full wp-image-18493" src="{{ site.baseurl }}/assets/images/unity4-1.png" alt="" width="683" height="624" /></a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>次に、「Player」のOther SettingsのScripting Define Symbolsを以下のように設定する。
+<ul>
+<li>Scripting Define Sumbols: VDEV_IO_MMAP<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity5-1.png"><img class="aligncenter size-full wp-image-18495" src="{{ site.baseurl }}/assets/images/unity5-1.png" alt="" width="683" height="624" /></a></li>
+</ul>
+</li>
+<li>次に、左欄 HierarchyのRobot → Robotmodel_3をクリックすると下図のように右下にEV3 Sensor (script)とEV3 Actuator (Scritp)が現れるので、以下のようにそのFiletpathを設定する。\\wsl$\Ubuntu-18.04\home\demulab\src\ev3rt-athrill-ARMv7-A\sdk\OBJ1.1にあるathrill_mmap.binとunity_mmap.binをC:\Unity下にコピーする。
+<ul>
+<li>EV3 Sensor Filepath
+<ul>
+<li>C:\Unity\athrill_mmap.bin</li>
+</ul>
+</li>
+<li>EV3 Actuator Filepath
+<ul>
+<li>C:\Unity\unity_mmap.bin</li>
+</ul>
+</li>
+<li><a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity6-1.png"><img class="aligncenter size-large wp-image-18496" src="{{ site.baseurl }}/assets/images/unity6-1-1024x590.png" alt="" width="1024" height="590" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

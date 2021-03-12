@@ -1,0 +1,73 @@
+---
+layout: post
+title: ビデオカメラで撮影した動画をOpenCVで読み込み表示
+date: 2017-09-30 10:46:35.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- 未分類
+tags: []
+meta:
+  views: '2061'
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/13563.html"
+---
+<p>SonyのビデオカメラHandycam HDR-CX720で撮影した動画mtsフォーマットをOpenCVで読み込んだときのメモ。環境はUbuntu16.04, OpenCV3.2, gcc5.4。</p>
+<p>そのビデオカメラで撮影したハイビジョン動画はAVCHD形式で保存され拡張子MTSが付く。このままではOpenCVで読み込めないのでffmpegを使いmp4フォーマットに変換した。</p>
+<ul>
+<li>sudo apt  install ffmpeg</li>
+<li>ffmpeg -i    input_file.MTS    -vcodec copy -acodec copy  output_file.mp4</li>
+</ul>
+<p>動画ファイルを読み込み原画像とエッジ検出フィルタをかけた画像を表示するサンプルプログラム。</p>
+<pre class="brush:cpp">#include &#60;opencv2/core.hpp&#62;
+#include &#60;opencv2/imgcodecs.hpp&#62;
+#include &#60;opencv2/highgui.hpp&#62;
+#include &#60;opencv2/imgproc.hpp&#62;
+#include &#60;opencv2/videoio.hpp&#62;
+#include 
+
+#define VIDEO_FILE_NAME "/home/demura/src/video/1.mp4"
+
+int main(int argc, const char* argv&#91;&#93;)
+{
+  cv::VideoCapture capture(VIDEO_FILE_NAME);
+  if (!capture.isOpened()) {
+    std::cout &#60;&#60; "ERROR:" &#60;&#60; VIDEO_FILE_NAME &#60;&#60; " (no such file)" &#60;&#60; std::endl; } int width = (int)capture.get(CV_CAP_PROP_FRAME_WIDTH); int height = (int)capture.get(CV_CAP_PROP_FRAME_HEIGHT); int count = (int)capture.get(CV_CAP_PROP_FRAME_COUNT); int fourcc = (int)capture.get(CV_CAP_PROP_FOURCC); double fps = capture.get(CV_CAP_PROP_FPS); cv::VideoWriter writer("out.avi", fourcc, fps, cv::Size(width, height), false); cv::namedWindow("frame"); cv::namedWindow("edge"); while (true) { cv::Mat frame; capture &#62;&#62; frame;
+      if (frame.empty())　break;
+
+      cv::Mat edge, img_tmp;
+      //cv::Canny(frame, edge, 50, 150);　　      // 　　　　　                                                  
+      cv::Sobel(frame, img_tmp, CV_32F, 1, 0, 3); // ソーベルフィルタ
+      cv:convertScaleAbs(img_tmp, edge, 1, 0);    // 画像として表示できるよう変換
+
+      writer &#60;&#60; edge;
+
+      imshow("frame",frame);
+      imshow("edge", edge);
+      cv::waitKey(30);
+  }
+
+  return 0;
+</pre>
+<p>ビルドするためのCMakeLists.txt。以下のコマンでビルドする。</p>
+<ul>
+<li>cmake .</li>
+<li>make</li>
+</ul>
+<pre class="brush:cpp">
+cmake_minimum_required(VERSION 2.8)
+project(video)
+find_package(OpenCV REQUIRED)
+add_executable(video video.cpp)
+target_link_libraries(video ${OpenCV_LIBS})
+</pre>
+<p>終わり</p>

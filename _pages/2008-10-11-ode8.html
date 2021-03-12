@@ -1,0 +1,48 @@
+---
+layout: page
+title: 8. ERP and CFM
+date: 2008-10-11 14:50:47.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '1922'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode8"
+---
+<p style="margin: 0px 0px 15px;"><img src="{{ site.baseurl }}/assets/images/2008/10/sample4a.jpg" alt="" width="360" height="346" class="alignnone" /></p>
+<p style="margin: 0px 0px 15px;">This is the 8th ODE (Open Dynamics Engine) tutorial.</p>
+<p style="margin: 0px 0px 15px;">Using the ODE, must remember parameters, ERP (Error Reduction Parameter) and CFM (Constraint Force Mixing).</p>
+<p style="margin: 0px 0px 15px;"><strong><span style="color: #0000ff;">1. ERP (Error Reduction Parameter)</span></strong></p>
+<p style="margin: 0px 0px 15px;">ERP is a parameter which corrects  joint error. As the simulation is repeated, the joint error increases due to various internal approximations.</p>
+<p style="margin: 0px 0px 15px;">ERP can fix the error. The value must be set between  0 and 1.  0 does not fix the error, and 1 fixes the error by the next step. Typical values are between 0.1 to 0.8, the default value is 0.2.  It is not recommended to set ERP to 1.</p>
+<p style="margin: 0px 0px 15px;">If you want to set the ERP, please use API as following. This API influences whole joints of the world.</p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>dWorldSetERP (dWorldID, dReal erp)</strong><br />
+Set a global ERP.  The argument erp  must be set between 0.0 and 1.0.</li>
+</ul>
+<p style="margin: 0px 0px 15px;">Please insert <strong>dWorldSetERP (world, 0.0)</strong> below <strong>dWorldSetGravity()</strong> in <a style="color: #990000; text-decoration: none;" href="../wp-content/uploads/2008/09/sample3-080929.zip">sample7.  </a>If ERP is set to 0,  the above robot is broken like the above figure.</p>
+<p style="margin: 0px 0px 15px;"><strong><span style="color: #0000ff;">2. CFM (Constraint Force Mixing)</span></strong></p>
+<p style="margin: 0px 0px 15px;">Next,  explain CFM (Constraint Force Mixing), an another specific parameter  of the ODE, which changes stiffness of a joint.</p>
+<p style="margin: 0px 0px 15px;">There are two types of constraint, <span style="color: #990000;"><strong>hard constraint </strong></span>and <span style="color: #990000;"><strong>soft constraint</strong></span><span style="color: #990000;"><strong>. </strong></span>Hard constraint is the constraint which must be obeyed. Meanwhile, soft constraint is the constraint which is not so hard. Some violation can be permitted. To control the constraints, ODE uses CFM parameters. If you set CFM to 0, the hard constraint is applied, the greater value of CFM will be more soft constraint.</p>
+<p style="margin: 0px 0px 15px;">In addition, ODE uses a joint in the same meaning as constraint. The hard constraint means that the joint is a perfect joint. That is, the position of an anchor and the axis of a joint is not violate. In other word, the joint is hard. The soft constraint means that the joint is not perfect. In other word, the joint is flexible.</p>
+<p style="margin: 0px 0px 15px;">You can simulate a spring and a damper system to use ERP and CFM. The spring and the damper system are often used such as a model between a humanoid foot and the ground. Please read the <a style="color: #990000; text-decoration: none;" title="ODE Manual" href="http://ode.org/ode-latest-userguide.html" target="_self">ODE user manual</a>.</p>
+<p style="margin: 0px 0px 15px;">Next, I explain how to use CFM. If you want to set the CFM. Please use the following API. This API, however, works all joints in the world. In the case of single-precision, the default value of the CFM is 1E-5 (1o^-5)  and in the case of precision, the value is 1E-10 (10 ^ -5).</p>
+<ul style="margin: 5px 0px 15px; padding-left: 20px;">
+<li style="margin: 0px; color: #000000; line-height: 100%;"><strong>dWorldSetCFM (dWorldID, dReal cfm)</strong><br />
+Set a global CFM.</li>
+</ul>
+<p style="margin: 0px 0px 15px;">Let' use CFM.  Please insert<strong> dWorldSetCFM()</strong> below <strong>dWorldSetERP()</strong> in  the sample7.cpp. CFM changes softness of the  joint. If you want to set the value to 0,  in this case is a hard constraint. You must not set CFM to a negative value, because the system will become unstable. So please do not it.</p>
+<p style="margin: 0px 0px 15px;">In addition, CFM is working to stabilize the simulation. So, the system is not unstable,  increase the CFM. However, the joint will be soft. The recommended value is not greater than 1E-3 (10^-3).</p>
+<p>That's all.  See you next time.</p>

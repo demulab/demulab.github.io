@@ -1,0 +1,148 @@
+---
+layout: post
+title: ODE 0.10 のインストール　(Linux環境　Code::Blocks)
+date: 2008-07-12 14:39:22.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _edit_last: '2'
+  views: '4897'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/575.html"
+---
+<p>ODE0.10.0のinstall.txtを読むと，Visual Studio, Autotools (Linux, OS X), Code::Blocksでのビルドについての説明があります．ここではマルチプラットフォームの開発環境Code::Blocks8.02用のインス トール方法を説明します．OSはLinuxのUbuntu8.04を使います。Ubuntuを使うとWindowsと同様な操作でプログラムのビルドが可能です。</p>
+<ol>
+<li>準　備
+<ul>
+<li>g++, OpenGL, premakeがインストールされていない場合は、まず、それらを準備しましょう。Ubuntuの場合，標準では入っていないので以下の操作が必要になります。</li>
+<li>g++のインストール
+<ul>
+<li>$ sudo apt-get install g++</li>
+</ul>
+</li>
+<li>OpenGLのインストール
+<ul>
+<li>$ sudo apt-get install freeglut3 freeglut3-dbg freeglut3-dev</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>premakeのインストール<br />
+ Code::blocks用のプロジェクトを作成するためにPremakeをインストールします。<a href="http://premake.sourceforge.net/download">ここをクリックして</a>premakeのダウンロードサイトへ行き、Ubuntu用のパッケージがあるのでご自分のバージョンにあったものをダウンロードしてください。8.04の場合は以下のリンクをクリックするとパッケージ・インストーラが起動して簡単にインストールできます。</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li><a href="http://launchpadlibrarian.net/14055887/premake_3.6-0ubuntu1%7Eppa1_i386.deb">http://launchpadlibrarian.net/14055887/premake_3.6-0ubuntu1%7Eppa1_i386.deb<br />
+ </a></li>
+</ul>
+<p><!--more--></p>
+</li>
+</ul>
+</li>
+<li><strong>ODE 0.10のインストール </strong>
+<ul>
+<li><a href="http://sourceforge.net/project/showfiles.php?group_id=24884">ODEのダウンロードサイト</a>からode-0.10.0.tar.gzをダウンロードし以下に保存します。
+<ul>
+<li>/home/ユーザ名/src</li>
+</ul>
+</li>
+<li>端末を開き、次のコマンドで展開します。
+<ul>
+<li>cd  src</li>
+<li>tar  xvzf ode-0.10.0.tar.gz</li>
+</ul>
+</li>
+<li>ビルドをするためのワークスペースを作ります。以下のようにコマンドを打ち込む．カットアンドペースト の場合は以下の文字列を使用し，自分で打ち込む場合は２個の-(マイナス)文字がつながって見えるので，下画像を参照して注意深く打ち込んでください．
+<ul>
+<li>cd 　ode-0.10.0/build<br />
+ 注：cdコマンドはディレクトリの移動</li>
+<li>
+<pre>premake --with-demos  --with-tests  --os linux --target cb-gcc</pre>
+<p><strong><span style="color: #ff0000;">注：withとtargetの前は-（マイナス）が２個連続している．下画像参照．</span></strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/premake.jpg" alt="premake.jpg" /></p>
+<ul>
+<li>成功するとcb-gccというcode::blocks用のフォルダができる．フォルダリ構成は以下となる．
+<ul>
+<li>/home/ユーザ名/src/ode-0.10.0/build/cb-gcc</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ODEのビルド </strong>
+<ul>
+<li>code::blocksを起動</li>
+<li>code::blocksのメニューバーから「ファイル(F)」→「開く（O)」を選択
+<ul>
+<li>/home/ユーザ名/src/ode-0.10.0/build/cb-gcc/ode.workspaceを選択</li>
+</ul>
+</li>
+<li>この作業は任意です．これによりOPCODEの新しい衝突検出機能を有効にします．よく分からない方は飛ばしてください．
+<ul>
+<li>ode-0.10.0/ode/src/config.hの44行目を何らかのエディタを使って以下のように変更する．<br />
+ #define dTRIMESH_OPCODE_USE_NEW_TRIMESH_TRIMESH_COLLIDER 1</li>
+</ul>
+</li>
+<li>ビルドターゲットをDebugDoubleLibとする（下画像の赤丸箇所）．
+<ul>
+<li>これによりデバッグ向け，倍精度，静的なライブラリが作られます．ODEではDLL（Dynamic Link Library)より静的ライブラリ(Static Library)が推奨されています．静的ライブラリで作成した実行ファイルはサイズが大きくなりますが，配布時はその実行ファイルだけを配布すれば良く ライブラリを付属する必要はありません．自分が作成した実行ファイルを配布するときは静的ライブラリがお勧めです．</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/targetdebuglib.jpg" alt="targetdebuglib.jpg" /></p>
+</li>
+<li>「ビルド(B)」→「ワークスペースをビルド(W)」を選択．ワークスペースはVisual C++のソリューションと同様なものです．
+<ul>
+<li>デモプログラムの実行ファイルは/home/ユーザ名/src/ode-0.10.0/lib/DebugDoubleLibに生成される．</li>
+<li>ファイル・ブラウザでそのフォルダを開く</li>
+<li>試しに，demo_basketをダブルクリックして起動すればODEのビルド成功．Ubuntuは実行ファイルをダブルクリックすれば起動します。操作感はもうWindowsと変わりませんね。</li>
+</ul>
+</li>
+</ul>
+</li>
+<p><!--more--></p>
+<li><strong>ODE本サンプルプログラムのビルド </strong>
+<ul>
+<li>demura.netの<a href="http://demura.net/dl">ダウンロードカテゴリー</a>からrobosimu******.zip（******は日付）をダウンロードして，/home/ユーザ名/src/ode-0.10.0に解凍する。 解凍に成功するとroboSimuというフォルダが生成され、その中にはsrc, texturesフォルダ，premake.exe, premake.lua, Readme.txt, roboSimu.luaファイルがある．srcの中にはODE本のサンプルコードがある．
+<ul>
+<li>Ubuntuではファイル・ブラウザでzipファイルをダブルクリックするとウインドウが開くので「展開」をクリックするだけで解凍できる。</li>
+</ul>
+</li>
+<li>ODEのインストールと同じように，premakeコマンドを使い，code::blocks用のプロジェクトを生成する．端末を起動し，以下のコマンドを実行する．
+<ul>
+<li>cd src/ode-0.10.0/roboSimu</li>
+<li>
+<pre>premake  --target  cb-gcc </pre>
+<p>
+ <span style="color: #ff0000;"><strong><br />
+ </strong></span></li>
+</ul>
+</li>
+<li>code::blocksを起動</li>
+<li>code::blocksのメニューバーから「ファイル(F)」→「開く（O)」を選択
+<ul>
+<li>/home/ユーザ名/src/ode-0.10.0/roboSimu/src/roboSimu.workspaceを選択</li>
+</ul>
+</li>
+<li>ビルドターゲットをDebugLibとする．</li>
+<li>「ビルド(B)」→「ワークスペースをビルド(W)」を選択</li>
+<li>サンプルプログラムの実行ファイルは/home/ユーザ名/src/ode-0.10.0/roboSimu/DebugLibに生成される．</li>
+<li>試しに，arm1をダブルクリックして起動すれば成功．お疲れ様でした！</li>
+<li>なお、code::blocksからも「ビルド(B)」→「実行(R)」で起動できる。ただし、その場合は、起動したいプロジェクトにマウスカーソールを合わせ、右マウスをクリックして「プロジェクトをアクティブ化する」を選ぶ。</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2008/07/cbactivate.jpg" alt="cbactivate.jpg" /></p>
+</li>
+</ol>
+<p>でむ</p>

@@ -1,0 +1,35 @@
+---
+layout: post
+title: Big News for ODE：唯一の弱点が解決される！？
+date: 2008-02-12 22:50:52.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '6070'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/486.html"
+---
+<p>ODE (Open Dynamics Engine)のメーリングリストを見ていたら，積分器に４次のルンゲ-クッタが実装されそうです。これはビッグニュースです。ODEは今まで高速で安定性があり，リーズナブルな挙動を示すことが特徴でした。逆に言えば，精度が必要な分野では使用しない方が良いということです。これはODEのユーザガイドにも書いてありますし，拙著にも明記しています。</p>
+<p>ところが，このビッグニュースにより唯一の弱点が解決される可能性があるのです。ロボット研究者も益々利用できる機会が増えることでしょう。</p>
+<p>ここからは専門的になるので，初心者は決して読まないでください（笑い）。</p>
+<p><!--more--><br />
+ODEは積分法としては，準陰積分法(semi-implicit integration)を採用しています。準陰積分法は，陰積分（後退積分）と陽積分（前進積分）が混在している手法です。具体的には，拘束力に関しては陰積分が適用され，外力に関しては陽積分が適用されています。現時点では，陽積分として一次のオイラー積分を用いています。</p>
+<p>ODEでは拘束力計算にAnitescuの方法を用いているため，一次の陰積分が組み込まれた運動方程式と拘束条件を連立してLCP問題に帰着させています。そのため，拘束力の計算は陰積分で求めています。この拘束ベース法はODE特有の方法というより，極めて広く使われている方法のようです。例えば，MathEngine，Havok, PhysX,　OpenHRP3，Springheadなど…</p>
+<p>ODEの陰積分（拘束計算）の計算精度に関しては，BoeingとBraunlによるとODEはPhysX, Novodex, Bullet, JigLib, Newton, Tokamak, True Axisと比較した結果，一番良い ようです。ただし，dWorldStep()を使う場合です。精度が必要な場合はdWorldQuickStep()を使わないでください。</p>
+<p>なお，この論文では結論として，多くのテストで一番は入れ替わっているので用途に合った計算エンジンを選ぶのが良いと述べています。</p>
+<p>私のそのとおりだと思います。ただ，その論文のテストではODEのパラメータが適切に設定されていないように思えるので，全体的にモット良い結果になると思いますが…</p>
+<p>最後に，物理計算エンジンの性能は時と伴に変わります。研究者が優れたアルゴリズムを毎年発表しているので，結局はマン・パワーの勝負になるでしょう。2000年前半まで一世を風靡したMathEngineからODEやPhysXが産まれました。最近では，NVIDIAがAGEIA PhysXを買収し，IntelがHavokを買収しています。ODEがこれから生き残るためには，Linuxのようにユーザや利用する企業を増やすことでしょう。demura.netが少しでも，そのお役に立てれば幸いです。</p>
+<p>参考文献<br />
+A. Boeing and T. Braunl, Evaluation of real-time physics simulation systems, Proceedings of the 5th international conference on Computer graphics and interactive techniques in Australia and Southeast Asia, P.281-288, (2007)</p>

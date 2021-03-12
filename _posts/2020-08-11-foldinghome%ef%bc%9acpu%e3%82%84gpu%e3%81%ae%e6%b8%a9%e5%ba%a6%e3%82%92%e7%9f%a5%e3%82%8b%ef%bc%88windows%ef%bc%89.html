@@ -1,0 +1,68 @@
+---
+layout: post
+title: Folding@home：CPUとGPUの温度を知る方法（Windows）
+date: 2020-08-11 15:29:46.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18708'
+  views: '430'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/18705.html"
+---
+<p>Folding@homeで気を付けなければならないことは、PCのCPUやGPUの温度管理です。GPUによっも多少違いますが仕様上の最大温度は91℃ほどですが、NVIDIAの関係者に聞いたところ、長時間運用するのであれば80℃以下の運用が望ましいとコメントを頂きました。Intel CoreのCPUの場合、100℃を越えるとサーマル・スロットリング機能と呼ばれるCPUの温度上昇を抑える機能が働くのでCPUは壊れないと言われていますが、ノートPCなどの場合はマザーボードが壊れる可能性があります。私は温度管理を全くしないでゲーミングノートPCでFolding@homeをやり続けたところ、一ヶ月ぐらでPCを壊した経験があります。<br />
+ここでは稼働中平均して80℃を越えないようにCPUやGPUの温度を管理しましょう。そのため、まずは、CPUやGPUの温度を知りましょう！</p>
+<ul>
+<li>温度を管理するためには、まず、温度を知る必要があります。 ここではCPUとGPUの温度を一つのアプリで知るために以下のオープンソースのフリーソフトを使います。自己責任で使用するよう以下のサイトに記載してあります。ダウンロードして解凍するとOpenHardwareMonitor.exeが現れるので、それを管理者権限で実行するだけです。
+<ul>
+<li><a href="https://openhardwaremonitor.org/downloads/">Open Hardware Monitor</a></li>
+</ul>
+</li>
+<li>OpenHardwareMonitor.exeをダブルクリックして起動すると以下のウインドウが開くので、CPUとGPUの温度を知ることができます。この例では、CPUのValue(現在値）が69℃～75℃、GPUは65℃であることがわかります。Max(最大値)の値が80℃を越えていますが、瞬間的な値なのでこのまま運用して問題ないと考えます。なお、Folding@homeの設定は[Power: Full]、[When: While I'm working]でした。僕のこのPC環境では、PowerをMediumにしてもFullにしても温度はあまり変わりませんでした。別のPCではCPU温度が常に80℃を越えました。PCによって冷却システムが違うので温度の計測は重要ですね。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Open-Hardware-Monitor_2020-8-11_14-59-12_No-00.png"><img class="aligncenter size-large wp-image-18708" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_Open-Hardware-Monitor_2020-8-11_14-59-12_No-00-502x1024.png" alt="" width="502" height="1024" /></a></li>
+<li>Open Hardware MonitorメニューバーのView →Show plotにチェックを入れ、プロットしたいCPUのコアにチェックを入れると下図のように折れ線グラフで温度変化がわかります。縦軸は温度、横軸は時間で10分の温度変化がわかります。便利ですね。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_Open-Hardware-Monitor_2020-8-11_15-14-16_No-00.png"><img class="aligncenter size-large wp-image-18709" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_Open-Hardware-Monitor_2020-8-11_15-14-16_No-00-502x1024.png" alt="" width="502" height="1024" /></a><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_NoName_2020-8-11_15-14-56_No-00.png"><img class="aligncenter size-full wp-image-18710" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_NoName_2020-8-11_15-14-56_No-00.png" alt="" width="794" height="455" /></a></li>
+<li>同じPCで翌日温度を計測したときは以下のデータです。一番上の青いラインがCPU Packageなので常時85℃ぐらいです。Foldiing@homeのPower設定をLight, Medium, Fullにしてもほとんど温度は変わりませんでした。下図でもPowerをLight, Medium, Fullを適当に切り替えていますが、どこで変えたかわからないと思います。<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/SnapCrab_NoName_2020-8-12_9-37-2_No-00.png"><img class="aligncenter size-full wp-image-18717" src="{{ site.baseurl }}/assets/images/2020/08/SnapCrab_NoName_2020-8-12_9-37-2_No-00.png" alt="" width="794" height="455" /></a><br />
+このまま長時間運用するのはまずいので、CPUの温度を80℃以下に下げたいと思います。方法は以下のリンクをご覧ください。</p>
+<ul>
+<li><a href="https://demura.net/misc/18719.html">CPUの温度を下げる方法 (Windows)</a></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

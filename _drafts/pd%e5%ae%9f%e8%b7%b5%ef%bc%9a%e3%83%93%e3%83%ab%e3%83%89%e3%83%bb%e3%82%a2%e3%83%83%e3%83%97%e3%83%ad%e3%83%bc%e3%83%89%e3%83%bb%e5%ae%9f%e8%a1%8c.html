@@ -1,0 +1,164 @@
+---
+layout: post
+title: PD実践：プログラムのビルド・アップロード・実行 (bluetooth版)
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '96'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/14869.html"
+---
+<p>本記事は金沢工業大学ロボティクス学科２年次後学期PD実践の講義用です。</p>
+<p>本講義では、金沢工業大学基礎実技教育課程の西川教授から強力なサポートを受けてETロボコンをロボティクス学科向けにアレンジしたロボコンをテーマとして、組込みプログラミングの基礎を楽しく学びます。なお、以下の方法は西川教授の資料を参考にしています。</p>
+<p>本記事は、アプリケーションプログラムのビルド、EV3へのアップロード、実行方法について説明します。</p>
+<ul>
+<li> <strong>サンプルアプリケーションのビルドと実行（以下の補足説明は重要）</strong>
+<ul>
+<li>この演習では、動的ローディング方式を使う。</li>
+<li>手順①②: ビルドを行う“workspace” フォルダーに移動する。
+<ul>
+<li><code>$  cd  /ev3rt/hrp2/sdk/workspace</code></li>
+</ul>
+</li>
+<li>手順③：サンプルプログラム”helloev3”をビルドする。
+<ul>
+<li>helloev3フォルダーがあることを確認するために、以下のコマンドを実行する。
+<ul>
+<li><code>$  ls  helloev3</code></li>
+</ul>
+</li>
+<li>次のmakeコマンドでビルドする。
+<ul>
+<li><code>$ make  app=helloev3</code></li>
+</ul>
+</li>
+<li>成功するとappというバイナリファイルが生成される。次のlsコマンドを実行するとディレクトリの内のファイルが表示される。appというファイルがあれば成功。
+<ul>
+<li><code>$ ls</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>PCからEV3へのアプリケーションのロード方法の選択</strong>
+<ul>
+<li>この演習では、次の２つの方法に従って生成したアプリケーションのバイナリファイルをEV3へアップロードする。
+<ul>
+<li>1.  USBケーブルを使う方法</li>
+<li>2.  Bluetoothを使う方法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>EV3の準備</strong>
+<ul>
+<li>microSDHCカードを準備する。以降、microSDHCカードのことを単にSDカードとよぶ。
+<ul>
+<li>容量8~16GB (32GBは対応していないので注意）</li>
+<li>Class10</li>
+</ul>
+</li>
+<li>新しいSDカードのルートフォルダに、１回目の授業時に実施した開発環境のインストールでダウンロード済みEV3RTのパッケージ(ev3rt-beta7-release.zip) の「sdcard」フォルダの中身をそのままコピーする。EV3RTパッケージ解凍すると多くのフォルダとファイルが生成される。sdcardフォルダはその中にある。<br />
+コピーするものは、ev3rtフォルダとuImageファイル。ev3rtフォルダには、実行するプログラム、設定ファイルやリソースファイルが入っている．uImageファイルはTOPPERS/EV3RTのアプリケーションローダである。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/sdcard.jpg"><img src="{{ site.baseurl }}/assets/images/sdcard.jpg" alt="" width="508" height="259" class="aligncenter size-full wp-image-14873" /></a></li>
+<li>Bluetooth設定ファイル：ev3rt/etcフォルダのrc.conf.iniでBluetoothの接続名とPINコードをメモ帳などで設定する。全角文字は入れないこと。
+<ul>
+<li>LocalName: 「班番号  EV3」例：1  EV3</li>
+<li>PinCode: 班毎決める。4桁の10進数。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth.png"><img src="{{ site.baseurl }}/assets/images/bluetooth.png" alt="" width="530" height="240" class="aligncenter wp-image-14874 size-full" /></a></li>
+</ul>
+</li>
+<li>EV3の起動：電源は入れずに設定したSDカードをEV3に挿入する。下図のようにSDカードに文字が書いてある方が上、端子のある面は下にして奥までしっかり差し込む。SDカードは取りづらいので図のようにテプラを貼っておくと便利。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/ev3_sdcard.jpg"><img src="{{ site.baseurl }}/assets/images/ev3_sdcard-300x225.jpg" alt="" width="300" height="225" class="aligncenter size-medium wp-image-14878" /></a></li>
+<li>中央のボタンを押して起動すると以下の起動画面が表示される。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/ev3_start.jpg"><img src="{{ site.baseurl }}/assets/images/ev3_start-223x300.jpg" alt="" width="223" height="300" class="aligncenter size-medium wp-image-14876" /></a></li>
+</ul>
+</li>
+<li><strong>USBケーブルによるアプリケーションのロード</strong>
+<ul>
+<li>通常はBluetoothでデータをEV3にロードするが、何らかの理由でできないときはUSBケーブルでロードする。今回の演習では以下の作業はやらなくて良い。</li>
+<li>EV3とPCをUSBケーブルで接続する。「サンプルアプリケーションのビルドと実行」でビルドして生成したバイナリappをエクスプローラなどでmicroSDカードの/ev3rt/appsディレクトリの下にコピーする。</li>
+<li>EV3のアプリケーションローダのメニューで[SD Card]を選択する。実行したいアプリケーションを上下ボタンで選び、選択ボタンを押すと、そのアプリケーションが実行される。</li>
+</ul>
+</li>
+<li><strong>EV3 Bluetoothのペアリング</strong>
+<ul>
+<li>準備：画面右下の「^」アイコンをクリックして隠れているインジケータを表示する。Blootoohアイコンの位置でマウスの右ボタンをクリックして、「Bluetoothデバイスの追加(A)」を選択する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth3.png"><img src="{{ site.baseurl }}/assets/images/bluetooth3-274x300.png" alt="" width="274" height="300" class="aligncenter size-medium wp-image-14884" /></a></li>
+<li>「Bluetoothとその他のデバイス」ウインドウが開くので、下図の赤四角で示している+ボタンをクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth4.png"><img src="{{ site.baseurl }}/assets/images/bluetooth4-300x196.png" alt="" width="300" height="196" class="aligncenter size-medium wp-image-14885" /></a></li>
+<li>「デバイスを追加する」ウインドウが開くので、Bluetoothを選択する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth5.png"><img src="{{ site.baseurl }}/assets/images/bluetooth5-261x300.png" alt="" width="261" height="300" class="aligncenter size-medium wp-image-14886" /></a></li>
+<li>「デバイスを追加する」ウインドウにEV3のデバイス「班番号 EV3」が現れるので、それをクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth6.png"><img src="{{ site.baseurl }}/assets/images/bluetooth6-261x300.png" alt="" width="261" height="300" class="aligncenter size-medium wp-image-14888" /></a></li>
+<li>「デバイスを追加する」ウインドウで、PIN番号の入力を依頼されるので、設定した４桁数字のPIN番号を入力して、「接続」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth7.png"><img src="{{ site.baseurl }}/assets/images/bluetooth7-261x300.png" alt="" width="261" height="300" class="aligncenter size-medium wp-image-14889" /></a></li>
+<li>「デバイスの準備が整いました！」デバイスがペアリング済になったら「完了」をクリックして終了する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth8.png"><img src="{{ site.baseurl }}/assets/images/bluetooth8-261x300.png" alt="" width="261" height="300" class="aligncenter size-medium wp-image-14890" /></a></li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<li><strong>Bluetoothによるアプリケーションのロード</strong>
+<ul>
+<li>「Bluetoothとその他のデバイス」ウィンドウを前回実施した方法で再度開き、下の方にある「その他のBluetoothオプション」を選択する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth9.png"><img src="{{ site.baseurl }}/assets/images/bluetooth9-300x216.png" alt="" width="300" height="216" class="aligncenter size-medium wp-image-14892" /></a></li>
+<li>「Bluetooth設定」ウインドウのCOMポート番号（Serial Port Profileの方）を確認する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth10.png"><img src="{{ site.baseurl }}/assets/images/bluetooth10-249x300.png" alt="" width="249" height="300" class="aligncenter size-medium wp-image-14893" /></a></li>
+<li>TeraTermで接続
+<ul>
+<li>PCとEV3の通信に使用するTeraTerm（現在の最新版teraterm-4.100.exe ）を以下のサイトからダウンロードする。ダブルクリックするとインストーラーが起動するので、デフォルトのままインストールする。
+<ul>
+<li><a href="https://ttssh2.osdn.jp/">Tera Term Home Page</a></li>
+</ul>
+</li>
+<li>TerTermを起動すると以下の画面になるので、シリアルを選択し、ポート番号は先ほど調べた番号に設定し「OK」をクリックする。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth11.png"><img src="{{ site.baseurl }}/assets/images/bluetooth11-300x221.png" alt="" width="300" height="221" class="aligncenter size-medium wp-image-14895" /></a></li>
+<li>TeraTermの「ファイル」→「転送」→「ZMODEM」→「送信」を選択する。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/bluetooth12.png"><img src="{{ site.baseurl }}/assets/images/bluetooth12-300x221.png" alt="" width="300" height="221" class="aligncenter size-medium wp-image-14897" /></a></li>
+</ul>
+</li>
+<li>EV3の通信設定
+<ul>
+<li>メニューで「Bluetooth SPP」を選択してセンターボタンを押す。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/ev3_spp.jpg"><img src="{{ site.baseurl }}/assets/images/ev3_spp-223x300.jpg" alt="" width="223" height="300" class="aligncenter size-medium wp-image-14898" /></a></li>
+<li>下記の画面で転送されるのを待つ。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/spp0-1.jpg"><img src="{{ site.baseurl }}/assets/images/spp0-1-225x300.jpg" alt="" width="225" height="300" class="aligncenter size-medium wp-image-14939" /></a></li>
+</ul>
+</li>
+<li>TeraTermでの送信
+<ul>
+<li>Bluetoothで送信するビルドしたappファイルを転送する。ビルドしたプログラムがあるフォルダは以下。
+<ul>
+<li>C:¥cygwin64¥ev3rt¥hrp2¥sdk¥workspace</li>
+</ul>
+</li>
+<li>appをクリックすると「ファイル名(N):app」になるので、「開く」をクリックすると送信が始まる。送信が完了すると、送信ウインドウが自動的に閉じる。一度転送されたファイルはEV3のSDカードに保存されるので、次回からはSDカードから実行できる。<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/teraterm_SPP.png"><br />
+<img src="{{ site.baseurl }}/assets/images/teraterm_SPP.png" alt="" width="501" height="444" class="aligncenter size-full wp-image-14937" /></a></li>
+</ul>
+</li>
+<li> EV3での受信
+<ul>
+<li>転送が終わると下の画面になる。センターボタンを押すとアプリが実行される。<br />
+<a href="http://demura.net/wordpress/wp-content/uploads/2018/09/spp1.jpg"><img src="{{ site.baseurl }}/assets/images/spp1-225x300.jpg" alt="" width="225" height="300" class="aligncenter size-medium wp-image-14940" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p style="text-align: right;">終わり</p>

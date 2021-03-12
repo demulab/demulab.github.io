@@ -1,0 +1,106 @@
+---
+layout: post
+title: CycleGANのインストール
+date: 2019-03-01 17:21:34.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  views: '1343'
+  _edit_last: '2'
+  _thumbnail_id: '15586'
+  _quads_config_visibility: a:0:{}
+  _wpas_skip_8121973: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/15584.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2019/03/Screenshot_2019-03-01_17-20-47.png"><img class="aligncenter size-full wp-image-15586" src="{{ site.baseurl }}/assets/images/2019/03/Screenshot_2019-03-01_17-20-47.png" alt="" width="599" height="377" /></a></p>
+<p>Zhu、Parkらによって2017年に提案されたCycleGANをインストールしたときのメモ。上の写真は、左が元画像で、右がCycleGANによって生成された画像。CycleGANはPix2Pixとは違いペアとなる学習データセットなしで、画像を変換することができるところが凄い。これにより、学習データセットを作成するコストが大きく削減される。詳細については以下の論文とウェブサイトをご覧ください。</p>
+<p><strong>サイト</strong></p>
+<ul>
+<li><a href="https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix">CycleGAN and pix2pix in PyTorch</a></li>
+</ul>
+<p><strong>論文</strong></p>
+<ul>
+<li><a href="http://openaccess.thecvf.com/content_ICCV_2017/papers/Zhu_Unpaired_Image-To-Image_Translation_ICCV_2017_paper.pdf">Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks.</a><br />
+Jun-Yan Zhu*, Taesung Park*, Phillip Isola, Alexei A. Efros. In ICCV 2017</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li><code>cd ~/src</code></li>
+<li><code>git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix</code></li>
+<li><code>pip3 install -r requirements.txt</code></li>
+</ul>
+<p><strong>学習とテスト</strong></p>
+<ul>
+<li>データセットのダウンロード
+<ul>
+<li><code>bash ./datasets/download_cyclegan_dataset.sh maps</code></li>
+</ul>
+</li>
+<li>結果の表示。以下のコマンドを実行し、この<a href="http://localhost:8097">URL http://localhost:8097</a>をクリックする。
+<ul>
+<li><code>python3 -m visdom.server</code></li>
+</ul>
+</li>
+<li>学習
+<ul>
+<li>GPUが１個の場合
+<ul>
+<li><code>python3 train.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan</code></li>
+</ul>
+</li>
+<li>GPUが２個の場合
+<ul>
+<li><code>python3 train.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan --gpu_ids 0,1  --batch_size 32</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>テスト
+<ul>
+<li><code>python3 test.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan</code></li>
+<li>テストの結果は以下のファイルに保存される。
+<ul>
+<li><code>./results/maps_cyclegan/latest_test/index.html</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>学習済みモデルの適用</strong></p>
+<ul>
+<li>学習済みモデルのダウンロード
+<ul>
+<li><code>bash ./scripts/download_cyclegan_model.sh horse2zebra</code></li>
+<li>学習済みモデルは以下の保存される。
+<ul>
+<li><code>./checkpoints/{name}_pretrained/latest_net_G.pth</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>テスト用のデータセットのダウンロード
+<ul>
+<li><code>bash ./datasets/download_cyclegan_dataset.sh horse2zebra</code></li>
+</ul>
+</li>
+<li>テスト
+<ul>
+<li><code>python3 test.py --dataroot datasets/horse2zebra/testA --name horse2zebra_pretrained --model test --no_dropout</code></li>
+<li>ここで、<code>--model test</code>はCycleGANの一方向だけの結果を生成する。両方向必要な場合は、 <code>--model cycle_gan</code> にする。</li>
+<li>テストの結果は./results以下に保存される。上の写真は結果の一部。</li>
+</ul>
+</li>
+</ul>
+<p>以上</p>

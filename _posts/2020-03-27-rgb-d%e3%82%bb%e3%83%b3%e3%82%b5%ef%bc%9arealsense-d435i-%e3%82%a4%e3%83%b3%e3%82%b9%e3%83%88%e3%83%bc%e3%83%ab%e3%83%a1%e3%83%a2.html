@@ -1,0 +1,247 @@
+---
+layout: post
+title: RGB-Dセンサ：RealSense D435i インストールメモ
+date: 2020-03-27 23:58:49.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '17406'
+  views: '929'
+  _wp_old_date: '2020-03-28'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/17396.html"
+---
+<p><!-- wp:image {"id":14746} --></p>
+<figure class="wp-block-image"><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/realsense-viewer.png"><img class="alignleft size-large wp-image-17406" src="{{ site.baseurl }}/assets/images/2020/03/realsense-viewer-1024x585.png" alt="" width="1024" height="585" /></a></figure>
+<p><!-- /wp:image --></p>
+<p><!-- wp:paragraph --></p>
+<p><a href="https://www.intelrealsense.com/depth-camera-d435i/">RealSense D435i</a>をROS Melodicで使うメモ。D435iはD435にIMUが搭載された新しい機種。D435と同じようにインストールできた。ROSのラッパーもありすぐ使える。このメモはRGB画像と深度画像の表示とポイントクラウド表示まで。なお、ビルドコマンドはcatkin_makeではなくcatkin buildを使用しているので、catkin_makeを使っている方は適宜読み替えてください。</p>
+<p><strong>環 境</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li>Razer Blade 15</li>
+<li>Ubuntu18.04</li>
+<li>ROS Melodic</li>
+<li>RealSense SDK 2.0</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>参考リンク</strong></p>
+<ul>
+<li><a href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md">Intel RealSense SDK Installation : Linux distribution</a></li>
+<li><a href="https://github.com/IntelRealSense/realsense-ros/releases">ROS Wrapper 2.0 for Intel® RealSense&#x2122; Devices (build 2.2.13)</a></li>
+</ul>
+<p><strong>RealSense SDKのインストール</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><a href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md">このページのとおり実施すればよい。</a>以下の手順はその簡単な日本語訳とささやかな補足。</li>
+<li>サーバーの公開鍵を登録
+<ul>
+<li><code>$ sudo apt-key adv --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE </code></li>
+</ul>
+</li>
+<li>リポジトリにIntelサーバーを追加
+<ul>
+<li><code>$ sudo add-apt-repository "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo bionic main" -u</code></li>
+</ul>
+</li>
+<li> リポジトリのリストと使えるパッケージをリフレッシュする
+<ul>
+<li><code>$ sudo apt update</code></li>
+</ul>
+</li>
+<li>ライブラリのインストール
+<ul>
+<li><code>$ sudo apt install librealsense2-dkms</code></li>
+<li><code>$ sudo apt install librealsense2-utils</code></li>
+</ul>
+</li>
+<li>開発用に追加のパッケージをインストールする
+<ul>
+<li><code>$  sudo apt install librealsense2-dev </code></li>
+<li><code>$ sudo apt install librealsense2-dbg</code></li>
+</ul>
+</li>
+<li>RealSenseのUSBケーブルを抜き差しして以下のコマンドを実行する。ウインドウが開くので、左サイドバーにあるStereo ModuleとRGB Cameraをoffからonにすると、上のような画像が現れる。左上が深度画像、下がRGB画像、右側はジャイロと加速度センサからの情報を表示している。
+<ul>
+<li><code>$ realsense-viewer</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>パッケージのアップグレード</strong></p>
+<ul>
+<li>以下の手順でアップグレードする。<span style="color: #0000ff;"><strong>ここでは上でインストールしたパッケージだけアップグレードする。アップグレード可能なすべてのパッケージをアップグレードすると稀に動かなくなるパッケージがあるのでこの方法はお勧め。</strong></span>
+<ul>
+<li><code>$ sudo apt update</code></li>
+<li><code>$ sudo apt --only-upgrade install librealsense2-utils librealsense2-dkms librealsense2-dev librealsense2-dbg</code></li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>ROSラッパーのインストール</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><a href="https://github.com/intel-ros/realsense/releases">https://github.com/intel-ros/realsense/releases</a>　からSource code (realsense-2.0.3.tar.gz)を~/catkin_ws/srcにダウンロードする</li>
+<li>$ cd ~/catkin_ws/src</li>
+<li>$ git clone https://github.com/pal-robotics/ddynamic_reconfigure.git</li>
+<li>$ catkin build</li>
+<li>$ git clone https://github.com/IntelRealSense/realsense-ros.git</li>
+<li>$ catkin build
+<ul>
+<li>参考元の説明を元に次のようにcatkin installすると不具合が出た学生がいたので変更した。
+<ul>
+<li><del>$ catkin build -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release</del></li>
+<li><del>$ catkin install</del></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p><strong>RGB画像と深度画像の表示</strong></p>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:list --></p>
+<ul>
+<li><code>$ roslaunch realsense2_camera rs_camera.launch</code>
+<ul>
+<li>解像度は640x480 pixel。変更したいときはrs_camera.launchの中を書き換える。</li>
+</ul>
+</li>
+<li>カメラ画像を表示するimage_viewノードは、melodicではaptでインストールできないので、rqt版のrqt_image_viewをインストールする。
+<ul>
+<li><code>$ sudo apt install ros-melodic-rqt-image-view</code></li>
+</ul>
+</li>
+<li><code>$ rosrun rqt_image_view rqt_image_view</code>
+<ul>
+<li>左上の選択ボックスからトピック/camera/color/image_rawを選択して、下のように画像が表示されれば成功。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/image_view.png"><img class="alignleft size-large wp-image-17399" src="{{ site.baseurl }}/assets/images/2020/03/image_view-1024x649.png" alt="" width="1024" height="649" /></a></p>
+<p><!-- /wp:list --></p>
+<p><!-- wp:paragraph --></p>
+<ul>
+<li><strong>トピック</strong></li>
+</ul>
+<p><!-- /wp:paragraph --></p>
+<p><!-- wp:paragraph --></p>
+<p>~/catkin_ws$ rostopic list /camera/color/camera_info /camera/color/image_raw /camera/color/image_raw/compressed /camera/color/image_raw/compressed/parameter_descriptions /camera/color/image_raw/compressed/parameter_updates /camera/color/image_raw/compressedDepth /camera/color/image_raw/compressedDepth/parameter_descriptions /camera/color/image_raw/compressedDepth/parameter_updates /camera/color/image_raw/theora /camera/color/image_raw/theora/parameter_descriptions /camera/color/image_raw/theora/parameter_updates /camera/depth/camera_info /camera/depth/image_rect_raw /camera/depth/image_rect_raw/compressed /camera/depth/image_rect_raw/compressed/parameter_descriptions /camera/depth/image_rect_raw/compressed/parameter_updates /camera/depth/image_rect_raw/compressedDepth /camera/depth/image_rect_raw/compressedDepth/parameter_descriptions /camera/depth/image_rect_raw/compressedDepth/parameter_updates /camera/depth/image_rect_raw/theora /camera/depth/image_rect_raw/theora/parameter_descriptions /camera/depth/image_rect_raw/theora/parameter_updates /camera/extrinsics/depth_to_color /camera/extrinsics/depth_to_infra1 /camera/extrinsics/depth_to_infra2 /camera/infra1/camera_info /camera/infra1/image_rect_raw /camera/infra1/image_rect_raw/compressed /camera/infra1/image_rect_raw/compressed/parameter_descriptions /camera/infra1/image_rect_raw/compressed/parameter_updates /camera/infra1/image_rect_raw/compressedDepth /camera/infra1/image_rect_raw/compressedDepth/parameter_descriptions /camera/infra1/image_rect_raw/compressedDepth/parameter_updates /camera/infra1/image_rect_raw/theora /camera/infra1/image_rect_raw/theora/parameter_descriptions /camera/infra1/image_rect_raw/theora/parameter_updates /camera/infra2/camera_info /camera/infra2/image_rect_raw /camera/infra2/image_rect_raw/compressed /camera/infra2/image_rect_raw/compressed/parameter_descriptions /camera/infra2/image_rect_raw/compressed/parameter_updates /camera/infra2/image_rect_raw/compressedDepth /camera/infra2/image_rect_raw/compressedDepth/parameter_descriptions /camera/infra2/image_rect_raw/compressedDepth/parameter_updates /camera/infra2/image_rect_raw/theora /camera/infra2/image_rect_raw/theora/parameter_descriptions /camera/infra2/image_rect_raw/theora/parameter_updates /camera/realsense_ros_camera_manager/bond /camera/realsense_ros_camera_manager/parameter_descriptions /camera/realsense_ros_camera_manager/parameter_updates /rosout /rosout_agg /tf_static</p>
+<p><strong>ポイントクラウドの表示</strong></p>
+<ul>
+<li>rgbd_launchパッケージのインストール
+<ul>
+<li>$ sudo apt install ros-melodic-rgbd-launch</li>
+</ul>
+</li>
+<li>起動
+<ul>
+<li>$ roslaunch realsense2_camera rs_rgbd.launch align_depth:=true</li>
+</ul>
+</li>
+<li>ポイントクラウドのトピック
+<ul>
+<li>rostopic listコマンドで確認すると以下のトピックを確認できる。
+<ul>
+<li>$ rostopic list<br />略<br />/camera/depth_registered/points</li>
+</ul>
+</li>
+<li>メッセージ型の確認
+<ul>
+<li>$ rostopic info /camera/depth_registered/points
+<p>Type: sensor_msgs/PointCloud2</p>
+<p>Publishers: <br />* /camera/realsense2_camera_manager (http://razer:36809/)</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>表示
+<ul>
+<li>$ rosrun rviz rviz</li>
+<li>このままでは何も表示されないので下図の左上にあるDisplaysの項目を変更する。
+<ul>
+<li>Fixed Frame: camera_link<br /><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/rviz1.png"><img class="alignleft size-large wp-image-17400" src="{{ site.baseurl }}/assets/images/2020/03/rviz1-1024x742.png" alt="" width="1024" height="742" /></a></li>
+<li> </li>
+<li>左下のAddボタンをクリックすると新しいウインドウが開くのでPointCloud2を選択してOKをクリックする。<br /><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/rviz2.png"><img class="alignleft size-large wp-image-17401" src="{{ site.baseurl }}/assets/images/2020/03/rviz2-1024x737.png" alt="" width="1024" height="737" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>Displays欄にPointClouds2という項目ができるので、次のTopic名を選択する。
+<ul>
+<li>/camera/depth_registered/points<br /><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/rviz3.png"><img class="alignleft size-large wp-image-17402" src="{{ site.baseurl }}/assets/images/2020/03/rviz3-1024x742.png" alt="" width="1024" height="742" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>RGB付ポイントクラウドが表示される。カメラが傾いているのでポイントクラウドの表示も上図のように傾いているが、次の操作で下図のように変更できる。
+<ul>
+<li>左マウスボタンクリック：回転</li>
+<li>中マウスボタンクリック：x, y軸移動</li>
+<li>右クリックまたはマウスホイール：拡大、縮小</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/rviz4.png"><img class="alignleft size-large wp-image-17403" src="{{ site.baseurl }}/assets/images/2020/03/rviz4-1024x742.png" alt="" width="1024" height="742" /></a></p>
+<p>&nbsp;</p>
+<p>終わり</p>

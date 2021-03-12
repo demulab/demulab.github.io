@@ -1,0 +1,40 @@
+---
+layout: page
+title: 1. ODEとは
+date: 2008-07-24 18:10:52.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  _aioseop_description: Open Dynamics Engine,  ODE, Simulation
+  _aioseop_keywords: Open Dynamics Engine,  ODE, Simulation
+  syntaxhighlighter_encoded: '1'
+  views: '21268'
+  _aioseop_title: ODE初級講座
+  _wp_page_template: default
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode1"
+---
+<p>[caption id="" align="aligncenter" width="320" caption="ODEで作成したヒューマノイドシミュレータ "]<img title="ODEで作成したヒューマノイドシミュレータ " src="{{ site.baseurl }}/assets/images/2008/07/humanoid2.jpg" alt="ODEで作成したヒューマノイドシミュレータ " width="320" height="285" />[/caption]</p>
+<p><a href="http://ode.org/">ODE (Open Dynamics Engine、オープンダイナミクスエンジン)</a>は ラッセルスミスさんらがオープンソースで開発しているフリーの動力学計算エンジンで私は２００１年から使い始めました。図のようなシミュレータを 比較的簡単に作成することができます。WinKITチームはODEを利用してロボカップ中型ロボットのシミュレータを作り、戦術やデバッグなどに使用して います。</p>
+<p>この講座ではODEの使い方を初心者を対象に15回の記事で説明します。まじ、１回目はODEの概要を述べ、次に、ODEと開発環境のインストール、それからODEに関する基礎を学び、ロボットアームシミュレータを作り、最後に簡単なインタラクティブシミュレータを作成します。</p>
+<p>まず特徴ですが、なんと言っても、フリーで使いやすい物理計算エンジン（剛体動力学計算）ということです。</p>
+<p>以下、主な特徴を列挙します。</p>
+<ul>
+<li>フリー：オープンソースでライセンスはGNUの<a href="http://opensource.org/licenses/lgpl-license.php">LGPL</a>とBSDとなり自分の好きな方のライセンスを使えます（詳細は<a href="http://ode.org/ode-license.html">ここを見て</a>ください）。商用でもフリーで利用することができます。 もちろん、授業や個人の趣味で使用するには最適です。</li>
+<li>使いやすい：３次元グラフィクス(Open GL)と衝突検出機構が組み込まれているのですぐ使えます。マニュアルがしっかりしており、サンプルプログラムも豊富です。さらに、ODEコミュニティの 活動も盛んで、過去メーリングリストもウェブサイトで読むことができます（ただし、英語）。</li>
+<li>高速：商用のゲームエンジンなどにも使われるくらいですからスピードは高速です。遺伝的アルゴリズム、強化学習などの研究用に適しています。今年 のロボッ ト学会でも多くの研究者がシミュレーション用に使っていました。ただし、現状では計算精度が高くないので精度が求められる用途には適しません。</li>
+<li>マルチプラットフォーム：Windows, Linux, Macでも使用可能です。Linuxでしか動かないソフトは授業では使いずらいものです。</li>
+<li>C/C++言語：プログラミング言語はCでもC++でもOKです。</li>
+</ul>
+<p>次回はODEをインストールしデモプログラムを動かしてみましょう！</p>

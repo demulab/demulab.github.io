@@ -1,0 +1,140 @@
+---
+layout: post
+title: CUDA 10.2のインストール
+date: 2020-01-04 17:53:46.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _wp_old_date: '2020-03-13'
+  views: '2941'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/17026.html"
+---
+<p>CUDA10.2をインストールしたときのメモ。</p>
+<ul>
+<li> 環境
+<ul>
+<li>CROYDON (BTO組立パソコン)
+<ul>
+<li>CPU: Intel i7-8700K</li>
+<li>GPU: Nvidia 1080Ti　× 2</li>
+<li>Memory:32GB</li>
+</ul>
+</li>
+<li>Motherboard: ASRock Fatal1ty Z370 Gaming K6</li>
+<li>Voyager 18.04 (Xubuntu 18.04）</li>
+</ul>
+</li>
+<li> 準備
+<ul>
+<li>NVIDIAのドライバをインストールしていないので、起動するとIntelのGPUでXが起動する。Ctlr+Alt+F1でXを落としてから以下のコマンドを実行する。
+<ul>
+<li>$ sudo apt update</li>
+<li>$ sudo apt upgrade</li>
+<li>$ sudo service lightdm stop</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> NVIDIAドライバのインストール
+<ul>
+<li>Xが落ちている状態で以下のコマンドを実行してインストールする。
+<ul>
+<li>$ sudo add-apt-repository ppa:graphics-drivers/ppa</li>
+<li>$ sudo apt update</li>
+<li>以下のコマンドで推奨ドライバのバージョンを確認する。私の場合は、nvidia-driver-440がrecommendedだった。
+<ul>
+<li>$ ubuntu-drivers devices</li>
+</ul>
+</li>
+<li>$ sudo apt install nvidia-driver-440  nvidia-settings</li>
+</ul>
+</li>
+<li>再起動
+<ul>
+<li>$ sudo reboot</li>
+</ul>
+</li>
+<li>以下のコマンドでGPUが有効化確認する。
+<ul>
+<li>$ nvidia-smi</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> <a href="https://developer.nvidia.com/cuda-downloads">NVIDIAのウェブサイト</a>からCuda10.2をインストール
+<ul>
+<li>Select Target Platformで以下を選択
+<ul>
+<li>Operating system: Linux</li>
+<li>Architecture: x86_64</li>
+<li>Distribution: ubuntu</li>
+<li>Version: 18.04</li>
+<li>Install type: dev(local)</li>
+</ul>
+</li>
+<li>以下のインストール方法の説明が表示されるので、以下のコマンドを実行してインストールする。
+<ul>
+<li>$ wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin</li>
+<li>$ sudo mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600</li>
+<li>$ wget http://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda-repo-ubuntu1804-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb</li>
+<li>$ sudo dpkg -i cuda-repo-ubuntu1804-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb</li>
+<li>$ sudo apt-key add /var/cuda-repo-10-2-local-10.2.89-440.33.01/7fa2af80.pub</li>
+<li>$ sudo apt update</li>
+<li>$ sudo apt -y install cuda</li>
+</ul>
+</li>
+<li>.bashrcに以下を追加し、CUDAのパスを通す
+<ul>
+<li><code>export PATH=/usr/local/cuda-10.2/bin${PATH:+:${PATH}}</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://developer.nvidia.com/cudnn">NVIDIAのウェブ</a>からcuDNNのインストール
+<ul>
+<li>nvidiaのdeveloperに登録しないとダウンロードできないので登録してログインする。</li>
+<li>Download cuDNN v7.6.5 for CUDA10.2をクリック</li>
+<li>cuDNN v7.6.5 for Runtime Library for Ubuntu18.04 (Deb)とcuDNN v7.6.5 Developer Library for Ubuntu18.04 (Deb)をダウンロードして以下のコマンドでインストールする。
+<ul>
+<li><code>$ sudo dpkg -i libcudnn7_7.6.5.32-1+cuda10.2_amd64.deb</code></li>
+<li><code>$ sudo dpkg -i libcudnn7-dev_7.6.5.32-1+cuda10.2_amd64.deb</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

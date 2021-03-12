@@ -1,0 +1,94 @@
+---
+layout: page
+title: 10. 速度と加速度
+date: 2008-10-10 17:53:00.000000000 +09:00
+type: page
+parent_id: '1109'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  syntaxhighlighter_encoded: '1'
+  views: '11944'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/tutorials/ode10"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/tutorial102.jpg"><img src="{{ site.baseurl }}/assets/images/2008/10/tutorial102.jpg" alt="" title="tutorial102" width="500" height="254" class="alignnone size-full wp-image-2135" /></a></p>
+<p>ODE (Open Dynamics Engine) 初級講座の第１０回目です。</p>
+<p>今回は、速度、角速度、加速度、角加速度について学びます。</p>
+<p><span style="color: #0000ff;"><strong>１．速度、角速度</strong></span></p>
+<p>剛体の速度の設定はdBodySetLinearVel()、角速度の設定はdBodySetAngularVel()、を使います。ただし、この速度は重心の速度、角速度は重心周りの角速度です。また、ボディの速度を設定することは初期状態だけにし、時間ステップ毎に強制的にある速度を設定することは、実際の物理現象とは異なった挙動を生み出してしまいますので避けてください。</p>
+<p>もし、物体の速度をコントロールした場合は、関節に付属しているモータを使ってください。</p>
+<ul>
+<li><strong>void dBodySetLinearVel(dBodyID body, dReal x, dReal y, dReal z);</strong><br />
+bodyの速度を絶対座標系で(x, y, z) [m/s]に設定します。</li>
+</ul>
+<ul>
+<li><strong>void dBodySetAngularVel(dBodyID body, dReal x, dReal y, dReal z);</strong><br />
+bodyの角速度を絶対座標系の各軸周りに(x, y, z) [rad/s]と設定します。</li>
+</ul>
+<ul>
+<li><strong>const dReal *dBodyGetLinearVel(dBodyID body);</strong><br />
+bodyの速度を取得します。戻り値は要素数３個の配列を指すコンストポインタ。</li>
+</ul>
+<ul>
+<li><strong>const dReal *dBodyGetAngularVel(dBodyID body);</strong><br />
+bodyの角速度を取得します。戻り値は要素数３個の配列を指すコンストポインタ。</li>
+</ul>
+<p>&nbsp;</p>
+<p><span style="color: #0000ff;"><strong>２．加速度、角加速度</strong></span></p>
+<p>残念ながらODEは加速度、角加速度を取得するAPIはありません。速度変化、あるいは角速度変化を時間ステップサイズで割ってそれらを求めてください。時間ステップとはdWorldStep(dWorldID, dReal stepsize)の２番目の引数stepsize、数値積分の時間ステップサイズのことです。</p>
+<p>注意する点としては、dBodyGetLinearVel(), dBodyGetAngularVel()の戻り値が要素数３個の配列を指すポインタです。つまり、戻り値がスカラではなく絶対座標系（x, y, z軸）の３次元ベクトルです。角速度は各軸周りです。</p>
+<p><span style="color: #0000ff;"><strong>３．サンプルプログラム</strong></span></p>
+<p>サンプルプログラムは第９回目のサンプルプログラムsample9.cppに球の速度、加速度並びに円柱の速度、加速度表示を追加するだけの簡単なプログラムです。</p>
+<pre class="brush:cpp">static void simLoop (int pause)
+{
+  static long steps = 0;
+  const dReal stepsize = 0.01;    
+  const dReal *linear_vel, *angular_vel;
+  static dReal linear_vel_old&#91;3&#93;, angular_vel_old&#91;3&#93;;
+  dReal linear_accel&#91;3&#93;, angular_accel&#91;3&#93;;
+
+  if (!pause)  {
+    dSpaceCollide(space,0,&amp;nearCallback);
+    dWorldStep(world,stepsize);
+    dJointGroupEmpty(contactgroup);
+  }
+
+  // 速度(Linear velocity),  角速度(Angular Velocity)
+  linear_vel  = dBodyGetLinearVel(ball.body);
+  angular_vel = dBodyGetAngularVel(pillar.body);
+  printf("\n%d steps \n", steps++);
+  printf("Linear Velocity: x=%.3f y=%.3f z=%.3f \n", linear_vel&#91;0&#93;,linear_vel&#91;1&#93;,linear_vel&#91;2&#93;);
+  printf("Angular Velocity: x=%.3f y=%.3f z=%.3f \n",       angular_vel&#91;0&#93;,angular_vel&#91;1&#93;,angular_vel&#91;2&#93;);
+
+  // 加速度(Linear acceleration), 角加速度(Angular acceleration)
+  for (int i=0; i &#60; 3; i++) {
+    linear_accel&#91;i&#93; = (linear_vel&#91;i&#93;-linear_vel_old&#91;i&#93;)  /stepsize;
+    angular_accel&#91;i&#93; = (angular_vel&#91;i&#93;-angular_vel_old&#91;i&#93;)/stepsize;
+  }
+
+  printf("Linear Acceleration: x=%.3f y=%.3f z=%.3f \n",       linear_accel&#91;0&#93;,linear_accel&#91;1&#93;,linear_accel&#91;2&#93;);
+  printf("Angular Acceleration: x=%.3f y=%.3f z=%.3f \n",       angular_accel&#91;0&#93;,angular_accel&#91;1&#93;,angular_accel&#91;2&#93;);
+
+  for (int j=0; j &#60; 3; j++) {
+    linear_vel_old&#91;j&#93;  = linear_vel&#91;j&#93;;
+    angular_vel_old&#91;j&#93; = angular_vel&#91;j&#93;;
+  }
+
+  drawObject(ball.geom,1.3,0,0);
+  drawObject(pillar.geom,0,0,1.3);
+}</pre>
+<p>次からサンプルプログラムをダウンロードできます。</p>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2008/10/sample10-120904.zip">サンプルプログラム１０</a></li>
+</ul>
+<p>おしまい。</p>

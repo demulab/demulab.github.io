@@ -1,0 +1,71 @@
+---
+layout: post
+title: 夏休みやったこと
+date: 2005-08-16 11:55:46.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1051'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/243.html"
+---
+<p>1. asuraのシミュレーションコートを試す<br />
+ ドキュメントがしっかりしていない。<br />
+ 2003年のソースはコンパイルできたが、動作させるとSegmentation errorで落ちて実行できない。２００２年、２００４年のソースにいたってはmakeもできなかった。</p>
+<p>2. 竹花君中型機シミュレータをCygwinに移植１<br />
+ cygwin環境でWindowsのOpenGLを使用する方法（ODE　cygwinの標準）でmakeするとcout, cinでsegmenation errorになってしまう。この原因を調べたところODEのcygwinで一般的にリンクしている-lstdc++が原因ということがわかった。</p>
+<p>また、上記の方法でmakeすると以下のwarningがでる。これを解決するためにはwindowsのOpenGLを使わずに、cygwinのX環境を使えばよい。たたし、３Dグラフィックスのアクセレレーションが働かないので非常に描画が遅い。<br />
+ Warning: resolving _glPopMatrix by linking to _glPopMatrix@0<br />
+ Warning: resolving _glDisable by linking to _glDisable@4<br />
+ Warning: resolving _glEnd by linking to _glEnd@0<br />
+ Warning: resolving _glVertex3fv by linking to _glVertex3fv@4<br />
+ Warning: resolving _glBegin by linking to _glBegin@4<br />
+ Warning: resolving _glLineWidth by linking to _glLineWidth@4<br />
+ Warning: resolving _glMaterialfv by linking to _glMaterialfv@12<br />
+ Warning: resolving _glEnable by linking to _glEnable@4<br />
+ Warning: resolving _glPushMatrix by linking to _glPushMatrix@0<br />
+ <!--more--><br />
+ ３. 竹花君中型機シミュレータをCygwinに移植２<br />
+ ２の方法でうまくいかなかったで、cygwinのX環境とOpenGLを使用する方法に変更した。具体的にはODEのconfig/user-settingsを<br />
+ PLATFORM=unix-gcc<br />
+ に変更して<br />
+ config/makefile.unix-gccを<br />
+ C_FLAGS=-c -Wall -fno-rtti -fno-exceptions  -I/usr/X11R6/include -I/usr<br />
+ と変更して後はINSTALLの説明とおりにするとODEのライブラリを作成できる。</p>
+<p>この環境で竹花君のシミュレータをコンパイルしても実行時にsegementation errorとなってしまう。gdbで調べたところ以下のメッセージである。どうやらcygwinのシステムに問題があるようだ。</p>
+<p>Single stepping until exit from function setgrent,<br />
+ which has no line number information.<br />
+ 0x610e02a0 in cygwin1!_alloca () from /usr/bin/cygwin1.dll<br />
+ (gdb) step<br />
+ Single stepping until exit from function cygwin1!_alloca,<br />
+ which has no line number information.<br />
+ 0x7c809a81 in VirtualAlloc () from /cygdrive/c/WINDOWS/system32/kernel32.dll<br />
+ (gdb) step<br />
+ Single stepping until exit from function VirtualAlloc,<br />
+ which has no line number information.<br />
+ 0x7c809aa2 in VirtualAllocEx () from /cygdrive/c/WINDOWS/system32/kernel32.dll<br />
+ (gdb) step<br />
+ Single stepping until exit from function VirtualAllocEx,<br />
+ which has no line number information.<br />
+ 0x7c8024cb in ReleaseMutex () from /cygdrive/c/WINDOWS/system32/kernel32.dll<br />
+ (gdb) step<br />
+ Single stepping until exit from function ReleaseMutex,<br />
+ which has no line number information.<br />
+ 0x7c809aae in VirtualAllocEx () from /cygdrive/c/WINDOWS/system32/kernel32.dll<br />
+ (gdb) step<br />
+ Single stepping until exit from function VirtualAllocEx,<br />
+ which has no line number information.</p>
+<p>Program received signal SIGSEGV, Segmentation fault.<br />
+ 0x610c5a41 in strlen () from /usr/bin/cygwin1.dll</p>

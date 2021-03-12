@@ -1,0 +1,104 @@
+---
+layout: post
+title: Yolo v2でオリジナルデータを学習
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>実時間物体検出DNN(Deep Neural Network)のYOLO v2 (real time object detection)でオリジナルデータを学習したときのメモ。</p>
+<ul>
+<li>環境
+<ul>
+<li>Desktop PC
+<ul>
+<li>CPU: Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz,  Memory 32GB</li>
+<li>GPU: Nvidia GTX1080Ti,  Memory 11GB</li>
+</ul>
+</li>
+<li>xubunut16.04</li>
+<li>Kernel 4.4.0-1166-generic</li>
+<li>gcc/g++ 5.4.0</li>
+</ul>
+</li>
+<li>Darknetのインストール
+<ul>
+<li><a href="https://pjreddie.com/darknet/">この指示にしたがいDarknetをソースからビルドする</a></li>
+<li>git clone https://github.com/pjreddie/darknet.git</li>
+<li>cd darknet</li>
+<li>Makefileの先頭３行を以下に変更
+<ul>
+<li>GPU=1</li>
+<li>CUDNN=1</li>
+<li>OPENCV=1</li>
+</ul>
+</li>
+<li>Makefileの7行目を以下に変更
+<ul>
+<li>ARCH=-gencode arch=compute_61,code=[sm_61,compute_61]</li>
+</ul>
+</li>
+<li>make -j 12</li>
+</ul>
+</li>
+<li>Yolo: Real Time Object Detectionのインストール
+<ul>
+<li>cd darknet</li>
+<li>学習済みの重み（パラメータ）ファイルをダウンロード
+<ul>
+<li>wget http://pjreddie.com/media/files/yolo.weights</li>
+</ul>
+</li>
+<li>サンプルの実行
+<ul>
+<li>./darknet detect cfg/yolo.cfg yolo.weights data/dog.jpg</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>オリジナルデータの作成法
+<ul>
+<li>ここを参照</li>
+</ul>
+</li>
+<li> 実行方法
+<ul>
+<li>ウェブカメラ
+<ul>
+<li> ウェブカメラをPCに接続し以下のコマンドを実行</li>
+<li>./darknet detector demo cfg/coco.data cfg/yolo.cfg yolo.weights</li>
+</ul>
+</li>
+<li>動画ファイル
+<ul>
+<li>Webm形式の動画ファイルは問題なく動作</li>
+<li>./darknet detector demo cfg/coco.data cfg/yolo.cfg yolo.weights &lt;video file&gt;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>テスト
+<ul>
+<li>ウェブカメラで撮った信号機の動画を学習済みのパラメータで試したところ信号機は問題なく認識された。車は乗用車をtruckと間違えるときはあるが、位置は問題ない。ただ、私の環境では約4フレーム/秒。リアルタイムとはいかないが、つくばチャレンジや@Homeのタスクによっては使えるレベル。最新GPUを搭載し、メモリを多く積んだマシンが欲しい。</li>
+</ul>
+</li>
+<li>はまった原因
+<ul>
+<li>darknetを実行するとCuda out of memoryのエラーで悩まされた。nvidia-smiコマンドでGPUのメモリ使用量がわかる。上の画面では981MB中961MBを使用している。chromeなどのウェブブラウズを起動すると数十MB使用するので、chromeを起動しながらコマンドを実行したのでout of memoryになったわけだ。メモリを多く積んだマシンが欲しい。</li>
+</ul>
+</li>
+</ul>

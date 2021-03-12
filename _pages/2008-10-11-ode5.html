@@ -1,0 +1,31 @@
+---
+layout: page
+title: 5.  Body and Geometry
+date: 2008-10-11 14:41:13.000000000 +09:00
+type: page
+parent_id: '2216'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '2226'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/ode5"
+---
+<p>[caption id="attachment_2401" align="alignnone" width="300"]<a href="http://demura.net/wordpress/wp-content/uploads/2008/10/bodygeomenglish.jpg"><img src="{{ site.baseurl }}/assets/images/2008/10/bodygeomenglish-300x288.jpg" alt="An object is composed of a body and a geometry" title="bodygeomenglish" width="300" height="288" class="size-medium wp-image-2401" /></a> An object is composed of a body and a geometry[/caption]</p>
+<p style="margin: 0px 0px 15px;">This is the 5th ODE (Open Dynamics Engine) tutorial.</p>
+<p style="margin: 0px 0px 15px;">This time,  let's study a body (rigid body)  which is a target for dynamics,  and a geometry which is a target for collision detection.</p>
+<p style="margin: 0px 0px 15px;">ODE implemented the dynamics core and the  collision detection library separately. The advantage of it is easy to use other collision libraries instead of ODE's. ODE, currently, uses the OPCODE library and the Gimpact library.  OPCODE is the default collision detection library and it is faster than Gimpact. Gimpact, however, is more accurate than OPCODE.</p>
+<p><a href="http://www.openrtp.jp/openhrp3/en/index.html">OpenHRP3</a>, Open-architecture Human-centered Robotics Platform version 3, also uses OPCODE for collision detection.</p>
+<p style="margin: 0px 0px 15px;">Another advantage of the implementation is that only collision detection can be applied to objects. For example, <a href="http://www.robomedia.org/challenge08/index.html">The Tsukuba challenge</a>,  Real World Robot Challenge, you do not have to calculate dynamics about buildings, trees, and fences.  Only calculating dynamics is sufficient to simulate the environment.</p>
+<p style="margin: 0px 0px 15px;">Due to such advantages, ODE creates  a <strong><span style="color: #0000ff;">World</span></strong> for the dynamics calculation and create a  <strong><span style="color: #0000ff;">Space </span></strong>for the collision detection .  An object has two attributes, that is,  a <strong><span style="color: #0000ff;">body </span></strong>(rigid  body)  for dynamics and a <strong><span style="color: #0000ff;">geometry</span></strong> for collision detection.</p>
+<p>This time, there is no sample code.  It  is, however, a very important point to use ODE. Next time, a sample code will describe how to use the collision detection function.</p>

@@ -1,0 +1,169 @@
+---
+layout: post
+title: ODE0.16.1のインストール（Linux + Configure）
+date: 2020-06-21 09:56:51.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- lecture
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  views: '587'
+  _thumbnail_id: '18248'
+  the_page_main_category: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/18243.html"
+---
+<p>ODE0.16.1のLinuxへのインストール法を説明します。ここでは、WSLにUbuntu18.04をインストールした方を対象に、ビルド環境を自動検出するスクリプトConfigureを使います。この方法はLinuxでは一般的です。</p>
+<p><strong>0. 環　境</strong></p>
+<ul>
+<li>Windows10</li>
+<li>WSL2にUbuntu18.04がインストール済み。インストール方法は以下のリンクを参照。
+<ul>
+<li><a href="https://demura.net/education/18192.html">WSL2にUbuntu18.04をインストール</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>1. ODEのダウンロード</strong></p>
+<ul>
+<li>Windowsのスタートメニューから[Ubuntu18.04 LTS]を選択するか、タスクバーにピン留されている[Ubuntu18.04 LTS]を選択して、Ubuntuのターミナル（以下、端末）を起動する。</li>
+<li>以下のコマンドを起動したUbuntu端末で実行し、WebブラウザFirefoxを起動する。最初の$はプロンプトを表すので打ち込まず、最後の&amp;は端末を何度も使えるようにするために付けているので忘れないこと。
+<ul>
+<li>$ firefox &amp;</li>
+<li>Firefoxがない場合は次のコマンドでインストールする。FirefoxはLinuxで標準的なブラウザ。WSL2を使っている場合は、Windowsのアプリか、Ubuntuのアプリかわからなくなる場合があるので使いわけると便利。
+<ul>
+<li>$ sudo apt update</li>
+<li>$ sudo apt upgrade</li>
+<li>$ sudo apt install firefox</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Firefoxで今見ているこのページ、つまり以下のURLを表示する。
+<ul>
+<li>https://demura.net/education/18243.html</li>
+</ul>
+</li>
+<li>次のダウンロードサイトから<a href="https://bitbucket.org/odedevs/ode/downloads/ode-0.16.1.tar.gz">ode-0.16.1.tar.gz</a>を保存する。<a href="https://bitbucket.org/odedevs/ode/downloads/ode-0.16.1.tar.gz">ここをクリックすると直接ダウンロードする。</a>
+<ul>
+<li><a href="https://bitbucket.org/odedevs/ode/downloads/">ODE ダウンロード</a></li>
+</ul>
+</li>
+<li>Firefoxのデフォルト設定ではダウンロードは/home/ユーザ名/Downloadsディレクトリ(フォルダ)に保存される。</li>
+<li> 端末を開き、以下のコマンドを実行して、保存したファイルを移動、展開する。
+<ul>
+<li>ホームディレクトリに移動
+<ul>
+<li>$ cd</li>
+</ul>
+</li>
+<li>srcディレクトリの作成
+<ul>
+<li>$ mkdir  src</li>
+</ul>
+</li>
+<li>ファイルをsrcディレクリへ移動する。~(チルダと読む)はホームディレクトに意味。つまり、/home/ユーザ名。
+<ul>
+<li>$ cp ~/Downloads/ode-0.16.1.tar.gz  ~/src</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> 次のコマンドでダウンロードしたファイルを展開する。
+<ul>
+<li>srcディレクトリへ移動
+<ul>
+<li>$ cd ~/src</li>
+</ul>
+</li>
+<li>圧縮されたファイルを展開
+<ul>
+<li>$ tar xvzf ode-0.16.1.tar.gz</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>２. ODEのインストール</strong></p>
+<ul>
+<li>端末を開き、以下のコマンドを実行する。</li>
+<li> ode-0.16.1ディレクトリへ移動
+<ul>
+<li>$ cd ~/src/ode-0.16.1</li>
+</ul>
+</li>
+<li>ビルド環境を自動検出するスクリプトconfigureの実行。一番初めの.(ドット)は現在いるディレクトリの意味。設定によりこれがないと現在いるディレクトリのファイルを読めない場合がある。
+<ul>
+<li>$  <code>./configure --enable-double-precision</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li>$ make</li>
+</ul>
+</li>
+</ul>
+<p><strong>3.　テスト</strong></p>
+<ul>
+<li>demoディレクトリへ移動
+<ul>
+<li>$ cd  ~/ode-0.16.1/ode/demo</li>
+</ul>
+</li>
+<li> バギーデモの起動
+<ul>
+<li>$  ./demo_buggy</li>
+<li>demo_buggyがない場合は、4. トラブルシューティングへ進む。</li>
+</ul>
+</li>
+<li>バギーデモの操作
+<ul>
+<li>Simulationウインドウが開きバギーが表示されたら成功です。ごくろうさま！マウス操作で視点等を変えることができます。'a'キーを押すと前進、'z'キーで後進、','キーで左折、'.'キーで 右折します。このバキーは３輪なのですぐ転倒してしまいます。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_Simulation_2020-6-21_10-33-38_No-00.png"><img class="aligncenter size-full wp-image-18248" src="{{ site.baseurl }}/assets/images/2020/06/SnapCrab_Simulation_2020-6-21_10-33-38_No-00.png" alt="" width="881" height="539" /></a></p>
+<p><strong>４．トラブルシューティング</strong></p>
+<ul>
+<li>端末で次のコマンドを実行する。X関連のライブラリがないと思われる。
+<ul>
+<li>$ sudo apt install -y xorg libx11-dev libglu1-mesa-dev libfreetype6-dev pkg-config</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>おしまい。</p>

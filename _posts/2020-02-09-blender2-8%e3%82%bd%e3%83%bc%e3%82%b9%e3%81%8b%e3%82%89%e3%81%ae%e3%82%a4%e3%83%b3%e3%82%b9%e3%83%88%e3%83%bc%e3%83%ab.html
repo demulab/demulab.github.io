@@ -1,0 +1,99 @@
+---
+layout: post
+title: Blender2.8:ソースからのインストール
+date: 2020-02-09 17:19:38.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16714'
+  views: '513'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_main_category: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/16713.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/blender283.png"><img class="aligncenter size-large wp-image-16714" src="{{ site.baseurl }}/assets/images/2020/02/blender283-1024x562.png" alt="" width="1024" height="562" /></a></p>
+<p>Blender2.8をソースからインストールしたときの作業メモ。aptでインストールするとバージョンが2.7になってしまう(2020-07-09現在)。Blender Wikiのとおり実施したら問題なくビルドできた。</p>
+<ul>
+<li>参考サイト
+<ul>
+<li><a href="https://wiki.blender.org/wiki/Building_Blender/Linux/Ubuntu">Blender Wiki: Building Blender on Ubuntu</a></li>
+</ul>
+</li>
+<li> 環境
+<ul>
+<li>Ubuntu18.04</li>
+<li>Gcc: 7.4.0</li>
+</ul>
+</li>
+<li>パッケージのインストール
+<ul>
+<li><code>$ sudo apt update</code></li>
+<li><code>$ sudo apt install build-essential git subversion cmake libx11-dev libxxf86vm-dev libxcursor-dev libxi-dev libxrandr-dev libxinerama-dev libglew-dev</code></li>
+</ul>
+</li>
+<li>ソースのダウンロード
+<ul>
+<li><code>$ mkdir ~/blender-git</code></li>
+<li><code>$ cd ~/blender-git</code></li>
+<li><code>$ git clone http://git.blender.org/blender.git</code></li>
+</ul>
+</li>
+<li>ライブラリのダウンロード
+<ul>
+<li><code>$ mkdir ~/blender-git/lib</code></li>
+<li><code>$ cd ~/blender-git/lib</code></li>
+<li><code>$ svn checkout https://svn.blender.org/svnroot/bf-blender/trunk/lib/linux_centos7_x86_64</code></li>
+</ul>
+</li>
+<li>ビルド：最新のソースコードを取ってきてビルドする。
+<ul>
+<li><code>$ cd ~/blender-git/blender</code></li>
+<li><code>$ make update</code></li>
+<li><code>$ make make -j$(nproc)</code></li>
+</ul>
+</li>
+<li>依存ファイルのインストール。
+<ul>
+<li><code>$ cd ~/blender-git</code></li>
+<li><code>$ ./blender/build_files/build_environment/install_deps.sh --with-all</code></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

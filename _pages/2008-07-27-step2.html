@@ -1,0 +1,94 @@
+---
+layout: page
+title: 'STEP2: シミュレータを作ろう'
+date: 2008-07-27 17:19:01.000000000 +09:00
+type: page
+parent_id: '1286'
+published: true
+password: ''
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  views: '4006'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robotsimu/step2"
+---
+<p><img title="Robot Simulation" src="{{ site.baseurl }}/assets/images/2008/07/step2.jpg" alt="Open Dynamics Engine" width="320" height="240" /></p>
+<p>ODE本　Step2 扉図のカラー画像</p>
+<hr />
+<p>ODE本「<a href="http://www.amazon.co.jp/gp/product/4627846916?ie=UTF8&amp;tag=demuranet-22&amp;linkCode=as2&amp;camp=247&amp;creative=1211&amp;creativeASIN=4627846916">簡単!実践!ロボットシミュレーション - Open Dynamics Engineによるロボットプログラミング</a><br />
+ <img style="border: medium none  ! important; margin: 0px ! important" src="{{ site.baseurl }}/assets/images/2008/07/ir?t=demuranet-22&amp;l=as2&amp;o=9&amp;a=4627846916" alt="" width="1" height="1" /><br />
+ 」のStep2です．</p>
+<p>ここでは，ロボットを動かす上で必要になる関節を動かす方法，シミュレーションの再実行法，高速化，キーボードからの操作を学びホッピングロボットのシミュレータを作ります．</p>
+<p>以下にStep2のシミュレータの動画を掲載します．ソースコードは<a href="../../dl">このページの注意事項を読み，ダウンロード，ビルドやコンパイルし実行してください．</a></p>
+<ul>
+<li>ソースコード
+<ul>
+<li><a href="#p21">プログラム2.1：　ヒンジジョイントの制御(P32)</a></li>
+<li><a href="#p22">プログラム2.2：　ヒンジジョイントの力制御(P33)</a></li>
+<li><a href="#p23">プログラム2.3：　スライダージョイントの作り方(P34)</a></li>
+<li><a href="#p24">プログラム2.4：　スライダージョイントの動かし方(P35)</a></li>
+</ul>
+</li>
+<li>EX2.1補足　(P33)
+<ul>
+ヒントで「controlHinge関数をsimLoop関数の中に入れます。」という意味は、simLoop関数の中で呼び出すという意味です。関数の定義（本体）は、simLoop関数のすぐ上に挿入してください。プログラム2.5(P37)が参考になると思います。ここでは、controlSlider関数がsimLoop関数の中で呼び出されていますね。
+</ul>
+</li>
+<p><!--more--></p>
+</ul>
+<hr />
+<p>
+<object width="290" height="240" data="http://demura.net/flvplayer.swf" type="application/x-shockwave-flash"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/pro205.flv&amp;autostart=" /><param name="src" value="http://demura.net/flvplayer.swf" /></object></p>
+<ul>
+<li>プログラム2.5：　ホッピングロボット(P37)</li>
+<li>説明：スライダ（直動式）ジョイントの動かし方を学び，一本脚ロボットをちょっとジャンプさせます．</li>
+</ul>
+<hr />
+<li><a href="#p26">プログラム2.6: ドロースタッフの設定(P40)</a></li>
+<li><a href="#p27">プログラム2.7: comman関数(P41)</a></li>
+<li><a href="#p28">プログラム2.8: simLoop関数の変更(P42)</a></li>
+<hr />
+<p>
+<object width="290" height="240" data="http://demura.net/flvplayer.swf" type="application/x-shockwave-flash"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/pro209.flv&amp;autostart=" /><param name="src" value="http://demura.net/flvplayer.swf" /></object></p>
+<ul>
+<li>プログラム2.9：　ホッピングロボット，再実行可能版 (P44)</li>
+<li>説明：シミュレーションは普通は１回では終わらず，何度も繰り返し実行しなければなりませんよね．ここでは，ミュレーションの再実行法を学びます．</li>
+</ul>
+<hr />
+<ul>
+<li>プログラム2.10：　ホッピングロボット，描画無版 (P50)</li>
+<li>EX2.8：　テクスチャファイル　(P53)
+<ul>
+<li><a href="http://demura.net/archives/images/ode/robotsimu/grid.ppm">グリッドのテクスチャ</a>，<a href="http://demura.net/archives/images/ode/robotsimu/green-grid.ppm">芝とグリッドのテクスチャ</a></li>
+</ul>
+</li>
+</ul>
+<hr style="width: 100%; height: 2px;" />
+<ul>
+<li><span style="font-weight: bold">プログラム2.1：　ヒンジジョイントの制御(P32)</span><a name="p21"></a> </li>
+<p>[cpp]  void controlHinge(dReal target)  {   static const dReal kp   　= 5.0;   // 比例定数   static const dReal fmax = 200;  // 最大トルク [Nm]   dReal tmp   =  dJointGetHingeAngle(joint);  // 現在の角度を取得   dReal u     =  kp * (target - tmp);  // 操作量   dJointSetHingeParam(joint,dParamVel,u);  // 角速度の設定   dJointSetHingeParam(joint,dParamFMax,fmax); // 最大トルクの設定  } [/cpp]</p>
+<li><span style="font-weight: bold">プログラム2.2：　ヒンジジョイントの力制御(P33)</span><a name="p22"></a></li>
+<p>[cpp] void controlHinge2(dReal target) {   static const dReal kp   = 5.0, kt = 2.0;   // 比例定数   dReal tmp      =  dJointGetHingeAngle(joint);  // 現在の角度を取得   dReal u          =  kp * (target - tmp);　 // 操作量   dReal omega = dJointGetHingeAngleRate(joint);   // 角速度   dReal trq        =  kt  * omega;　　// 摩擦トルク   dJointAddHingeTorque(joint, u - trq);   // トルクを加える }  [/cpp]</p>
+<li><span style="font-weight: bold">プログラム2.3：　スライダージョイントの作り方(P34)</span><a name="p23"></a></li>
+<p>[cpp]    s_joint = dJointCreateSlider(world, 0);　 // ジョイントの生成   dJointAttach(s_joint, leg[0].body,leg[1].body);　 // ジョイントの取付   dJointSetSliderAxis(s_joint, 0, 0, 1);　// 軸ベクトルの設定   dJointSetSliderParam(s_joint, dParamLoStop, -0.5); // 最大収縮長[m]   dJointSetSliderParam(s_joint, dParamHiStop,  0.5);  // 最大伸展長[m] [/cpp]</p>
+<li><span style="font-weight: bold">プログラム2.4：　スライダージョイントの動かし方(P35)</span><a name="p24"></a></li>
+<p>[cpp]  static void controlSlider(dReal target)  {   static dReal kp   = 25.0;   // 比例定数   static dReal fmax = 400;  // 最大力[N]   dReal tmp  = dJointGetSliderPosition(s_joint);   // スライダの現在位置   dReal u    = kp * (target - tmp);   // 残差   dJointSetSliderParam(s_joint, dParamVel,  u);   dJointSetSliderParam(s_joint, dParamFMax, fmax);  } [/cpp]</p>
+<li><span style="font-weight: bold">プログラム2.6: ドロースタッフの設定(P40)</span><a name="p26"></a></li>
+<p>[cpp]  void  setDrawStuff() {    fn.version = DS_VERSION;  // drawStuffのバージョン    fn.start   = &amp;start;　 // シミュレーションループの前に呼び出される関数    fn.step    = &amp;simLoop;   // ステップ毎に呼びだされる関数のアドレス    fn.command = &amp;command;   // キー入力により呼び出される関数のアドレス    fn.path_to_textures = &quot;../../drawstuff/textures&quot;; // テクスチャのパス  } [/cpp]</p>
+<li><span style="font-weight: bold">プログラム2.7: comman関数(P41)</span><a name="p27"></a></li>
+<p>[cpp]  void command(int cmd)  {    float xyz[3],hpr[3];  // 視点,視線    switch (cmd) {    case 'a':funcA(); break;           // aキーを押すとfuncAを実行    case '1':func1(); break;　　　　　 // 1キーを押すとfunc1を実行    case 's':                      // sキーを押すと視点，視線を表示       dsGetViewpoint(xyz,hpr);     // 視点，視線を取得       printf(&quot;xyz=%4.2f %4.2f %4.2f   &quot;,xyz[0],xyz[1],xyz[2]);       printf(&quot;hpr=%6.2f %6.2f %5.2f \n&quot;,hpr[0],hpr[1],hpr[2]);       break;     default:printf(&quot;Input a or 1\n&quot;);break;// 上記以外のキーを押すとき   } } [/cpp]</p>
+<li><span style="font-weight: bold">プログラム2.8: simLoop関数の変更(P42)</span><a name="p28"></a></li>
+<p>[cpp]  static void simLoop(int pause)  {    const dReal *pos1, *R1, *pos2, *R2;    int s = 200;   // 跳躍する周期(ステップ)    if (!pause) {   //  一時停止       STEPS++;  //  ステップ数       printf(&quot;STEPS:%4d\n&quot;,STEPS);       if ((0 &lt;= (STEPS % s)) &amp;&amp; ((STEPS % s) &lt;= 10)) controlSlider(0.5);       else                               controlSlider(0.0);        dSpaceCollide(space,0,&amp;nearCallback);　　// 衝突検出計算       dWorldStep(world,0.01);   // 1ステップ進める      dJointGroupEmpty(contactgroup);    }     dsSetColor(1.0,0.0,0.0);  // 赤色の設定    dsDrawSphere(dBodyGetPosition(torso.body),   // 球の描画                          dBodyGetRotation(torso.body), torso. r);  } [/cpp]</p>
+</ul>
+<hr />
+<p>（最終更新日　2008-7-27)</p>
+<p><br class="spacer_" /></p>

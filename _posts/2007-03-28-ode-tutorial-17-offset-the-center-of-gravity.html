@@ -1,0 +1,186 @@
+---
+layout: post
+title: 'ODE Tutorial 17: Offset the Center of Gravity'
+date: 2007-03-28 10:00:27.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- english
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1179'
+  syntaxhighlighter_encoded: '1'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/english/384.html"
+---
+<p>Most of this page was translated from http://demura.net/archives/9ode by <a href="http://babelfish.altavista.com/">Babel Fish Translation</a>.<br />
+ Sorry for strange and funny English from "<a href="http://en.wikipedia.org/wiki/Chinese_room">the Chinese room</a>".</p>
+<p><img src="{{ site.baseurl }}/assets/images/2007/03/koboshi.gif" alt="" /></p>
+<p>This is 17th article about ODE (Open Dynamics Engine) Tutorial. ODE is an open source physics libary, and it is widely used  in various game software, and simulators in research.</p>
+<p>This time it explains concerning the method of moving the  position of COG (center of gravity). API, dGeomSetOffsetPosition was  introduced from ODE0.6, shifting the position of center of gravity  extremelysimply in comparison with<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2f2006%2f06%2fode14.html">the  former method of using</a><a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2f2006%2f06%2fode14.html">the Geometry Transform  object which</a>last year is introduced with ODE lecture reached  the point where it can set.</p>
+<ul>
+<li><strong>API about offset the positon of geometry</strong></li>
+</ul>
+<div style="margin-left: 40px"><span style="color: #000099;"><strong>Void dGeomSetOffsetPosition (dGeomID and dReal  x, dReal y and dReal z);</strong><br />
+ (X, just y and z) shifting the position of dGeomID from  the position of body, it sets. Before using this API, geometry  must be correlated with the body. In other words, it is  necessary for dGeomSetBody to be first called.</span></div>
+<p>So, the tumbler in the upper figure is introduced as a  sample program.<a href="http://babelfish.altavista.com/babelfish/trurl_pagecontent?lp=ja_en&amp;trurl=http%3a%2f%2fdemura.net%2farchives%2fimages%2fode%2fkoboshi2.tgz">Please download the source code  from here.</a>With this example, it is suitable to the  body of the small priest sphere (mass 10kg and radius 0.4m) from the  center of sphere under 0.4m to set center of gravity, because as for  mass of the sphere which is suitable to the head there is only 1g,  this small priest by all means rises. Concretely, with  dBodySetPosition from the center of sphere radius amount (0.4m)  shifting balance station under, it sets, that was shifted the quantity which (the offset, here dz) it has set with dGeomSetOffsetPosition.</p>
+<p>When the f key and the j key are pushed from the keyboard, to the tumbler it  can add to left and right direction the power of  100N, but being to be a restitutive force, it rises, it requires you  can verify.<br />
+ <!--more--></p>
+<pre class="brush:cpp">
+// koboshi2.cpp by Kosei Demura 2007-1-20
+#include &#60;ode/ode.h&#62;
+#include &#60;drawstuff/drawstuff.h&#62;;
+#ifdef dDOUBLE
+#define dsDrawSphere dsDrawSphereD
+#endif
+#define MAX_CONTACTS 4
+static dWorldID world;
+static dSpaceID space;
+static dGeomID  ground;
+static dJointGroupID contactgroup;
+dsFunctions fn;
+typedef struct {
+  dBodyID body;
+  dGeomID geom;
+  dReal   radius;
+  dReal   length;
+  dReal   mass;
+} MyLink;
+
+MyLink   head, torso; //  head. torso of
+dJointID joint;　　　　　//  a fixed joint between a head and a torso
+static void nearCallback (void *data, dGeomID o1, dGeomID o2);
+{
+  int i;
+  // exit without doing anything if the two bodies are connected by a joint
+  dBodyID b1 = dGeomGetBody(o1);
+  dBodyID b2 = dGeomGetBody(o2);
+  if (b1 &amp;&amp; b2 &amp;&amp; dAreConnectedExcluding (b1,b2,dJointTypeContact)) return;
+  dContact contact&#91;MAX_CONTACTS&#93;;   // up to MAX_CONTACTS contacts per box-box
+
+  for (i=0; i &#60; N; i++) {
+    contact&#91;i&#93;.surface.mode = dContactBounce | dContactSoftCFM;
+    contact&#91;i&#93;.surface.mu = 1.0;                   // Coefficient of friction
+    contact&#91;i&#93;.surface.bounce = 0.01;          //  bounce parameter
+    contact&#91;i&#93;.surface.bounce_vel = 0.01;   //  minimum incoming velocity necessary for  bounce
+    contact&#91;i&#93;.surface.soft_cfm = 0.00001;
+  }
+
+  if (int numc = dCollide (o1,o2,MAX_CONTACTS,&contact&#91;0&#93;.geom,sizeof(dContact))) {
+    for (i=0; i &#60; numc; i++) {
+       dJointID c = dJointCreateContact (world,contactgroup,contact+i);
+       dJointAttach (c,b1,b2);
+    }
+  }
+}
+
+static void drawSphere(dGeomID g)
+{
+  if (!g) return;
+  const dReal *pos = dGeomGetPosition(g);
+  const dReal *R = dGeomGetRotation(g);
+  dsDrawSphere(pos,R,dGeomSphereGetRadius(g));
+}
+
+static void simLoop (int pause)
+{
+  dSpaceCollide(space,0,&nearCallback);
+  dWorldStep(world,0.01);
+  dJointGroupEmpty(contactgroup);
+  dsSetColor(1.0,0.0,0.0);
+  drawSphere(torso.geom);
+  dsSetColor(1.0, 0.0, 0.0);
+  drawSphere(head.geom);
+}
+
+void start()
+{
+  static float xyz&#91;3&#93; = {   3.5,0.0,1.0};
+  static float hpr&#91;3&#93;  = {-180.0,0.0,0.0};
+  dsSetSphereQuality(3);
+  dsSetViewpoint(xyz,hpr);
+}
+
+// Create an object
+void createDaruma()
+{
+  dMass m,m1;
+  dReal x0 = 0.0, y0 = 0.0, z0 = 0.4;
+  dReal dx = 0.0, dy = 0.0, dz = 0.4;  // offset
+  // torso: offset the center of gravity
+  torso.body   = dBodyCreate(world);
+  torso.radius = 0.4;　　//  radius
+  torso.mass   = 10.0;　//  mass
+
+  dMassSetZero(&amp;m);
+  dMassSetSphereTotal(&amp;m,torso.mass,torso.radius);
+  dBodySetMass(torso.body, &amp;m);
+  torso.geom = dCreateSphere(space,torso.radius);
+  dGeomSetBody(torso.geom,torso.body);
+
+  // Set the COG under the radius of the torso (sphere)
+  dBodySetPosition(torso.body, x0, y0, z0 - dz);
+
+  //This way, in order geometry of the body (form) to be buried in the land, it sets with respect to radius amount of sphere. Center of gravity of sphere moves under radius amount due to this movement, the body has restitutive force.
+  dGeomSetOffsetPosition(torso.geom, 0, 0, dz);
+
+  //  head
+  head.body = dBodyCreate(world);
+  head.radius = 0.3;
+  head.mass   = 0.001;
+  dMassSetZero(&m1);
+  dMassSetSphereTotal(&m1,head.mass, head.radius);
+  dBodySetMass(head.body,&m1);
+  head.geom = dCreateSphere(space,head.radius);
+  dGeomSetBody(head.geom,head.body);
+  dGeomSetPosition(head.geom, x0, y0, z0 + torso.radius + head.radius);
+
+  //  fixed joint (between the head and the torso)
+  joint = dJointCreateFixed(world, 0);
+  dJointAttach(joint, torso.body,head.body);
+  dJointSetFixed(joint);
+}
+
+void command(int cmd)
+{
+  switch(cmd) {
+   case ‘f’:　// When the f key is pushed, the power of 100N is added to forward of x axis
+                dBodyAddTorque(head.body,  100, 0, 0); break;
+   case ‘j’:　// When  the j key is pushed, -100N power is added to forward of x axis
+     dBodyAddTorque(head.body, -100, 0, 0); break;
+   }
+}
+
+void  setDrawStuff() {
+  fn.version = DS_VERSION;
+  fn.start   = &start;
+  fn.step    = &simLoop;
+  fn.command = &amp;command;
+  fn.stop    = NULL;
+  fn.path_to_textures = "../../drawstuff/textures";
+}
+
+int main(int argc, char **argv)
+{
+  setDrawStuff();    // Set of drawing function
+  world = dWorldCreate();　// create a dynamic world
+  space = dHashSpaceCreate(0);　// 　create a collision space
+  contactgroup = dJointGroupCreate(0);　// for collision calculation
+  dWorldSetGravity(world,0,0,-9.8);　// set a gravity of the dynamic world
+  ground = dCreatePlane(space,0,0,1,0);　//  set a ground
+  createDaruma();　// create a Daruma
+  dsSimulationLoop (argc,argv,640,480,&amp;fn);　//  simulation loop
+  dSpaceDestroy(space);     //  destory the collision space
+  dWorldDestroy (world); 　//  destroy the dynamic world&#60;
+  return 0;
+}
+</pre>

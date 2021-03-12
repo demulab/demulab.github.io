@@ -1,0 +1,85 @@
+---
+layout: post
+title: PD実践：センサ演習６．ジャイロセンサの使い方（余裕があれば実施）
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  views: '17'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>ジャイロセンサの使い方を学びます。</p>
+<ul>
+<li><strong>API</strong>
+<ul>
+<li>ポート1のジャイロセンサの角位置をリセットする。
+<ul>
+<li> ev3_gyro_sensor_reset(EV3_PORT_1);</li>
+</ul>
+</li>
+<li> ポート1のジャイロセンサで角速度を測定する。
+<ul>
+<li> int16_t rate = ev3_gyro_sensor_get_rate(EV3_PORT_1);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>サンプルプログラム</strong>
+<ol>
+<li> <a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43389/mod_page/content/6/app_gyro_angle.c">/gyro_angle/app.c</a>：ジャイロセンサーの角位置の計測値をLCDに表示する。</li>
+<li> <a href="https://e-learn01.mars.kanazawa-it.ac.jp/moodle/pluginfile.php/43389/mod_page/content/6/app_gyro_rate.c">/gyro_rate/app.c</a>：ジャイロセンサーの角速度の計測値をLCDに表示する。
+<ul>
+<li>上のリンクをクリックするとソースコードが表示されますが、文字化けしないように文字コード等を変更しているので、このコードをコピペしたものはビルドで失敗します。あくまで表示用なので注意してください。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li> <strong>演習</strong>
+<ul>
+<li> サンプルプログラムのどちらか一つの動作を確認してください。</li>
+</ul>
+</li>
+<li><b>参考</b>
+<ul>
+<li><a href="http://www.toppers.jp/ev3pf/EV3RT_C_API_Reference/group__ev3sensor.html">各種センサに関するAPI (EV3RT C  API Reference)</a></li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

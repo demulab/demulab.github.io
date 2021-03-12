@@ -1,0 +1,81 @@
+---
+layout: post
+title: 'DNN: Mask R-CNNを試す'
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- 未分類
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/%e6%9c%aa%e5%88%86%e9%a1%9e/14166.html"
+---
+<p>Mask R-CNNを試したときの防備録</p>
+<p>環境</p>
+<ul>
+<li>Ubuntu 16.04</li>
+<li>NVIDIA GeForce GTX 1080Ti</li>
+</ul>
+<p>準備</p>
+<ul>
+<li>jupyterのインストール
+<ul>
+<li>sudo pip3 install jupyter</li>
+<li>sudo pip3 install ipython</li>
+<li>sudo pip3 install Cython</li>
+<li>sudo pip3 install scikit-image</li>
+</ul>
+</li>
+<li>TensorFlow1.3+
+<ul>
+<li>sudo pip3 install --upgrade tensorflow-gpu</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>インストール</p>
+<ul>
+<li>cd ~/src</li>
+<li>git clone https://github.com/matterport/Mask_RCNN.git</li>
+<li>学習済みのCOCO Weights (mask_rcnn_coco.h5)を<a href="https://github.com/matterport/Mask_RCNN/releases">ここからダウンロード</a></li>
+<li>MS COCOデータをダウンロード
+<ul>
+<li>http://cocodataset.org/#download</li>
+<li>(1) Install gsutil via:curl https://sdk.cloud.google.com | bash</li>
+<li>(2) Make local dir:mkdir val2017</li>
+<li>(3) Synchronize via:gsutil -m rsync gs://images.cocodataset.org/val2017 val2017
+<ul>
+<li>val2017の他にtrain2014, val2014, test2014, test2015, train2017, val2017, test2017, unlabeled2017.</li>
+</ul>
+</li>
+<li>(4) Get annotations: gsutil -m rsync gs://images.cocodataset.org/annotations [localdir]</li>
+</ul>
+</li>
+<li>MS COCOをテスト、インストールするためにpycocotoolsをダウンロードする。
+<ul>
+<li>cd ~/src</li>
+<li>git clone https://github.com/waleedka/coco.git</li>
+<li>cd coco</li>
+<li>cd pythonAPI</li>
+<li>Makefileの中のpythonをpython3に変更する。</li>
+<li>make</li>
+<li>sudo make install</li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li>cd ~/src/Mask_RCNN</li>
+<li>python demo.ipynb</li>
+</ul>
+</li>
+</ul>

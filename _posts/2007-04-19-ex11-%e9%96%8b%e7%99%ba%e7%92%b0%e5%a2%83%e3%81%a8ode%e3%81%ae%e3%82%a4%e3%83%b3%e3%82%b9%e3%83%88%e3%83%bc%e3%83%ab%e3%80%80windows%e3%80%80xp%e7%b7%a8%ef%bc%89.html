@@ -1,0 +1,193 @@
+---
+layout: post
+title: EX1.1 開発環境とODEのインストール　(Windows　XP編）
+date: 2007-04-19 13:08:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1890'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/392.html"
+---
+<p>EX1.1の答えです。OＤＥ (Open Dynamics Engine)をWindows XPへインストールする方法について説明します。Windows Vistaのユーザは<a href="http://demura.net/archives/9ode/robotsimu/installwindowsvista.html">こちらをご覧ください。</a></p>
+<p>ここではWindows　XP環境でしかもインストールがもっとも簡単なMinGW環境を使った方法を説明します。</p>
+<p>MinGWはCygwinの ようにLinuxとの互換性は高くありませんが、150MBもディスクに空きがあればインストール可能ですし、バイナリを実行するときに特別なライブラリ が必要なくGPLで配布する必要もない（注１）ので重宝します。そのうえ、gcc、make、gdbなどのLinuxで標準的な開発ツールを使うことがで きます。</p>
+<p>注１：Cygwinで作成したバイナリはcygwin1.dllを使うので、これも同時に配布しなければならない。これはGPLなので自分の作成したプロ グラムもGPLで配布しなければいけないのです。</p>
+<p>では、以下について図とリンク付きで詳しく説明していきます。ここで紹介するMinGWのバージョンは5.1.0、MSYSは1.0.10です。多少古いですが、Windows XPでの動作を確認していますのでこれらを利用してください。最近のバージョンにすると不具合が生ずる場合があります。</p>
+<ol>
+<li><a href="http://www.mingw.org/" target="_self">MinGW</a>のインストール（開発環境）</li>
+<li><a href="http://www.mingw.org/msys.shtml" target="_self">MSYS</a>のインストール(MinGWを利用するためのシステム）</li>
+<li><a href="http://ode.org" target="_self">ODE</a>のインストール</li>
+</ol>
+<p><!--more--></p>
+<h4><span style="color: #cc0000;"><strong></p>
+<hr /></strong></span></h4>
+<h4><span style="color: #cc0000;"><strong>注意：Windowsのユーザーアカウント名に日本語または全角の英数字を使われている方は，msysではユーザ名が文字化けして使えません．半角英字のユーザーアカウントを新たに作成し，それにログインしてからmingwとmsysをダウンロード，インストールしてください．</strong></span></h4>
+<h1>1. MinGWのインストール</h1>
+<ul>
+<li> <span style="font-size: 10pt"><a href="http://prdownloads.sourceforge.net/mingw/MinGW-5.1.0.exe">ここをクリックしてMinGW-5.1.0.exe</a>を</span><span style="font-size: 10pt">デスクトップに</span><span style="font-size: 10pt">ダウンロードします．</span></li>
+</ul>
+<ul>
+<li> <span style="font-size: 10pt">デスクトップにあるMinGW-5.1.0.exeをダブルクリックすると以下のウインドウが現れます。Nextをクリックして次に進む。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MinGW1.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Download and Install</span><span style="font-size: 10pt">にチェックをいれNextをクリック</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MinGW2.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">License</span><span style="font-size: 10pt">Agreementの画面が出ますのでライセンスに同意するなら Ｉ Ａgreeをクリック。当然ですが、同意しない場合はインストールできません。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MinGW3.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">どのパッケージを選ぶが聞いてきます．Current(現在のバージョン)にチェックをいれNextをクリック．</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MinGW4.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">必要なコンポーネントを選択します．インストールをCustomにし，MinGW base tools，g++ compiler, MinGW Makeにチェックをいれ，Nextをクリック．</span><span style="color: #ff0000;"><strong>この3個のコンポーネントを選択しなければコンパイルができないのでチェックが確実に入っているか確認してください。</strong></span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MinGW5.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">インストールする場所を聞いてきます．このままでよいのでNextをクリック．なお，インストールにはハードディスクに58.5MBの空き領域が必要です．</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MinGW6.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">スタートメニューフォルダーの選択を聞いてきます．このままInstallをクリック</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MinGW7.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">ダウンロードとインストールが始まり、インストールが終わると次の画面のようにInstallation Completeの表示になります．Nextをクリック</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MinGW9.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Finish</span><span style="font-size: 10pt">をクリックしてインストール作業を終了しましょう．次はMSYSをインストールしましょう。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MinGW10.jpg" alt="" /></p>
+<h1><strong>2. MSYSのインストール </strong></h1>
+<ul>
+<li><span style="font-size: 10pt">MSYS</span><span style="font-size: 10pt">はMinimal Systemの略でMinGWを使いやすくするために必要な最小限のシステムです。MinGWと同様に<a href="http://prdownloads.sourceforge.net/mingw/MSYS-1.0.10.exe">ここをクリックしてMSYS-1.0.10.exe</a>をデスクトップへダウンロードしてください。MSYS-1.0.10.exeをダブルクリックすると次のウインドウが開きます。「はい」をクリックして次へ進む。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS1.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Welcome to the "Minimal System" Setup Wizard</span><span style="font-size: 10pt">の画面が開くのでNextをクリック。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS2.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">License agreement</span><span style="font-size: 10pt">を読んでOKならYesをクリック。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS3.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Information</span><span style="font-size: 10pt">を読んだらNextをクリック。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS4.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Setup</span><span style="font-size: 10pt">の画面になります．インストール先を変更せずにNextをクリック．インストールには少なくとも6MBの空き領域が必要です．</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS5.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Select components</span><span style="font-size: 10pt">の画面になるので何もせずにNextをクリック。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS6.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Select Start Menu Bar</span><span style="font-size: 10pt">の画面になります。なにもせずにNextをクリック。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS7.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">Ready to Install</span><span style="font-size: 10pt">の画面になり、これからハードディスにインストールします。Installをクリック。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS8.jpg" alt="" /></p>
+<ul>
+<li> 以下の画面のようにインストールが１００％になると，その下の図のようなコマンドプロンプトウインドウが開きます．<br />
+<img src="{{ site.baseurl }}/assets/images/2007/04/MSYS9.jpg" alt="" /></li>
+<li>
+<p class="MsoNormal" align="left">以下のように答えてください．</p>
+<p class="MsoNormal" align="left"><span style="font-size: 10pt">Do you wish to continue with the post intsll?[Yn] </span><span style="color: #ff0000;"><strong>y</strong></span><strong>キーを押す</strong><br />
+Do you have MinGW installed [Yn]<span style="color: #ff0000;"> <strong>y</strong></span><strong>キーを押す<br />
+</strong>Please answer the following in the form of c:/foo/bar<br />
+Where is your MinGW installation?<span style="color: #ff0000;"><strong>C:/mingw</strong></span><strong>とタイプしてEnterキーを押す。<span style="color: #0033ff;">ここで間違ってC:￥mingwとタイプしてインストールに失敗するケースが良くあります。C:の後は￥ではなくスラッシュ/なので注意しましょう。</span></strong></p>
+<p class="MsoNormal" align="left">
+<img src="{{ site.baseurl }}/assets/images/2007/04/MSYS10.jpg" alt="" /></p>
+</li>
+<li><span style="font-size: 10pt">これでインストールが終わりです。Finishをクリックしましょう。</span></li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS11.jpg" alt="" /></p>
+<ul>
+<li><span style="font-size: 10pt">インストールが正常に終わると。デスクトップ上にMSYSのアイコンが追加されます。それをダブルクリックすると以下のMINGW32ターミナルが開きます。　これでMSYSのインストール作業は終わりです</span>。</li>
+</ul>
+<p><img src="{{ site.baseurl }}/assets/images/2007/04/MSYS12.jpg" alt="" /></p>
+<h1><strong>3. ODEのインストール</strong></h1>
+<h3><strong>A. ダウンロード</strong></h3>
+<p><strong>1. ODE 0.9をすぐダウンロードしたい方</strong></p>
+<p><a href="http://downloads.sourceforge.net/opende/ode-src-0.9.zip?modtime=1171190744&amp;big_mirror=0">ここをクリックしてode-src-0.9.zip</a>をダウンロードしてください．ご近所のミラーサイトが自動的に選択されダウンロードが始まります．</p>
+<p>ただし，Internet Explorerをお使いの方は，下図のようにブラウザの上の部分に「セキュリティ保護のため，このサイトによる，このコンピュータへのファイルのダウンロードがInternet Explorerによりブロックされました．オプションを表示するにはここをクリックしてください．」と表示されますので，下図の赤枠の部分をクリックし，「ファイルのダウンロード（D)」を選ぶとダウンロードが開始されます．</p>
+<p><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong><br />
+<img src="{{ site.baseurl }}/assets/images/2007/04/security1.jpg" alt=" " width="589" height="490" /><br />
+</strong></span></strong></span><strong></strong><strong></strong><strong></strong><strong></strong></p>
+<ul></ul>
+<p><strong></strong></p>
+<p>ダウンロード先はc:￥msys￥1.0￥home￥ユーザ名￥srcの下にしてください．srcフォルダーがない場合はエクスプローラーでc:￥ msys￥1.0￥home￥ユーザ名へ移動し，右マウスボタンをクリックし，[新規作成(<span style="text-decoration: underline;">W</span>)→フォルダ(<span style="text-decoration: underline;">F</span>)]を選びsrcフォルダーを作成してください．これで， ダウンロードが終わったのでB.インストールへ進んでください．</p>
+<p><strong>2.  ODE本家様のウェブサイト経由でダウンロードしたい方</strong></p>
+<p><strong></strong><strong></strong><strong></strong><strong><a href="http://ode.org/" target="_self"><span style="font-size: 10pt">ODE</span></a><span style="font-size: 10pt"><a href="http://ode.org/" target="_self">ウェブサイト</a>(下図）の左メニューバーにある<a href="http://ode.org/download.html" target="_self">download</a>をクリックすると</span></strong></p>
+<p><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong><br />
+<img src="{{ site.baseurl }}/assets/images/2007/04/ode1s.jpg" alt="" width="410" height="261" /><br />
+</strong></span></p>
+<p class="MsoNormal" align="left">次の画面になります．</p>
+<p class="MsoNormal" align="left"><span style="font-size: 10pt"><strong></strong><strong></strong><strong></strong><strong><br />
+<img src="{{ site.baseurl }}/assets/images/2007/04/ode2s.jpg" alt="" width="409" height="205" /><br />
+</strong></span><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"> </span></strong><a href="http://sourceforge.net/project/showfiles.php?group_id=24884" target="_self"></a></p>
+<p class="MsoNormal" align="left"><a href="http://sourceforge.net/project/showfiles.php?group_id=24884" target="_self"><span style="font-size: 10pt">Source Code</span></a><a href="http://sourceforge.net/project/showfiles.php?group_id=24884" target="_self">のVersion-numbered source release:</a>をクリックするとsourceforge.netのOpen Dynamics Engineのページ飛ぶので，  そのFile Releaseの項目にある<a href="http://downloads.sourceforge.net/opende/ode-src-0.9.zip?modtime=1171190744&amp;big_mirror=0">ode-src-0.9.zip</a>をクリックするとご近所のダウンロード先が自動的に選択されダウンロードが始まります．後は，1.と同様に保存してください．</p>
+<p class="MsoNormal" align="left">
+<h3><strong>B. インストール</strong></h3>
+<p>ode-src-0.9.zipはzipで圧縮されていますのでzipを解凍できるソフトウェアをインストールしてください．ここでは，Lhaplusという圧縮・解凍ソフトを使っています．<a href="http://www.google.co.jp/" target="_self">Google</a>でLhaplusを検索するとダウンロード先を簡単に見つけることができます．<br />
+これからの作業はUNIXのコマンドを使いますが，知らないあなたも例のとおり入力してください。</p>
+<p class="MsoNormal" align="left"><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><strong>1. 　ターミナルの起動<br />
+</strong></span><span style="font-size: 10pt">MSYS</span><span style="font-size: 10pt">アイコンをダブルクリックしてMINGW32ターミナルを開きます。以下のコマンドはこのターミナルで実行してください。</span></strong></p>
+<p><strong><strong>2．  srcフォルダーへ移動<br />
+</strong>$<span style="color: #000099;"><strong>cd　src</strong></span> リターンキー（$はプロンプトなので打ち込まない）</strong></p>
+<p><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><strong>3. ode-0.9ディレクトリへ移動</strong></span><span style="font-size: 10pt"><br />
+$</span><span style="color: #000099;"><strong> cd　ode-0.9 </strong></span> リターンキー</strong></p>
+<p><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><strong>4.  コンパイルの準備<br />
+</strong>$</span><span style="color: #000099;"><strong> ./configure　--enable-double-precision</strong></span> リターンキー<br />
+（/の前にピリオドがあり、enableの前は　-　が２個あります。）</strong></p>
+<p><strong></strong><strong>5. コンパイル<br />
+</strong>$<span style="color: #000099;"><strong> make</strong></span> リターンキー</p>
+<p><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt">makeに成功すると以下のように表示されます。<strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong><br />
+<span style="font-size: 10pt"><br />
+<img src="{{ site.baseurl }}/assets/images/2007/04/odeMakes.jpg" alt="" /><br />
+</span><br />
+</strong></span></strong></p>
+<p class="MsoNormal" align="left"><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><strong>6. インストール<br />
+</strong>$</span><span style="color: #000099;"><strong> make　install</strong></span> リターンキー</strong></p>
+<p class="MsoNormal" align="left"><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><strong>7.</strong></span><span style="font-size: 10pt"><strong>テスト<br />
+</strong>$</span><span style="color: #000099;"><strong> cd　 ode/demo</strong></span> リターンキー<br />
+$<span style="color: #000099;"><strong> demo_crash</strong></span> リターンキー<br />
+実行形式ファイルはtest_crash.exeです．このファイルのあるフォルダーをエクスプローラーなどで開き，ダブルクリックしても起動します．MSYSのパスは/home/ユーザ名/src/ode-0.9/ode/demo/demo_crash.exeですが，Windowsから見るとC:￥msys￥1.0￥home￥ユーザ名￥src￥ode-0.9￥ode￥demo￥demo_crash.exeとなっています．</strong></p>
+<p class="MsoNormal" align="left"><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"> </span></strong></p>
+<h3><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt">上のコマンドが成功するとSimulation test environment v0.02</span><span style="font-size: 10pt">のウインドウが開き以下の画面が表示されたら成功です。ごくろうさま！遊び方はDrawStuff Messageに表示されていますのでそれに従って遊んでください。</span></strong></h3>
+<p><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><strong><br />
+<img src="{{ site.baseurl }}/assets/images/2007/04/test_crashs.jpg" alt="" /></p>
+<p></strong> </span><span style="font-size: 10pt">砲弾で破壊されるブロック</span><span style="font-size: 10pt"><br />
+</span></strong></p>
+<p><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><br />
+おしまい。 </span></strong></p>
+<p><strong></strong><strong></strong><strong></strong><strong><span style="font-size: 10pt"><strong>更新ログ</strong><br />
+</span></strong></p>
+<ul>
+<li>2007-12-11: ODE 0.9に対応</li>
+<li>2007-6-13: Windows Vistaの記述を追加</li>
+<li>2007-5-16: リンク先の変更，説明をより詳しく</li>
+<li>2007-2-12: ODE0.8に対応</li>
+</ul></p></p>

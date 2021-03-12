@@ -1,0 +1,175 @@
+---
+layout: post
+title: OpenVINO：インストールメモ
+date: 2020-03-07 18:37:29.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16880'
+  views: '1712'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16879.html"
+---
+<p>OpenVINO（Open Visual Inference ＆ Neural network Optimization）はIntelが開発しているDeep Learningの推論用ツールキット。CVATでオートアノテーション用のモデルをアップロードするために必要なのでインストールしたときのメモ。私の環境では以下のIntel OpenVINOのサイトに従って簡単にインストールできた。</p>
+<p><strong>OpenVINO Toolkit</strong></p>
+<ul>
+<li><a href="https://docs.openvinotoolkit.org/">OpenVINO Toolkit</a></li>
+</ul>
+<p><strong>環 境</strong></p>
+<ul>
+<li>Razer  Blade 15 (2018)</li>
+<li>Ubuntu 18.04</li>
+<li>Kernel 5.3.0-40-generic</li>
+<li>Python 3.6.9</li>
+</ul>
+<p><strong>インストール</strong></p>
+<ul>
+<li>ダウンロード：次のサイトからLinux用のツールキットをダウンロードする。ダウンロードには登録が必要なので、必要事項を記入してダウンロードする。なお、AdBlockなどの広告ブロッカーを使っているとダウンロードできないで停止する。2020年3月7日時点では最新のバージョン2020.1だとCVATで問題が起きたので、2019R3.1のバージョン (Choose a download optionはFull package)を選び、~/Downloadsに保存する。<span style="color: #ff0000;"><strong>なお、CVATを使わないならpythonのデモスクリプト(openvino_2020.1.023/deployment_tools/open_model_zoo/demos/python_demos)があるopenvino_2020.1.023のインストールが良い。</strong></span>
+<ul>
+<li><a href="https://software.intel.com/en-us/openvino-toolkit/choose-download/free-download-linux">OpenVINO Free download </a></li>
+</ul>
+</li>
+<li>インストール： 端末を開き次のコマンドを実行して、インストールする。
+<ul>
+<li>$  cd  ~/Downloads</li>
+<li>$  tar  xvzf  l_openvino_toolkit_p_2019.3.376.tgz</li>
+<li>$ cd  l_openvino_toolkit_p_2019.3.376</li>
+<li>$  sudo  ./install_GUI
+<ul>
+<li>"I accept the terms of the license agreement”にチェックを入れてライセンスに同意が必要。それ以外は特に変更することはないのでデフォルトのままで、Install、Nextをクリックしていく。最後のFinishを押すとインストールは完了する。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>追加インストール：依存関係のある外部ソフトをインストールする。
+<ul>
+<li>$ cd /opt/intel/openvino/install_dependencies</li>
+<li>$  sudo -E ./install_openvino_dependencies.sh</li>
+</ul>
+</li>
+<li>環境変数の設定：~/.bashrcの最後に以下を追加し保存する。
+<ul>
+<li>source /opt/intel/openvino/bin/setupvars.sh</li>
+</ul>
+</li>
+<li>モデルオプティマイザーの設定：OpenVINOはエッジ用のツールなので学習はCaffe、TensorFlowなどの他のフレームワークを使う。他のフレームワークの学習済みモデルをインポートするツールがモデルオプティマイザーであり、学習済みのモデルを推論するために必要である。モデルオプティマイザーで学習済みのモデルを実行するときは、出力はネットワークのIntermediate Representation (IR)となり次の２つのファイルとなる。<a href="https://docs.openvinotoolkit.org/latest/_docs_MO_DG_Deep_Learning_Model_Optimizer_DevGuide.html">詳細はこのリンクを参照。</a>
+<ul>
+<li>Intermediate Representation (IR)
+<ul>
+<li>.xml： ネットワーク構造</li>
+<li>.bin： ネットワークの重み</li>
+</ul>
+</li>
+<li>設定
+<ul>
+<li>$ cd /opt/intel/openvino/deployment_tools/model_optimizer/install_prerequisites</li>
+<li>$  sudo ./install_prerequisites.sh</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>検　証</strong></p>
+<ul>
+<li>インストールがうまくできたが以下のコマンドで確認する。下図のように車が識別できたら成功。
+<ul>
+<li>$  cd /opt/intel/openvino/deployment_tools/demo</li>
+<li>$  ./demo_squeezenet_download_convert_run.sh</li>
+<li>$  ./demo_security_barrier_camera.sh</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/car.png"><img class="alignleft size-full wp-image-16880" src="{{ site.baseurl }}/assets/images/2020/03/car.png" alt="" width="749" height="661" /></a></p>
+<p><strong>Intel GPU用の設定</strong></p>
+<ul>
+<li>$ cd /opt/intel/openvino/install_dependencies/</li>
+<li>$ sudo -E su</li>
+<li>$  ./install_NEO_OCL_driver.sh
+<ul>
+<li>実行すると以下のメッセージが出力された。</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 80px;">Adding demulab to the video group...<br />
+Installation completed successfully.</p>
+<p style="padding-left: 80px;">Next steps:<br />
+Add OpenCL users to the video group: 'sudo usermod -a -G video USERNAME'<br />
+e.g. if the user running OpenCL host applications is foo, run: sudo usermod -a -G video foo<br />
+Current user has been already added to the video group</p>
+<p style="padding-left: 80px;">If you use 8th Generation Intel® Core&#x2122; processor, you will need to add:<br />
+i915.alpha_support=1<br />
+to the 4.14 kernel command line, in order to enable OpenCL functionality for this platform.</p>
+<ul>
+<li>第8世代のIntelプロセッサーを使っている場合は、i915.alpha_support=1をカーネルのコマンドラインに追加する必要がある。lscpuコマンドのモデル名を見るとわかる。私の場合は、以下なのでi7-の後の数字が世代となる。つまり、第8世代になるのでi915.alpha_support=1をカーネルのコマンドラインに追加しなければならない。
+<ul>
+<li>Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz</li>
+</ul>
+</li>
+<li>/etc/default/grubのGRUB_CMDLINE_LINUX_DEFAULTにi915.alpha_support=1を追加して次のようにする。
+<ul>
+<li>GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i915.alpha_support=1"</li>
+</ul>
+</li>
+<li>次のgrubで変更を反映させる。
+<ul>
+<li>$ sudo /usr/sbin/update-grub</li>
+</ul>
+</li>
+<li>リブートして検証を再度実行してフレームレートが上がっているか確認する。
+<ul>
+<li>$ sudo reboot</li>
+</ul>
+</li>
+<li>検証
+<ul>
+<li>$  cd /opt/intel/openvino/deployment_tools/demo</li>
+<li>Intel内蔵GPUを有効にするためには-d GPUのオプションをつけてスクリプトを実行する。
+<ul>
+<li>$  ./demo_security_barrier_camera.sh　-d GPU</li>
+</ul>
+</li>
+<li>CPUとGPUの6回の平均は次のとおり。NVIDIAのGPUのように爆速にはならなかったが、私の環境ではGPUの方が約1.7倍高速になった。
+<ul>
+<li>CPU: 51.7 fps</li>
+<li>GPU: 86.5 fps</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/03/car2.png"><img class="alignleft size-full wp-image-16885" src="{{ site.baseurl }}/assets/images/2020/03/car2.png" alt="" width="749" height="661" /></a></p>
+<p>終わり</p>

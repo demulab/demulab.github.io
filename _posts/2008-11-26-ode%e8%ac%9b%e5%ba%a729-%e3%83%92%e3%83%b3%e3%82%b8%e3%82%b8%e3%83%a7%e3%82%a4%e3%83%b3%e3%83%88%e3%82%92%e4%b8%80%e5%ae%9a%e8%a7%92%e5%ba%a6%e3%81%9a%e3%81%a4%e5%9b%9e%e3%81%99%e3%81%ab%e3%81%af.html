@@ -1,0 +1,31 @@
+---
+layout: post
+title: 'ODE講座29: ヒンジジョイントを一定角度ずつ回すには'
+date: 2008-11-26 07:55:54.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1892'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/2817.html"
+---
+<p>[caption id="attachment_2827" align="alignnone" width="300" caption="ヒンジジョイントが一度ずつ回転します．"]<a href="http://demura.net/wordpress/wp-content/uploads/2008/11/stepper.jpg"><img class="size-medium wp-image-2827" title="stepper" src="{{ site.baseurl }}/assets/images/2008/11/stepper-300x240.jpg" alt="一度ずつ回転します．" width="300" height="240" /></a>[/caption]</p>
+<p><br class="spacer_" /></p>
+<p>ODE(Open Dynamics Engine)講座の29回目です．今回はヒンジジョイントを一定角度ずつ回転させる方法を説明します．</p>
+<p>りんごさんから一度ずつヒンジジョイントを回転させるにはどうすればよいかというご質問を頂きました．その回答の１例としてサンプルプログラムを作りましたので参考にしてください．この例は時計の秒針です．１秒ごとに１度ずつ角度を増加しています．</p>
+<p>具体的な方法は42,43行目でヒンジジョイントの最小，最大可動域をそれぞれ目標角度に設定しています．この角度をステップ毎に１度ずつ増加させることにより秒針のような動きを実現しています．</p>
+<p>ただし，これはステッピングモータのシミュレーションとしては正しくありません．指定の角度を拘束条件として動力学計算をしているためトルクなどは全く考えていないからです．ステッピングモータをシミュレーションするためには，その動作原理をシミュレーションする必要があります．</p>
+<p>なお，<a href="http://demura.net/downloads/stepper.zip">ソースコードはここからダウンロードできます</a>．</p>
+<p>[viewcode] src="stepper.cpp" geshi="cpp" lines [/viewcode]</p>

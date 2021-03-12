@@ -1,0 +1,29 @@
+---
+layout: post
+title: アクセス解析
+date: 2004-02-17 05:06:58.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '93'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/77.html"
+---
+<p>アクセス解析のためdopvCOMETを導入したがunicodeをサポートしていないので、unicodeをサポートするよう以下の改良を行った。</p>
+<p>require "jcode.pl" -&gt;  use  Jcode;<br />
+ dcw.cig,analysis.pl, del_tag.pl,get_form.pl,put_result.pl,search.pl,sendmail.plの<br />
+ jcodeをすべてJcodeに変更。</p>
+<p>dcw.cgi, analysis.pl,del_tag.pl,get_form.pl,put_result.pl,search.pl<br />
+ eucをutf8に変更。</p>

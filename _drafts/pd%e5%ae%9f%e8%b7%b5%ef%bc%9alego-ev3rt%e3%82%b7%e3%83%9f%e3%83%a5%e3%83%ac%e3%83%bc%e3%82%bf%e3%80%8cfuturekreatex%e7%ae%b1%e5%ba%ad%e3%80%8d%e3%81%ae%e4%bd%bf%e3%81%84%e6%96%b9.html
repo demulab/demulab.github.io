@@ -1,0 +1,164 @@
+---
+layout: post
+title: PD実践：LEGO EV3RTシミュレータ「FutureKreate×箱庭」の使い方
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: private
+categories:
+- lecture
+- PD実践
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19473'
+  views: '532'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/19465.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/09/SnapCrab_futurekreate-Edu_2020-9-21_11-14-41_No-00.png"><img class="aligncenter size-large wp-image-19473" src="{{ site.baseurl }}/assets/images/SnapCrab_futurekreate-Edu_2020-9-21_11-14-41_No-00-1024x721.png" alt="" width="1024" height="721" /></a><br />
+PD実践の授業で使うレゴEV3シミュレータ「FutureKreate×箱庭」の使い方を説明する。</p>
+<ul>
+<li>FutureKreateの起動
+<ul>
+<li>デスクトップに作成したFutureKreatのアイコンまたはエクスプローラで以下のファイルをダブルクリックして起動する。<br />
+c:\edu\futurekreate-edu\futurekreate-Edu.exe<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/fk1.png"><img class="aligncenter size-large wp-image-19394" src="{{ site.baseurl }}/assets/images/fk1-1024x356.png" alt="" width="1024" height="356" /></a></li>
+</ul>
+</li>
+<li>VSCodeの起動
+<ul>
+<li>デスクトップのVSCodeアイコンをダブルクリックしてVSCodeを起動する。</li>
+<li>リモートエクスプローラーをクリックし、次にUbunutu-20.04をクリックする。右にConnect to WSLボタンが出てくるのでクリックしてWSLに接続する。新しいウインドウが開くので、今後の作業はそれを使う。古いウインドウは閉じる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/09/vscode1-2.png"><img class="aligncenter size-large wp-image-19469" src="{{ site.baseurl }}/assets/images/vscode1-2-1024x776.png" alt="" width="1024" height="776" /></a></li>
+</ul>
+</li>
+<li>プログラムの作成
+<ul>
+<li>上図のVSCodeのエディタ領域でプログラムを作成並びに改変する。</li>
+</ul>
+</li>
+<li> プログラムのビルド
+<ul>
+<li>Ubuntu端末か上図のVSCodeの端末領域で以下のコマンドを実行してビルドする。
+<ul>
+<li> 移動
+<ul>
+<li>シンボリックリンク先の実態パスに移動する。相対パスで指定しているコマンドがあるので、cdの後に-Pのオプションが必要になる。</li>
+<li><code>$ cd -P ~/workspace</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ make img=&lt;プログラムのディレクトリ名&gt;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ビルドが成功するとaspという実行可能ファイルが生成される。つまり、プログラムが違っても実行可能ファイルの名前は常にaspになる。<code></code></li>
+</ul>
+</li>
+<li> Athrillの実行
+<ul>
+<li>最後に、端末で以下のコマンドを実行してathrillを実行する。athrillを実行する前にFutureKreateを起動する必要がある。
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>移動
+<ul>
+<li><code>$ cd -P ~/workspace</code></li>
+</ul>
+</li>
+<li> 実行
+<ul>
+<li><code>$ arun</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> サンプルの実行例
+<ul>
+<li>ここではカエルの歌を奏でるsound_2を実行してみよう！</li>
+<li>FutureKreateの起動</li>
+<li>VSCodeの起動</li>
+<li> ファイルの変更
+<ul>
+<li>サンプルプログラムは変更済みになっているはずだが、この設定が違うとロボットが動かないので確認すること。</li>
+<li><code>$ cd -P ~/workspace/sound_2</code></li>
+<li>FutureKreateとathrillが同じathrill_mmap.binとunity_mmap.binにアクセスできるようにエディタで<code>~/workspace/sound_2/memory_mmap.txt</code>の下２行を以下のように変更されているか確認する。これはFutureKreateで設定したパスと同じでなければならない。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 80px;"><code>ROM, 0x00000000, 512<br />
+RAM, 0x00200000, 512<br />
+RAM, 0x05FF7000, 10240<br />
+RAM, 0x07FF7000, 10240<br />
+MMAP, 0x40000000, /mnt/c/edu/athrill_mmap.bin<br />
+MMAP, 0x40010000, /mnt/c/edu/unity_mmap.bin</code></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>ビルド
+<ul>
+<li><code>$ cd -P ~/workspace</code></li>
+<li><code>$ make img=sound_2</code></li>
+</ul>
+</li>
+<li>実行
+<ul>
+<li><code>$ arun</code></li>
+</ul>
+</li>
+<li>問題がなければ、ロボットが、カエルの歌を奏でだす！</li>
+</ul>
+</li>
+<li>接続ポート
+<ul>
+<li>箱庭では接続ポートが次のように固定されている。</li>
+<li>光センサ：Port 1</li>
+<li>ジャイロ：Port 2</li>
+<li>超音波センサ：Port 3</li>
+<li>左モータ：Port A</li>
+<li>右モータ：Port B</li>
+<li>Mモータ：Port C</li>
+</ul>
+</li>
+</ul>
+<p>終わり</p>

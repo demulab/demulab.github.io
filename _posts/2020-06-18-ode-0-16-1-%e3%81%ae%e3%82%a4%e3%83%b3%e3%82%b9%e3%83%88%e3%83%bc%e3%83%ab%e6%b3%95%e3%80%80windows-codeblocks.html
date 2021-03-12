@@ -1,0 +1,100 @@
+---
+layout: post
+title: ODE 0.16.1 のインストール法　(Windows + Code::Blocks)
+date: 2020-06-18 14:50:08.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- education
+- lecture
+- ode
+tags: []
+meta:
+  the_page_no_rss: '0'
+  the_page_no_archive: '0'
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '18265'
+  views: '1449'
+  the_page_main_category: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/18169.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2009/06/odelogo1.jpg"><img class="alignnone size-full wp-image-3860" title="odelogo1" src="{{ site.baseurl }}/assets/images/2020/06/odelogo1.jpg" alt="odelogo1" width="200" height="62" /></a></p>
+<div>
+<p>ODE0.16.1のインストール法を説明します。ここでは日本であまりメジャーではありませんが、海外ではユーザも多く、私の講義でも利用しているマルチプラットフォームの開発環境CodeBlocks20.04用の記事です。</p>
+<p><span style="color: #ff0000;"><strong>注：私の環境ではデモプログラムはビルド・実行できますが、キーボードからの入力だけはうけつかない不具合があります。</strong></span></p>
+<p><strong>1. ODE 0.16.1のインストール</strong></p>
+<ul>
+<li>次のダウンロードサイトから<a href="https://bitbucket.org/odedevs/ode/downloads/ode-0.16.1.tar.gz">ode-0.16.1.tar.gz</a>をデスクトップへ保存・解凍する．解凍ソフトは<a href="http://www.forest.impress.co.jp/lib/arc/archive/archiver/lhaplus.html">Lhaplus</a>を推奨します．
+<ul>
+<li><a href="https://bitbucket.org/odedevs/ode/downloads/">ODE ダウンロード</a></li>
+</ul>
+</li>
+<li>ode-0.16.1フォルダーをcドライブのトップへコピー．以下のディレクトリ（フォルダ）構成になります．
+<ul>
+<li>c:\ode-0.16.1</li>
+</ul>
+</li>
+<li>コマンドプロンプトの起動
+<ul>
+<li>Windows10: マウス矢印を画面左下に移動すると、検索窓「ここに入力して検索」が現れるので、検索窓に「cmd」と入力するとコマンドプロンプトが見つかるので「Enterキー」を押し、コマンドプロンプトを起動する。コマンドプロンプトはキーボードからの命令を受け付けるウインドウです。</li>
+</ul>
+</li>
+<li>以下のように２回コマンドを打ち込みますが，打ち間違えると失敗するので<span style="color: #ff0000;"><strong>コピーアンドペーストしてください</strong>。</span>コピーアンドペーストした後はEnterキーを押してください．なお，cdの前に白い四角があると全角空白文字が挿入されています．全角文字があると失敗するので，その場合は矢印キーでカーソールを移動してDeleteキーで消してください．また、<span style="color: #0000ff;"><strong>premake4で始まるコマンドは２行にわたっています。２行目のwindows codeblocksまでコピーしてください。</strong></span>
+<ul>
+<li><code>$ cd c:\ode-0.16.1\build</code></li>
+<li><code>$ premake4 --with-demos --only-double --only-static --os=windows codeblocks </code></li>
+</ul>
+</li>
+<li>成功するとcodeblocksというcode::blocks用のディレクトリがbuildフォルダの中に生成されるので，あるかどうかエクスプローラで確認する．なお, c:\ode-0.16.1\buildの意味はＣドライブの一番上にode-0.16.1というフォルダがあり，その中にbuildというフォルダがあるという意味．<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_Code-0161build_2020-6-16_12-26-16_No-00.png"><img class="aligncenter size-full wp-image-18170" src="{{ site.baseurl }}/assets/images/2020/06/SnapCrab_Code-0161build_2020-6-16_12-26-16_No-00.png" alt="" width="865" height="307" /></a></li>
+</ul>
+<p><strong>2. ODEのビルド</strong></p>
+<ul>
+<li>デスクトップにできてcodeblocksのアイコンをダブルクリックして、codeblocksを起動する。</li>
+<li>ODEをビルドするために次の設定を行う。
+<ul>
+<li>コンパイラの設定：codeblocksの上にあるメニューバーから設定(s)→コンパイラとデバッガ(C)→グローバルなコンパイラ設定のToolchain実行ファイルが以下のように"C:\CodeBlocks\MinGW"なっているか確認する。違う場合は「自動検出」をクリックして変更する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_コンパイラ設定_2020-6-18_14-48-32_No-00.png"><img class="aligncenter size-full wp-image-18186" src="{{ site.baseurl }}/assets/images/2020/06/SnapCrab_&#12467;&#12531;&#12497;&#12452;&#12521;&#35373;&#23450;_2020-6-18_14-48-32_No-00.png" alt="" width="894" height="780" /></a></li>
+<li>リンカの設定：グローバルなコンパイラ設定ウインドウのToolchain実行ファイルに２つ左にあるタブ「リンカ設定」をクリックする。下図のように「リンクするライブラリ」に"stdc++"を追加する。「追加」をクリックすると「ライブラリを追加」ウインドウが開くので「ファイル」に"stdc++"と入力して「OK」をクリックすると追加される。stdc++が下図のように追加されたら「OK」をクリックして設定を終える。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_ライブラリを追加_2020-6-18_14-57-28_No-00.png"><img class="aligncenter size-full wp-image-18189" src="{{ site.baseurl }}/assets/images/2020/06/SnapCrab_&#12521;&#12452;&#12502;&#12521;&#12522;&#12434;&#36861;&#21152;_2020-6-18_14-57-28_No-00.png" alt="" width="274" height="134" /></a><a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_コンパイラ設定_2020-6-18_14-58-5_No-00.png"><img class="aligncenter size-full wp-image-18190" src="{{ site.baseurl }}/assets/images/2020/06/SnapCrab_&#12467;&#12531;&#12497;&#12452;&#12521;&#35373;&#23450;_2020-6-18_14-58-5_No-00.png" alt="" width="894" height="780" /></a></li>
+</ul>
+</li>
+<li>codeblocksのメニューバーから「ファイル(F)」→「開く（O)」を選択。ファイルを選ぶウインドウが開くので次のファイルを選ぶ。<br />
+c:¥ode-0.16.1¥build¥codeblocks¥ode.workspace</li>
+<li>「ビルド(B)」→「ワークスペースをビルド(W)」を選択。ワークスペースはVisual C++のソリューションと同様なもの。</li>
+<li>デモプログラムの実行ファイルはc:¥ode-0.16.1¥lib¥Debugに生成される。メニューバーの「ビルド(B)」→「実行(R)」でdemo_buggyを実行させて、下のウインドウが起動すればODEのビルド成功。<strong><a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_Simulation-test-environment-v002_2020-6-16_13-10-7_No-00.png"><img class="aligncenter size-full wp-image-18179" src="{{ site.baseurl }}/assets/images/2020/06/SnapCrab_Simulation-test-environment-v002_2020-6-16_13-10-7_No-00.png" alt="" width="683" height="546" /></a><a href="https://demura.net/wordpress/wp-content/uploads/2020/06/SnapCrab_Code-0161libDebugdemo_buggyexe_2020-6-16_13-10-18_No-00.png"><img class="aligncenter size-full wp-image-18180" src="{{ site.baseurl }}/assets/images/2020/06/SnapCrab_Code-0161libDebugdemo_buggyexe_2020-6-16_13-10-18_No-00.png" alt="" width="722" height="217" /></a></strong></li>
+<li>キーボード操作(aキーを押すと増速、zキーで減速、, . キーで操舵）でバギーが動くはずですが、私のWindows10 Education (バージョン2004,　ビルド19041.450)ではキーの入力ができず動いていない状況です。Linuxだと問題なく動いています。</li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>
+</div>

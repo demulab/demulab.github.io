@@ -1,0 +1,52 @@
+---
+layout: post
+title: つくばチャレンジ２００９：udevでデバイスファイル名を固定する
+date: 2009-07-26 19:22:39.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+- つくばチャレンジ
+tags:
+- つくばチャレンジ
+meta:
+  syntaxhighlighter_encoded: '1'
+  _edit_last: '2'
+  views: '2917'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/4493.html"
+---
+<p>つくばチャレンジ2009説明会と第１回試走会がいよいよ今週の土曜日になりました。自律走行は難しそうなので最低でもデータ取りできるように急ピッチで作業を進めています。</p>
+<p>さて、つくばチャレンジに使用するロボットはGPSとレーザスキャナを装備していますが、このデバイス名両方とも/dev/ttyACMなので、接続する順番により、初めのデバイスが/dev/ttyACM0、次のデバイスが/dev/ttyACM1となりプログラムがやっかいになります。間違ったデバイスをオープンするとパソコンがフリーズしました。そこで、udevを使いレーザスキャナをttyACM0、GPSをttyACM1に固定します。</p>
+<p>この記事はそのメモです。</p>
+<p><!--more--></p>
+<ul>
+<li>udevデータベースからデバイスの情報を取得
+<ul>
+<li>udevinfo -a -p $(udevinfo -q path -n /dev/ttyACM1)</li>
+<li>各デバイスに固有な情報を探します。ここでは、idVendorとidProductの情報を使います。</li>
+</ul>
+</li>
+<li>/etc/udev/96-local.rulesというファイルを作成
+<ul>
+<li>中身は次のとおりです。なお，idProductの番号は変えています．</li>
+</ul>
+</li>
+</ul>
+<pre class="brush:cpp"># ttyACM0: URG Laser scanner,  ttyACM1: U-blox 5 GPS, urbtc0: imcs01 robot controller
+KERNEL=="ttyACM*  SUBSYSTEMS=="usb" ATTRS{idVendor}=="15d1" ATTRS{idProduct}=="1234" NAME="ttyACM0"
+KERNEL=="ttyACM*  SUBSYSTEMS=="usb" ATTRS{idVendor}=="1546" ATTRS{idProduct}=="5678" NAME="ttyACM1"
+KERNEL=="urbtc0" MODE="0666"
+</pre>
+<ul>
+<li>USBデバイスを抜き差ししてデバイスファイルが固定されるか確かめましょう。</li>
+</ul>
+<p>以上です。</p>

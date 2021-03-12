@@ -1,0 +1,43 @@
+---
+layout: post
+title: Step 9：　ヒューマノイドロボット
+date: 2008-02-05 23:59:49.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+- ODE本
+tags: []
+meta:
+  _aioseop_title: ヒューマノイドロボット　
+  _edit_last: '2'
+  _aioseop_description: Open Dynamics Engine
+  views: '1871'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/425.html"
+---
+<p>プログラム9.1へのリンクが切れていたので直しました。(2008-2-6)</p>
+<hr />ODE本「<a href="http://www.amazon.co.jp/gp/product/4627846916?ie=UTF8&amp;tag=demuranet-22&amp;linkCode=as2&amp;camp=247&amp;creative=1211&amp;creativeASIN=4627846916">簡単!実践!ロボットシミュレーション - Open Dynamics Engineによるロボットプログラミング</a><br />
+<img style="border: medium none  ! important; margin: 0px ! important" src="{{ site.baseurl }}/assets/images/2008/02/ir?t=demuranet-22&amp;l=as2&amp;o=9&amp;a=4627846916" alt="" width="1" height="1" />」のStep9です．</p>
+<p>最終章です．ここでは，やんちゃでかわいい男の子をイメージしたヒューマノイドロボットモデル「けんせいちゃん：Kensei-Chan」の運動学，逆運動学を求め，足裏に圧力センサを取り付け，ZMPによる簡単な歩行制御により歩かせることが最終ミッションです．</p>
+<p><object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="320" height="260" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="flashvars" value="file=http://demura.net/archives/ode/robotsimu/kensei2.flv&amp;image=http://demura.net/archives/9ode/robotsimu/kensei2.jpg" /><param name="src" value="http://demura.net/flvplayer.swf" /><embed type="application/x-shockwave-flash" width="320" height="260" src="http://demura.net/flvplayer.swf" flashvars="file=http://demura.net/archives/ode/robotsimu/kensei2.flv&amp;image=http://demura.net/archives/9ode/robotsimu/kensei2.jpg"></embed></object></p>
+<p>動画を上に，ソースコードを以下に掲載します．zipで圧縮されているソースコードは<a href="http://demura.net/archives/2007/05/sourceCode.html">ここを参考にして</a>解凍・コンパイル・実行してください．</p>
+<ul>
+<li><span style="color: #000099;"><strong>EX9.3：　ヒューマノイドモデル 「けんせいちゃん」 (P223)</strong></span></li>
+</ul>
+<ul> 説明：Controlキーを押しながらpキーを押すと，kensei-chanがジャンプし着地します．ただし，ODE本では跳躍制御は全くふれていませんのでこれは単なるデモです．目標角度の時系列データを与えているだけです。「けんせいちゃん」に歩行制御を組み込み無事歩かせてください．</p>
+<p>ソースコード：<a href="http://demura.net/archives/images/ode/robotsimu/kensei070619.zip">kensei070619.zip</a> (2007-6-19)</ul>
+<ul>
+<li><span style="color: #000099;"><strong>プログラム9.1：　力・トルクセンサ　(P227)</strong></span></li>
+</ul>
+<ul> 説明：ヒューマノイドロボットには欠かせない圧力，トルクセンサの実装例です．ODE本P227のプログラム32行目に誤りがありましたので訂正しました．ねぶらさんご指摘ありがとうございました．</p>
+<p>ソースコード：<a href="http://demura.net/archives/images/ode/robotsimu/pro9-1-070702.zip">pro9-1-070702.zip</a> (2007-7-2)</ul>
+<hr />なお，本サンプルプログラムのコンパイル・実行は自己責任で行ってください．特に，本物のロボットに適用するための安全性などを全く考慮していませんので，そのような用途には向きません．あくまで，教育目的とお考えください．著者及び森北出版は本プログラムによって生じたあらゆる結果についての責任を負いかねます．ご了承した方だけダウンロードしてください．また，再配布はお止めください．</p>

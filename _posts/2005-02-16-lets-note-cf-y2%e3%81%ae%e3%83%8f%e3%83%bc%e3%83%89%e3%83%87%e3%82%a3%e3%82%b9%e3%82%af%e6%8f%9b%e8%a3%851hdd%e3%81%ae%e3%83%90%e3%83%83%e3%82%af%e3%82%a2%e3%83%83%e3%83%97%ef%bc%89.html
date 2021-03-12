@@ -1,0 +1,44 @@
+---
+layout: post
+title: Let's note CF-Y2のハードディスク換装1(HDDのバックアップ）
+date: 2005-02-16 14:21:11.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '706'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/191.html"
+---
+<p>毎日愛用しているLet's noteですが、ハードディスクの残り容量が1.5Gしかなくなったので100GBのハードディスク東芝MK1031GASに換装することにした。ただし、これから行う作業をするとメーカー保障を受けられなくなりますので、自己責任で作業を行ってください。</p>
+<p>１．ハードディスクのバックアップ<br />
+ 使用していたハードディスクを2.5インチハードディスクケース(Corega CG-U2HDC25)にいれてUSB外付けハードディスクとして利用する予定ですが、作業中に誤ってハードディスクを壊さないとも限りませんのでハードディスクのバックアップをとります。<br />
+ <!--more--><br />
+ 私はこの作業にI-O DATAのHDPX-U80 (USB2.0, 80GB　以下外付HDD)を使いました。現在使っているノートパソコンのハードディスクが４０Gなので８０Gあれば余裕です。</p>
+<p>２．Linuxのバックアップ<br />
+ ノートパソコンはLinux(Fedora Core 3)とWindows XPをインストールしていたので、まずLinux領域にあるファイルを外付けディスクにバックアップします。Linuxを起動して外付HDDを接続するとデバイスを認識しますがファイルを見ようとすると固まってしまいます。googleで調べて見るとFedora Core 3の標準では日本語名のファイルがあると問題があります。　F<a href="http://bbs.fedora.jp/read.php?FID=2&amp;TID=345&amp;p=1">edora JP 掲示板</a>に答えが書いてありました。以下引用します。</p>
+<blockquote><p>こんな解決法もあると思いますが、どうでしょうか。</p>
+<p>/usr/share/hal/fdi/95userpolicy/<br />
+ に、以下のようなファイル(*.fdi)を作ってhalを設定する。<br />
+ &lt; ?xml version="1.0" encoding="ISO-8859-1"?&gt; <!-- -*- SGML -*- --><br />
+ <!-- if block.is volume = true (bool) and<br />
+ volume.fstype = vfat (string) then<br />
+ set volume.policy.mount_option.iocharset=utf8 = true (bool) --></p>
+<p>true</p>
+</blockquote>
+<p>早速、/usr/share/hal/fdi/95userpolicy/にusb-hdd.fdiというファイルを作り（中身は上のコードです）再起動すると今度は無事に認識してくれました。以下のコマンドを実行し、/home/username以下をtarで固めて外付けHDDにバックアップしました。</p>
+<p>tar  cvzf  /media/NO_NAME/CF-Y2-Linux.tgz    /home/username</p>
+<p>3.  Windowsのバックアップ<br />
+ administratorでloginして、C:\Documents and Settings\usernameを外付けHDDにコピーしました。</p>
+<p>続く...</p>

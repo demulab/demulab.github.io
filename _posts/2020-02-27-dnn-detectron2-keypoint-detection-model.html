@@ -1,0 +1,95 @@
+---
+layout: post
+title: 'DNN: Detectron2 Keypoint 検出モデル'
+date: 2020-02-27 23:59:53.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- deeplearning
+tags: []
+meta:
+  _edit_last: '2'
+  _thumbnail_id: '16862'
+  views: '727'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/deeplearning/16856.html"
+---
+<p>Detectron2でキーポイント検出モデル(keypoint detection model)の推論を試したメモ。以下のDetectron2 Beginner’s Tutorialを和訳して説明を加えたもの。TutorialがGoogle Colabというクラウドサービスを使ったJupyterノートブックなのでローカルマシンで動くようにPythonスクリプトを少し変更している。</p>
+<ul>
+<li><a href="https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5#scrollTo=QHnVupBBn9eR">Detectron2 Beginner’s Tutorial</a></li>
+</ul>
+<p>過去記事のMask RCNNとスクリプト自体はほとんど同じ。違うのはモデルの設定とウェイトファイルのみ。ほとんど同じスクリプトでいろいろなモデルを試せるのはDetectron2の良いところ。</p>
+<ul>
+<li>以下のスクリプトを~/src/detectron2/myprog/keypoint_inference.pyとして保存する。</li>
+</ul>
+<pre class="brush:cpp;"># kepoint_inference.py
+from detectron2 import model_zoo
+from detectron2.engine import DefaultPredictor
+from detectron2.config import get_cfg
+from detectron2.utils.visualizer import Visualizer
+from detectron2.data import MetadataCatalog
+import cv2
+
+# 画像の読み込み
+im = cv2.imread("./happy_mini.jpg")
+
+# ネットワークの設定
+cfg = get_cfg()
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml"))
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7  # set threshold for this model
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
+
+# 推論
+predictor = DefaultPredictor(cfg)
+outputs   = predictor(im)
+
+# 結果の表示
+v = Visualizer(im&#91;:, :, ::-1&#93;, MetadataCatalog.get(cfg.DATASETS.TRAIN&#91;0&#93;), scale=1.2)
+v = v.draw_instance_predictions(outputs&#91;"instances"&#93;.to("cpu"))
+cv2.imshow('Results', v.get_image()&#91;:, :, ::-1&#93;)
+cv2.waitKey(0) 
+cv2.destroyAllWindows()</pre>
+<p>サンプル画像のダウンロード</p>
+<ul>
+<li>以下の画像をダウンロードして~/src/detectron2/happy_mini.jpgとして保存する。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/happy_mimi.jpg"><img class="alignleft size-full wp-image-16857" src="{{ site.baseurl }}/assets/images/2020/02/happy_mimi.jpg" alt="" width="960" height="540" /></a></p>
+<p>&nbsp;</p>
+<p><strong>実　行</strong></p>
+<p>次のコマンドを実行すると、人間に関しては次の画像のようにKeypointが表示される。happy mimiちゃんは表示されないのね。</p>
+<ul>
+<li>$ cd ~/src/detectron2</li>
+<li>$ python3  ./myprog/keypoint_inference.py</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/02/happy_mimi2.png"><img class="alignleft size-large wp-image-16859" src="{{ site.baseurl }}/assets/images/2020/02/happy_mimi2-1024x640.png" alt="" width="1024" height="640" /></a></p>
+<p>終わり</p>

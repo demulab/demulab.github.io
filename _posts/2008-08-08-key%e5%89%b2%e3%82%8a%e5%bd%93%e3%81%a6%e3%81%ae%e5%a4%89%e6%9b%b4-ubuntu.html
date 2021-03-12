@@ -1,0 +1,45 @@
+---
+layout: post
+title: Key割り当ての変更 (Ubuntu8.04)
+date: 2008-08-08 10:54:40.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  views: '340'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/misc/1573.html"
+---
+<p>UbuntuでKeyのShiftとUpを交換したときの単なる作業メモです。正しい保証はありません。</p>
+<p>Panasonic Let's note CF-Y7を愛用していますが、UpキーとShiftキーの並びが悪いためホームポジションからShiftキーが小指で届きません。そこで、UpキーとShiftキーをWindowsで変更して使っています。Linuxでも同様にキーの割り当てを変更したいと思います。</p>
+<ul>
+<li>以下の内容の.xmodmapファイルをホームディレクトリに作成する。</li>
+</ul>
+<pre>[code]
+keycode 62 = Up
+keycode 98 = Shift_R
+add shift = Shift_R
+[/code]
+</pre>
+<ul>
+<li>次回の起動時に.xmodmapを読み込むか聞かれるので、OKを選ぶと反映される。</li>
+</ul>
+<p>この設定ではログイン画面ではキーが反映されません。全ユーザに反映するためには、/usr/share/X11/xkb/keycodes/xfree86を以下のように変更します。</p>
+<p>[code]<br />
+ <rtsh> =  98;<br />
+ <up>   =  62;<br />
+[/code]</p>
+<p><br class="spacer_" /></p>
+<p><br class="spacer_" /></p>
+<p></up></rtsh></p>

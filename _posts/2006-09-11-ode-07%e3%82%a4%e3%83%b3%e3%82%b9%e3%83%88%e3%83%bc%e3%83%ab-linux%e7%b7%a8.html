@@ -1,0 +1,62 @@
+---
+layout: post
+title: ODE 0.7インストール (Linux編)
+date: 2006-09-11 21:37:42.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '999'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/322.html"
+---
+<p> <br />
+<img src="{{ site.baseurl }}/assets/images/2006/09/buggy.jpg" alt="ODE" width="320" height="300" /></p>
+<p>ODE付属プログラムtest_buggy.exeのスクリーンショット</p>
+<p> </p>
+<p>ODE0.7が2006年9月8日公開されました。0.5をまだお使いの方も0.7は多くのバグ修正や衝突検出が非常に改善されているのでバージョンアップすることをお薦めします。</p>
+<p>というわけで、Linuxでインストールする方法を御説明します<a href="http://demura.net/archives/2006/08/ODEcamp1.html">(Windowsでのインストールはこちら</a>）。0.6からビルドシステムが変わりmingw、Linux、OS Xをインストールする方法は基本的に同じになりとても簡単です。私の環境は少々古く次のとおりですが、0.7も問題なくソースからコンパイル・イン ストール できました。<br />
+<span style="color: #ff0000;"><strong>なお，cygwinでは0.6と0.7のテストプログラムをコンパイルできませんので注意してください．</strong></span></p>
+<p><strong>環 境</strong><br />
+gcc 3.4.4<br />
+automake 1.9.2<br />
+autoconf   2.59 </p>
+<p><strong>A. ODEのダウンロード</strong></p>
+<p><a href="http://ode.org/">ODEのウェブサイト</a>の左メニューバーにあるdownloadをたどってode-src-0.7.zipをダウンロードします。日本のミラーサイト（例えばJAIST）を選び、ダウンロードする。この例では/tmpにします。</p>
+<p><strong>B. ODEのインストール</strong></p>
+<p>これからの作業はLinuxの基本的な操作を知っている人を対象とします。</p>
+<p>1. kterm, rxvt, gnome-terminalなどのターミナルを起動してください。</p>
+<p>2. ホームディレクトリへ移動<br />
+    $ cd</p>
+<p>3. ホームディレクトリにsrcディレクトリを作成し、そこに移動する<br />
+    $ mkdir src<br />
+    $ cd src</p>
+<p>4. ダウンロードしたode-src-0.7.zipを上で作成したディレクトリにコピーする<br />
+    $ cp  /tmp/ode-src-0.7.zip   .</p>
+<p>5. ode-src-0.7.zipを展開（解凍）するとode-0.7ディレクトリが作成される<br />
+    $ unzip ode-src-0.7.zip</p>
+<p>6. ode-0.7ディレクトリへ移動<br />
+    $ cd ode-0.7</p>
+<p>7. configureの実行<br />
+    ＄ ./configure --enable-double-precision</p>
+<p>8. makeの実施<br />
+    $    make</p>
+<p>9.  make installの実行<br />
+    $  su<br />
+    $  make install</p>
+<p><strong>C.　テスト</strong></p>
+<p>    $ cd ~/src/ode-0.7/ode/test<br />
+    $ ./test_buggy.exe</p>
+<p>Simulation test environment v0.02のウインドウが開きバギーが表示されたら成功です。ごくろうさま！'a'キーを押すと前進、'z'キーで後進、','キーで左折、'.'キーで 右折します。このバキーは３輪なのですぐ転倒してしまいます。</p>
+<p>おしまい。</p>

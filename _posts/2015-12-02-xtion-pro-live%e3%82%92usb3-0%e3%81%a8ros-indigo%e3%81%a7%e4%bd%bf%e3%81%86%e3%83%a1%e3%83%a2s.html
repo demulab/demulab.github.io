@@ -1,0 +1,66 @@
+---
+layout: post
+title: Xtion Pro LiveをUSB3.0とROS Indigoで使うメモ
+date: 2015-12-02 19:27:21.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup
+tags: []
+meta:
+  _edit_last: '2'
+  views: '6208'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/robocup/11761.html"
+---
+<p><a href="http://demura.net/wordpress/wp-content/uploads/2015/04/xtion.jpg"><img src="{{ site.baseurl }}/assets/images/2015/12/xtion.jpg" alt="xtion" width="650" height="481" class="aligncenter size-full wp-image-11765" /></a></p>
+<p>&nbsp;</p>
+<p>Xtion Pro LiveをUSB3.0しかないパソコンで、Ubuntu 14.04 + ROS Indigo環境で使用するためのメモ。</p>
+<ul>
+<li>Xtion Pro Liveのファームウェアをアップグレードする。詳しい方法は以下のウェブサイトを参照。なお、ファームウェアのアップグレードはWindowsを使いUSB2.0のポートを使う。Windows用のドライバはXtion Pro Live付属のCD-ROMを使用した。
+<ul>
+<li><a href="https://my.artec3d.com/kb/upgrading_asus_firmware">How to upgrade ASUS Xtion/Pro/ProLive firmware</a></li>
+</ul>
+</li>
+<li>Ubuntu14.04を立ち上げ、XtionをUSB3.0のポートに接続する。</li>
+<li>ROS IndigoのOpenNI2を使用する。以下のコマンドで必要なパッケージをインストールする。
+<ul>
+<li>$ sudo apt-get install ros-indigo-rgbd-launch ros-indigo-openni2-camera ros-indigo-openni2-launch</li>
+</ul>
+</li>
+<li>Viewer関連のパッケージをインストールする。
+<ul>
+<li>$ sudo apt-get install ros-indigo-rqt ros-indigo-rqt-common-plugins ros-indigo-rqt-robot-plugins</li>
+</ul>
+</li>
+<li>ROSの必要なラウンチファイルを起動する。
+<ul>
+<li>$ roslaunch openni2_launch openni2.launch</li>
+</ul>
+</li>
+<li>rqtを起動する。rqtはGUI開発のフレームワーク。<a href="http://wiki.ros.org/rqt">詳細はここを参照。</a>
+<ul>
+<li>$ rqt
+<ul>
+<li>rqtでImage Viewを表示する方法。rqtのメニューバーで次のように指定する。</li>
+<li>Plugins -&gt; Visualization -&gt; Image View</li>
+<li>depthセンサの表示　/camera/depth/image</li>
+<li>irセンサの表示　/camera/ir/image</li>
+<li>rgbセンサの表示　/camera/rgb/image_raw</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>なお、OpenNI2に関する記述は以下のサイトを参考にした。</p>
+<ul>
+<li><a href="http://myzharbot.robot-home.it/blog/software/myzharbot-ros/asus-xtion-pro-live-openni2-ros-framework/">Asus Xtion Pro Live (OpenNI2) under ROS Framework</a></li>
+</ul>

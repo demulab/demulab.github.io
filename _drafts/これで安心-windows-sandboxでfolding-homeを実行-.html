@@ -1,0 +1,94 @@
+---
+layout: post
+title: これで安心。Windows SandboxでFolding@homeを実行。
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- misc
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  views: '3'
+  _thumbnail_id: '17617'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>Folding@Homeの名を語りフィシングメールでマルウェアを送り付けるあり問題になったようだ。WindowsのSandboxで実行するとマルウェア被害から感染を防げる。MicrosoftがSandboxでFolding@homeを実行するPowerShellのスクリプトを公開したので試してみた。</p>
+<p><strong>環　境</strong></p>
+<ul>
+<li>Windows 10 Pro, Enterprise Insider build 18362以降</li>
+<li>BIOSで仮想化機能(Virtualization Technology)を有効にする。</li>
+</ul>
+<p><strong>参考サイト</strong></p>
+<ul>
+<li><a href="https://github.com/microsoft/Windows-Sandbox-Utilities/tree/master/Folding%20In%20Sandbox">Folding In Sandbox by microsoft</a></li>
+</ul>
+<p><strong>ダウンロード</strong></p>
+<ul>
+<li>以下のWindows Sandbox Utilitesをダウンロードして解凍する。この例では、C:\Users\ユーザ名にダウンロードして解凍する。
+<ul>
+<li>https://github.com/microsoft/Windows-Sandbox-Utilities/archive/master.zip</li>
+</ul>
+</li>
+</ul>
+<p><strong>実　行</strong></p>
+<ul>
+<li>管理者権限でコマンドプロンプトまたはパワーシェルを起動して次のコマンドを実行する。
+<ul>
+<li>cd C:\Users\ユーザ名\Windows-Sandbox-Utilities-master\Folding In Sandbox</li>
+<li>Powershell.exe -ExecutionPolicy Bypass -File .\install_folding_sandbox_on_host.ps1</li>
+</ul>
+</li>
+<li>ユーザ名を指定したい場合は次のコマンドを実行する。
+<ul>
+<li>cd C:\Users\ユーザ名\Windows-Sandbox-Utilities-master\Folding In Sandbox</li>
+<li>Powershell.exe -ExecutionPolicy Bypass -File .\install_folding_sandbox_on_host.ps1 -username &lt;your username&gt;</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/SnapCrab_管理者-コマンド-プロンプト_2020-4-9_22-8-23_No-00.png"><img class="aligncenter size-large wp-image-17617" src="{{ site.baseurl }}/assets/images/SnapCrab_&#31649;&#29702;&#32773;-&#12467;&#12510;&#12531;&#12489;-&#12503;&#12525;&#12531;&#12503;&#12488;_2020-4-9_22-8-23_No-00-1024x383.png" alt="" width="1024" height="383" /></a></p>
+<ul>
+<li>Sandboxが自動的に起動するが、以下のような「Error 0x80072746. 既存の接続はリモートホストにより強制的に切断されました」と表示される場合。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/SnapCrab_NoName_2020-4-9_22-10-13_No-00.png"><img class="aligncenter size-full wp-image-17618" src="{{ site.baseurl }}/assets/images/SnapCrab_NoName_2020-4-9_22-10-13_No-00.png" alt="" width="617" height="298" /></a></p>
+<ul>
+<li>設定→アプリ→プログラムと機能→Windows機能の有効化または無効化で次の項目にチェックが入っているか確認する。
+<ul>
+<li>Hyper-V</li>
+<li>Window Sandbox</li>
+</ul>
+</li>
+<li>入っていなければ、チェックを入れて「OK」をクリックする。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/04/SnapCrab_Windows-の機能_2020-4-9_22-18-19_No-00.png"><img class="aligncenter size-full wp-image-17620" src="{{ site.baseurl }}/assets/images/SnapCrab_Windows-&#12398;&#27231;&#33021;_2020-4-9_22-18-19_No-00.png" alt="" width="455" height="669" /></a></p>
+<p>]終わり</p>

@@ -1,0 +1,234 @@
+---
+layout: post
+title: HARD2020：ロボット視覚の作り方（LIDAR）
+date: 2020-08-27 14:29:38.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '18948'
+  views: '649'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/education/lecture/18941.html"
+---
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2020/08/gazebo4.png"><img class="aligncenter size-large wp-image-18948" src="{{ site.baseurl }}/assets/images/2020/08/gazebo4-1024x455.png" alt="" width="1024" height="455" /></a><br />
+この記事はHARD2020（Home AI Robot Development)ワークショップ用です。今回はLIDAR(Laser Imaging Detection and Ranging)の情報を取得するPythonプログラムを作りましょう。LIDARは日本語ではレーザ式測域センサともよびますが、LIDARでよばれる方が多いです。自動運転の重要なセンサとして急速に開発が進められています。本ワークショップのシミュレータで使用しているLIDARはRPLIDAR A2とよばれるもので、検出距離が0.15[m]から12[m]、検出範囲は360[°]、分解能は0.5[°]となっています。</p>
+<p>ROSではLIDARのトピックは/scanで方はsensor_msgs/LaserScan型が一般的ですが、このシミュレータではトピック名は/create1/rplidar/scanとなっています。トピックからデータ取得は前回学んだPythonプログラムと同じです。違うのはトピック名とその型名だけです。</p>
+<p><strong>ソースコードの説明</strong></p>
+<pre>#!/usr/bin/env python
+# -*- coding: utf-8 -*- # 日本語を使うためのおまじない。
+import rospy  # ROSでpython使う場合に必要
+from geometry_msgs.msg import Twist # ロボットの速度を扱う場合は必要
+from sensor_msgs.msg import LaserScan # LIDARを使うときは必要
+import math   # 数学関数モジュール
+
+# RoombaRobotクラス
+class RoombaRobot():
+    def __init__(self):  # コンストラクタ
+        #  ノードの初期化。引数はノード名。ROSでは同じノード名のノードを複数作ることはできない。
+        rospy.init_node('lidar', anonymous=True)
+
+        # サブスクライバー（購読者)の生成。一番目の引数はトピック名、２番目の引数はメッセージの型、
+        # オドメトリのメッセージはLaserScan型(正確にはsensor_msgs/LaserScan型だが
+        # from sensor_msgs.msg import LaserScanでインポートしているのでここではLaserScanだけでよい)。
+        # ３番目の引数はコールバック関数。
+        self.odom_sub = rospy.Subscriber('/create1/rplidar/scan', LaserScan, self.lidar_callback)
+
+        # パブリッシャーの生成。一番目の引数はトピック名、２番目の引数はメッセージの型、
+        # 速度指令はTwist型。３番目の引数はメッセージバッファーのサイズ。
+        self.vel_pub = rospy.Publisher('/create1/cmd_vel', Twist, queue_size=10)
+        self.set_vel(0, 0)
+
+    # set_vel関数：速度の設定。
+    def set_vel(self, lv, av):
+        vel = Twist()
+        vel.linear.x  = lv  # 並進速度
+        vel.linear.y  = 0
+        vel.linear.z  = 0
+        vel.angular.x = 0
+        vel.angular.y = 0
+        vel.angular.z = av  # 角速度
+
+        self.vel_pub.publish(vel)
+
+        # 表示
+        rospy.loginfo("Velocity: Linear=%s Angular=%s", vel.linear.x, vel.angular.z)
+        del vel
+
+    # lidar_callback関数
+    # /scanのMessage型はhttp://docs.ros.org/melodic/api/sensor_msgs/html/msg/LaserScan.htmlを参照。
+    def lidar_callback(self, msg):
+        self.ranges          = msg.ranges
+        self.angle_min       = msg.angle_min # スキャンの開始角度[rad]
+        self.angle_max       = msg.angle_max # スキャンの終了角度[rad]
+        self.angle_increment = msg.angle_increment # 計測間隔[rad]
+        self.range_min       = msg.range_min # 最小検出距離[m]
+        self.range_max       = msg.range_max # 最大検出距離[m]
+
+    # main関数
+    def main(self):
+        # ループの周期を設定。100Hz。つまり、1ループ10ms。
+        rate = rospy.Rate(100)
+
+        # キーボードからの入力
+        print("Let's move your robot")
+        linear_vel  = input("Input linear velocity [m/s] :")
+        angular_vel = input("Input angular velocity [rad/s] :")
+        self.set_vel(linear_vel, angular_vel)
+
+        # Ctrl-Cが押されるまで無限ループ
+        while not rospy.is_shutdown():
+
+            rospy.loginfo("Number of Rays=%d", len(self.ranges))  # レーザの本数
+
+            # シミュレーションのPRDLIARは全周360[°] 計測可能。計測角度は-180[°]から180[°]。
+            # ROSは右手系、進行方向x軸、左方向y軸、上方向がz軸（反時計まわりが正)。
+            rospy.loginfo("Angle [rad] min=%f max=%f", self.angle_min, self.angle_max)
+
+            # ROSの角度は[rad]。math.degresss関数でラジアンから°に変換している。
+            rospy.loginfo("Angle [deg] increment=%.3f", math.degrees(self.angle_increment))
+            rospy.loginfo("Range [m] min=%.3f max=%.3f", self.range_min, self.range_max)
+            rospy.loginfo("  0[deg]=%.3f[m]  90[deg]=%.3f[m]", self.ranges[0],self.ranges[180])
+            rospy.loginfo("180[deg]=%.3f[m] -90[deg]=%.3f[m]", self.ranges[360],self.ranges[540])
+
+            #　ミッション１：ここに、何かに0.3[m]以内に近づいたら停止するコードを書く
+
+
+            # rospy.Rate()で指定した時間になるように調整してくれる。
+            rate.sleep()
+
+
+# このプログラムをモジュールとしてimportできるようにするおまじない。
+# なお、モジュールとは他のプログラムから再利用できるようにしたファイルのこと。
+if __name__ == '__main__':
+    try:
+        robot = RoombaRobot()
+        robot.main()
+    except rospy.ROSInterruptException: pass
+</pre>
+<p><strong>パッケージの作成</strong></p>
+<ul>
+<li>次のコマンドでlidarパッケージを作りましょう！
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2020</code></li>
+<li><code>$ catkin_create_pkg lidar roscpp rospy std_msgs</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>ソースコードの作成</strong></p>
+<ul>
+<li>エディタを開き、上のソースコードをコピペしてセーブする。以下のコマンドはエディタにgeditを使う場合。
+<ul>
+<li><code>$ cd ~/catkin_ws/src/hard2020/lidar/src</code></li>
+<li><code>$ gedit lidar.py</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>ビルド</strong></p>
+<ul>
+<li>Pythonはビルドする必要はないが、ROSで使用する場合は必要になる場合があるので、以下のコマンドを実行する。
+<ul>
+<li><code>$ cd ~/catkin_ws</code></li>
+<li><code>$ catkin build  lidar</code></li>
+</ul>
+</li>
+<li>作成したpythonプログラムに実行権を与える。実行権を与えないとrosrunコマンドで実行できない。
+<ul>
+<li><code>$ source ~/.bashrc</code></li>
+<li><code>$ roscd lidar/src</code></li>
+<li><code>$ chmod u+x  lidar.py</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>実行　</strong></p>
+<ul>
+<li>シミュレータの起動
+<ul>
+<li>端末を開き、以下のコマンドを実行してシミュレータGazeboを起動する。一番上図のルンバをベースにしたロボットが現れる。
+<ul>
+<li><code>$ roslaunch ca_gazebo create_empty_world.launch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>オブジェクトの挿入
+<ul>
+<li>ロボットの上あるバーに、Box(立方体)、Sphere(球)、Cylinder(円柱）のアイコンがある。これをクリックして、シミュレータ上の好きな位置に置くと物体が取り込まれる。ここでは、cylinder(円柱)を選択して、ロボットの進行方向の数m離れた位置に置く。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/gazebo1.png"><img class="aligncenter size-large wp-image-18945" src="{{ site.baseurl }}/assets/images/2020/08/gazebo1-1024x455.png" alt="" width="1024" height="455" /></a></li>
+<li>取り込んだ円柱をクリックして、左メニューの[World]タブをクリックして、[Models]の[unit_cylinder]をクリックすると下図のように[Property]を設定できる。ここでは[Pose]の[x]だけを3.0にして他を0にする。これで円柱は座標(3,0,0)の位置に移動する。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/gazebo2.png"><img class="aligncenter size-large wp-image-18946" src="{{ site.baseurl }}/assets/images/2020/08/gazebo2-1024x555.png" alt="" width="1024" height="555" /></a></li>
+<li>なお、ここでは円柱、立方体、球などの取り込みを説明したが、[World]タブの右にある[Insert]タブから机などの什器、車やロボットなどいろいろな3Dモデルを取り込める。</li>
+</ul>
+</li>
+<li>Rvizの設定
+<ul>
+<li>mapサーバーが動いていないので、起動したRvizは[Global Status: Error]と出るので、[Global Option]をクリックして次のように設定する。これは座標系をオドメトリで自己位置を計算するodom(オドメトリ)座標系にするという意味。今回のempty_worldはロボット以外に何も構造物がないのでmap座標系を使わない。
+<ul>
+<li>Fixed Frame: create1_tf/odom</li>
+</ul>
+</li>
+<li>次に、[Global option]の下に[RPLidar A2]という項目があるのでチェックを入れる。そうすると下図のようにLIDARの計測が視覚化される。レーザ光は物体を透過しないので、ロボット側だけ半円に並ぶ計測点が赤く表示さえる。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/08/gazebo3.png"><img class="aligncenter size-large wp-image-18947" src="{{ site.baseurl }}/assets/images/2020/08/gazebo3-1024x492.png" alt="" width="1024" height="492" /></a></li>
+</ul>
+</li>
+<li> move.pyノードの実行
+<ul>
+<li> 端末をもう一つ開き、以下のコマンドを実行する。
+<ul>
+<li><code>$ roscd lidar/src</code></li>
+<li><code>$ rosrun lidar lidar.py</code></li>
+</ul>
+</li>
+<li>実行すると並進速度と角速度が以下ように聞かれるので0.2と0を入力する。
+<ul>
+<li>Input linear velocity [m/s]: <strong>0.2</strong></li>
+<li>Input angular velocity [rad/s]: <strong>0</strong></li>
+</ul>
+</li>
+<li>ロボットが入力された速度で移動し続ける。端末にLIDARに関する情報が表示される。</li>
+</ul>
+</li>
+</ul>
+<p><strong>ハンズオン</strong></p>
+<ul>
+<li>ロボットが進行方向の円柱の0.3[m]以内に近づいたら停止するようなPythonプログラムを作ろう！</li>
+<li>シミュレータに球を挿入して、その0.3[m]手前でロボットが停止するプログラムを作ろう！物体は任意の方向と位置におくものとする。</li>
+<li>シミュレータに立方体と球を挿入して、球形状の物体だけを追うプログラムを作ろう！物体は任意の方向と位置におくものとする。</li>
+</ul>
+<p>終わり</p>
+<p>&nbsp;</p>

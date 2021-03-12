@@ -1,0 +1,97 @@
+---
+layout: post
+title: RealSense D435が落ちる問題
+date: 2019-12-19 13:26:06.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robocup@home
+tags: []
+meta:
+  _edit_last: '2'
+  _quads_config_visibility: a:0:{}
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  _thumbnail_id: '16440'
+  views: '549'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/athome/16437.html"
+---
+<p>RealSense D435をUbuntu16.04で使用しているが研究室ではごくまれに落ちる程度であったが、競技会場にきて頻繁に落ちてしまいロボットが全然動かないまずい状態になった。ネットで検索したところ、以下の記事が参考になった。結論は出ていないようだが、RealSenseは2A程度流れる。通常のUSBケーブルだと0.9A程度しか流せないので3Aまで流せるものに変えると良いようだ。</p>
+<ul>
+<li><a href="https://github.com/IntelRealSense/librealsense/issues/3333">RealSense D435 disconnects #3333</a></li>
+</ul>
+<p>以下はそのときの対処メモ。まず、RealSenseのファームウェアを最新版(5.12.1)にアップデートした。状況は改善されたがされでも時々落ちるので、今までHubに接続していたRealSenseを直接PCに接続するように変更した。ロボットアームのセンタにつける関係で2.5m以上のUSBケーブルが欲しかったが店になかったので、USBケーブル2m (Type A-&gt;Type C)も3.0Aまで流せる以下の物と延長ケーブル、空きポートがなかったので7ポートのUSBハブを購入して換装した。今のところ落ちていない。</p>
+<ul>
+<li><strong>購入した物品</strong><a href="https://demura.net/wordpress/wp-content/uploads/2019/12/20191218_213926-scaled.jpg"><img class="aligncenter size-large wp-image-16440" src="{{ site.baseurl }}/assets/images/2019/12/20191218_213926-1024x737.jpg" alt="" width="1024" height="737" /></a></li>
+<li><strong>ファームウェアのバージョンアップ</strong>
+<ul>
+<li><a href="https://downloadcenter.intel.com/search?keyword=realsense">ここから、ファームウェアアップデートツール(Windows10 64bit）と最新のファームウェア</a>をダウンロードして同じフォルダに入れる。
+<ul>
+<li><a href="https://downloadcenter.intel.com/ja/download/27514/-RealSense-D400-Windows-?product=128255">インテル® RealSense&#x2122; D400 製品ファミリ向けの Windows* デバイス ファームウェア更新ツール</a></li>
+<li><a href="https://downloadcenter.intel.com/download/29255/Latest-Firmware-for-Intel-RealSense-D400-Product-Family">Latest Firmware for Intel® RealSense&#x2122; D400 Product Family</a></li>
+</ul>
+</li>
+<li>アップデートの方法は以下のユーザガイドに記載されている。
+<ul>
+<li><a href="https://www.intel.com/content/dam/support/us/en/documents/emerging-technologies/intel-realsense-technology/Windows-RealSense-D400-DFU-Guide.pdf">Intel RealSense D400 Series Device Firmware Update(DFU) tool for windows install and user guide.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="entry-content cf iwe-shadow">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>簡単にまとめると。<br />
+1. RealSenseをコンピュータに接続する<br />
+2. intel-realsense-dfu.exeをダブルクリックする<br />
+3. 以下のウインドウが開くので、１を入力してEnterキーを押す<br />
+<a href="https://i0.wp.com/demura.net/wordpress/wp-content/uploads/2018/03/firmware1.jpg?ssl=1"><img class="aligncenter size-full wp-image-14300 jetpack-lazy-image jetpack-lazy-image--handled" src="{{ site.baseurl }}/assets/images/2019/12/firmware1.jpg?resize=661%2C330&amp;ssl=1" sizes="(max-width: 661px) 100vw, 661px" srcset="https://i0.wp.com/demura.net/wordpress/wp-content/uploads/2018/03/firmware1.jpg?w=661&amp;ssl=1 661w, https://i0.wp.com/demura.net/wordpress/wp-content/uploads/2018/03/firmware1.jpg?resize=300%2C150&amp;ssl=1 300w" alt="" width="661" height="330" data-recalc-dims="1" data-lazy-loaded="1" /></a><br />
+4. 以下のウインドウが開くので、1を入力してEnterキーを押す<br />
+<a href="https://i0.wp.com/demura.net/wordpress/wp-content/uploads/2018/03/firmware2.jpg?ssl=1"><img class="aligncenter size-full wp-image-14301 jetpack-lazy-image jetpack-lazy-image--handled" src="{{ site.baseurl }}/assets/images/2019/12/firmware2.jpg?resize=661%2C240&amp;ssl=1" sizes="(max-width: 661px) 100vw, 661px" srcset="https://i0.wp.com/demura.net/wordpress/wp-content/uploads/2018/03/firmware2.jpg?w=661&amp;ssl=1 661w, https://i0.wp.com/demura.net/wordpress/wp-content/uploads/2018/03/firmware2.jpg?resize=300%2C109&amp;ssl=1 300w" alt="" width="661" height="240" data-recalc-dims="1" data-lazy-loaded="1" /></a><br />
+5. 以下のようにEnter path and filename (e.g. C:\documents\newFirmware.bin): と表示されるのでファームウェアのファイル名を入力する。ここでは同じフォルダに入れたのでフルパスではなく相対パスで次のように入力した。<br />
+<code>.\Signed_Image_UVC_5_9_2_0.bin</code><br />
+<a href="https://i1.wp.com/demura.net/wordpress/wp-content/uploads/2018/03/firmware3.jpg?ssl=1"><img class="aligncenter size-full wp-image-14303 jetpack-lazy-image jetpack-lazy-image--handled" src="{{ site.baseurl }}/assets/images/2019/12/firmware3.jpg?resize=669%2C240&amp;ssl=1" sizes="(max-width: 669px) 100vw, 669px" srcset="https://i1.wp.com/demura.net/wordpress/wp-content/uploads/2018/03/firmware3.jpg?w=669&amp;ssl=1 669w, https://i1.wp.com/demura.net/wordpress/wp-content/uploads/2018/03/firmware3.jpg?resize=300%2C108&amp;ssl=1 300w" alt="" width="669" height="240" data-recalc-dims="1" data-lazy-loaded="1" /></a><br />
+なお、User Guide の11ページ⑦に以下のような説明がある。<br />
+Type the full file path with firmware filename included and press [ENTER]</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 40px;">ここで、full file pathというのは、ドライブ名から始めてすべてのディレクトリ（フォルダ）名を指定すること。Windows環境なのでドライブ名を入れる。なお、ディレクトリ名が日本語でうまくいかない場合はCドライブの直下などに移動すると良い。</p>
+<p style="padding-left: 40px;">6. アップデータが終了したらQを入力して終了する。</p>
+<p>以上</p>
+</div>
+<footer class="article-footer entry-footer">
+<div class="entry-categories-tags ctdt-one-row">
+<div class="entry-categories"><a class="cat-link cat-link-20" href="https://demura.net/category/misc"> misc</a></div>
+</div>
+</footer>

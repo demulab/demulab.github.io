@@ -1,0 +1,255 @@
+---
+layout: post
+title: ODE講座５：Hello World ! こんにちはシミュレーションの世界
+date: 2008-07-08 08:08:17.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '6003'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/329.html"
+---
+<p><span style="color: #ff0000;">2008-7-10: dInitODE(), dCloseODE()の追加</span></p>
+<hr />ゲーム開発やロボットの研究者にも使われているオープンソースの物理計算エンジンODE(Open Dynamics  Engine、オープン ダイナミクスエンジン）を学ぶODE講座の5回目です。<br />
+今回はODE(Open Dynamics Engine)を使った超簡単なサンプルプログラムを紹介します。プログラミングの教科書では初めの例題はHello Worldが定番です。ここでもそうしましょう。<br />
+<img src="{{ site.baseurl }}/assets/images/2008/07/sample1.jpg" alt="ODE" width="320" height="310" /><br />
+落下する赤い林檎？上の画像はそのスクリーンショットです。</p>
+<hr />ODEを使ったシミュレーションの流れを代表的なAPIと関連付けて列挙します。ODE-0.10からdInitODE()で初期化し，dCloseODE()で終了しなければエラーになります．</p>
+<ul>
+<li><span style="color: #000066;"><strong>描画用関数ドロースタッフの設定</strong></span>
+<ul>
+<li><span style="color: #000066;"><strong>カメラの設定 </strong></span><span style="color: #cc0000;"><strong>dsSetViewPoint()</strong></span><strong><br />
+</strong></li>
+</ul>
+</li>
+<li><span style="color: #000066;"><strong>ODEの初期化 </strong></span><span style="color: #cc0000;"><strong>dInitODE() </strong></span><strong><br />
+</strong></li>
+<li><span style="color: #000066;"><strong>動力学計算の世界worldの生成</strong> </span><span style="color: #cc0000;"><strong>dWorldCreate() </strong></span><strong><br />
+</strong></li>
+<li><span style="color: #000066;"><strong>重力加速度の設定</strong> </span><span style="color: #cc0000;"><strong>dWorldSetGravity</strong></span><strong><span style="color: #cc0000;">()</span></strong></li>
+<li><span style="color: #000066;"><strong>剛体の生成</strong></span>
+<ul>
+<li><span style="color: #000066;"><strong>質量の設定</strong></span><strong> dBodySetMass()</strong><strong><br />
+</strong></li>
+<li><span style="color: #000066;"><strong>位置の設定 </strong></span><span style="color: #cc0000;"><strong>dBodySetPosition()</strong></span></li>
+<li><span style="color: #000066;"><strong>姿勢の設定</strong></span><span style="color: #cc0000;"><strong> dBodySetRotation()</strong></span><strong><br />
+</strong></li>
+</ul>
+</li>
+<li><span style="color: #000066;"><strong>シミュレーションループ(この部分は繰り返し実行される)</strong></span>
+<ul>
+<li><span style="color: #000066;"><strong>動力学計算の実施</strong></span><span style="color: #cc0000;"> <strong>dWorldStep()</strong></span></li>
+<li><span style="color: #000066;"><strong>シミュレーションに必要な処理を書く<br />
+</strong></span></li>
+</ul>
+</li>
+<li><span style="color: #000066;"><strong>動力学worldの破壊</strong></span><span style="color: #cc0000;"> <strong>dWorldDestroy</strong></span></li>
+<li><span style="color: #000066;"><strong>ODEの終了 </strong></span><span style="color: #cc0000;"><strong>dCloseODE() </strong></span>
+<ul>
+<li>dBodyID dBodyCreate(dWorldID world)<br />
+剛体を作り、そのID番号を戻り値として返す</li>
+<li>const dReal *dBodyGetPosition(dBodyID body)<br />
+剛体bodyの重心位置を取得しそのポインタを返す</li>
+<li> const dReal *dBodyGetRotation(dBodyID body)<br />
+回転行列を取得しそのポインタを返す</li>
+<li>void dBodySetMass(dBodyID body, const dMass *mass)<br />
+剛体bodyに質量パラメータmassを設定する</li>
+<li>void dBodySetPosition(dBodyID body, dReal x, dReal y, dReal z)<br />
+剛体bodyの重心を絶対座標系(x,y,z)の位置に設定する</li>
+<li>void dBodySetRotation(dBodyID body, const dMatrix3 R)<br />
+剛体bodyを回転行列Rで表す姿勢に設定する</li>
+<li>dGeomID dCreateBox(dSpaceID space, dReal lx, dReal ly, dReal lz)<br />
+spaceに各辺の長さ(lx,ly,lz)の直方体ジオメトリを生成する</li>
+<li>dGeomID dCreateCylinder(dSpaceID space, dReal r, dReal l)<br />
+半径r、長さlの円柱ジオメトリを生成し、そのID番号を返す</li>
+<li> dGeomID dCreatePlane(dSpaceID space ,dReal a, dReal b, dReal c, dReal d)<br />
+spaceにax+by+cz=dの平面ジオメトリを生成する</li>
+<li>void dGeomSetBody(dGeomID geom, dBodyID body)<br />
+物体の2つの属性であるジオメトリgeomと剛体bodyを関連づける</li>
+<li>dSpaceID dHashSpaceCreate(0)<br />
+衝突計算用スペースを生成し、そのID番号を返す</li>
+<li>void dJointGroupEmpty(dJointGroupID)<br />
+接触点が格納されているジョイントグループを空にする</li>
+<li> void dJointAttach(dJointID joint, dBodyID body1, dBodyID dBody2)<br />
+剛体body1とbody2にジョイントjointを取り付ける</li>
+<li> dJointGroupID dJointGroupCreate(0)<br />
+接触点のグループを格納するジョイントグループを生成し、そのID番号を返す</li>
+<li>void dMassSetBoxTotal(dMass *mass, dReal m, dReal lx, dReal ly, dReal lz)<br />
+サイズ(lx,ly,lz)、全質mの直方体の質量パラメータmassを計算する</li>
+<li>void dMassSetCylinderTotal(dMass *mass, dReal m, int dir, dReal r, dReal l)<br />
+方向dir(1=x,2=y,3=z）、半径r、長さl、全質量mの円柱の質量パラメータmassを計算する</li>
+<li> void dMassSetZero(dMass *mass)<br />
+質量パラメータmassの要素を0に初期化する</li>
+<li>void dRFromAxisAndAngle(dMatrix3 R, dReal ax, dReal ay, dReal az, dReal angle)軸ベクトル(ax,ay,az)周りにangle[rad]回転させた時の回転行列Rを求める</li>
+<li> void dSpaceCollide(dSpaceID space, void *data, dNearCallback *callback)<br />
+spaceで衝突する可能性のある2つのジオメトリを選び出し、引数のcallback関数を呼び出す。dataはcallback関数へ渡すデータへのポインタ</li>
+<li>dWorldID dWorldCreate()<br />
+物理計算用ワールドを生成し、そのID(識別)番号を戻り値として返す</li>
+<li>void dWorldDestroy(dWorldID world)<br />
+物理計算用ワールドworldを破壊する</li>
+<li>void dWorldSetGravity(dWorldID world, dReal x, dReal y, dReal z)<br />
+ワールドworldに(x,y,z)[m/s2]の重力加速度を設定する</li>
+<li>void dWorldStep(dWorldID world, dReal step_size)<br />
+ワールドworldのシミュレーションを1ステップ進める。2番目の引数step_sizeは積分のステップ時間[s]</li>
+<li> void dsDrawBoxD(const double pos[3], const double R[12], const double sides[3])位置posに回転行列Rを取るサイズsidesの直方体を描画する</li>
+<li>void dsSetViewPoint(float xyz[3], float hpr[3])<br />
+視点xyzと視線hpr[°]を設定する</li>
+<li>void dsSimulationLoop(int argc, char **argv,int w, int h, dsfunction *fn)<br />
+シミュレーションループを呼び出す。1、2番目の引数はmain関数の引数で、3,4番目は描画ウインドウの大きさ(横w,縦h)で、5番目の引数は描画関数クラス</li>
+</ul>
+</li>
+<hr /><strong>次に、詳しいコメントのついたソースコードを以下に示します。main関数から読んでください。</strong></p>
+<pre>[cpp]
+
+/ / Hello World　　by でむ
+
+#include 　　 // ODEのヘッダーファイル（動力学計算用）
+
+#include　//　ドロースタッフヘッダーファイル（３Ｄグラフィクス用）#ifdef  dDOUBLE
+
+#define dsDrawSphere dsDrawSphereD   // 単精度と倍精度の描画関数に対応するおまじない
+
+#endif
+
+static dWorldID world; 　// 動力学計算用ワールド
+
+dBodyID ball; 　　　　　    // 玉
+
+const dReal radius = 0.2, mass = 1.0;　// 玉の半径(m)、玉の重さ(kg)
+
+// シミュレーションループ 毎回呼び出され実行されます。
+
+// 動力学計算はステップサイズだけをここで指定すれば自動的に計算されます。
+
+// ただし、描画はここで書かないと何も表示されません。
+
+static void simLoop (int pause)
+
+{
+
+  const dReal *pos,*R;　//　位置、回転行列dWorldStep(world,0.05);　　// シミュレーションのステップサイズを0.05秒に設定。
+
+dsSetColor(1.0,0.0,0.0);  // 色のセット。引数は光の３原色(赤、緑、青)。値は０から１．
+
+  pos = dBodyGetPosition(ball);　　// 玉の位置を取得
+
+  R = dBodyGetRotation(ball);　　　// 玉の姿勢を取得
+
+  dsDrawSphere(pos,R,radius);　　　//赤玉を描画
+
+}
+
+// ドロースタッフの前処理関数
+
+void start()
+
+{
+
+  //　カメラの設定
+
+  static float xyz[3] = {0.0,-3.0,1.0}; 　　　// 視点の位置 (x, y, z [m])
+
+  static float hpr[3] = {90.0,0.0,0.0};　　　// 視線の方向（ヘッド、ピッチ、ロール[°]）
+
+  dsSetViewpoint (xyz,hpr);　　　　　　　　    // 視点の設定
+
+}
+
+// メイン関数　ここから読んでください。
+
+int main (int argc, char **argv)
+
+{
+
+  dReal x0 = 0.0, y0 = 0.0, dReal z0 = 1.0; // ボールの初期位置[m]
+
+  dMass m1; 　　// 質量パラメータ構造体（質量、慣性モーメントなど）
+
+// 描画API（ドロースタッフ）のおまじない（設定）
+
+  dsFunctions fn;　　　　　　　　//　ドロースタッフ構造体
+
+  fn.version = DS_VERSION;　 // ドロースタッフのバージョン
+
+  fn.start = &amp;start;　　　　　　// 　シミュレーションの前処理関数
+
+  fn.step = &amp;simLoop;　　　　// シミュレーションの各ステップで呼ばれる関数
+
+  fn.command = NULL;　　　　 // 関数がないのでNULLポインタを指定
+
+  fn.stop 　　 = NULL;　　　　// 関数がないのでNULLポインタを指定
+
+  fn.path_to_textures = "../../drawstuff/textures";　//　テクスチャへのパス
+
+// 動力学計算用世界の創造
+
+  world = dWorldCreate();　// 動力学計算の対象となる剛体を入れるworldを作る。戻り値はそのID番号。
+
+  dWorldSetGravity(world,0,0,-0.001);　// 重力加速度（x, y, z)の設定　　-0.001 m/s^2
+
+//　玉を作る
+
+  ball = dBodyCreate(world); 　　　　　　 // 　剛体(body)を作る。戻り値はそのID番号
+
+  dMassSetZero(&amp;m1);　　　　　　　　　　　　　// 質量パラメータm1の初期化
+
+  dMassSetSphereTotal(&amp;m1,mass,radius);　// 質量パラメータm1に剛体の質量を設定
+
+  dBodySetMass(ball,&amp;m1);　　　　　　　　　　// 剛体に質量パラメータm1を設定
+
+  dBodySetPosition(ball, x0, y0, z0);　　　　　//　剛体ballの絶対座標での位置(x, y, z)を設定
+
+// シミュレーション本体
+
+  // argc, argvはmain関数の引数、ウインドウサイズ352 x 288ピクセル, fnはドロースタッフ構造
+
+  dsSimulationLoop (argc,argv,352,288,&amp;fn);
+
+// 世界の破壊
+
+  dWorldDestroy (world);　// 動力学計算の対象となったworldを破壊する
+
+return 0;
+
+}
+
+[/cpp]</pre>
+<p>これは赤玉の自由落下のプログラムです。これがなぜHello Worldかというと、上のソースコードでworldは動力学計算をする世界のことです。動力学計算のWorldに初めてお目にかかったのでこのコードもHello Worldと呼ぶことにしましょう。</p>
+<p>また、小文字のdで始まる関数はODEのAPI(application interface)で、dsで始まる関数はdrawstuff(ドロースタッフ）のAPIです。drawstuffはODE付属テストプログラム表示用のライブラリのことです。</p>
+<p>説明はこのぐらいにして<a href="http://demura.net/archives/images/ode/sample1-071001.tgz">このファイル(sample1-071001.tgz)</a>をダウンロードして以下の手順で実行してみましょう！</p>
+<p><strong>実行方法</strong><br />
+1. sample1-071001.tgzを/home/ユーザ名/src/ode-バージョン番号/myprogの下にダウンロード<br />
+2.  これからはターミナルで以下のコマンドを実行してください。$はプロンプトです。<br />
+$ cd /home/ユーザ名/src/ode-バージョン番号/myprog<br />
+$ tar xvzf  sample1-071001.tgz<br />
+$ cd  sample1<br />
+$ make<br />
+3. 実行<br />
+$  ./sample1</p>
+<p>ここでは重力加速度を赤玉がゆっくり落下していきますが、なんと地面を通り抜けて消えてしまいます。<br />
+実は上のプログラムには衝突検出機能が組み込まれていなかったのです。<br />
+次回はこのプログラムに衝突検出機能を組み込みます。</p>
+<p><strong>今回登場したAPI</strong></p>
+<hr />更新履歴</p>
+<li>
+<ul>
+<li>2008-7-10: dInitODE(), dCloseODE()の追加</li>
+<li>2008-4-14: 実行方法のファイル名の間違いを訂正</li>
+<li>2008-1-13: ソースコードを整形した</li>
+<li>2007-10-1: sample1のmakefileを変更して怒られず済むようにした。</li>
+<li>2007-1-20: 本文の説明並びにソースコードのコメントをより詳しくし、API集を収録した。</li>
+</ul>
+</li>
+</ul>

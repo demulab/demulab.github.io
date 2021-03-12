@@ -1,0 +1,72 @@
+---
+layout: post
+title: Ubuntu14.04, CUDA7.0をThinkPad T450にインストール
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- robocup
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>ThinkPad T450にUbuntu14.04, Cuda7.0インストールしたときのメモ。メモリ8GB，ハードディスクは５００GB</p>
+<ul>
+<li>インストールの種類は、必ず「それ以外」を選択する。間違うとWindowsが消える．</li>
+<li> パーティション
+<ul>
+<li>/dev/sda1 ntfs  1048MB</li>
+<li>/dev/sda2 efi      272MB</li>
+<li>/dev/sda3            134MB</li>
+<li>/dev/sda4 ntfs   104857MB</li>
+<li>/dev/sda6  ext2  /   364999MB   Ubuntu 14.04 LTS</li>
+<li>/dev/sdas7  swap   16073MB</li>
+<li>/dev/sda5   ntfs</li>
+<li>ブートローダをインストールするデバイス：/dev/sda ATA WDC WD5000LPVX-0 (500.1GB)</li>
+</ul>
+</li>
+<li>Cuda7.0のインストール
+<ul>
+<li>Ubuntuをインストールした直後の作業</li>
+<li>Ctrl+Alt+F1でコンソールモードにする</li>
+<li>wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64/cuda-repo-ubuntu1404_7.0-28_amd64.deb</li>
+<li>sudo dpkg -i cuda-repo-ubuntu1404_7.0-28_amd64.deb</li>
+<li>sudo apt-get update &amp;&amp; sudo apt-get upgrade</li>
+<li>sudo apt-get install cuda</li>
+<li>sudo apt-get purge ubuntu-desktop</li>
+<li>sudo apt-get install ubuntu-desktop</li>
+<li>gpu_mangerがxorg.confの設定ファイルを書き換えるので，/etc/init/gpu_manager.confの中身を全てコメントアウトする．<a href="http://vxlabs.com/2015/02/05/solving-the-ubuntu-14-04-nvidia-346-nvidia-prime-black-screen-issue/">詳細はこのページを参照．</a></li>
+</ul>
+</li>
+<li> 無線LANドライバーインストール
+<ul>
+<li><a href="https://wireless.wiki.kernel.org/en/users/drivers/iwlwifi">Linux Wireless</a>から以下のファイルをダウンロード。カーネルのバージョンに合わせる。バージョンはuname -a で調べる。</li>
+<li>iwlwifi-7265-ucode-22.24.8.0.tgz</li>
+<li>tar xvzf iwlwifi-7265-ucode-22.24.8.0.tgz</li>
+<li>sudo cp iwlwifi-7265-8.ucode  /lib/firmware</li>
+</ul>
+</li>
+<li>CapslockとCtrlの入れ替え
+<ul>
+<li>/etc/rc.localに以下の一行を入れる<br />
+setxkbmap -option ctrl:swapcaps</li>
+</ul>
+</li>
+<li>各種ライブラリのインストール
+<ul>
+<li>sudo apt-get install ros-indigo-moveit-full</li>
+<li>sudo apt-get install ros-indigo-object-recognition-*</li>
+<li>sudo apt-get install ros-indigo-rospeex</li>
+</ul>
+</li>
+</ul>

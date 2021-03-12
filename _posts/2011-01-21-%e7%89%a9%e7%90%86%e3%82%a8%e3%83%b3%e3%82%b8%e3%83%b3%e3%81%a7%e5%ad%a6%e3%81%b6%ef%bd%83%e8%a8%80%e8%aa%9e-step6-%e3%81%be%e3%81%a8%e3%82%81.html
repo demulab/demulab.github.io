@@ -1,0 +1,261 @@
+---
+layout: post
+title: '物理エンジンで学ぶＣ言語 [Step6: まとめ]'
+date: 2011-01-21 06:50:53.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- ode
+tags: []
+meta:
+  _edit_last: '2'
+  views: '1838'
+  _wp_old_slug: ''
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/9ode/8457.html"
+---
+<p><br class="spacer_" /></p>
+<p>[caption id="attachment_7586" align="aligncenter" width="510" caption="STEP6: 玉突きロボット"]<a href="http://demura.net/wordpress/wp-content/uploads/2010/07/step6.jpg"><img src="{{ site.baseurl }}/assets/images/2011/01/step6.jpg" title="step6" width="510" height="419" class="size-full wp-image-7586" /></a>[/caption]</p>
+<p><br class="spacer_" /></p>
+<p>ODEで学ぶC言語２のStep6です．今回で最終回となります．ODEのジョイントの生成法と簡単な制御のサンプルプログラムを学びましょう．</p>
+<p>ジョイントは我々の周りでは、折畳み携帯のヒンジやドアの蝶番に相当します。小難しくいうと、２つのボディの位置や姿勢をある一定の関係に保つ拘束がジョイントとなのです。ODEではジョイントと拘束を同じ意味で使っています。</p>
+<p>ODEのジョイント（関節）は２つのボディ(剛体，body)をつなげるものです。１つのジョイントで３個以上のボディをつなげることはできませんし，１個のボディだけをつなげることもできません．必ず２個のボディを１つのジョイントでつなげなければなりません．</p>
+<p><!--more--></p>
+<p>また，ODEのジョイントは摩擦がありませんし，可動域を設定しないと、可動域の制限はありません．角度は[rad]です．</p>
+<p><br class="spacer_" /></p>
+<ul>
+<li><strong>ジョイントの使い方</strong></li>
+</ul>
+<ol>
+<li><span style="color: #cc0000;"><strong>***ジョイントの生成　　　　　　dmJointCreate***()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントとボディの結合　 dJointAttach(dJointID, dBodyID, dBodyID)</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントの中心点を設定　dJointSet***Anchor()</strong></span></li>
+<li><span style="color: #cc0000;"><strong>***ジョイントの回転軸を設定　dJointSet***Axis()</strong></span></li>
+</ol>
+<p>上で***にはジョイントのタイプが入ります。タイプにはHinge(ヒンジ）、Slider(スライダー)があります。サンプルプログラムではヒンジジョイントと直動式のスライダージョイントを使います．</p>
+<ul>
+<li><strong>ジョイントのパラメータ設定</strong></li>
+</ul>
+<ol>
+<li><strong>可動域の設定</strong><br />
+<strong><span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamLoStop, 可動域の下限）;</span></strong><br />
+<strong><span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamHiStop, 可動域の上限）;</span></strong></li>
+<li><strong>目標角速度とそれを実現するための最大トルクの設定<br />
+<span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamVel,  目標角速度）;</span></strong><strong><br />
+<span style="color: #ff0000;">dJointSetHingeParam(dJointID, dParamFMax, 最大トルク）;</span></strong></li>
+</ol>
+<p>パラメータとしては、関節可動域の下限を示すdParamLoStop、上限を示すdParamHiStop、角速度（ヒンジジョイント）または速度(直動式関節）を示すdParamVel、最大トルクを示すdParaFMaxなどがあります。なお、ODEでは関節にモータが標準で組み込まれているので、dParamVelやdParaFMaxを指定すると関節が動きます。</p>
+<p><strong>ソースコード</strong><br />
+少し長くなりますが，ソースコードを掲載します．このコードは今まで習った，キー操作関数，シミュレーションの再スタート，ボディへ力を加えるなどのほかに，ジョイントの生成と制御法など簡単なゲームやシミュレータを作るために必要なことは一通り入っています．</p>
+<pre class="brush:cpp">/* step6　by Kosei Demura 2011-01-20*/
+#include "dm6.h"
+
+#define START_X 0.0 // 初期位置
+#define START_Y 0.0
+#define START_Z 0.1
+
+dmObject torso, leg&#91;2&#93;, ball;
+dmFunctions dmf; // 描画関数の構造体
+
+static int STEPS = 0;      // シミュレーションのステップ数
+double S_LENGTH  = 0.0;    // スライダー長
+double H_ANGLE   = 0;      //ヒンジの角度
+
+// ロボットの生成
+void createMonoBot()
+{
+    int i;
+    double l_leg = 0.75; // 長さ
+    double m_leg = 1.0;  // 質量
+    double r_leg&#91;2&#93; = {0.05, 0.03}; // 半径
+    double m_torso = 100.0; // 胴体の質量
+    double r_torso = 0.25;  // 胴体の半径
+    double l_torso = 0.2;   // 胴体の高さ
+    double r_ball = 0.11;   // ボールの半径
+    double m_ball = 0.5;    // ボールの質量
+    double p_ball&#91;3&#93; = {START_X, START_Y+2*l_leg+0.1, START_Z}; // ボールの位置
+    double p_torso&#91;3&#93; = {START_X, START_Y, START_Z};  // 位置
+    double p_leg&#91;2&#93;&#91;3&#93; = {{START_X, START_Y+0.5*l_leg, START_Z},
+        {START_X, START_Y+l_leg, START_Z}
+    };
+    double p_anchor&#91;3&#93; = {START_X, START_Y, START_Z};
+    double R&#91;12&#93;;   // 回転行列
+
+    static double  red&#91;3&#93; = {1.0, 0.0, 0.0}; // 色
+    static double  color_leg&#91;2&#93;&#91;3&#93; = {{0.0, 0.0, 1.0},{1.3, 1.3, 1.3}};
+
+    dRSetIdentity(R);  //回転行列を単位行列で初期化
+    dmCreateSphere(&amp;ball, p_ball,R,m_ball, r_ball, red); // ボールの生成
+    dmCreateCylinder(&amp;torso,p_torso,R,m_torso,r_torso,l_torso,red); // 胴体の生成
+
+    dRFromAxisAndAngle(R, 1, 0, 0, M_PI/2);
+    for (i = 0; i &#60; 2; i++)
+    {
+        dmCreateCapsule(&amp;leg&#91;i&#93;,p_leg&#91;i&#93;,R,m_leg,r_leg&#91;i&#93;,l_leg,color_leg&#91;i&#93;); // 脚の生成
+    }
+
+    // ヒンジジョイント
+    leg&#91;0&#93;.joint = dmJointCreateHinge();
+    dJointAttach(leg&#91;0&#93;.joint, torso.body,leg&#91;0&#93;.body);
+    dJointSetHingeAnchor(leg&#91;0&#93;.joint, p_anchor&#91;0&#93;,p_anchor&#91;1&#93;,p_anchor&#91;2&#93;);
+    dJointSetHingeAxis(leg&#91;0&#93;.joint, 0, 0, 1);
+
+    // スライダージョイント
+    leg&#91;1&#93;.joint = dmJointCreateSlider();
+    dJointAttach(leg&#91;1&#93;.joint, leg&#91;0&#93;.body,leg&#91;1&#93;.body);
+    dJointSetSliderAxis(leg&#91;1&#93;.joint, 0, 1, 0);
+    dJointSetSliderParam(leg&#91;1&#93;.joint, dParamLoStop, -0.25);
+    dJointSetSliderParam(leg&#91;1&#93;.joint, dParamHiStop,  0.25);
+}
+
+// ヒンジジョイントの制御
+static void controlHinge(dReal target)
+{
+    static dReal kp = 10.0, fmax = 1000;
+
+    dReal tmp   = dJointGetHingeAngle(leg&#91;0&#93;.joint);
+    dReal diff  = target - tmp;
+    if (diff &#62;=   M_PI) diff -= 2.0 * M_PI; // diffが2πより小さく
+    if (diff &#60;= - M_PI) diff += 2.0 * M_PI; // diffが-2πより大きく
+    dReal u     = kp * diff;
+
+    dJointSetHingeParam(leg&#91;0&#93;.joint, dParamVel,  u);
+    dJointSetHingeParam(leg&#91;0&#93;.joint, dParamFMax, fmax);
+}
+
+// スライダの制御 プログラム2.4
+static void controlSlider(dReal target)
+{
+    static dReal kp   = 25.0;                       // 比例定数
+    static dReal fmax = 1000;                        // 最大力&#91;N&#93;
+    double tmp, u;
+
+    tmp  = dJointGetSliderPosition(leg&#91;1&#93;.joint);  // スライダの現在位置
+    u    = kp * (target - tmp);                    // 残差
+    dJointSetSliderParam(leg&#91;1&#93;.joint, dParamVel,  u);
+    dJointSetSliderParam(leg&#91;1&#93;.joint, dParamFMax, fmax);
+}
+
+// シミュレーションのリセット
+static void resetSim()
+{
+    STEPS    = 0;      // ステップ数の初期化
+    H_ANGLE  = 0.0;    // ヒンジ角度の初期化
+    S_LENGTH = 0.0;
+
+    if (STEPS != 0) dmClose(); // シミュレーションの終了
+
+    dmInit();  // シミュレーションの初期化
+    createMonoBot();
+}
+
+// キー操作
+void command(int cmd)
+{
+    switch (cmd)
+    {
+    case 'j':
+        S_LENGTH =   0.25;
+        break;
+    case 'l':
+        S_LENGTH = - 0.25;
+        break;
+    case 'i':
+        H_ANGLE +=   0.25;
+        if (H_ANGLE  &#62;   M_PI) H_ANGLE  =  -M_PI;
+        break;
+    case 'm':
+        H_ANGLE -=   0.25;
+        if (H_ANGLE  &#60;  -M_PI) H_ANGLE  =   M_PI;
+        break;
+    case 'r':
+        resetSim();
+        break;
+    case 'a':
+        dBodyAddForce(torso.body, 0, -500, 0);
+        break;
+    case 'w':
+        dBodyAddForce(torso.body, -500, 0, 0);
+        break;
+    case 'd':
+        dBodyAddForce(torso.body, 0,  500, 0);
+        break;
+    case 'x':
+        dBodyAddForce(torso.body,  500, 0, 0);
+        break;
+    case 's':
+        dBodySetLinearVel(torso.body,  0, 0, 0);
+        dBodySetAngularVel(torso.body, 0, 0, 0);
+        break;
+    default :
+        printf("key missed \n");
+        break;
+    }
+}
+
+void simLoop(int pause)           /***  シミュレーションループ　***/
+{
+    int i;
+    int s = 1000;                   // 跳躍する周期(ステップ)
+
+    if (!pause)
+    {
+        printf("STEPS=%d \n",STEPS++); //  ステップ数
+
+        // スライダーの伸縮
+        //if ((0 &#60;= (STEPS%s)) &amp;&amp; ((STEPS%s) &#60;= 10)) S_LENGTH = 0.6;
+        //else if ((11 &#60;= (STEPS%s)) &amp;&amp; ((STEPS%s) &#60;= 15)) S_LENGTH = 0.0;
+
+        controlSlider(S_LENGTH); // スライダージョイントの制御
+        controlHinge(H_ANGLE);   // ヒンジジョイントの制御
+
+        dmWorldStep(); // シミュレーションを１ステップ進める
+    }
+
+    dmDraw(&amp;ball); // ボールの描画
+    // ロボットの描画
+    dmDraw(&amp;torso);   // 胴体の描画
+    for (i = 0; i &#60; 2; i++)dmDraw(&amp;leg&#91;i&#93;); //脚の描画
+    STEPS++;
+}
+
+/*** カメラの位置と姿勢設定 ***/
+void setCamera()
+{
+    float x = 5.0, y = 0.0, z = 1.0;    // カメラの位置
+    float roll = 0, pitch = 0, yaw = -180; // カメラの方向&#91;°&#93;
+    dmSetCamera(x,y,z,roll,pitch,yaw);  // カメラの設定
+}
+
+/*** 描画用構造体の設定　***/
+void setDraw()
+{
+    dmf.start   = &amp;setCamera;
+    dmf.step    = &amp;simLoop;
+    dmf.command = &amp;command;
+}
+
+int main()         /*** main関数 ***/
+{
+    dmInit(); // ODEの初期化
+    setDraw(); // 描画用構造体の設定
+    resetSim();   // ロボットの生成
+    dmLoop(800, 600, &amp;dmf);  // シミュレーションループ ウインドウの幅，高
+    dmClose();          // ODEの終了
+    return 0;
+}</pre>
+<p><strong>ホームワーク</strong></p>
+<ul>
+<li><a href="http://demura.net/wordpress/wp-content/uploads/2011/01/step6-110121.zip">step6-110121.zip</a>をダウンロードして実行してみましょう．</li>
+<li>ロボットの周りを壁で囲み、玉突きをしましょう。</li>
+<li>サンプルプログラムを改良してビリヤードゲームを作りましょう（プチプロジェクト可）．</li>
+<li>サンプルプログラムを改良してボーリングゲームを作りましょう（プチプロジェクト可）．</li>
+</ul>

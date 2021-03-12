@@ -1,0 +1,239 @@
+---
+layout: post
+title: 仮想シミュレーション環境「箱庭」のインストールメモ (Linux)
+date: 
+type: post
+parent_id: '0'
+published: false
+password: ''
+status: draft
+categories:
+- education
+- lecture
+tags: []
+meta:
+  _edit_last: '2'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  views: '2'
+  _thumbnail_id: '18346'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/"
+---
+<p>仮想シミュレーション環境「箱庭」のインストールメモ。ターゲットCPUはARM。</p>
+<p>参考サイト</p>
+<ul>
+<li><a href="https://toppers.github.io/hakoniwa/prototypes/single-robot/">TOPPERS/箱庭デモ ETロボコンシミュレータ</a></li>
+</ul>
+<p>インストール</p>
+<ul>
+<li>開発環境 (WSL + Ubuntu18.04)
+<ul>
+<li>WSLのインストール</li>
+<li>Athrill2のインストール
+<ul>
+<li>端末を起動する。</li>
+<li>ダウンロード
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/toppers/athrill.git</code></li>
+<li><code>$ git clone https://github.com/toppers/athrill-target-ARMv7-A.git</code></li>
+</ul>
+</li>
+<li>ビルド
+<ul>
+<li><code>$ sudo apt install build-essential</code></li>
+<li><code>$ cd ~/src/athrill-target-ARMv7-A/build_linux</code></li>
+<li><code>$ make timer32=true clean</code></li>
+<li><code>$ make timer32=true</code></li>
+<li>ファイルの確認
+<ul>
+<li><code>$ ls -l ../../athrill/bin/linux/athrill2</code></li>
+<li>上のコマンドを実行して、以下のように表示されば成功
+<ul>
+<li>-rwxr-xr-x 1 user group 3889056 7月 1 11:04 ../../athrill/bin/linux/athrill2*</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>設定
+<ul>
+<li>エディタで~/.bashrcを開き以下の行を末尾に加え保存する。
+<ul>
+<li>export PATH=/home/ユーザ名/src/athrill/bin/linux:${PATH}</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>linux版64bit gccコンパイラのインストール
+<ul>
+<li>ARM用コンパイラのインストール
+<ul>
+<li><code>$ sudo apt install gcc-arm-none-eabi</code></li>
+</ul>
+</li>
+<li>動作確認
+<ul>
+<li>以下のコマンドを実行して、
+<ul>
+<li><code>$ arm-none-eabi-gcc --version</code></li>
+</ul>
+</li>
+<li>下図のように表示されれば成功。<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/SnapCrab_demulab@EARTH-_2020-7-14_16-58-28_No-00.png"><img class="aligncenter size-full wp-image-18393" src="{{ site.baseurl }}/assets/images/SnapCrab_demulab@EARTH-_2020-7-14_16-58-28_No-00.png" alt="" width="827" height="259" /></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>箱庭用EV3RT開発環境のインストール
+<ul>
+<li>ダウンロード・インストール
+<ul>
+<li><code>$ cd ~/src</code></li>
+<li><code>$ git clone https://github.com/toppers/ev3rt-athrill-ARMv7-A.git</code></li>
+</ul>
+</li>
+<li>EV3ロボット制御プログラム
+<ul>
+<li>作業ディレクトリと作業ファイルは以下となります。</li>
+<li> 作業ディレクトリ
+<ul>
+<li>~/src/ev3rt-athrill-ARMv7-A/sdk/OBJ1.1</li>
+</ul>
+</li>
+<li>作業ファイル
+<ul>
+<li>~/src/ev3rt-athrill-ARMv7-A/sdk/OBJ1.1/app.c</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Unityのインストール・パッケージのインストール・通信方式の切り替え
+<ul>
+<li>Ubuntu用Unityのインストール。次のサイトを参考にしました。
+<ul>
+<li>参考サイト：<a href="https://tech-camp.in/note/technology/44408/">Unity 2018のインストール手順を解説。入門におすすめのサイトや書籍も</a></li>
+</ul>
+</li>
+<li>Unity Hubのインストール
+<ul>
+<li>以下の公式サイトからUnity Hubを~/Downloadsディレクトリへダウンロードする。
+<ul>
+<li><a href="https://unity3d.com/jp/get-unity/download">Unityをダウンロード</a></li>
+<li>ダウンロードしたファイル名はUnityHub.AppImage</li>
+<li>実行のパーミッションを与える
+<ul>
+<li><code>$ cd ~/Downloads</code></li>
+<li><code>$ chmod u+x UnityHub.AppImage</code></li>
+</ul>
+</li>
+<li>実行する
+<ul>
+<li><code>$ ./UnityHub.AppIMage</code></li>
+</ul>
+</li>
+<li>次のウインドウが開くので「Agree」をクリックする<br />
+<a href="https://demura.net/wordpress/wp-content/uploads/2020/07/unity1.png"><img class="aligncenter size-full wp-image-18346" src="{{ site.baseurl }}/assets/images/unity1.png" alt="" width="342" height="472" /></a></li>
+</ul>
+</li>
+<li>サインイン
+<ul>
+<li>次のウインドウになるので、右上の人型アイコンをクリックし、サインインをクリックする。</li>
+<li>Unity IDでサインインの画面になるので、IDがない人は、「Unity IDをお持ちでない場合、こちらでIDを作成してください。」かGoogle、Facebookでサインインする。</li>
+</ul>
+</li>
+<li>ライセンス認証
+<ul>
+<li>歯車アイコンをクリックして、「ライセンス管理」をクリックする。</li>
+<li>「新規ラインセンスの認証」をクリックして、</li>
+<li>「Unity Personal」「Unityを業務に関連した用途に使用しません。」をクリックする。</li>
+</ul>
+</li>
+<li>インストール
+<ul>
+<li>左上の←をクリックして、最初の画面に戻り、「インストール」をクリックする。</li>
+<li>最新正式リリース　Unity 2019.4.2.f1 (LTS)を選ぶ</li>
+<li>「Unityバージョンを加える」画面
+<ul>
+<li>「Documentation」と「日本語」にチェックを入れ、「実行」をクリックする。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Unityパッケージのダウンロード
+<ul>
+<li>single-robot-HackEV.unitypackage：HackEVを模した走行体モデル
+<ul>
+<li><a href="https://github.com/toppers/hakoniwa-Unity-HackEV/releases">https://github.com/toppers/hakoniwa-Unity-HackEV/releases</a></li>
+</ul>
+</li>
+<li>ev3rt-simple-robot.unitypackage：シンプルな走行体モデル
+<ul>
+<li><a href="https://github.com/toppers/hakoniwa-Unity-SimpleCar/releases">https://github.com/toppers/hakoniwa-Unity-SimpleCar/releases</a></li>
+</ul>
+</li>
+<li></li>
+</ul>
+</li>
+<li><code>WSL1</code></li>
+<li> wslだとfirefoxが動かないというバグがあるらしく(2020-07-01時点)、軽量ブラウザvivaldiをインストールする。
+<ul>
+<li><code>$ cd ~/Downloads</code></li>
+<li><code>$ wget https://downloads.vivaldi.com/stable/vivaldi-stable_2.3.1440.60-1_amd64.deb</code></li>
+<li><code>$ sudo dpkg -i vivaldi-stable_2.3.1440.60-1_amd64.deb</code></li>
+<li><code>$ curl https://launchpadlibrarian.net/401553574/chromium-codecs-ffmpeg-extra_71.0.3578.98-0ubuntu0.16.0<br />
+tar xJ -C ~ --wildcards \*libffmpeg.so --xform 's,.*/,.local/lib/vivaldi/,'</code></li>
+</ul>
+</li>
+<li> Ubuntuターミナルを開き、次のコマンドでvivaldiを起動する。
+<ul>
+<li><code>$ sudo  vivaldi  --no-sandbox &amp;</code></li>
+</ul>
+</li>
+<li>firefoxから以下のサイトにアクセスしてDownload Links: Hub for Linuxをダウンロードる。
+<ul>
+<li>https://forum.unity.com/threads/unity-hub-v2-0-0-release.677485/</li>
+</ul>
+</li>
+<li>IDの取得</li>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>

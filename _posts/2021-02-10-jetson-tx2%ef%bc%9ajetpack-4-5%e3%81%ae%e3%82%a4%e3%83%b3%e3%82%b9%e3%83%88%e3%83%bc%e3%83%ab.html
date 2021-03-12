@@ -1,0 +1,202 @@
+---
+layout: post
+title: JETSON TX2：JetPack 4.5のインストール
+date: 2021-02-10 22:44:30.000000000 +09:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- robot
+tags: []
+meta:
+  _edit_last: '2'
+  last_modified: '2021-02-14 20:09:06'
+  the_page_seo_title: ''
+  the_page_meta_description: ''
+  the_page_meta_keywords: ''
+  the_page_noindex: '0'
+  the_page_nofollow: '0'
+  the_page_canonical_url: ''
+  the_page_ads_novisible: '0'
+  the_page_main_category: ''
+  page_type: default
+  the_page_read_time_novisible: '0'
+  the_page_toc_novisible: '0'
+  update_level: high
+  the_review_enable: '0'
+  the_review_type: Product
+  the_review_name: ''
+  the_review_rate: '2.5'
+  redirect_url: ''
+  the_page_no_amp: '0'
+  _custom_css: ''
+  _custom_js: ''
+  the_page_memo: ''
+  sns_image_url: ''
+  the_page_no_archive: '0'
+  the_page_no_rss: '0'
+  _thumbnail_id: '19811'
+  views: '80'
+author:
+  login: demu
+  email: info@demura.net
+  display_name: demu
+  first_name: ''
+  last_name: ''
+permalink: "/robot/19789.html"
+---
+<p><a href="http://demura.net/%e6%9c%aa%e5%88%86%e9%a1%9e/13445.html/attachment/tx2_develop" rel="attachment wp-att-13451"><img class="aligncenter size-large wp-image-13451" src="{{ site.baseurl }}/assets/images/2021/02/tx2_develop-1024x576.jpg" alt="" width="800" height="450" /></a></p>
+<p>眠っているJetson TX2にFolding@homeをやらせようとJetPack4.5をインストールしたときのメモ。TX2のGPUに期待したがOpenCLに対応していないので、GPUでFoldingはできないようだ。Raspberry Pi4とあまり変わらなそう。</p>
+<p><strong>ホストPC環境</strong></p>
+<ul>
+<li>Razer Blade 15 (2018)</li>
+<li>CPU: Intel i7-8750H</li>
+<li>GPU: Nvidia 1070 Max-Q Design, Memory 8GB</li>
+<li>Voyager 18.04</li>
+<li>Kernel 5.4.0-42-generic</li>
+<li>gcc/g++ 7.5.0</li>
+</ul>
+<p><strong>ホストPCとJetson TX2の接続</strong></p>
+<ul>
+<li>ホストPCとJetson TX2をUSBケーブルで接続する。このとき、ホスト側はTYPE A、Jetson側はMicro-Bコネクタに接続する。</li>
+<li>Jetson TX2にACアダプタをさし、電源ボタン[Power BTW]を押して離す。</li>
+<li>RECOVERYボタンを押しっぱなしにしながら、RESETボタンを押して放す。その２秒後にRECOVERYボタンを放す。これによりJetsonがリカバリーモードになる。</li>
+<li>Jetsonがリカバリモードになったら、ホストPCの端末で以下のコマンドを実行し、NVIDIA Corpと表示されていれば成功。失敗した場合は再度、上の作業をやり直す。
+<ul>
+<li>$ lsusb</li>
+</ul>
+</li>
+</ul>
+<p><strong>ホストPCの環境構築</strong></p>
+<ul>
+<li>NVIDIA SDK Managerのインストール
+<ul>
+<li>https://developer.nvidia.com/nvidia-sdk-manager　からSDK Managerをダウンロードする。
+<ul>
+<li>ダウンロードにはNVIDIA Developer Program Membershipが必要なので、メンバーになっていなかったら加入する。</li>
+</ul>
+</li>
+<li>ダウンロードに成功するとsdkmanager_1.4.0-7363_amd64.debが保存される。</li>
+<li>$ sudo apt install  ./dkmanager_1.4.0-7363_amd64.deb</li>
+</ul>
+</li>
+</ul>
+<p><strong>ホストPCでの作業</strong></p>
+<ul>
+<li>SDK Managerの実行
+<ul>
+<li>次のコマンドでSDK Managerを起動する。以下のウインドウが開くのでDeveloper Program Membershipと同じユーザ名とパスワードでLOGINする。
+<ul>
+<li>$ sdkmanager</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sdk1.png"><img class="aligncenter size-large wp-image-19793" src="{{ site.baseurl }}/assets/images/2021/02/sdk1-1024x658.png" alt="" width="1024" height="658" /></a></p>
+<ul>
+<li>STEP 01：開発環境
+<ul>
+<li>下図のようにTarget HardwareがJetson TX2になっていることを確認して[CONTINUE]をクリックする。なっていない場合は、ホストPCとJetsonの接続を確認して、[refresh]をクリックするとJetson TX2が認識される。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sdk2.png"><img class="aligncenter size-large wp-image-19796" src="{{ site.baseurl }}/assets/images/2021/02/sdk2-1024x658.png" alt="" width="1024" height="658" /></a></p>
+<ul>
+<li>STEP 02：詳細とライセンス
+<ul>
+<li>インストールされるソフトウェアの詳細が下図のように表示されるので確認し、[I accept the terms and conditions of the license agreements.]にチェックを入れて、[CONTINUE]をクリックする。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sdk3.png"><img class="aligncenter size-large wp-image-19800" src="{{ site.baseurl }}/assets/images/2021/02/sdk3-1024x658.png" alt="" width="1024" height="658" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>ホストのパスワードを聞かれるので入力し、[OK]をクリックする。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sdk4.png"><img class="aligncenter size-large wp-image-19798" src="{{ site.baseurl }}/assets/images/2021/02/sdk4-1024x658.png" alt="" width="1024" height="658" /></a></p>
+<ul>
+<li>STEP 03：セットアップ
+<ul>
+<li>下図のようにセットアップが始まる。必要なファイルがダウンロードされ、ソフトウェアがインストールされる。僕の環境では10分ぐらいかかった。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sdk5.png"><img class="aligncenter size-large wp-image-19799" src="{{ site.baseurl }}/assets/images/2021/02/sdk5-1024x658.png" alt="" width="1024" height="658" /></a></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>Jetson OSのインストールが終わると次のウインドウが開く。ここでホストPCでの作業は一時中止して、次にJetsonでの作業をする。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sdk6.png"><img class="aligncenter size-large wp-image-19804" src="{{ site.baseurl }}/assets/images/2021/02/sdk6-1024x658.png" alt="" width="1024" height="658" /></a></p>
+<p><strong>Jetsonでの作業</strong></p>
+<ul>
+<li>Jetsonでの作業に移る。ここではJetsonがディスプレイに接続していることが前提。</li>
+<li>System Configurationウインドウが開き、[L4T_End_User_License_agreement]の許諾を聞かれるので、[I accept the terms of these licenses]にチェックを入れて、[Continue]をクリックする。</li>
+<li>言語設定のウインドウになるので、[日本語]を選択すると日本語表示になる。[続ける]をクリックする。</li>
+<li>キーボードのレイアウトを聞かれるので、[日本語]を選択し、[続ける]をクリックする。</li>
+<li>「どこに住んでイますか？」と聞かれるのでTokyoになっていることを確認して[続ける」をクリックする。</li>
+<li>「あなたの情報を入力してください」ウインドウになるので、ユーザ名とパスワードを設定する。</li>
+<li>[Select Nvpmodel Mode]画面になるので[MAXP_CORE_ARM -(Default)]を選択し、[続ける]をクリックする。必要な作業が終わったらJetsonが再起動する。ホストPCでの作業に戻る。</li>
+</ul>
+<p><strong>ホストPCでの作業</strong></p>
+<ul>
+<li>先程中断した作業を続ける。以下の画面にJetsonのユーザ名とパスワードを入力して[Install]をクリックするとインストール作業が再開される。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sdk7.png"><img class="aligncenter size-large wp-image-19806" src="{{ site.baseurl }}/assets/images/2021/02/sdk7-1024x658.png" alt="" width="1024" height="658" /></a></p>
+<ul>
+<li>この作業はダウンロードよりさらに時間がかかる。僕の環境では30分ほどかかった。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sdk8.png"><img class="aligncenter size-large wp-image-19808" src="{{ site.baseurl }}/assets/images/2021/02/sdk8-1024x658.png" alt="" width="1024" height="658" /></a></p>
+<ul>
+<li>インストールが終わると次の画面になるので[FINISH]をクリックして作業を終えよう。</li>
+</ul>
+<p><a href="https://demura.net/wordpress/wp-content/uploads/2021/02/sdk9.png"><img class="aligncenter size-large wp-image-19810" src="{{ site.baseurl }}/assets/images/2021/02/sdk9-1024x645.png" alt="" width="1024" height="645" /></a></p>
+<p><strong>Jetsonの設定</strong></p>
+<ul>
+<li>以下のコマンドで全６コアが動いているか確認する。
+<ul>
+<li>$ sudo cat /sys/devices/system/cpu/cpu*/online</li>
+</ul>
+</li>
+<li> 全部動いていない場合は、次のコマンドで全てのCPU6コアを動かす。
+<ul>
+<li>sudo nvpmodel -m0</li>
+</ul>
+</li>
+<li>ホームディレクトリの英語化
+<ul>
+<li>日本語環境にするとホームディレクトリ下の各ディレクトリが日本語でとても使いづらいの、次のコマンドで英語にする。
+<ul>
+<li>$ LANG=C xdg-user-dirs-gtk-update</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>CUDAのテスト</p>
+<ul>
+<li>インストールがうまくいったかCUDAのサンプルプログラムを動かしてみる。ターミナルを開き、以下のコマンドを実行する。下図のようなウインドウが開いたら成功。
+<ul>
+<li>まず、サンプルをビルドする。この作業も時間がかかる。正確に計測していないが30分以上はかかったと思う。
+<ul>
+<li>$ cd /usr/local/cude/samples</li>
+<li>$ sudo make -j 6</li>
+</ul>
+</li>
+<li>cd  ./5_Simulations/smokeParticles</li>
+<li>./smokeParticles</li>
+</ul>
+</li>
+</ul>
+<p style="padding-left: 40px;"><a href="http://demura.net/athome/13269.html/attachment/smoke" rel="attachment wp-att-13345"><img class="aligncenter size-large wp-image-13345" src="{{ site.baseurl }}/assets/images/2021/02/smoke-1024x842.png" alt="" width="800" height="658" /></a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>お疲れ様！</p>
